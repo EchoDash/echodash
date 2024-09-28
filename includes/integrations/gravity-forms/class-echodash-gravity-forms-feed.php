@@ -233,6 +233,7 @@ class EchoDash_Gravity_Forms_Feed extends GFFeedAddOn {
 	 */
 	public function get_menu_icon() {
 
-		return ecd_logo_svg();
+		return false;
+		//return ecd_logo_svg();
 	}
 }

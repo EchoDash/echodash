@@ -42,13 +42,15 @@ class EchoDash_Queue {
 	public function track_event( $event_name, $event_value = false, $email_address = '', $source = false ) {
 
 		$event = array(
-			'name'  => $event_name,
-			'value' => $event_value,
+			'name'          => $event_name,
+			'source'        => $source,
+			'values'        => $event_value,
+			'email_address' => $email_address,
 		);
 
 		do_action( 'echodash_track_event', $event, $email_address, $source );
 
-		$this->add_to_queue( $event, $email_address );
+		$this->add_to_queue( $event );
 	}
 
 	/**
@@ -56,15 +58,11 @@ class EchoDash_Queue {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param array  $event         The event.
-	 * @param string $email_address The email address.
+	 * @param array $event The event.
 	 */
-	public function add_to_queue( $event, $email_address ) {
+	public function add_to_queue( $event ) {
 
-		$this->events[] = array(
-			'event'         => $event,
-			'email_address' => $email_address,
-		);
+		$this->events[] = $event;
 	}
 
 	/**
@@ -82,11 +80,20 @@ class EchoDash_Queue {
 
 		foreach ( $this->events as $event ) {
 
+			error_log( print_r( 'Send event', true ) );
+			error_log( print_r( $event, true ) );
+			error_log( print_r( 'JSON', true ) );
+			error_log( print_r( wp_json_encode( $event ), true ) );
+
 			wp_remote_post(
 				$settings['endpoint'],
 				array(
-					'body'    => wp_json_encode( $event ),
-					'timeout' => 10,
+					'headers'    => array(
+						'Content-Type' => 'application/json',
+					),
+					'body'       => wp_json_encode( $event ),
+					'blocking'   => false,
+					'user-agent' => 'EchoDash ' . ECHODASH_VERSION . '; ' . home_url(),
 				)
 			);
 		}

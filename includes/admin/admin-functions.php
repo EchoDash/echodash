@@ -61,9 +61,6 @@ function ecd_render_event_tracking_fields( $args = array() ) {
 			<span class="echodash-input-container">
 				<label for="' . esc_attr( $args['field_id'] ) . '" data-placeholder="Name:"></label>
 				<input value="' . esc_attr( $args['setting']['name'] ) . '" name="' . esc_attr( $field_name ) . '[name]" id="' . esc_attr( $args['field_id'] ) . '" class="ecd-name" type="text">
-				<span class="right input">
-					<a class="open-list tooltip-merge-tag"></a>
-				</span>
 			</span>
 
 			<select id="' . esc_attr( $field_id ) . '-name-select" class="select4-event-tracking"></select>

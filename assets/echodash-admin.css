@@ -37,10 +37,6 @@ span.echodash {
     padding: 0.6875rem 1rem 0.6875rem 4rem;
     transition: box-shadow 0.15s ease, background-color 0.15s ease;
     min-height: 30px;
-
-    border-bottom-right-radius: 0;
-    border-right: none;
-    border-top-right-radius: 0;
     margin: 0;
 }
 
