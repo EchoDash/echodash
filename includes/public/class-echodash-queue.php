@@ -39,11 +39,12 @@ class EchoDash_Queue {
 	 * @param bool   $event_value   The event value.
 	 * @param string $email_address The email address.
 	 */
-	public function track_event( $event_name, $event_value = false, $email_address = '', $source = false ) {
+	public function track_event( $event_name, $event_value = false, $email_address = '', $source = false, $trigger = false ) {
 
 		$event = array(
 			'name'          => $event_name,
 			'source'        => $source,
+			'trigger'       => $trigger,
 			'values'        => $event_value,
 			'email_address' => $email_address,
 		);

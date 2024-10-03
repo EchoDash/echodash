@@ -677,7 +677,7 @@ abstract class EchoDash_Integration {
 		// if ( ecd_get_option( 'events_logging', true ) ) {
 		//  $this->log_event( $event, $email_address );
 		// }
-	
+
 		// Remove key/value pairs from the array.
 		$event['value'] = array_column( $event['value'], 'value', 'key' );
 
