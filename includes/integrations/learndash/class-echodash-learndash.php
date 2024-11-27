@@ -176,13 +176,16 @@ class EchoDash_LearnDash extends EchoDash_Integration {
 	 */
 	public function quiz_completed( $data, $user ) {
 
-		if ( isset( $data['quiz']->ID ) ) {
-			$quiz_id   = $data['quiz']->ID;
-			$course_id = $data['course']->ID;
+		if ( is_numeric( $data['quiz'] ) ) {
+			$quiz_id = $data['quiz'];
 		} else {
-			// For grading in the admin.
-			$quiz_id   = $data['quiz'];
+			$quiz_id = $data['quiz']->ID;
+		}
+
+		if ( is_numeric( $data['course'] ) ) {
 			$course_id = $data['course'];
+		} else {
+			$course_id = $data['course']->ID;
 		}
 
 		$events = $this->get_events( 'quiz_completed', $course_id );

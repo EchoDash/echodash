@@ -35,7 +35,8 @@ class EchoDash_WooCommerce extends EchoDash_Integration {
 	 */
 	public function init() {
 
-		add_action( 'ecd_woocommerce_payment_complete', array( $this, 'new_order' ), 10, 3 );
+		add_action( 'woocommerce_payment_complete', array( $this, 'order_placed' ), 10, 3 );
+		add_action( 'woocommerce_new_order_item', array( $this, 'purchased_product' ), 10, 3 );
 		add_action( 'woocommerce_order_status_changed', array( $this, 'order_status_changed' ), 10, 4 );
 	}
 
@@ -44,13 +45,20 @@ class EchoDash_WooCommerce extends EchoDash_Integration {
 	 *
 	 * @access protected
 	 *
-	 * @since  1.0.0
+	 * @since  1.1.0
 	 *
 	 * @return array The triggers.
 	 */
 	protected function setup_triggers() {
 
 		$triggers = array(
+			'order_placed'         => array(
+				'name'         => __( 'Order Placed', 'echodash' ),
+				'description'  => __( 'Triggered each time a WooCommerce order is placed.', 'echodash' ),
+				'has_global'   => true,
+				'placeholder'  => 'Order',
+				'option_types' => array( 'order' ),
+			),
 			'purchased_product'    => array(
 				'name'         => __( 'Purchased Product', 'echodash' ),
 				'description'  => __( 'Triggered each time a single product is purchased.', 'echodash' ),
@@ -58,13 +66,6 @@ class EchoDash_WooCommerce extends EchoDash_Integration {
 				'has_single'   => true,
 				'has_global'   => true,
 				'option_types' => array( 'product', 'order' ),
-			),
-			'order_placed'         => array(
-				'name'         => __( 'Order Placed', 'echodash' ),
-				'description'  => __( 'Triggered each time a WooCommerce order is placed.', 'echodash' ),
-				'has_global'   => true,
-				'placeholder'  => 'Order',
-				'option_types' => array( 'order' ),
 			),
 			'order_status_changed' => array(
 				'name'         => __( 'Order Status Changed', 'echodash' ),
@@ -78,80 +79,47 @@ class EchoDash_WooCommerce extends EchoDash_Integration {
 		return $triggers;
 	}
 
+
 	/**
 	 * Track event when a new order is placed.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param int    $order_id   The order ID.
-	 * @param string $contact_id The contact ID created or updated in the CRM.
+	 * @param int $order_id The order ID.
 	 */
-	public function new_order( $order_id, $contact_id ) {
+	public function order_placed( $order_id ) {
 
 		$order = wc_get_order( $order_id );
 
-		// Get user args.
-		$user_id = $order->get_user_id();
+		$this->track_event(
+			'order_placed',
+			array(
+				'order' => $order_id,
+				'user'  => $order->get_user_id(),
+			)
+		);
+	}
 
-		if ( ! empty( $user_id ) ) {
-			$args = echodash()->integration( 'user' )->get_user_vars( $user_id );
-		} else {
-			$args = array(
-				'user' => array(
-					'first_name'   => $order->get_billing_first_name(),
-					'last_name'    => $order->get_billing_last_name(),
-					'display_name' => $order->get_billing_first_name() . ' ' . $order->get_billing_last_name(),
-					'user_email'   => $order->get_billing_email(),
-				),
-			);
-		}
+	/**
+	 * Triggered when a new order item is added.
+	 *
+	 * @since 1.0.0
+	 */
+	public function purchased_product( $item_id, $item, $item_order_id ) {
 
-		$order_args = $this->get_order_vars( $order_id );
-		$args       = array_merge( $args, $order_args );
-
-		foreach ( $order->get_items() as $item ) {
-
-			$events = $this->get_events( 'purchased_product', $item->get_product_id() );
-
-			if ( ! empty( $events ) ) {
-
-				$product_vars = $this->get_product_vars( $item->get_product_id() );
-				$args         = array_merge( $args, $product_vars );
-
-				foreach ( $events as $event ) {
-					$event = $this->replace_tags( $event, $args );
-					$this->track_event( $event, $order->get_billing_email() );
-				}
-			} elseif ( $this->get_global_events( 'purchased_product' ) ) {
-
-				// See if any are configured globally.
-
-				$product_vars = $this->get_product_vars( $item->get_product_id() );
-				$args         = array_merge( $args, $product_vars );
-
-				foreach ( $this->get_global_events( 'purchased_product' ) as $event ) {
-
-					$event = $this->replace_tags( $event, $args );
-					$this->track_event( $event, $order->get_billing_email() );
-				}
-			}
-		}
-
-		// Global.
-		if ( ! empty( $this->get_global_events( 'order_placed' ) ) ) {
-
-			foreach ( $this->get_global_events( 'order_placed' ) as $event ) {
-
-				$event = $this->replace_tags( $event, $args );
-				$this->track_event( $event, $order->get_billing_email() );
-			}
-		}
+		$this->track_event(
+			'purchased_product',
+			array(
+				'product' => $item->get_product_id(),
+				'order'   => $item_order_id,
+			)
+		);
 	}
 
 	/**
 	 * Triggered when a WooCommerce order status changes.
 	 *
-	 * @since 1.4.4
+	 * @since 1.0.0
 	 *
 	 * @param int      $order_id   The order ID.
 	 * @param string   $old_status The order's previous status.
@@ -160,37 +128,19 @@ class EchoDash_WooCommerce extends EchoDash_Integration {
 	 */
 	public function order_status_changed( $order_id, $old_status, $new_status, $order ) {
 
-		$order_vars = $this->get_order_vars( $order->get_id() );
-
-		$order_vars['order']['old_status'] = $old_status;
-
-		foreach ( $this->get_events( 'order_status_changed', $order->get_id() ) as $event ) {
-			$event = $this->replace_tags( $event, $order_vars );
-			$this->track_event( $event, $order->get_billing_email() );
-		}
-	}
-
-
-	/**
-	 * Displays the event tracking fields on the single product settings panel.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param int   $post_id The post ID.
-	 */
-	public function panel_content( $post_id ) {
-
-		echo '<div class="options_group wpf-event">';
-
-		echo '<div class="form-field"><label><strong>' . esc_html__( 'Event Tracking', 'echodash' ) . '</strong></label></div>';
-
-		echo '<div class="form-field"><label for="wpf-track-events">' . esc_html__( 'Track event when purchased', 'wp-fusion' ) . '</label>';
-
-			$this->render_event_tracking_fields( 'purchased_product', $post_id );
-
-		echo '</div>';
-
-		echo '</div>';
+		$this->track_event(
+			'order_status_changed',
+			array(
+				'order' => $order_id,
+				'user'  => $order->get_user_id(),
+			),
+			array(
+				'order' => array(
+					'old_status' => $old_status,
+					'new_status' => $new_status,
+				),
+			)
+		);
 	}
 
 	/**

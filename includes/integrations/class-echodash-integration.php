@@ -50,26 +50,18 @@ abstract class EchoDash_Integration {
 	 */
 	public function __construct() {
 
-		// Make it globally available.
-
-		if ( ! echodash()->integrations ) {
-			echodash()->integrations = new stdClass();
-		}
-
 		echodash()->integrations->{ $this->slug } = $this;
-
-		if ( is_admin() ) {
-			$this->admin_actions();
-		}
 
 		// Add the hooks in each integration.
 
 		$this->init();
 
 		// So any global / shared options can be properly loaded.
+		add_filter( 'echodash_event_data', array( $this, 'get_event_data' ), 10, 2 );
 
+		// So any global / shared options can be properly loaded.
 		add_action( 'echodash_integrations_loaded', array( $this, 'initialize_triggers' ) );
-		add_action( 'echodash_integrations_loaded', array( $this, 'admin_actions' ) );
+		add_action( 'echodash_integrations_loaded', array( $this, 'register_meta_boxes' ) );
 	}
 
 	/**
@@ -93,81 +85,6 @@ abstract class EchoDash_Integration {
 	abstract protected function setup_triggers();
 
 	/**
-	 * Gets the array of triggers and sets their defaults, then loads the
-	 * available options for each trigger type based on the option types
-	 * configured for the trigger.
-	 *
-	 * @access private
-	 *
-	 * @since  1.0.0
-	 */
-	public function initialize_triggers() {
-
-		$defaults = array(
-			'name'         => false,
-			'description'  => false,
-			'post_types'   => array(),
-			'has_single'   => false,
-			'has_global'   => false,
-			'option_types' => array(),
-			'options'      => array(), // options specific to when this trigger is running.
-		);
-
-		foreach ( $this->setup_triggers() as $trigger => $data ) {
-
-			$this->triggers[ $trigger ] = wp_parse_args( $data, $defaults );
-
-			foreach ( $this->triggers[ $trigger ]['option_types'] as $option_type ) {
-
-				// Add the filter for getting the available options.
-
-				if ( ! has_filter( "get_{$option_type}_options" ) && method_exists( $this, "get_{$option_type}_options" ) ) {
-					add_filter( "get_{$option_type}_options", array( $this, "get_{$option_type}_options" ), 10, 2 );
-				}
-
-				// Add the filter for filling the options with the real variables.
-
-				if ( method_exists( $this, "get_{$option_type}_vars" ) ) {
-					add_filter( "get_{$option_type}_vars", array( $this, "get_{$option_type}_vars" ), 10, 2 );
-				}
-			}
-
-			$this->triggers[ $trigger ]['option_types'] = array_merge( $this->triggers[ $trigger ]['option_types'], $this->get_global_option_types() ); // add in the global option types.
-			// $this->triggers[ $trigger ]['options']      = $this->get_options( $trigger ); // fill in the options and their defaults. (don't think we need it).
-
-		}
-	}
-
-	/**
-	 * Adds admin-only hooks.
-	 *
-	 * @since 1.0.0
-	 */
-	public function admin_actions() {
-
-		foreach ( $this->triggers as $trigger ) {
-
-			if ( $trigger['has_single'] && ! empty( $trigger['post_types'] ) ) {
-
-				if ( ! has_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) ) ) {
-
-					add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
-
-				}
-
-				foreach ( $trigger['post_types'] as $post_type ) {
-
-					if ( ! has_action( "save_post_{$post_type}", array( $this, 'save_post' ) ) ) {
-
-						add_action( "save_post_{$post_type}", array( $this, 'save_post' ) );
-
-					}
-				}
-			}
-		}
-	}
-
-	/**
 	 * Return the available triggers for the integration.
 	 *
 	 * @since  1.0.0
@@ -175,189 +92,105 @@ abstract class EchoDash_Integration {
 	 * @return array The triggers.
 	 */
 	public function get_triggers() {
-
-		return $this->triggers;
+		return apply_filters( "echodash_{$this->slug}_triggers", $this->triggers );
 	}
 
 	/**
-	 * Helper function for rendering the event tracking fields.
+	 * Gets a trigger.
 	 *
-	 * @since  1.0.0
+	 * @since 1.0.0
 	 *
-	 * @param  string $trigger The trigger.
-	 * @param  int    $post_id The post ID.
-	 * @param  array  $args    The arguments.
-	 * @return mixed  The event tracking input fields.
+	 * @param string $trigger The trigger.
+	 * @return array The trigger.
 	 */
-	public function render_event_tracking_fields( $trigger, $post_id, $args = array() ) {
-
-		$settings = $this->get_settings( $post_id );
-
-		$defaults = array(
-			'setting'     => $settings[ $trigger ],
-			'field_id'    => $trigger,
-			'integration' => $this->slug,
-			'trigger'     => $trigger,
-			'return'      => false,
-		);
-
-		$args = wp_parse_args( $args, $defaults );
-
-		// If we're returning instead of echoing.
-
-		if ( true === $args['return'] ) {
-			ob_start();
-		}
-
-		ecd_render_event_tracking_fields( $args );
-
-		// Localize the script data.
-
-		echodash()->admin->localize( $this->slug, $trigger, $this->get_options( $trigger, $post_id ) );
-
-		if ( true === $args['return'] ) {
-			return ob_get_clean();
-		}
+	public function get_trigger( $trigger ) {
+		return $this->triggers[ $trigger ];
 	}
 
 	/**
-	 * Gets the options for the event editor, and pre-fills the previews based
-	 * on the current post, if available.
+	 * Tracks an event.
 	 *
-	 * @since  1.0.0
+	 * @since 1.0.0
 	 *
-	 * @param  string $trigger The trigger.
-	 * @param  bool   $post_id The post ID.
-	 * @return array  The options.
+	 * @param string $trigger The trigger.
+	 * @param array  $objects The objects.
+	 * @param array  $args    The event arguments.
 	 */
-	public function get_options( $trigger, $post_id = false ) {
+	public function track_event( $trigger, $objects = array(), $args = array() ) {
+		// Get events configured for this trigger
+		$events = $this->get_events( $trigger );
 
-		$options    = array();
-		$used_types = array(); // If two integrations use the same type, we don't want to duplicate them in the dropdown.
+		// Get merge variables
+		$event_data = apply_filters( 'echodash_event_data', array(), $objects );
 
-		// Options from this integration.
-
-		foreach ( $this->triggers[ $trigger ]['option_types'] as $option_type ) {
-
-			// Get the options.
-
-			$option = apply_filters( "get_{$option_type}_options", array(), $post_id );
-
-			// Maybe fill in previews.
-
-			if ( ! empty( $post_id ) && has_filter( "get_{$option_type}_vars" ) ) { // We used to check if get_post_type( $post_id ) === $option_type ) here but not sure it's necessary.
-
-				// This is apply_filters since some integrations like EDDSL need to
-				// get variables from other integration classes (i.e. the
-				// get_download_vars method in the main EDD class).
-
-				$values = apply_filters( "get_{$option_type}_vars", $post_id ); // TODO kinda ugly to filter an ID and expect an array in return....
-
-				foreach ( $option['options'] as $i => $sub_option ) {
-
-					if ( ! empty( $values[ $option['type'] ][ $sub_option['meta'] ] ) ) {
-						$option['options'][ $i ]['preview'] = $values[ $option['type'] ][ $sub_option['meta'] ];
-					}
-				}
+		// Merge in any custom arguments passed from the trigger
+		foreach ( $args as $object_type => $values ) {
+			if ( isset( $event_data[ $object_type ] ) ) {
+				$event_data[ $object_type ] = array_merge( $event_data[ $object_type ], $values );
 			}
-
-			$used_types[] = $option_type;
-			$options[]    = $option;
-
 		}
 
-		return $options;
+		// Process each event
+		foreach ( $events as $event ) {
+			// Replace merge tags in event data
+			$processed_event = $this->replace_tags( $event, $event_data );
+
+			error_log( print_r( 'processed event', true ) );
+			error_log( print_r( $processed_event, true ) );
+
+			// Format the values into key-value pairs
+			$formatted_values = $this->format_event_values( $processed_event['value'] );
+
+			// Get the trigger name from the triggers array
+			$trigger_name = isset( $this->triggers[ $trigger ]['name'] ) ? $this->triggers[ $trigger ]['name'] : $trigger;
+
+			// Track via public class
+			echodash()->public->track_event(
+				$processed_event['name'],
+				$formatted_values,
+				$this->name,
+				$trigger_name
+			);
+		}
 	}
 
 	/**
-	 * Gets the global option types from other integrations that need to be
-	 * included in this one.
+	 * Format event values into key-value pairs
 	 *
-	 * @since  1.1.1
-	 *
-	 * @return array The global option types.
+	 * @since 1.0.0
+	 * @param array $values Raw event values
+	 * @return array Formatted values
 	 */
-	public function get_global_option_types() {
+	private function format_event_values( $values ) {
+		if ( ! is_array( $values ) ) {
+			return array();
+		}
 
-		$global_option_types = array();
-
-		foreach ( echodash()->integrations as $integration ) {
-
-			if ( $integration === $this ) {
-				continue;
+		$formatted = array();
+		foreach ( $values as $item ) {
+			if ( isset( $item['key'] ) && isset( $item['value'] ) ) {
+				$formatted[ $item['key'] ] = trim( $item['value'] );
 			}
-
-			$global_option_types = array_merge( $global_option_types, $integration->global_option_types );
-
 		}
-
-		return $global_option_types;
+		return $formatted;
 	}
 
 	/**
-	 * Gets the post types that can be configured with events for this integration.
+	 * Replaces the merge variables.
 	 *
-	 * @since  1.2.0
-	 *
-	 * @return array The post types.
+	 * @since 1.0.0
 	 */
-	public function get_post_types() {
+	public function get_event_data( $event_data = array(), $objects = array() ) {
 
-		$post_types = array();
+		foreach ( $objects as $object_type => $object_id ) {
 
-		foreach ( $this->triggers as $trigger ) {
-			$post_types = array_merge( $post_types, $trigger['post_types'] );
-		}
-
-		return $post_types;
-	}
-
-
-	/**
-	 * Helper for replacing the placeholders in value field.
-	 *
-	 * @since 1.4.2
-	 * @param string $value
-	 * @param string $search
-	 * @param string $replace
-	 * @return string
-	 */
-	private function replace_value( $value, $search, $replace ) {
-		if ( is_array( $value ) ) {
-			foreach ( $value as $event_key => $event_val ) {
-				$value[ $event_key ]['value'] = trim( str_replace( $search, strval( $replace ), $event_val['value'] ) );
+			if ( method_exists( $this, "get_{$object_type}_vars" ) ) {
+				$event_data = array_merge( $event_data, $this->{"get_{$object_type}_vars"}( $object_id ) );
 			}
-		} else {
-			$value = trim( str_replace( $search, strval( $replace ), $value ) );
 		}
 
-		return $value;
+		return $event_data;
 	}
-
-	/**
-	 * Helper for checking if placeholder exist in value.
-	 *
-	 * @since 1.4.2
-	 * @param string $value
-	 * @param string $search
-	 * @return boolean
-	 */
-	private function placeholder_in_value( $value, $search ) {
-		$exist = false;
-		if ( is_array( $value ) ) {
-			foreach ( $value as $event_value ) {
-				if ( false !== strpos( $event_value['value'], $search ) ) {
-					$exist = true;
-				}
-			}
-		} elseif ( false !== strpos( $value, $search ) ) {
-				$exist = true;
-		}
-
-		return $exist;
-	}
-
-
 
 	/**
 	 * Helper for replacing the placeholders with values.
@@ -396,53 +229,30 @@ abstract class EchoDash_Integration {
 	}
 
 	/**
-	 * Replace the global tags from other integrations.
+	 * Helper for replacing placeholders in array values
 	 *
-	 * @since  1.1.0
+	 * @since 1.0.0
 	 *
-	 * @param  array $event  The event.
-	 * @return array The event.
+	 * @param array  $values The array of values to process
+	 * @param string $search The search string
+	 * @param string $replace The replacement string
+	 * @return array The processed values
 	 */
-	public function replace_global_tags( $event ) {
+	private function replace_value( $values, $search, $replace ) {
+		if ( ! is_array( $values ) ) {
+			return $values;
+		}
 
-		// Now replace the global tags, if there are any.
-
-		foreach ( echodash()->integrations as $integration ) {
-
-			foreach ( $integration->global_option_types as $option_type ) {
-
-				if ( false !== strpos( $event['name'], '{' . $option_type . ':' ) || $this->placeholder_in_value( $event['value'], '{' . $option_type . ':' ) ) {
-					$args  = call_user_func( array( $integration, "get_{$option_type}_vars" ) );
-					$event = $this->replace_tags( $event, $args );
-
-				}
+		foreach ( $values as $key => $value ) {
+			if ( is_array( $value ) ) {
+				$values[ $key ] = $this->replace_value( $value, $search, $replace );
+			} elseif ( is_string( $value ) ) {
+				$values[ $key ] = str_replace( $search, $replace, $value );
 			}
 		}
 
-		return $event;
+		return $values;
 	}
-
-	/**
-	 * Remove events if it has no name in their value.
-	 *
-	 * @since 1.5.0
-	 *
-	 * @param array $events The events.
-	 * @return array The filtered events.
-	 */
-	private function filter_events( $events ) {
-		if ( empty( $events ) ) {
-			return array();
-		}
-		foreach ( $events as $key => $event ) {
-			if ( empty( $event['name'] ) ) {
-				unset( $events[ $key ] );
-			}
-		}
-
-		return array_filter( $events );
-	}
-
 
 	/**
 	 * Gets all events bound to a particular trigger.
@@ -482,7 +292,7 @@ abstract class EchoDash_Integration {
 
 		}
 
-		return $this->filter_events( $events );
+		return $events;
 	}
 
 	/**
@@ -585,106 +395,6 @@ abstract class EchoDash_Integration {
 	}
 
 	/**
-	 * Log an event.
-	 *
-	 * @since 1.2.0
-	 *
-	 * @param array $event The event.
-	 */
-	public function log_event( $event, $email_address = '' ) {
-
-		$message = esc_html__( 'Tracking event', 'echodash' );
-
-		// Try to find the user / contact ID to log.
-
-		if ( ecd_is_user_logged_in() ) {
-			$contact_id = ecd_get_contact_id();
-			$user_id    = get_current_user_id();
-		} else {
-
-			// Try to get the CID by user.
-			$user = get_user_by( 'email', $email_address );
-
-			if ( $user ) {
-				$contact_id = ecd_get_contact_id( $user->ID );
-				$user_id    = $user->ID;
-			} else {
-				$user_id = 0;
-			}
-		}
-
-		if ( ! empty( $contact_id ) ) {
-			// translators: Contact ID.
-			$message .= sprintf( esc_html__( ' for contact #%s', 'echodash' ), $contact_id );
-		}
-
-		// translators: Event Name.
-		$message .= ':<ul><li><strong>' . sprintf( esc_html__( 'name: %s', 'echodash' ), '</strong>' . esc_html( $event['name'] ) ) . '</li>';
-
-		if ( ! empty( $event['value'] ) ) {
-			// translators: Event Value.
-			if ( is_array( $event['value'] ) ) {
-				foreach ( $event['value'] as $event_value ) {
-					$message .= '<li><code>' . esc_html( $event_value['key'] ) . '</code>: ' . esc_html( $event_value['value'] ) . '</li>';
-				}
-			} else {
-				$message .= '<li><strong>' . sprintf( esc_html__( 'value: %s', 'echodash' ), '</strong>' . esc_html( $event['value'] ) ) . '</li>';
-			}
-		}
-
-		$message .= '</ul>';
-
-		ecd_log(
-			'info',
-			$user_id,
-			$message,
-			array(
-				'source' => array(
-					'echodash',
-					$this->slug,
-				),
-			)
-		);
-	}
-
-	/**
-	 * Is called by the integrations to track an event.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param array  $event         The event.
-	 * @param string $email_address The email address.
-	 */
-	public function track_event( $event, $email_address = '' ) {
-
-		if ( empty( $email_address ) ) {
-			$user          = wp_get_current_user();
-			$email_address = $user->user_email;
-		}
-
-		// Replace the global tags as well.
-
-		$event = $this->replace_global_tags( $event );
-
-		$event = apply_filters( 'echodash_track_event', $event, $email_address, $this->slug );
-
-		if ( empty( $event ) ) {
-			return; // allows canceling the event.
-		}
-
-		// Build up the log message.
-
-		// if ( ecd_get_option( 'events_logging', true ) ) {
-		//  $this->log_event( $event, $email_address );
-		// }
-
-		// Remove key/value pairs from the array.
-		$event['value'] = array_column( $event['value'], 'value', 'key' );
-
-		echodash()->track_event( $event['name'], $event['value'], $email_address, $this->name );
-	}
-
-	/**
 	 * Helper for getting the echodash_settings value off a post and
 	 * setting the defaults.
 	 *
@@ -707,7 +417,174 @@ abstract class EchoDash_Integration {
 		$settings = get_post_meta( $post_id, 'echodash_settings', true );
 		$settings = wp_parse_args( $settings, $defaults );
 
-		return apply_filters( 'ecd_get_event_tracking_settings', $settings, $post_id );
+		return apply_filters( 'echodash_get_post_settings', $settings, $post_id );
+	}
+
+	/**
+	 * Gets the options for the event editor, and pre-fills the previews based
+	 * on the current post, if available.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @param  string $trigger The trigger.
+	 * @param  bool   $post_id The post ID.
+	 * @return array  The options.
+	 */
+	public function get_options( $trigger, $post_id = false ) {
+
+		$options    = array();
+		$used_types = array(); // If two integrations use the same type, we don't want to duplicate them in the dropdown.
+
+		// Options from this integration.
+
+		foreach ( $this->triggers[ $trigger ]['option_types'] as $option_type ) {
+
+			// Get the options.
+
+			$option = apply_filters( "get_{$option_type}_options", array(), $post_id );
+
+			// Maybe fill in previews.
+
+			if ( ! empty( $post_id ) && has_filter( "get_{$option_type}_vars" ) ) { // We used to check if get_post_type( $post_id ) === $option_type ) here but not sure it's necessary.
+
+				// This is apply_filters since some integrations like EDDSL need to
+				// get variables from other integration classes (i.e. the
+				// get_download_vars method in the main EDD class).
+
+				$values = apply_filters( "get_{$option_type}_vars", $post_id ); // TODO kinda ugly to filter an ID and expect an array in return....
+
+				foreach ( $option['options'] as $i => $sub_option ) {
+
+					if ( ! empty( $values[ $option['type'] ][ $sub_option['meta'] ] ) ) {
+						$option['options'][ $i ]['preview'] = $values[ $option['type'] ][ $sub_option['meta'] ];
+					}
+				}
+			}
+
+			$used_types[] = $option_type;
+			$options[]    = $option;
+
+		}
+
+		return $options;
+	}
+
+
+	/**
+	 * Gets the global option types from other integrations that need to be
+	 * included in this one.
+	 *
+	 * @since  1.1.1
+	 *
+	 * @return array The global option types.
+	 */
+	public function get_global_option_types() {
+
+		$global_option_types = array();
+
+		foreach ( echodash()->integrations as $integration ) {
+
+			if ( $integration === $this ) {
+				continue;
+			}
+
+			$global_option_types = array_merge( $global_option_types, $integration->global_option_types );
+
+		}
+
+		return $global_option_types;
+	}
+
+	/**
+	 * Gets the array of triggers and sets their defaults, then loads the
+	 * available options for each trigger type based on the option types
+	 * configured for the trigger.
+	 *
+	 * @access private
+	 *
+	 * @since  1.0.0
+	 */
+	public function initialize_triggers() {
+
+		$defaults = array(
+			'name'         => false,
+			'description'  => false,
+			'post_types'   => array(),
+			'has_single'   => false,
+			'has_global'   => false,
+			'option_types' => array(),
+			'options'      => array(), // options specific to when this trigger is running.
+		);
+
+		foreach ( $this->setup_triggers() as $trigger => $data ) {
+
+			$this->triggers[ $trigger ] = wp_parse_args( $data, $defaults );
+
+			foreach ( $this->triggers[ $trigger ]['option_types'] as $option_type ) {
+
+				// Add the filter for getting the available options.
+
+				if ( ! has_filter( "get_{$option_type}_options" ) && method_exists( $this, "get_{$option_type}_options" ) ) {
+					add_filter( "get_{$option_type}_options", array( $this, "get_{$option_type}_options" ), 10, 2 );
+				}
+
+				// Add the filter for filling the options with the real variables.
+
+				if ( method_exists( $this, "get_{$option_type}_vars" ) ) {
+					add_filter( "get_{$option_type}_vars", array( $this, "get_{$option_type}_vars" ), 10, 2 );
+				}
+			}
+
+			$this->triggers[ $trigger ]['option_types'] = array_merge( $this->triggers[ $trigger ]['option_types'], $this->get_global_option_types() ); // add in the global option types.
+
+		}
+	}
+
+	/**
+	 * Adds admin-only hooks.
+	 *
+	 * @since 1.0.0
+	 */
+	public function register_meta_boxes() {
+
+		foreach ( $this->triggers as $trigger ) {
+
+			if ( $trigger['has_single'] && ! empty( $trigger['post_types'] ) ) {
+
+				if ( ! has_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) ) ) {
+
+					add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
+
+				}
+
+				foreach ( $trigger['post_types'] as $post_type ) {
+
+					if ( ! has_action( "save_post_{$post_type}", array( $this, 'save_post' ) ) ) {
+
+						add_action( "save_post_{$post_type}", array( $this, 'save_post' ) );
+
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Gets the post types that can be configured with events for this integration.
+	 *
+	 * @since  1.2.0
+	 *
+	 * @return array The post types.
+	 */
+	public function get_post_types() {
+
+		$post_types = array();
+
+		foreach ( $this->triggers as $trigger ) {
+			$post_types = array_merge( $post_types, $trigger['post_types'] );
+		}
+
+		return $post_types;
 	}
 
 	/**
@@ -775,6 +652,48 @@ abstract class EchoDash_Integration {
 		do_action( "echodash_{$this->slug}_meta_box", $post );
 	}
 
+
+	/**
+	 * Helper function for rendering the event tracking fields.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @param  string $trigger The trigger.
+	 * @param  int    $post_id The post ID.
+	 * @param  array  $args    The arguments.
+	 * @return mixed  The event tracking input fields.
+	 */
+	public function render_event_tracking_fields( $trigger, $post_id, $args = array() ) {
+
+		$settings = $this->get_settings( $post_id );
+
+		$defaults = array(
+			'setting'     => $settings[ $trigger ],
+			'field_id'    => $trigger,
+			'integration' => $this->slug,
+			'trigger'     => $trigger,
+			'return'      => false,
+		);
+
+		$args = wp_parse_args( $args, $defaults );
+
+		// If we're returning instead of echoing.
+
+		if ( true === $args['return'] ) {
+			ob_start();
+		}
+
+		ecd_render_event_tracking_fields( $args );
+
+		// Localize the script data.
+
+		echodash()->admin->localize( $this->slug, $trigger, $this->get_options( $trigger, $post_id ) );
+
+		if ( true === $args['return'] ) {
+			return ob_get_clean();
+		}
+	}
+
 	/**
 	 * If an integraton has settings on an individual post, this handles
 	 * sanitizing and saving them.
@@ -789,7 +708,7 @@ abstract class EchoDash_Integration {
 		$data = array_filter( $data ); // Sanitize and remove empty values.
 
 		foreach ( $data as $id => $event ) {
-			if ( empty( $event['name'] ) && empty( $event['value'] ) || ( is_array( $event['value'] ) && empty( $event['value'][0]['key'] ) ) ) {
+			if ( is_array( $event['value'] ) && empty( $event['value'][0]['key'] ) ) {
 				unset( $data[ $id ] );
 			}
 		}

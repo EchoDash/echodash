@@ -57,7 +57,7 @@ final class EchoDash {
 	 * @var EchoDash_Queue
 	 * @since 1.0.0
 	 */
-	public $queue;
+	public $public;
 
 	/**
 	 * Allows interfacing with the admin class.
@@ -103,11 +103,13 @@ final class EchoDash {
 				self::$instance->includes();
 
 				// Initialize classes
-				self::$instance->queue = new EchoDash_Queue();
+				self::$instance->public = new EchoDash_Public();
 
 				if ( is_admin() ) {
 					self::$instance->admin = new EchoDash_Admin();
 				}
+
+				self::$instance->integrations = new stdClass();
 
 				self::$instance->integrations_includes();
 
@@ -157,8 +159,8 @@ final class EchoDash {
 	 */
 	public function __call( $name, $arguments ) {
 
-		if ( ! method_exists( self::$instance, $name ) && method_exists( self::$instance->queue, $name ) ) {
-			return call_user_func_array( array( self::$instance->queue, $name ), $arguments );
+		if ( ! method_exists( self::$instance, $name ) && method_exists( self::$instance->public, $name ) ) {
+			return call_user_func_array( array( self::$instance->public, $name ), $arguments );
 		}
 	}
 
@@ -195,7 +197,7 @@ final class EchoDash {
 	private function includes() {
 
 		require_once ECHODASH_DIR_PATH . 'includes/functions.php';
-		require_once ECHODASH_DIR_PATH . 'includes/public/class-echodash-queue.php';
+		require_once ECHODASH_DIR_PATH . 'includes/public/class-echodash-public.php';
 		require_once ECHODASH_DIR_PATH . 'includes/integrations/class-echodash-integration.php';
 
 		if ( is_admin() ) {

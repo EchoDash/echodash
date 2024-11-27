@@ -343,36 +343,36 @@ table .posts li {
 }
 
 /* Insid repeater multi key */
-.ecd-multi-key-crm .nr-item {
+.ecd-multi-key .nr-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
 }
 
-.ecd-multi-key-crm .echodash-input-container input[type="text"] {
+.ecd-multi-key .echodash-input-container input[type="text"] {
     border-right: 1px solid #9092b2;
     height: 46px;
 }
 
-.ecd-multi-key-crm .echodash-input-container input[type="text"].ecd-value {
+.ecd-multi-key .echodash-input-container input[type="text"].ecd-value {
     border-right: none;
     border-radius: 0px;
 }
 
-.ecd-multi-key-crm .echodash-input-container {
+.ecd-multi-key .echodash-input-container {
     flex-basis: 45%;
 }
 
-.ecd-multi-key-crm .ecd-circles {
+.ecd-multi-key .ecd-circles {
     margin-bottom: 8px;
 }
 
-.ecd-multi-key-crm .nr-item:first-child .ecd-circles button:nth-child(2) {
+.ecd-multi-key .nr-item:first-child .ecd-circles button:nth-child(2) {
     visibility: hidden;
 }
 
-.ecd-multi-key-crm .ecd-circles button,
+.ecd-multi-key .ecd-circles button,
 .close button {
     background: #fff;
     border: 0.0625rem solid #c3c5db;
@@ -392,7 +392,7 @@ table .posts li {
     font-family: "Menlo", "Lucida Console", "Monaco", "Consolas", monospace;
 }
 
-.ecd-multi-key-crm .ecd-circles button:hover,
+.ecd-multi-key .ecd-circles button:hover,
 .close button:hover {
     border-color: #3e7da6;
     box-shadow: 0 0 0 1px #bed8ed;
@@ -441,12 +441,12 @@ table.ecd-values td {
     font-size: 12px;
 }
 
-.ecd-multi-key-crm .ecd-preview span.echodash-preview {
+.ecd-multi-key .ecd-preview span.echodash-preview {
     padding: 0;
     font-weight: 500;
 }
 
-.ecd-multi-key-crm .ecd-preview span.echodash-preview:before {
+.ecd-multi-key .ecd-preview span.echodash-preview:before {
     display: none;
 }
 

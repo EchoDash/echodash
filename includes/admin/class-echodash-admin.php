@@ -36,6 +36,32 @@ class EchoDash_Admin {
 	}
 
 	/**
+	 * Gets an option.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $key     The option key.
+	 * @param mixed  $default The default value.
+	 * @return mixed The option value.
+	 */
+	public function get_option( $key, $default_value = false ) {
+
+		if ( 'endpoint' === $key ) {
+			$value = get_option( 'echodash_endpoint', $default );
+		} else {
+			$options = get_option( 'echodash_options', array() );
+
+			if ( isset( $options[ $key ] ) ) {
+				$value = $options[ $key ];
+			} else {
+				$value = $default_value;
+			}
+		}
+
+		return apply_filters( "echodash_get_option_{$key}", $value );
+	}
+
+	/**
 	 * Send a test event using the current user data.
 	 *
 	 * @return void
@@ -44,36 +70,30 @@ class EchoDash_Admin {
 
 		check_ajax_referer( 'ecd_ajax_nonce', '_ajax_nonce' );
 
-		if ( empty( $_POST['data'] ) || empty( $_POST['data']['event_name'] ) || empty( $_POST['data']['integration_name'] ) ) {
+		if ( empty( $_POST['data'] ) || empty( $_POST['data']['event_name'] ) || empty( $_POST['data']['integration'] ) ) {
 			wp_send_json_error( 'ecd_empty_data' );
 		}
 
-		$data              = $_POST['data'];
-		$event_name        = sanitize_text_field( $data['event_name'] );
-		$event_keys_values = $data['event_keys_values'];
-		$event_data        = array();
-		if ( is_array( $event_keys_values ) && ! empty( $event_keys_values ) ) {
+		error_log( print_r( $_POST, true ) );
 
-			foreach ( $event_keys_values as $event ) {
+		$data       = wp_unslash( $_POST['data'] );
+		$event_name = sanitize_text_field( $data['event_name'] );
+		$source     = sanitize_text_field( $data['integration'] );
+		$trigger    = sanitize_text_field( $data['trigger'] );
+		$event_data = array();
 
-				if ( ! empty( $event['value'] ) ) {
-
-					$event_data[] = array(
-						'key'   => sanitize_text_field( $event['key'] ),
-						'value' => sanitize_text_field( $event['value'] ),
-					);
-				}
+		if ( ! empty( $data['event_keys_values'] ) ) {
+			foreach ( $data['event_keys_values'] as $event ) {
+				$key                = sanitize_text_field( $event['key'] );
+				$value              = sanitize_text_field( $event['value'] );
+				$event_data[ $key ] = $value;
 			}
-		} else {
-			$event_data = sanitize_text_field( $event_keys_values );
 		}
 
-		$event = array(
-			'name'  => $event_name,
-			'value' => $event_data,
-		);
+		$source_name  = echodash()->integration( $source )->name;
+		$trigger_name = echodash()->integration( $source )->get_trigger( $trigger )['name'];
 
-		echodash()->integrations->{$data['integration_name']}->track_event( $event );
+		echodash_track_event( $event_name, $event_data, $source_name, $trigger_name );
 
 		wp_send_json_success( 'success' );
 	}
@@ -144,11 +164,9 @@ class EchoDash_Admin {
 			return;
 		}
 
-		$settings = get_option( 'echodash_options', array() );
+		$endpoint_url = esc_url_raw( $_GET['endpoint_url'] );
 
-		$settings['endpoint'] = esc_url_raw( $_GET['endpoint_url'] );
-
-		update_option( 'echodash_options', $settings );
+		update_option( 'echodash_endpoint', $endpoint_url, true );
 	}
 
 	/**
@@ -187,9 +205,14 @@ class EchoDash_Admin {
 		}
 
 		if ( ! empty( $data ) ) {
-			update_option( 'echodash_options', $data, true );
+			update_option( 'echodash_options', $data, false );
 		} else {
 			delete_option( 'echodash_options' );
+		}
+		if ( ! empty( $data['endpoint'] ) ) {
+			update_option( 'echodash_endpoint', $data['endpoint'], true );
+		} else {
+			delete_option( 'echodash_endpoint' );
 		}
 
 		add_action(

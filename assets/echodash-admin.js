@@ -35,10 +35,11 @@ jQuery( function ( $ ) {
 			
 			let trigger = $(this).parents('span.echodash');
 			let data = {};
-			data.integration_name = trigger.attr('data-integration');
+			data.integration = trigger.attr('data-integration');
+			data.trigger = trigger.attr('data-trigger');
 			data.event_name = trigger.find('.ecd-preview .event-name').text();
 
-			if(trigger.find('.ecd-multi-key-crm').length > 0){
+			if(trigger.find('.ecd-multi-key').length > 0){
 				data.event_keys_values = [];
 				$.each(trigger.find('.ecd-values tr'),function(index,item){
 					var key = $(item).find('td:first').text().slice(0,-1);
@@ -86,7 +87,7 @@ jQuery( function ( $ ) {
 		 */
 		repeaterButtonsFix:function(){
 			if($(this).parents('.nr-item').is(':last-child')){
-				$(this).parents('.ecd-multi-key-crm').find('.nr-item:first-child .ecd-circles button[data-repeater-create]').click();
+				$(this).parents('.ecd-multi-key').find('.nr-item:first-child .ecd-circles button[data-repeater-create]').click();
 			}
 		},
 
@@ -105,8 +106,8 @@ jQuery( function ( $ ) {
 		 * Multi key crm repeater.
 		 */
 		multiKeyRepeater:function(){
-			if( $( '.echodash.single-trigger .ecd-multi-key-crm' ).length ){
-				$( '.echodash.single-trigger .ecd-multi-key-crm' ).repeater({
+			if( $( '.echodash.single-trigger .ecd-multi-key' ).length ){
+				$( '.echodash.single-trigger .ecd-multi-key' ).repeater({
 					initEmpty: false,
 					show: function () {
 	
@@ -177,7 +178,7 @@ jQuery( function ( $ ) {
 				$( '#ecd_option_page .ecd-repeater' ).repeater(
 					{
 						repeaters: [{
-							selector: '.ecd-multi-key-crm',
+							selector: '.ecd-multi-key',
 		
 							show: function () {
 								$( this ).slideDown();
@@ -360,7 +361,7 @@ jQuery( function ( $ ) {
 			}
 			var input = $(this);
 			var text_value = EchoDash.convertShortcode(input);
-			var is_multi_key = input.parents('.echodash').find('.ecd-multi-key-crm').length > 0;
+			var is_multi_key = input.parents('.echodash').find('.ecd-multi-key').length > 0;
 	
 			if( text_value != '' ){
 				input.closest('.echodash').find('.ecd-preview').css('display', 'flex');

@@ -21,26 +21,18 @@ function ecd_render_event_tracking_fields( $args = array() ) {
 		'trigger'     => false,
 		'setting'     => array(
 			'name'  => '',
-			'value' => array(
-				array(
-					'key'   => '',
-					'value' => '',
-				),
-			),
+			'value' => array(),
 		),
 		'class'       => '',
 	);
 
 	$args = wp_parse_args( $args, $defaults );
 
-	if ( empty( $args['setting'] ) ) {
-		$args['setting'] = array(
-			'name'  => false,
-			'value' => array(
-				array(
-					'key'   => false,
-					'value' => false,
-				),
+	if ( empty( $args['setting']['value'] ) ) {
+		$args['setting']['value'] = array(
+			array(
+				'key'   => false,
+				'value' => false,
 			),
 		);
 	}
@@ -89,7 +81,7 @@ function ecd_get_event_tracking_value_field( $args, $field_name, $field_id ) {
 	$in_option_page = ( isset( $_GET['page'] ) && $_GET['page'] === 'echodash' ? true : false );
 
 	$output .= '
-		<span class="ecd-multi-key-crm">
+		<span class="ecd-multi-key">
 			<span data-repeater-list="' . ( $in_option_page ? 'value' : esc_attr( $field_name . '[value]' ) ) . '">';
 	foreach ( $value as $val ) {
 		$output .= '

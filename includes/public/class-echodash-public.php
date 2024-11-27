@@ -10,7 +10,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 1.0.0
  */
-class EchoDash_Queue {
+class EchoDash_Public {
 
 	/**
 	 * The queued events to track.
@@ -26,30 +26,26 @@ class EchoDash_Queue {
 	 * @since 1.0.0
 	 */
 	public function __construct() {
-
 		add_action( 'shutdown', array( $this, 'shutdown' ), 5 );
 	}
 
 	/**
-	 * Adds to queue.
+	 * Tracks an event.
 	 *
 	 * @since 1.0.0
-	 *
-	 * @param array  $event_name    The event.
-	 * @param bool   $event_value   The event value.
-	 * @param string $email_address The email address.
 	 */
-	public function track_event( $event_name, $event_value = false, $email_address = '', $source = false, $trigger = false ) {
+	public function track_event( $event_name, $values = array(), $source = false, $trigger = false ) {
 
 		$event = array(
-			'name'          => $event_name,
-			'source'        => $source,
-			'trigger'       => $trigger,
-			'values'        => $event_value,
-			'email_address' => $email_address,
+			'name'   => $event_name,
+			'source' => $source,
+			'event'  => $trigger,
+			'values' => $values,
 		);
 
-		do_action( 'echodash_track_event', $event, $email_address, $source );
+		do_action( 'echodash_track_event', $event );
+
+		error_log( print_r( $event, true ) );
 
 		$this->add_to_queue( $event );
 	}
@@ -62,7 +58,6 @@ class EchoDash_Queue {
 	 * @param array $event The event.
 	 */
 	public function add_to_queue( $event ) {
-
 		$this->events[] = $event;
 	}
 
@@ -72,25 +67,25 @@ class EchoDash_Queue {
 	 * @since 1.0.0
 	 */
 	public function shutdown() {
+		if ( empty( $this->events ) ) {
+			return;
+		}
 
-		$settings = get_option( 'echodash_options' );
-
-		if ( empty( $settings['endpoint'] ) ) {
+		$endpoint = ecd_get_option( 'endpoint' );
+		if ( empty( $endpoint ) ) {
 			return;
 		}
 
 		foreach ( $this->events as $event ) {
 
-			error_log( print_r( 'Send event', true ) );
-			error_log( print_r( $event, true ) );
-			error_log( print_r( 'JSON', true ) );
-			error_log( print_r( wp_json_encode( $event ), true ) );
-
 			wp_remote_post(
-				$settings['endpoint'],
+				$endpoint,
 				array(
 					'headers'    => array(
-						'Content-Type' => 'application/json',
+						'Content-Type'  => 'application/json',
+						'ecd-summarize' => 'false',
+						'ecd-source'    => $event['source'],
+						'ecd-event'     => $event['event'],
 					),
 					'body'       => wp_json_encode( $event ),
 					'blocking'   => false,
