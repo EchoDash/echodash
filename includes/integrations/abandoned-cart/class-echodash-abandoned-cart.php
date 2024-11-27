@@ -145,23 +145,101 @@ class EchoDash_Abandoned_Cart extends EchoDash_Integration {
 	/**
 	 * Fires when an abandoned cart is created.
 	 *
-	 * @param string|integer $contact_id
-	 * @param array          $cart_args
+	 * @param string|integer $contact_id The contact ID.
+	 * @param array         $cart_args  The cart arguments.
 	 */
 	public function cart_created( $contact_id, $cart_args ) {
-		$email_address = $cart_args['user_email'];
+		$this->track_event(
+			'cart_created',
+			array(
+				'contact' => $contact_id,
+			),
+			array(
+				'cart' => array(
+					'id'         => $cart_args['cart_id'],
+					'value'      => $cart_args['update_data']['cart_value'],
+					'currency'   => $cart_args['currency'],
+					'source'     => $cart_args['source'],
+					'email'      => $cart_args['user_email'],
+					'first_name' => $cart_args['user_data']['first_name'],
+					'last_name'  => $cart_args['user_data']['last_name'],
+				),
+			)
+		);
+	}
 
-		$events = $this->get_events( 'cart_created' );
+	/**
+	 * Track cart abandonment.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array $cart The cart data.
+	 */
+	public function cart_abandoned( $cart ) {
+		$user = wp_get_current_user();
 
-		if ( ! empty( $events ) ) {
+		$this->track_event(
+			'cart_abandoned',
+			array(
+				'user' => $user->ID,
+			),
+			array(
+				'cart' => array(
+					'total'    => $cart['total'],
+					'products' => $this->get_cart_products( $cart ),
+					'email'    => $cart['email'],
+				),
+			)
+		);
+	}
 
-			$args = $this->get_cart_vars( $cart_args );
+	/**
+	 * Track cart recovery.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array $cart The cart data.
+	 */
+	public function cart_recovered( $cart ) {
+		$user = wp_get_current_user();
 
-			foreach ( $events as $event ) {
-				$event = $this->replace_tags( $event, $args );
-				$this->track_event( $event, $email_address );
+		$this->track_event(
+			'cart_recovered',
+			array(
+				'user' => $user->ID,
+			),
+			array(
+				'cart' => array(
+					'total'    => $cart['total'],
+					'products' => $this->get_cart_products( $cart ),
+					'email'    => $cart['email'],
+				),
+			)
+		);
+	}
+
+	/**
+	 * Get formatted cart products.
+	 *
+	 * @since 1.0.0
+	 * @param array $cart The cart data.
+	 * @return array Cart products.
+	 */
+	private function get_cart_products( $cart ) {
+		$products = array();
+
+		if ( ! empty( $cart['cart_contents'] ) ) {
+			foreach ( $cart['cart_contents'] as $item ) {
+				$products[] = array(
+					'id'       => $item['product_id'],
+					'name'     => $item['data']->get_name(),
+					'quantity' => $item['quantity'],
+					'price'    => $item['line_total'],
+				);
 			}
 		}
+
+		return $products;
 	}
 }
 

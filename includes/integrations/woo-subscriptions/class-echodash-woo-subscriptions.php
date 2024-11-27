@@ -89,28 +89,14 @@ class EchoDash_Woo_Subscriptions extends EchoDash_Integration {
 	 * @param WC_Order        $order        The last order.
 	 */
 	public function subscription_renewal( $subscription, $order ) {
-
-		$order_vars        = echodash()->integration( 'woocommerce' )->get_order_vars( $order->get_id() );
-		$subscription_vars = $this->get_subscription_vars( $subscription->get_id() );
-
-		foreach ( $subscription->get_items() as $item ) {
-
-			$events = $this->get_events( 'renewal_payment', $item->get_product_id() );
-
-			if ( ! empty( $events ) ) {
-
-				$product_args  = echodash()->integration( 'woocommerce' )->get_product_vars( $item->get_product_id() );
-				$combined_args = array_merge( $order_vars, $subscription_vars, $product_args );
-
-				foreach ( $events as $event ) {
-
-					$event = $this->replace_tags( $event, $combined_args );
-
-					$this->track_event( $event, $order->get_billing_email() );
-
-				}
-			}
-		}
+		$this->track_event(
+			'renewal_payment',
+			array(
+				'subscription' => $subscription->get_id(),
+				'order'        => $order->get_id(),
+				'user'         => $order->get_user_id(),
+			)
+		);
 	}
 
 	/**
@@ -123,62 +109,23 @@ class EchoDash_Woo_Subscriptions extends EchoDash_Integration {
 	 * @param string          $old_status   The old status.
 	 */
 	public function subscription_status_updated( $subscription, $status, $old_status ) {
-
 		if ( $status === $old_status ) {
 			return;
 		}
 
-		$user_id       = $subscription->get_user_id();
-		$user          = get_user_by( 'id', $user_id );
-		$email_address = $user->user_email;
-
-		$subscription_vars = $this->get_subscription_vars( $subscription->get_id(), $old_status );
-
-		foreach ( $subscription->get_items() as $item ) {
-
-			$events = $this->get_events( 'subscriptions_status_updated', $item->get_product_id() );
-
-			if ( ! empty( $events ) ) {
-
-				$product_args  = echodash()->integration( 'woocommerce' )->get_product_vars( $item->get_product_id() );
-				$combined_args = array_merge( $subscription_vars, $product_args );
-
-				foreach ( $events as $event ) {
-
-					$event = $this->replace_tags( $event, $combined_args );
-
-					$this->track_event( $event, $email_address );
-
-				}
-			}
-		}
-	}
-
-
-	/**
-	 * Displays the event tracking fields on the single product settings panel.
-	 *
-	 * @since 1.2.0
-	 *
-	 * @param int $post_id The post ID.
-	 */
-	public function panel_content( $post_id ) {
-
-		echo '<div class="options_group show_if_subscription show_if_variable wpf-event">';
-
-		echo '<div class="form-field"><label for="wpf-track-events">' . esc_html__( 'Track event when renewal payment received', 'wp-fusion' ) . '</label>';
-
-			$this->render_event_tracking_fields( 'renewal_payment', $post_id );
-
-		echo '</div>';
-
-		echo '<div class="form-field"><label for="wpf-track-events">' . esc_html__( 'Track event when subscription status changes', 'echodash' ) . '</label>';
-
-			$this->render_event_tracking_fields( 'subscriptions_status_updated', $post_id );
-
-		echo '</div>';
-
-		echo '</div>';
+		$this->track_event(
+			'subscriptions_status_updated',
+			array(
+				'subscription' => $subscription->get_id(),
+				'user'         => $subscription->get_user_id(),
+			),
+			array(
+				'subscription' => array(
+					'old_status' => $old_status,
+					'new_status' => $status,
+				),
+			)
+		);
 	}
 
 	/**

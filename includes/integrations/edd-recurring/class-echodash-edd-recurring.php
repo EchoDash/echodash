@@ -73,33 +73,29 @@ class EchoDash_EDD_Recurring extends EchoDash_Integration {
 	 *
 	 * @since 1.3.0
 	 *
-	 * @param string $old_status   The old status.
-	 * @param string $new_status   The new status.
-	 * @param object $subscription The subscription.
+	 * @param string          $old_status   The old status.
+	 * @param string          $new_status   The new status.
+	 * @param EDD_Subscription $subscription The subscription.
 	 */
 	public function subscription_change( $old_status, $new_status, $subscription ) {
 
 		if ( empty( $subscription->customer ) ) {
-			return; // new subs initially have an empty customer.
+			return; // new subs initially have an empty customer
 		}
 
-		$events = $this->get_events( 'edd_subscription_status_changed', $subscription->id );
-
-		if ( ! empty( $events ) ) {
-
-			$args = $this->get_subscription_vars( $subscription->id );
-
-			// Override user vars in case the admin was changing the status of the subscription from the dashboard.
-			if ( $subscription->customer->user_id ) {
-				$user_vars = echodash()->integration( 'user' )->get_user_vars( $subscription->customer->user_id );
-				$args      = array_merge( $args, $user_vars );
-			}
-
-			foreach ( $events as $event ) {
-				$event = $this->replace_tags( $event, $args );
-				$this->track_event( $event, $subscription->customer->email );
-			}
-		}
+		$this->track_event(
+			'edd_subscription_status_changed',
+			array(
+				'download'     => $subscription->product_id,
+				'subscription' => $subscription->id,
+			),
+			array(
+				'subscription' => array(
+					'old_status' => $old_status,
+					'new_status' => $new_status,
+				),
+			)
+		);
 	}
 
 	/**

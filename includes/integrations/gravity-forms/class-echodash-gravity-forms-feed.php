@@ -13,8 +13,8 @@ class EchoDash_Gravity_Forms_Feed extends GFFeedAddOn {
 	protected $_min_gravityforms_version = '1.7.9999';
 	protected $_slug                     = 'echodash';
 	protected $_full_path                = __FILE__;
-	protected $_title                    = 'CRM Integration';
-	protected $_short_title              = 'Event Tracking';
+	protected $_title                    = 'EchoDash Integration';
+	protected $_short_title              = 'EchoDash';
 	protected $postvars                  = array();
 	public $feed_lists;
 
@@ -60,72 +60,50 @@ class EchoDash_Gravity_Forms_Feed extends GFFeedAddOn {
 	// # FEED PROCESSING -----------------------------------------------------------------------------------------------
 
 	/**
-	 * Process the feed e.g. subscribe the user to a list.
+	 * Process the feed.
 	 *
-	 * @param array $feed The feed object to be processed.
+	 * @param array $feed  The feed object to be processed.
 	 * @param array $entry The entry object currently being processed.
-	 * @param array $form The form object currently being processed.
-	 *
-	 * @return bool|void
+	 * @param array $form  The form object currently being processed.
 	 */
 	public function process_feed( $feed, $entry, $form ) {
+		// Process form merge tags first
+		$processed_fields = array();
 
-		// Multi key.
-		$value = $feed['meta']['form_submitted']['value'];
+		if ( isset( $feed['meta']['form_submitted']['value'] ) && is_array( $feed['meta']['form_submitted']['value'] ) ) {
+			foreach ( $feed['meta']['form_submitted']['value'] as $field ) {
+				// Remove 'form:' prefix from GForms merge tags
+				$value = str_replace( 'form:', '', $field['value'] );
 
-		if ( is_array( $value ) ) {
+				// Process with GForms merge tag system
+				$processed_value = GFCommon::replace_variables( $value, $form, $entry, false, false, false, 'text' );
 
-			foreach ( $value as $key => $event_val ) {
+				$value = str_replace( '{', '', $value );
+				$value = str_replace( '}', '', $value );
+				$value = trim( $value );
 
-				if ( '{form:all_fields}' === trim( $event_val['value'] ) ) {
-
-					unset( $value[ $key ] );
-
-					foreach ( $form['fields'] as $field ) {
-
-						// Get the value for this field from the $entry array
-						$field_value = rgar( $entry, $field->id );
-
-						if ( empty( $field_value ) ) {
-							continue;
-						}
-
-						// Create a safe key.
-						$field_key = str_replace( '-', '_', sanitize_title( $field->label ) );
-
-						$value[] = array(
-							'key'   => $field_key,
-							'value' => $field_value,
-						);
-					}
-				} else {
-					$value[ $key ]['value'] = GFCommon::replace_variables( str_replace( 'form:', '', $event_val['value'] ), $form, $entry, false, false, false, 'text' );
+				if ( ! empty( $processed_value ) ) {
+					$processed_fields[ $value ] = $processed_value;
 				}
 			}
-		} else {
-			$value = GFCommon::replace_variables( str_replace( 'form:', '', $value ), $form, $entry, false, false, false, 'text' );
 		}
 
-		$event = array(
-			'name'  => GFCommon::replace_variables( str_replace( 'form:', '', $feed['meta']['form_submitted']['name'] ), $form, $entry, false, false, false, 'text' ),
-			'value' => $value,
+		$form_data = array(
+			'title' => $form['title'],
 		);
 
-		$user = wp_get_current_user();
+		$form_data = array_merge( $form_data, $processed_fields );
 
-		if ( $user ) {
-			$email_address = $user->user_email;
-		} else {
-			// If the person isn't identified, check the form.
-			foreach ( $entry as $field ) {
-				if ( is_email( $field ) ) {
-					$email_address = $field;
-					break;
-				}
-			}
-		}
-
-		echodash()->integrations->{'gravity-forms'}->track_event( $event, $email_address );
+		// Let the main integration class handle any remaining merge tags (like {user:id})
+		echodash()->integrations->{'gravity-forms'}->track_event(
+			'form_submitted',
+			array(
+				'form' => $form['id'],
+			),
+			array(
+				'form' => $form_data,
+			)
+		);
 	}
 
 	// # ADMIN FUNCTIONS -----------------------------------------------------------------------------------------------
@@ -141,7 +119,7 @@ class EchoDash_Gravity_Forms_Feed extends GFFeedAddOn {
 	public function feed_settings_fields() {
 		return array(
 			array(
-				'title'  => esc_html__( 'WP Fusion - Event Tracking Settings', 'echodash' ),
+				'title'  => esc_html__( 'EchoDash - Event Tracking Settings', 'echodash' ),
 				'fields' => array(
 					array(
 						'label' => esc_html__( 'Track Event', 'echodash' ),
@@ -177,7 +155,7 @@ class EchoDash_Gravity_Forms_Feed extends GFFeedAddOn {
 		$args = array(
 			'meta_name' => '_gform_setting_' . $field['name'],
 			'field_id'  => null, // this gives us an input with name _gform_setting_form_submitted[name], which lets GF save it properly.
-			'setting'   => $this->get_setting( $field['name'] ),
+			'setting'   => $this->get_setting( $field['name'], array() ),
 		);
 
 		echodash()->integrations->{'gravity-forms'}->render_event_tracking_fields( 'form_submitted', $form['id'], $args );

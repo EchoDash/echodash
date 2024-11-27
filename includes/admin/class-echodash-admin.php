@@ -36,32 +36,6 @@ class EchoDash_Admin {
 	}
 
 	/**
-	 * Gets an option.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param string $key     The option key.
-	 * @param mixed  $default The default value.
-	 * @return mixed The option value.
-	 */
-	public function get_option( $key, $default_value = false ) {
-
-		if ( 'endpoint' === $key ) {
-			$value = get_option( 'echodash_endpoint', $default );
-		} else {
-			$options = get_option( 'echodash_options', array() );
-
-			if ( isset( $options[ $key ] ) ) {
-				$value = $options[ $key ];
-			} else {
-				$value = $default_value;
-			}
-		}
-
-		return apply_filters( "echodash_get_option_{$key}", $value );
-	}
-
-	/**
 	 * Send a test event using the current user data.
 	 *
 	 * @return void
@@ -73,8 +47,6 @@ class EchoDash_Admin {
 		if ( empty( $_POST['data'] ) || empty( $_POST['data']['event_name'] ) || empty( $_POST['data']['integration'] ) ) {
 			wp_send_json_error( 'ecd_empty_data' );
 		}
-
-		error_log( print_r( $_POST, true ) );
 
 		$data       = wp_unslash( $_POST['data'] );
 		$event_name = sanitize_text_field( $data['event_name'] );

@@ -178,29 +178,25 @@ class EchoDash_Give extends EchoDash_Integration {
 	 *
 	 * @since  1.6.0
 	 *
-	 * @param integer $donation_id
+	 * @param int $donation_id The donation ID.
 	 */
 	public function new_donation( $donation_id ) {
+		$donation = new Give_Payment( $donation_id );
 
-		$events = $this->get_events( 'new_donation' );
-
-		if ( ! empty( $events ) ) {
-
-			$donation = new Give_Payment( $donation_id );
-			if ( $user->user_id ) {
-				$user          = get_user_by( 'id', $user->user_id );
-				$email_address = $user->user_email;
-			} else {
-				$email_address = $donation->email;
-			}
-
-			$args = $this->get_donation_vars( $donation_id );
-
-			foreach ( $events as $event ) {
-				$event = $this->replace_tags( $event, $args );
-				$this->track_event( $event, $email_address );
-			}
-		}
+		$this->track_event(
+			'new_donation',
+			array(
+				'donation' => $donation_id,
+				'user'     => $donation->user_id,
+			),
+			array(
+				'donation' => array(
+					'amount'  => $donation->subtotal,
+					'gateway' => $donation->payment_gateway,
+					'status'  => $donation->status,
+				),
+			)
+		);
 	}
 }
 

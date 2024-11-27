@@ -86,26 +86,26 @@ class EchoDash_LearnDash extends EchoDash_Integration {
 	}
 
 	/**
-	 * Track events on course progress.
+	 * Track events on course completion.
 	 *
 	 * @since 1.3.0
 	 *
-	 * @param array $data   The progress data.
+	 * @param array $data The progress data.
 	 */
 	public function course_completed( $data ) {
-
-		$events = $this->get_events( 'course_progress', $data['course']->ID );
-
-		if ( ! empty( $events ) ) {
-
-			$args = $this->get_course_vars( $data['course']->ID, $data['course']->ID );
-			$user = new WP_User( $data['user']->ID );
-
-			foreach ( $events as $event ) {
-				$event = $this->replace_tags( $event, $args );
-				$this->track_event( $event, $user->user_email );
-			}
-		}
+		$this->track_event(
+			'course_progress',
+			array(
+				'course' => $data['course']->ID,
+				'user'   => $data['user']->ID,
+			),
+			array(
+				'course' => array(
+					'title'    => $data['course']->post_title,
+					'progress' => '100%',
+				),
+			)
+		);
 	}
 
 	/**
@@ -113,26 +113,25 @@ class EchoDash_LearnDash extends EchoDash_Integration {
 	 *
 	 * @since 1.4.0
 	 *
-	 * @param array $args   The activity arguments.
+	 * @param array $args The activity arguments.
 	 */
 	public function course_start( $args ) {
-
-		if ( $args['activity_type'] !== 'course' || $args['activity_completed'] != '' || intval( $args['activity_status'] ) === 1 || $args['activity_action'] !== 'insert' ) {
+		if ( 'course' !== $args['activity_type'] || '' !== $args['activity_completed'] || 1 === intval( $args['activity_status'] ) || 'insert' !== $args['activity_action'] ) {
 			return;
 		}
 
-		$events = $this->get_events( 'course_start', $args['course_id'] );
-
-		if ( ! empty( $events ) ) {
-
-			$args = $this->get_course_vars( $args['course_id'] );
-			$user = new WP_User( $args['user_id'] );
-
-			foreach ( $events as $event ) {
-				$event = $this->replace_tags( $event, $args );
-				$this->track_event( $event, $user->user_email );
-			}
-		}
+		$this->track_event(
+			'course_start',
+			array(
+				'course' => $args['course_id'],
+				'user'   => $args['user_id'],
+			),
+			array(
+				'course' => array(
+					'title' => get_post_field( 'post_title', $args['course_id'], 'raw' ),
+				),
+			)
+		);
 	}
 
 	/**
@@ -140,28 +139,36 @@ class EchoDash_LearnDash extends EchoDash_Integration {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param array $data   The progress data.
+	 * @param array $data The progress data.
 	 */
 	public function course_progress( $data ) {
-
 		if ( ! isset( $data['progress'] ) || ! isset( $data['progress']['last_id'] ) ) {
 			return;
 		}
 
-		$events = $this->get_events( 'course_progress', $data['course']->ID );
+		$progress = learndash_course_progress(
+			array(
+				'course_id' => $data['course']->ID,
+				'array'     => true,
+			)
+		);
 
-		if ( ! empty( $events ) ) {
+		$this->track_event(
+			'course_progress',
+			array(
+				'course' => $data['course']->ID,
+				'user'   => $data['user']->ID,
+			),
+			array(
+				'course' => array(
+					'title'               => $data['course']->post_title,
+					'last_completed_step' => get_post_field( 'post_title', $data['progress']['last_id'], 'raw' ),
+					'progress'            => $progress['percentage'] . '%',
+				),
+			)
+		);
 
-			$args = $this->get_course_vars( $data['course']->ID, $data['progress']['last_id'] );
-			$user = new WP_User( $data['user']->ID );
-
-			foreach ( $events as $event ) {
-				$event = $this->replace_tags( $event, $args );
-				$this->track_event( $event, $user->user_email );
-			}
-		}
-
-		// Only do it once.
+		// Only do it once
 		remove_action( 'learndash_lesson_completed', array( $this, 'course_progress' ), 5 );
 		remove_action( 'learndash_topic_completed', array( $this, 'course_progress' ), 5 );
 	}
@@ -171,35 +178,31 @@ class EchoDash_LearnDash extends EchoDash_Integration {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param array   $data   The quiz data.
-	 * @param WP_User $user   The user.
+	 * @param array   $data The quiz data.
+	 * @param WP_User $user The user.
 	 */
 	public function quiz_completed( $data, $user ) {
+		$quiz_id   = is_numeric( $data['quiz'] ) ? $data['quiz'] : $data['quiz']->ID;
+		$course_id = is_numeric( $data['course'] ) ? $data['course'] : $data['course']->ID;
 
-		if ( is_numeric( $data['quiz'] ) ) {
-			$quiz_id = $data['quiz'];
-		} else {
-			$quiz_id = $data['quiz']->ID;
-		}
-
-		if ( is_numeric( $data['course'] ) ) {
-			$course_id = $data['course'];
-		} else {
-			$course_id = $data['course']->ID;
-		}
-
-		$events = $this->get_events( 'quiz_completed', $course_id );
-
-		if ( ! empty( $events ) ) {
-
-			$args = $this->get_course_vars( $course_id, $quiz_id );
-			$args = array_merge( $args, $this->get_quiz_vars( $quiz_id, $data ) );
-
-			foreach ( $events as $event ) {
-				$event = $this->replace_tags( $event, $args );
-				$this->track_event( $event, $user->user_email );
-			}
-		}
+		$this->track_event(
+			'quiz_completed',
+			array(
+				'course' => $course_id,
+				'quiz'   => $quiz_id,
+				'user'   => $user->ID,
+			),
+			array(
+				'course' => array(
+					'title' => get_post_field( 'post_title', $course_id, 'raw' ),
+				),
+				'quiz'   => array(
+					'title'      => get_post_field( 'post_title', $quiz_id, 'raw' ),
+					'percentage' => $data['percentage'] . '%',
+					'points'     => $data['points'],
+				),
+			)
+		);
 	}
 
 

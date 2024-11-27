@@ -74,19 +74,14 @@ class EchoDash_User extends EchoDash_Integration {
 	 * @param string $user_login The user login.
 	 */
 	public function login( $user_login ) {
+		$user = get_user_by( 'login', $user_login );
 
-		$user   = get_user_by( 'login', $user_login );
-		$events = $this->get_events( 'logged_in', $user->ID );
-
-		if ( ! empty( $events ) ) {
-
-			$args = $this->get_user_vars( $user->ID );
-
-			foreach ( $events as $event ) {
-				$event = $this->replace_tags( $event, $args );
-				$this->track_event( $event, $user->user_email );
-			}
-		}
+		$this->track_event(
+			'logged_in',
+			array(
+				'user' => $user->ID,
+			)
+		);
 	}
 
 	/**

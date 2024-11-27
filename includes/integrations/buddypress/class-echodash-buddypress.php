@@ -120,120 +120,80 @@ class EchoDash_BuddyPress extends EchoDash_Integration {
 		);
 
 		$settings = groups_get_groupmeta( $group_id, 'echodash_settings' );
+
 		return wp_parse_args( $settings, $defaults );
 	}
 
 
 	/**
 	 * User completed his profile.
-	 *
-	 * @since  1.2.0
-	 *
-	 * @param  array $progress_details Progress precentage.
-	 * @return array The progress details.
 	 */
 	public function profile_completed( $progress_details ) {
-
 		if ( 100 === (int) $progress_details['completion_percentage'] ) {
-
 			$user = wp_get_current_user();
-
-			if ( false === $user || ! empty( get_user_meta( $user->ID, 'ecd_bp_profile_complete', true ) ) ) {
-				return $progress_details; // if the meta key is set then this has already been handled. See WPF_BuddyPress::apply_profile_complete_tags().
+			if ( ! $user->exists() || ! empty( get_user_meta( $user->ID, 'ecd_bp_profile_complete', true ) ) ) {
+				return $progress_details;
 			}
 
-			foreach ( $this->get_events( 'profile_completed' ) as $event ) {
-				$this->track_event( $event );
-			}
+			$this->track_event(
+				'profile_completed',
+				array(
+					'user' => $user->ID,
+				)
+			);
 		}
-
 		return $progress_details;
 	}
 
 	/**
 	 * User updated his profile photo.
-	 *
-	 * @since  1.2.0
-	 * @param integer $user_id The user id.
-	 * @param string  $avatar_type The avatar type.
-	 * @param array   $avatar_data The avatar returned data.
 	 */
 	public function profile_photo_updated( $user_id, $avatar_type, $avatar_data ) {
-
-		$user = get_user_by( 'id', $user_id );
-
-		foreach ( $this->get_events( 'updated_profile_photo', null ) as $event ) {
-			$this->track_event( $event, $user->user_email );
-		}
+		$this->track_event(
+			'updated_profile_photo',
+			array(
+				'user' => $user_id,
+			)
+		);
 	}
 
 	/**
 	 * User updates his cover photo.
-	 *
-	 * @since  1.2.0
-	 * @param integer $user_id The user id.
-	 * @param string  $name The uploaded image name.
-	 * @param string  $cover_url The uploaded image url.
 	 */
 	public function cover_photo_updated( $user_id, $name, $cover_url ) {
-
-		$user = get_user_by( 'id', $user_id );
-
-		foreach ( $this->get_events( 'updated_cover_photo', null ) as $event ) {
-			$this->track_event( $event, $user->user_email );
-		}
+		$this->track_event(
+			'updated_cover_photo',
+			array(
+				'user' => $user_id,
+			)
+		);
 	}
-
 
 	/**
 	 * User has left a group.
-	 *
-	 * @since  1.2.0
-	 * @param integer $group_id The group id.
-	 * @param integer $user_id The user id.
 	 */
 	public function leave_group( $group_id, $user_id ) {
-
-		$user = get_user_by( 'id', $user_id );
-
-		$events = $this->get_events( 'left_group', $group_id );
-
-		if ( ! empty( $events ) ) {
-
-			$args = $this->get_group_vars( $group_id );
-
-			foreach ( $events as $event ) {
-				$event = $this->replace_tags( $event, $args );
-				$this->track_event( $event, $user->user_email );
-			}
-		}
+		$this->track_event(
+			'left_group',
+			array(
+				'group' => $group_id,
+				'user'  => $user_id,
+			)
+		);
 	}
-
 
 	/**
 	 * User has joined a group.
-	 *
-	 * @since  1.2.0
-	 * @param integer $group_id The group id.
-	 * @param integer $user_id The user id.
 	 */
 	public function join_group( $group_id, $user_id ) {
-
-		$user = get_user_by( 'id', $user_id );
-
-		$events = $this->get_events( 'joined_group', $group_id );
-
-		if ( ! empty( $events ) ) {
-
-			$args = $this->get_group_vars( $group_id );
-
-			foreach ( $events as $event ) {
-				$event = $this->replace_tags( $event, $args );
-				$this->track_event( $event, $user->user_email );
-			}
-		}
+		$this->track_event(
+			'joined_group',
+			array(
+				'group' => $group_id,
+				'user'  => $user_id,
+			)
+		);
 	}
-
 
 	/**
 	 * Registers meta box.
@@ -243,7 +203,7 @@ class EchoDash_BuddyPress extends EchoDash_Integration {
 	public function add_meta_box_groups() {
 		add_meta_box(
 			'echodash',
-			__( 'WP Fusion - Event Tracking', 'wp-fusion' ),
+			__( 'EchoDash - Event Tracking', 'wp-fusion' ),
 			array(
 				$this,
 				'meta_box_callback',
@@ -304,7 +264,7 @@ class EchoDash_BuddyPress extends EchoDash_Integration {
 
 		if ( isset( $_POST['bp-groups-slug'] ) ) {
 
-			$data = ! empty( $_POST['echodash_settings'] ) ? $_POST['echodash_settings'] : array();
+			$data = ! empty( $_POST['echodash_settings'] ) ? wp_unslash( $_POST['echodash_settings'] ) : array();
 			$data = array_filter( ecd_clean( $data ) ); // Sanitize and remove empty values.
 
 			foreach ( $data as $id => $event ) {

@@ -98,27 +98,26 @@ class EchoDash_LifterLMS extends EchoDash_Integration {
 	 *
 	 * @since 1.4.0
 	 *
-	 * @param int $user_id The user ID.
+	 * @param int $user_id   The user ID.
 	 * @param int $course_id The course ID.
 	 */
 	public function course_started( $user_id, $course_id ) {
-
 		if ( 'course' !== get_post_type( $course_id ) ) {
 			return;
 		}
 
-		$events = $this->get_events( 'course_start', $course_id );
-
-		if ( ! empty( $events ) ) {
-
-			$args = $this->get_course_vars( $course_id );
-			$user = get_user_by( 'id', $user_id );
-
-			foreach ( $events as $event ) {
-				$event = $this->replace_tags( $event, $args );
-				$this->track_event( $event, $user->user_email );
-			}
-		}
+		$this->track_event(
+			'course_start',
+			array(
+				'course' => $course_id,
+				'user'   => $user_id,
+			),
+			array(
+				'course' => array(
+					'title' => get_the_title( $course_id ),
+				),
+			)
+		);
 	}
 
 
@@ -131,26 +130,29 @@ class EchoDash_LifterLMS extends EchoDash_Integration {
 	 * @param int $post_id The post ID.
 	 */
 	public function course_lesson_complete( $user_id, $post_id ) {
-
+		$course_id = $post_id;
 		if ( 'lesson' === get_post_type( $post_id ) ) {
-			$lesson    = new LLMS_Lesson( $post_id );
+			$lesson    = llms_get_post( $post_id );
 			$course_id = $lesson->get( 'parent_course' );
-		} else {
-			$course_id = $post_id;
 		}
 
-		$events = $this->get_events( 'course_progress', $course_id );
+		$student  = llms_get_student( $user_id );
+		$progress = $student ? $student->get_progress( $course_id, 'course', false ) : 0;
 
-		if ( ! empty( $events ) ) {
-
-			$args = $this->get_course_vars( $course_id, $post_id );
-			$user = get_user_by( 'id', $user_id );
-
-			foreach ( $events as $event ) {
-				$event = $this->replace_tags( $event, $args );
-				$this->track_event( $event, $user->user_email );
-			}
-		}
+		$this->track_event(
+			'course_progress',
+			array(
+				'course' => $course_id,
+				'user'   => $user_id,
+			),
+			array(
+				'course' => array(
+					'title'               => get_the_title( $course_id ),
+					'last_completed_step' => get_the_title( $post_id ),
+					'progress'            => $progress . '%',
+				),
+			)
+		);
 	}
 
 
@@ -159,44 +161,32 @@ class EchoDash_LifterLMS extends EchoDash_Integration {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param int   $user_id The user ID.
-	 * @param int   $quiz_id The quiz ID.
-	 * @param array $quiz    The quiz data.
+	 * @param int       $user_id The user ID.
+	 * @param int       $quiz_id The quiz ID.
+	 * @param LLMS_Quiz $quiz    The quiz data.
 	 */
 	public function quiz_complete( $user_id, $quiz_id, $quiz ) {
-
 		$lesson_id = $quiz->get( 'lesson_id' );
-		$lesson    = new LLMS_Lesson( $lesson_id );
+		$lesson    = llms_get_post( $lesson_id );
 		$course_id = $lesson->get( 'parent_course' );
 
-		$events = $this->get_events( 'course_progress', $course_id );
-
-		if ( ! empty( $events ) ) {
-
-			$args = $this->get_course_vars( $course_id, $post_id );
-			$user = get_user_by( 'id', $user_id );
-
-			foreach ( $events as $event ) {
-				$event = $this->replace_tags( $event, $args );
-				$this->track_event( $event, $user->user_email );
-			}
-		}
-
-		$events = $this->get_events( 'quiz_completed', $course_id );
-
-		if ( ! empty( $events ) ) {
-
-			$course_vars = $this->get_course_vars( $course_id );
-			$quiz_vars   = $this->get_quiz_vars( $quiz_id, $quiz );
-			$args        = array_merge( $course_vars, $quiz_vars );
-
-			$user = get_user_by( 'id', $user_id );
-
-			foreach ( $events as $event ) {
-				$event = $this->replace_tags( $event, $args );
-				$this->track_event( $event, $user->user_email );
-			}
-		}
+		$this->track_event(
+			'quiz_completed',
+			array(
+				'course' => $course_id,
+				'quiz'   => $quiz_id,
+				'user'   => $user_id,
+			),
+			array(
+				'course' => array(
+					'title' => get_the_title( $course_id ),
+				),
+				'quiz'   => array(
+					'title' => get_the_title( $quiz_id ),
+					'grade' => $quiz->get( 'grade' ),
+				),
+			)
+		);
 	}
 
 

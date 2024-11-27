@@ -101,19 +101,13 @@ class EchoDash_GamiPress extends EchoDash_Integration {
 	 * @param WP_Post $rank    The rank.
 	 */
 	public function update_user_rank( $user_id, $rank ) {
-		$user          = get_user_by( 'id', $user_id );
-		$email_address = $user->user_email;
-		$events        = $this->get_events( 'rank_earned', $rank->ID );
-
-		if ( ! empty( $events ) ) {
-
-			$args = $this->get_rank_vars( $rank->ID );
-
-			foreach ( $events as $event ) {
-				$event = $this->replace_tags( $event, $args );
-				$this->track_event( $event, $email_address );
-			}
-		}
+		$this->track_event(
+			'rank_earned',
+			array(
+				'rank' => $rank->ID,
+				'user' => $user_id,
+			)
+		);
 	}
 
 	/**
@@ -128,23 +122,18 @@ class EchoDash_GamiPress extends EchoDash_Integration {
 	 * @param array  $args           The args.
 	 */
 	public function user_complete_achievement( $user_id, $achievement_id, $trigger, $site_id, $args ) {
-		// Check if it's an achievement.
+		// Check if it's an achievement
 		if ( ! get_post_type( $achievement_id ) || get_post_type( $achievement_id ) === 'points-award' ) {
 			return;
 		}
 
-		$user   = get_user_by( 'id', $user_id );
-		$events = $this->get_events( 'achievement_earned', $achievement_id );
-
-		if ( ! empty( $events ) ) {
-
-			$args = $this->get_achievement_vars( $achievement_id );
-
-			foreach ( $events as $event ) {
-				$event = $this->replace_tags( $event, $args );
-				$this->track_event( $event, $user->user_email );
-			}
-		}
+		$this->track_event(
+			'achievement_earned',
+			array(
+				'achievement' => $achievement_id,
+				'user'        => $user_id,
+			)
+		);
 	}
 
 	/**
@@ -157,23 +146,18 @@ class EchoDash_GamiPress extends EchoDash_Integration {
 	 * @param int $earning_id     The earning ID.
 	 */
 	public function user_revoke_achievement( $user_id, $achievement_id, $earning_id ) {
-		// Check if it's an achievement.
+		// Check if it's an achievement
 		if ( ! get_post_type( $achievement_id ) || get_post_type( $achievement_id ) === 'points-award' ) {
 			return;
 		}
 
-		$user   = get_user_by( 'id', $user_id );
-		$events = $this->get_events( 'achievement_revoked', $achievement_id );
-
-		if ( ! empty( $events ) ) {
-
-			$args = $this->get_achievement_vars( $achievement_id );
-
-			foreach ( $events as $event ) {
-				$event = $this->replace_tags( $event, $args );
-				$this->track_event( $event, $user->user_email );
-			}
-		}
+		$this->track_event(
+			'achievement_revoked',
+			array(
+				'achievement' => $achievement_id,
+				'user'        => $user_id,
+			)
+		);
 	}
 
 	/**
@@ -191,24 +175,20 @@ class EchoDash_GamiPress extends EchoDash_Integration {
 	 * @param string $log_type       The log type.
 	 */
 	public function points_updated( $user_id, $new_points, $total_points, $admin_id, $achievement_id, $points_type, $reason, $log_type ) {
-		if ( empty( $points_type ) ) {
-			$key = '_gamipress_points';
-		} else {
-			$key = '_gamipress_' . $points_type;
-		}
-
-		$user   = get_user_by( 'id', $user_id );
-		$events = $this->get_events( 'points_earned', false );
-
-		if ( ! empty( $events ) ) {
-
-			$args = $this->get_points_vars( $user_id, $key );
-
-			foreach ( $events as $event ) {
-				$event = $this->replace_tags( $event, $args );
-				$this->track_event( $event, $user->user_email );
-			}
-		}
+		$this->track_event(
+			'points_earned',
+			array(
+				'user'   => $user_id,
+				'points' => $new_points,
+			),
+			array(
+				'points' => array(
+					'total'  => $total_points,
+					'type'   => $points_type,
+					'reason' => $reason,
+				),
+			)
+		);
 	}
 
 

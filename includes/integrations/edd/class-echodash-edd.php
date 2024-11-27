@@ -78,34 +78,25 @@ class EchoDash_EDD extends EchoDash_Integration {
 	 * @param int $payment_id The payment ID.
 	 */
 	public function complete_purchase( $payment_id ) {
-
 		$payment = new EDD_Payment( $payment_id );
 
-		if ( empty( $payment->downloads ) ) { // EDD Free Downloads runs a bit later than normal, for some reason.
+		if ( ! $payment->ID || empty( $payment->downloads ) ) {
 			return;
 		}
 
 		foreach ( $payment->downloads as $download ) {
-
-			$events = $this->get_events( 'purchased_download', $download['id'] );
-
-			if ( ! empty( $events ) ) {
-
-				// Here replace tags...
-
-				$args = $this->get_download_vars( $download['id'] );
-				$args = array_merge( $args, $this->get_payment_vars( $payment_id ) );
-
-				foreach ( $events as $event ) {
-					$event = $this->replace_tags( $event, $args );
-					$this->track_event( $event, $payment->email );
-				}
-			}
+			$this->track_event(
+				'purchased_download',
+				array(
+					'download' => $download['id'],
+					'payment'  => $payment_id,
+				)
+			);
 		}
 	}
 
 	/**
-	 * Triggered when a file is download.
+	 * Triggered when a file is downloaded.
 	 *
 	 * @since 1.0.0
 	 *
@@ -115,18 +106,13 @@ class EchoDash_EDD extends EchoDash_Integration {
 	 * @param array  $args        The download args.
 	 */
 	public function process_download( $download_id, $email, $payment, $args ) {
-
-		$events = $this->get_events( 'downloaded_download', $download_id );
-
-		if ( ! empty( $events ) ) {
-
-			$args = array_merge( $this->get_download_vars( $download_id ), $this->get_file_vars( $download_id, $args['file_key'] ) );
-
-			foreach ( $events as $event ) {
-				$event = $this->replace_tags( $event, $args );
-				$this->track_event( $event, $email );
-			}
-		}
+		$this->track_event(
+			'downloaded_download',
+			array(
+				'download' => $download_id,
+				'file'     => $args['file_key'],
+			)
+		);
 	}
 
 	/**

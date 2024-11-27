@@ -84,6 +84,26 @@ class EchoDash_Gravity_Forms extends EchoDash_Integration {
 
 
 	/**
+	 * Gets the form variables.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @param  int $form_id The form ID.
+	 * @return array The form variables.
+	 */
+	public function get_form_vars( $form_id ) {
+
+		$form = GFAPI::get_form( $form_id );
+
+		return array(
+			'form' => array(
+				'title' => $form['title'],
+			),
+		);
+	}
+
+
+	/**
 	 * Gets all events bound to a particular trigger.
 	 *
 	 * @since  1.1.0
@@ -171,51 +191,66 @@ class EchoDash_Gravity_Forms extends EchoDash_Integration {
 	 * @param array $form   The form.
 	 */
 	public function after_submission( $entry, $form ) {
-
 		if ( 'spam' === $entry['status'] ) {
 			return;
 		}
 
-		$events = $this->get_global_events( 'form_submitted' );
-
-		if ( ! empty( $events ) ) {
-
-			$user = wp_get_current_user();
-
-			if ( $user ) {
-				$email_address = $user->user_email;
-			} else {
-				// If the person isn't identified, check the form.
-				foreach ( $entry as $field ) {
-					if ( is_email( $field ) ) {
-						$email_address = $field;
-						break;
-					}
+		// Get email from user or form
+		$email = '';
+		$user  = wp_get_current_user();
+		if ( $user->exists() ) {
+			$email = $user->user_email;
+		} else {
+			foreach ( $entry as $field ) {
+				if ( is_email( $field ) ) {
+					$email = $field;
+					break;
 				}
-			}
-
-			foreach ( $events as $event ) {
-
-				// Replace the leading "form:" from the global settings.
-
-				$event['name'] = str_replace( 'form:', '', $event['name'] );
-				$event['name'] = GFCommon::replace_variables( $event['name'], $form, $entry, false, false, false, 'text' );
-
-				// Multi key.
-				if ( is_array( $event['value'] ) ) {
-					foreach ( $event['value'] as $key => $event_val ) {
-						$event_val['value']              = str_replace( 'form:', '', $event_val['value'] );
-						$event['value'][ $key ]['value'] = GFCommon::replace_variables( $event_val['value'], $form, $entry, false, false, false, 'text' );
-					}
-				} else {
-					$event['value'] = str_replace( 'form:', '', $event['value'] );
-					$event['value'] = GFCommon::replace_variables( $event['value'], $form, $entry, false, false, false, 'text' );
-				}
-
-				$this->track_event( $event, $email_address );
-
 			}
 		}
+
+		// Track the event
+		$this->track_event(
+			'form_submitted',
+			array(
+				'form' => $form['id'],
+				'user' => $user->ID,
+			),
+			array(
+				'form' => array(
+					'title' => $form['title'],
+					'email' => $email,
+				),
+			)
+		);
+	}
+
+	/**
+	 * Gets the settings for a form from its feeds.
+	 *
+	 * @since  1.0.0
+	 * @param  int $form_id The form ID.
+	 * @return array The settings.
+	 */
+	public function get_settings( $form_id ) {
+		$settings = array(
+			'form_submitted' => false,
+		);
+
+		// Get all feeds for this form
+		$feeds = GFAPI::get_feeds( null, $form_id, 'echodash' );
+
+		if ( ! empty( $feeds ) && ! is_wp_error( $feeds ) ) {
+			foreach ( $feeds as $feed ) {
+				if ( ! empty( $feed['meta']['form_submitted'] ) ) {
+					// If we find a feed with form_submitted settings, use it
+					$settings['form_submitted'] = $feed['meta']['form_submitted'];
+					break; // Use first matching feed
+				}
+			}
+		}
+
+		return $settings;
 	}
 }
 

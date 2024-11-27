@@ -76,10 +76,9 @@ class EchoDash_Presto_Player extends EchoDash_Integration {
 	 * @param integer $visit_time The visit time.
 	 */
 	public function video_progress( $video_id, $percent, $visit_time ) {
-
 		$user = wp_get_current_user();
 
-		if ( empty( $user ) ) {
+		if ( ! $user->exists() ) {
 			return;
 		}
 
@@ -89,28 +88,28 @@ class EchoDash_Presto_Player extends EchoDash_Integration {
 			return;
 		}
 
-		// Video Play.
+		// Video Play
 		if ( 0 === $percent ) {
-			$events = $this->get_events( 'video_play', $post_id );
-			if ( ! empty( $events ) ) {
-				$args = $this->get_video_vars( $post_id, $video_id );
-				foreach ( $events as $event ) {
-					$event = $this->replace_tags( $event, $args );
-					$this->track_event( $event, $user->user_email );
-				}
-			}
+			$this->track_event(
+				'video_play',
+				array(
+					'video' => $video_id,
+					'post'  => $post_id,
+					'user'  => $user->ID,
+				)
+			);
 		}
 
-		// Video Complete.
+		// Video Complete
 		if ( 100 === $percent ) {
-			$events = $this->get_events( 'video_complete', $post_id );
-			if ( ! empty( $events ) ) {
-				$args = $this->get_video_vars( $post_id, $video_id );
-				foreach ( $events as $event ) {
-					$event = $this->replace_tags( $event, $args );
-					$this->track_event( $event, $user->user_email );
-				}
-			}
+			$this->track_event(
+				'video_complete',
+				array(
+					'video' => $video_id,
+					'post'  => $post_id,
+					'user'  => $user->ID,
+				)
+			);
 		}
 	}
 
@@ -122,7 +121,6 @@ class EchoDash_Presto_Player extends EchoDash_Integration {
 	 * @return int The post ID.
 	 */
 	public function get_post_id( $video_id ) {
-
 		$post_id = wp_cache_get( $video_id, 'ecd_pp_vids' );
 
 		if ( false !== $post_id ) {
@@ -130,14 +128,13 @@ class EchoDash_Presto_Player extends EchoDash_Integration {
 		}
 
 		global $wpdb;
+		$sql     = $wpdb->prepare(
+			"SELECT post_id FROM {$wpdb->prefix}presto_player_videos WHERE id = %d",
+			absint( $video_id )
+		);
+		$post_id = intval( $wpdb->get_var( $sql ) );
 
-		$table_name = $wpdb->prefix . 'presto_player_videos';
-
-		$sql     = $wpdb->prepare( "SELECT post_id FROM $table_name WHERE id = %d", absint( $video_id ) );
-		$post_id = $wpdb->get_var( $sql );
-		$post_id = intval( $post_id );
-
-		wp_cache_add( $video_id, $post_id, 'ecd_pp_vids', HOUR_IN_SECONDS );
+		wp_cache_set( $video_id, $post_id, 'ecd_pp_vids', 3600 ); // 1 hour in seconds
 
 		return $post_id;
 	}

@@ -4,7 +4,10 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Base class for handling the event tracking plugin integrations.
+ * Base class for EchoDash integrations.
+ *
+ * This class provides the foundation for integrating various plugins with EchoDash.
+ * Each integration should extend this class and implement the required abstract methods.
  *
  * @since 1.0.0
  */
@@ -16,7 +19,6 @@ abstract class EchoDash_Integration {
 	 * @since 1.0.0
 	 * @var string $slug
 	 */
-
 	public $slug;
 
 	/**
@@ -39,7 +41,7 @@ abstract class EchoDash_Integration {
 	 * Stores any global options which are shared across integrations.
 	 *
 	 * @since 1.1.0
-	 * @var  array $global_options
+	 * @var array $global_options
 	 */
 	public $global_option_types = array();
 
@@ -49,11 +51,9 @@ abstract class EchoDash_Integration {
 	 * @since 1.0.0
 	 */
 	public function __construct() {
-
 		echodash()->integrations->{ $this->slug } = $this;
 
 		// Add the hooks in each integration.
-
 		$this->init();
 
 		// So any global / shared options can be properly loaded.
@@ -68,7 +68,6 @@ abstract class EchoDash_Integration {
 	 * Gets things started.
 	 *
 	 * @access protected
-	 *
 	 * @since  1.0.0
 	 */
 	abstract protected function init();
@@ -77,9 +76,7 @@ abstract class EchoDash_Integration {
 	 * Defines the available triggers and their properties.
 	 *
 	 * @access protected
-	 *
 	 * @since  1.0.0
-	 *
 	 * @return array The triggers.
 	 */
 	abstract protected function setup_triggers();
@@ -88,7 +85,6 @@ abstract class EchoDash_Integration {
 	 * Return the available triggers for the integration.
 	 *
 	 * @since  1.0.0
-	 *
 	 * @return array The triggers.
 	 */
 	public function get_triggers() {
@@ -99,7 +95,6 @@ abstract class EchoDash_Integration {
 	 * Gets a trigger.
 	 *
 	 * @since 1.0.0
-	 *
 	 * @param string $trigger The trigger.
 	 * @return array The trigger.
 	 */
@@ -108,17 +103,57 @@ abstract class EchoDash_Integration {
 	}
 
 	/**
+	 * Gets the relevant object ID for single events from the objects array.
+	 *
+	 * @since 1.0.0
+	 * @param string $trigger The trigger.
+	 * @param array  $objects The objects array.
+	 * @return int|bool The object ID or false if not applicable.
+	 */
+	private function get_object_id_for_trigger( $trigger, $objects ) {
+
+		// Check if this trigger supports single events
+		if ( empty( $this->triggers[ $trigger ]['has_single'] ) ) {
+			return false;
+		}
+
+		if ( empty( $objects ) ) {
+			return false;
+		}
+
+		// Get first key/value pair
+		reset( $objects );
+		$object_type = key( $objects );
+		$object_id   = current( $objects );
+
+		// Verify this object type is valid for this trigger.
+		if ( ! in_array( $object_type, $this->triggers[ $trigger ]['option_types'], true ) ) {
+			return false;
+		}
+
+		return $object_id;
+	}
+
+	/**
 	 * Tracks an event.
 	 *
 	 * @since 1.0.0
-	 *
 	 * @param string $trigger The trigger.
 	 * @param array  $objects The objects.
 	 * @param array  $args    The event arguments.
 	 */
 	public function track_event( $trigger, $objects = array(), $args = array() ) {
+
+		// Get object ID if applicable
+		$object_id = $this->get_object_id_for_trigger( $trigger, $objects );
+
 		// Get events configured for this trigger
-		$events = $this->get_events( $trigger );
+		$events = $this->get_events( $trigger, $object_id );
+
+		error_log( print_r( 'events for trigger ' . $trigger, true ) );
+		error_log( print_r( $events, true ) );
+		error_log( print_r( 'args', true ) );
+		error_log( print_r( $args, true ) );
 
 		// Get merge variables
 		$event_data = apply_filters( 'echodash_event_data', array(), $objects );
@@ -126,9 +161,14 @@ abstract class EchoDash_Integration {
 		// Merge in any custom arguments passed from the trigger
 		foreach ( $args as $object_type => $values ) {
 			if ( isset( $event_data[ $object_type ] ) ) {
+				error_log( print_r( 'merging values', true ) );
+				error_log( print_r( $values, true ) );
 				$event_data[ $object_type ] = array_merge( $event_data[ $object_type ], $values );
 			}
 		}
+
+		error_log( print_r( 'event data after merge', true ) );
+		error_log( print_r( $event_data, true ) );
 
 		// Process each event
 		foreach ( $events as $event ) {
@@ -181,9 +221,7 @@ abstract class EchoDash_Integration {
 	 * @since 1.0.0
 	 */
 	public function get_event_data( $event_data = array(), $objects = array() ) {
-
 		foreach ( $objects as $object_type => $object_id ) {
-
 			if ( method_exists( $this, "get_{$object_type}_vars" ) ) {
 				$event_data = array_merge( $event_data, $this->{"get_{$object_type}_vars"}( $object_id ) );
 			}
@@ -196,13 +234,11 @@ abstract class EchoDash_Integration {
 	 * Helper for replacing the placeholders with values.
 	 *
 	 * @since  1.0.0
-	 *
 	 * @param  array $event  The event as saved in the database.
 	 * @param  array $args   The key value replacement pairs from the integration.
 	 * @return array The filtered event.
 	 */
 	public function replace_tags( $event, $args ) {
-
 		$defaults = array(
 			'name'  => '',
 			'value' => array(),
@@ -212,7 +248,6 @@ abstract class EchoDash_Integration {
 
 		foreach ( $args as $type => $values ) {
 			foreach ( $values as $id => $value ) {
-
 				if ( ! is_scalar( $value ) ) {
 					continue;
 				}
@@ -232,7 +267,6 @@ abstract class EchoDash_Integration {
 	 * Helper for replacing placeholders in array values
 	 *
 	 * @since 1.0.0
-	 *
 	 * @param array  $values The array of values to process
 	 * @param string $search The search string
 	 * @param string $replace The replacement string
@@ -258,7 +292,6 @@ abstract class EchoDash_Integration {
 	 * Gets all events bound to a particular trigger.
 	 *
 	 * @since  1.0.0
-	 *
 	 * @param  string   $trigger The trigger.
 	 * @param  int|bool $post_id The post ID.
 	 * @return array    The events.
@@ -267,29 +300,24 @@ abstract class EchoDash_Integration {
 
 		$events = array();
 
-		if ( false === $post_id && $this->triggers[ $trigger ]['has_single'] ) {
-
-			// Get all the single events for a trigger. Used when loading the global options.
-
-			$events = $this->get_single_events( $trigger );
-
-		} elseif ( false !== $post_id && $this->triggers[ $trigger ]['has_single'] ) {
+		if ( false !== $post_id ) {
 
 			// Get the events just for a specific post. Used in the admin when editing a post and when triggering an event.
-
 			$settings = $this->get_settings( $post_id );
 
 			if ( false !== $settings[ $trigger ] ) {
 				$events[] = $settings[ $trigger ];
 			}
+
+		} elseif ( false === $post_id && $this->triggers[ $trigger ]['has_single'] ) {
+			// Get all the single events for a trigger. Used when loading the global options.
+			$events = $this->get_single_events( $trigger );
 		}
 
 		// If the post has no events, check for global events.
 		if ( false === $post_id || empty( $events ) ) {
-
 			$global_events = $this->get_global_events( $trigger );
 			$events        = array_merge( $events, $global_events );
-
 		}
 
 		return $events;
@@ -300,18 +328,15 @@ abstract class EchoDash_Integration {
 	 * global options.
 	 *
 	 * @since  1.1.0
-	 *
 	 * @param  string $trigger The trigger.
 	 * @return array  The events.
 	 */
 	public function get_single_events( $trigger ) {
-
 		$events = array();
 
 		if ( $this->triggers[ $trigger ]['has_single'] ) {
 
 			// Settings saved on individual posts.
-
 			$args = array(
 				'numberposts' => 100, // safe limit.
 				'post_type'   => $this->triggers[ $trigger ]['post_types'],
@@ -327,13 +352,10 @@ abstract class EchoDash_Integration {
 			$posts = get_posts( $args );
 
 			if ( ! empty( $posts ) ) {
-
 				foreach ( $posts as $result_post_id ) {
-
 					$settings = get_post_meta( $result_post_id, 'echodash_settings', true );
 
 					if ( ! empty( $settings ) ) {
-
 						// Clean up settings that might be saved on the same post, but from other integrations / triggers.
 						foreach ( $settings as $trigger_id => $setting ) {
 							if ( $trigger_id !== $trigger ) {
@@ -343,9 +365,7 @@ abstract class EchoDash_Integration {
 					}
 
 					if ( ! empty( $settings ) ) {
-
 						// Build up events array.
-
 						$event = array(
 							'trigger' => $trigger,
 							'post_id' => $result_post_id,
@@ -366,24 +386,19 @@ abstract class EchoDash_Integration {
 	 * options and sending global events.
 	 *
 	 * @since 1.1.0
-	 *
 	 * @param string $trigger The trigger.
 	 * @return array The events.
 	 */
 	public function get_global_events( $trigger ) {
-
 		$events = array();
 
 		if ( $this->triggers[ $trigger ]['has_global'] ) {
-
 			// Global settings.
-
 			$settings = get_option( 'echodash_options', array() );
 
 			if ( ! empty( $settings[ $this->slug ] ) ) {
 				foreach ( $settings[ $this->slug ] as $event ) {
 					if ( $event['trigger'] === $trigger ) {
-
 						// If we're getting it for a single post we don't need to keep them separate.
 						$events[] = $event;
 					}
@@ -399,16 +414,13 @@ abstract class EchoDash_Integration {
 	 * setting the defaults.
 	 *
 	 * @since  1.0.0
-	 *
 	 * @param  int $post_id    The post ID.
 	 * @return array The settings.
 	 */
 	public function get_settings( $post_id ) {
-
 		$defaults = array();
 
 		foreach ( $this->triggers as $id => $trigger ) {
-
 			if ( $trigger['has_single'] ) {
 				$defaults[ $id ] = false;
 			}
@@ -425,36 +437,24 @@ abstract class EchoDash_Integration {
 	 * on the current post, if available.
 	 *
 	 * @since  1.0.0
-	 *
 	 * @param  string $trigger The trigger.
-	 * @param  bool   $post_id The post ID.
+	 * @param  int    $post_id The post ID.
 	 * @return array  The options.
 	 */
 	public function get_options( $trigger, $post_id = false ) {
-
 		$options    = array();
 		$used_types = array(); // If two integrations use the same type, we don't want to duplicate them in the dropdown.
 
 		// Options from this integration.
-
 		foreach ( $this->triggers[ $trigger ]['option_types'] as $option_type ) {
-
 			// Get the options.
-
 			$option = apply_filters( "get_{$option_type}_options", array(), $post_id );
 
 			// Maybe fill in previews.
-
-			if ( ! empty( $post_id ) && has_filter( "get_{$option_type}_vars" ) ) { // We used to check if get_post_type( $post_id ) === $option_type ) here but not sure it's necessary.
-
-				// This is apply_filters since some integrations like EDDSL need to
-				// get variables from other integration classes (i.e. the
-				// get_download_vars method in the main EDD class).
-
-				$values = apply_filters( "get_{$option_type}_vars", $post_id ); // TODO kinda ugly to filter an ID and expect an array in return....
+			if ( ! empty( $post_id ) && has_filter( "get_{$option_type}_vars" ) ) {
+				$values = apply_filters( "get_{$option_type}_vars", $post_id );
 
 				foreach ( $option['options'] as $i => $sub_option ) {
-
 					if ( ! empty( $values[ $option['type'] ][ $sub_option['meta'] ] ) ) {
 						$option['options'][ $i ]['preview'] = $values[ $option['type'] ][ $sub_option['meta'] ];
 					}
@@ -463,33 +463,27 @@ abstract class EchoDash_Integration {
 
 			$used_types[] = $option_type;
 			$options[]    = $option;
-
 		}
 
 		return $options;
 	}
-
 
 	/**
 	 * Gets the global option types from other integrations that need to be
 	 * included in this one.
 	 *
 	 * @since  1.1.1
-	 *
 	 * @return array The global option types.
 	 */
 	public function get_global_option_types() {
-
 		$global_option_types = array();
 
 		foreach ( echodash()->integrations as $integration ) {
-
 			if ( $integration === $this ) {
 				continue;
 			}
 
 			$global_option_types = array_merge( $global_option_types, $integration->global_option_types );
-
 		}
 
 		return $global_option_types;
@@ -501,11 +495,9 @@ abstract class EchoDash_Integration {
 	 * configured for the trigger.
 	 *
 	 * @access private
-	 *
 	 * @since  1.0.0
 	 */
 	public function initialize_triggers() {
-
 		$defaults = array(
 			'name'         => false,
 			'description'  => false,
@@ -517,26 +509,21 @@ abstract class EchoDash_Integration {
 		);
 
 		foreach ( $this->setup_triggers() as $trigger => $data ) {
-
 			$this->triggers[ $trigger ] = wp_parse_args( $data, $defaults );
 
 			foreach ( $this->triggers[ $trigger ]['option_types'] as $option_type ) {
-
 				// Add the filter for getting the available options.
-
 				if ( ! has_filter( "get_{$option_type}_options" ) && method_exists( $this, "get_{$option_type}_options" ) ) {
 					add_filter( "get_{$option_type}_options", array( $this, "get_{$option_type}_options" ), 10, 2 );
 				}
 
 				// Add the filter for filling the options with the real variables.
-
 				if ( method_exists( $this, "get_{$option_type}_vars" ) ) {
 					add_filter( "get_{$option_type}_vars", array( $this, "get_{$option_type}_vars" ), 10, 2 );
 				}
 			}
 
-			$this->triggers[ $trigger ]['option_types'] = array_merge( $this->triggers[ $trigger ]['option_types'], $this->get_global_option_types() ); // add in the global option types.
-
+			$this->triggers[ $trigger ]['option_types'] = array_merge( $this->triggers[ $trigger ]['option_types'], $this->get_global_option_types() );
 		}
 	}
 
@@ -546,23 +533,15 @@ abstract class EchoDash_Integration {
 	 * @since 1.0.0
 	 */
 	public function register_meta_boxes() {
-
 		foreach ( $this->triggers as $trigger ) {
-
 			if ( $trigger['has_single'] && ! empty( $trigger['post_types'] ) ) {
-
 				if ( ! has_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) ) ) {
-
 					add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
-
 				}
 
 				foreach ( $trigger['post_types'] as $post_type ) {
-
 					if ( ! has_action( "save_post_{$post_type}", array( $this, 'save_post' ) ) ) {
-
 						add_action( "save_post_{$post_type}", array( $this, 'save_post' ) );
-
 					}
 				}
 			}
@@ -573,11 +552,9 @@ abstract class EchoDash_Integration {
 	 * Gets the post types that can be configured with events for this integration.
 	 *
 	 * @since  1.2.0
-	 *
 	 * @return array The post types.
 	 */
 	public function get_post_types() {
-
 		$post_types = array();
 
 		foreach ( $this->triggers as $trigger ) {
@@ -593,23 +570,17 @@ abstract class EchoDash_Integration {
 	 * @since  1.2.0
 	 */
 	public function add_meta_boxes() {
-
 		foreach ( $this->get_post_types() as $post_type ) {
-
 			add_meta_box(
 				'echodash',
 				__( 'EchoDash - Event Tracking', 'echodash' ),
-				array(
-					$this,
-					'meta_box_callback',
-				),
+				array( $this, 'meta_box_callback' ),
 				$post_type,
 				'normal',
 				'default'
 			);
 		}
 	}
-
 
 	/**
 	 * Displays the meta box content.
@@ -618,32 +589,26 @@ abstract class EchoDash_Integration {
 	 * post type.
 	 *
 	 * @since 1.2.0
-	 *
-	 * @param WP_Post $post   The post.
+	 * @param WP_Post $post The post.
 	 */
 	public function meta_box_callback( $post ) {
+		// Add nonce field
+		wp_nonce_field( 'echodash_save_settings', 'echodash_nonce' );
 
 		echo '<table class="form-table echodash"><tbody>';
 
 		foreach ( $this->get_triggers() as $id => $trigger ) {
-
 			if ( in_array( $post->post_type, $trigger['post_types'], true ) ) {
-
 				echo '<tr>';
-
 				echo '<th scope="row">';
 				echo '<label for="' . esc_attr( $id ) . '">' . esc_html( $trigger['name'] ) . ':</label>';
 				echo '<span class="description">' . esc_html( $trigger['description'] ) . '</span>';
 				echo '</th>';
 				echo '<td>';
-
-					$this->render_event_tracking_fields( $id, $post->ID );
-
+				$this->render_event_tracking_fields( $id, $post->ID );
 				echo '</td>';
 				echo '</tr>';
-
 				echo '<tr>';
-
 			}
 		}
 
@@ -652,19 +617,16 @@ abstract class EchoDash_Integration {
 		do_action( "echodash_{$this->slug}_meta_box", $post );
 	}
 
-
 	/**
 	 * Helper function for rendering the event tracking fields.
 	 *
 	 * @since  1.0.0
-	 *
 	 * @param  string $trigger The trigger.
 	 * @param  int    $post_id The post ID.
 	 * @param  array  $args    The arguments.
 	 * @return mixed  The event tracking input fields.
 	 */
 	public function render_event_tracking_fields( $trigger, $post_id, $args = array() ) {
-
 		$settings = $this->get_settings( $post_id );
 
 		$defaults = array(
@@ -678,7 +640,6 @@ abstract class EchoDash_Integration {
 		$args = wp_parse_args( $args, $defaults );
 
 		// If we're returning instead of echoing.
-
 		if ( true === $args['return'] ) {
 			ob_start();
 		}
@@ -686,7 +647,6 @@ abstract class EchoDash_Integration {
 		ecd_render_event_tracking_fields( $args );
 
 		// Localize the script data.
-
 		echodash()->admin->localize( $this->slug, $trigger, $this->get_options( $trigger, $post_id ) );
 
 		if ( true === $args['return'] ) {
@@ -699,10 +659,12 @@ abstract class EchoDash_Integration {
 	 * sanitizing and saving them.
 	 *
 	 * @since 1.0.0
-	 *
 	 * @param int $post_id The post ID.
 	 */
 	public function save_post( $post_id ) {
+		if ( ! isset( $_POST['echodash_nonce'] ) || ! wp_verify_nonce( sanitize_key( $_POST['echodash_nonce'] ), 'echodash_save_settings' ) ) {
+			return;
+		}
 
 		$data = ! empty( $_POST['echodash_settings'] ) ? wp_unslash( $_POST['echodash_settings'] ) : array();
 		$data = array_filter( $data ); // Sanitize and remove empty values.

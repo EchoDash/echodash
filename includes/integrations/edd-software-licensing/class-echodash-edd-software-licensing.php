@@ -97,23 +97,13 @@ class EchoDash_EDD_Software_Licensing extends EchoDash_Integration {
 	 * @param int $download_id The download ID.
 	 */
 	public function activate_license( $license_id, $download_id ) {
-
-		$events = $this->get_events( 'license_activated', $download_id );
-
-		if ( ! empty( $events ) ) {
-
-			$license = edd_software_licensing()->get_license( $license_id );
-
-			$license_args  = $this->get_license_vars( $license_id );
-			$download_args = echodash()->integration( 'edd' )->get_download_vars( $download_id );
-
-			$args = array_merge( $license_args, $download_args );
-
-			foreach ( $events as $event ) {
-				$event = $this->replace_tags( $event, $args );
-				$this->track_event( $event, $license->customer->email );
-			}
-		}
+		$this->track_event(
+			'license_activated',
+			array(
+				'download' => $download_id,
+				'license'  => $license_id,
+			)
+		);
 	}
 
 	/**
@@ -125,31 +115,17 @@ class EchoDash_EDD_Software_Licensing extends EchoDash_Integration {
 	 * @param int $download_id The download ID.
 	 */
 	public function deactivate_license( $license_id, $download_id ) {
-
-		$events = $this->get_events( 'license_deactivated', $download_id );
-
-		if ( ! empty( $events ) ) {
-
-			$license = edd_software_licensing()->get_license( $license_id );
-
-			$license_args  = $this->get_license_vars( $license_id );
-			$download_args = echodash()->integration( 'edd' )->get_download_vars( $download_id );
-
-			$args = array_merge( $license_args, $download_args );
-
-			foreach ( $events as $event ) {
-				$event = $this->replace_tags( $event, $args );
-				$this->track_event( $event, $license->customer->email );
-			}
-		}
+		$this->track_event(
+			'license_deactivated',
+			array(
+				'download' => $download_id,
+				'license'  => $license_id,
+			)
+		);
 	}
 
 	/**
-	 * Triggered when an update package is delivered via EDDSL.
-	 *
-	 * The edd_sl_before_package_download hook is probably more appropriate for
-	 * this kind of thing but it runs before the request has been verified and
-	 * we'd have to duplicate a lot of the EDD checks.
+	 * Triggered when an update package is delivered.
 	 *
 	 * @since  1.0.0
 	 *
@@ -159,23 +135,15 @@ class EchoDash_EDD_Software_Licensing extends EchoDash_Integration {
 	 * @return string The download file URL.
 	 */
 	public function package_download( $file_url, $download_id, $license_key ) {
+		$license = edd_software_licensing()->get_license( $license_key );
 
-		$events = $this->get_events( 'installed_update', $download_id );
-
-		if ( ! empty( $events ) ) {
-
-			$license = edd_software_licensing()->get_license( $license_key );
-
-			$license_args  = $this->get_license_vars( $license->ID );
-			$download_args = echodash()->integration( 'edd' )->get_download_vars( $download_id );
-
-			$args = array_merge( $license_args, $download_args );
-
-			foreach ( $events as $event ) {
-				$event = $this->replace_tags( $event, $args );
-				$this->track_event( $event, $license->customer->email );
-			}
-		}
+		$this->track_event(
+			'installed_update',
+			array(
+				'download' => $download_id,
+				'license'  => $license->ID,
+			)
+		);
 
 		return $file_url;
 	}

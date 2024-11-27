@@ -185,21 +185,15 @@ class EchoDash_AffiliateWP extends EchoDash_Integration {
 	 * @param integer $affiliate_id
 	 */
 	public function add_affiliate( $affiliate_id ) {
+		$affiliate = affwp_get_affiliate( $affiliate_id );
 
-		$events = $this->get_events( 'affiliate_created' );
-
-		if ( ! empty( $events ) ) {
-
-			$affiliate = affwp_get_affiliate( $affiliate_id );
-			$user      = get_user_by( 'id', $affiliate->user_id );
-
-			$args = $this->get_affiliate_vars( $affiliate_id );
-
-			foreach ( $events as $event ) {
-				$event = $this->replace_tags( $event, $args );
-				$this->track_event( $event, $user->user_email );
-			}
-		}
+		$this->track_event(
+			'affiliate_created',
+			array(
+				'affiliate' => $affiliate_id,
+				'user'      => $affiliate->user_id,
+			)
+		);
 	}
 
 	/**
@@ -211,23 +205,20 @@ class EchoDash_AffiliateWP extends EchoDash_Integration {
 	 * @param string $status       The affiliate status.
 	 */
 	public function affiliate_status_updated( $affiliate_id = 0, $status = '' ) {
+		$affiliate = affwp_get_affiliate( $affiliate_id );
 
-		$events = $this->get_events( 'affiliate_status_updated' );
-
-		if ( ! empty( $events ) ) {
-
-			$affiliate = affwp_get_affiliate( $affiliate_id );
-			$user      = get_user_by( 'id', $affiliate->user_id );
-
-			$args = $this->get_affiliate_vars( $affiliate_id );
-
-			$args['affiliate']['status'] = ucwords( $status );
-
-			foreach ( $events as $event ) {
-				$event = $this->replace_tags( $event, $args );
-				$this->track_event( $event, $user->user_email );
-			}
-		}
+		$this->track_event(
+			'affiliate_status_updated',
+			array(
+				'affiliate' => $affiliate_id,
+				'user'      => $affiliate->user_id,
+			),
+			array(
+				'affiliate' => array(
+					'status' => ucwords( $status ),
+				),
+			)
+		);
 	}
 
 	/**
@@ -298,25 +289,16 @@ class EchoDash_AffiliateWP extends EchoDash_Integration {
 	 * @param array   $data
 	 */
 	public function add_visit( $visit_id, $data ) {
+		$affiliate = affwp_get_affiliate( $data['affiliate_id'] );
 
-		$events = $this->get_events( 'link_visited' );
-
-		if ( ! empty( $events ) ) {
-
-			$affiliate = affwp_get_affiliate( $data['affiliate_id'] );
-			$user      = get_user_by( 'id', $affiliate->user_id );
-
-			$args = array_merge(
-				$this->get_affiliate_vars( $data['affiliate_id'] ),
-				$this->get_visit_vars( $visit_id ),
-				echodash()->integration( 'user' )->get_user_vars( $user->ID ),
-			);
-
-			foreach ( $events as $event ) {
-				$event = $this->replace_tags( $event, $args );
-				$this->track_event( $event, $user->user_email );
-			}
-		}
+		$this->track_event(
+			'link_visited',
+			array(
+				'affiliate' => $data['affiliate_id'],
+				'visit'     => $visit_id,
+				'user'      => $affiliate->user_id,
+			)
+		);
 	}
 
 
@@ -435,25 +417,23 @@ class EchoDash_AffiliateWP extends EchoDash_Integration {
 	 * @param object  $referral
 	 */
 	public function add_referral( $affiliate_id, $referral ) {
-		$events = $this->get_events( 'referral_earned' );
+		$affiliate = affwp_get_affiliate( $affiliate_id );
 
-		if ( ! empty( $events ) ) {
-
-			$affiliate = affwp_get_affiliate( $affiliate_id );
-			$user      = get_user_by( 'id', $affiliate->user_id );
-
-			$args = array_merge(
-				$this->get_affiliate_vars( $affiliate_id ),
-				$this->get_visit_vars( $referral->visit_id ),
-				$this->get_referral_vars( $referral->referral_id ),
-				echodash()->integration( 'user' )->get_user_vars( $user->ID ),
-			);
-
-			foreach ( $events as $event ) {
-				$event = $this->replace_tags( $event, $args );
-				$this->track_event( $event, $user->user_email );
-			}
-		}
+		$this->track_event(
+			'referral_earned',
+			array(
+				'affiliate' => $affiliate_id,
+				'referral'  => $referral->referral_id,
+				'visit'     => $referral->visit_id,
+				'user'      => $affiliate->user_id,
+			),
+			array(
+				'referral' => array(
+					'amount' => $referral->amount,
+					'type'   => $referral->type,
+				),
+			)
+		);
 	}
 }
 

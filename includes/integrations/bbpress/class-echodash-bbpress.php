@@ -77,83 +77,46 @@ class EchoDash_BbPress extends EchoDash_Integration {
 	}
 
 	/**
-	 * Triggered when a topic is created in frontend.
+	 * Track when a new topic is created.
 	 *
-	 * @since  1.2.0
-	 * @param integer $reply_id the reply id.
-	 * @param integer $topic_id the topic id.
-	 * @param integer $forum_id the forum id.
-	 * @param array   $anonymous_data annonymous data.
-	 * @param integer $reply_author topic author.
+	 * @since 1.2.0
+	 *
+	 * @param int $topic_id The topic ID.
 	 */
-	public function reply_created( $reply_id, $topic_id, $forum_id, $anonymous_data, $reply_author ) {
-		$user          = get_user_by( 'id', $reply_author );
-		$email_address = $user->user_email;
-		$events        = $this->get_events( 'topic_reply_created', $topic_id );
+	public function topic_created( $topic_id ) {
+		$topic = get_post( $topic_id );
 
-		if ( ! empty( $events ) ) {
-
-			$args = array_merge(
-				$this->get_reply_vars( $reply_id ),
-				$this->get_topic_vars( $topic_id ),
-				$this->get_forum_vars( $forum_id )
-			);
-
-			foreach ( $events as $event ) {
-				$event = $this->replace_tags( $event, $args );
-				$this->track_event( $event, $email_address );
-			}
-		}
+		$this->track_event(
+			'topic_created',
+			array(
+				'topic' => $topic_id,
+				'forum' => $topic->post_parent,
+				'user'  => $topic->post_author,
+			)
+		);
 	}
-
 
 	/**
-	 * Triggered when a topic is created in frontend.
+	 * Track when a new reply is created.
 	 *
-	 * @since  1.2.0
-	 * @param integer $topic_id the topic id.
-	 * @param integer $forum_id the forum id.
-	 * @param array   $anonymous_data annonymous data.
-	 * @param integer $topic_author topic author.
+	 * @since 1.2.0
+	 *
+	 * @param int $reply_id The reply ID.
 	 */
-	public function topic_created( $topic_id, $forum_id, $anonymous_data, $topic_author ) {
-		$user          = get_user_by( 'id', $topic_author );
-		$email_address = $user->user_email;
+	public function reply_created( $reply_id ) {
+		$reply = get_post( $reply_id );
+		$topic = get_post( $reply->post_parent );
 
-		$events = $this->get_events( 'forum_topic_created', $forum_id );
-
-		if ( ! empty( $events ) ) {
-
-			$args = array_merge(
-				$this->get_topic_vars( $topic_id ),
-				$this->get_forum_vars( $forum_id )
-			);
-
-			foreach ( $events as $event ) {
-				$event = $this->replace_tags( $event, $args );
-				$this->track_event( $event, $email_address );
-			}
-		} else {
-
-			// Only send the global event if there isn't a forum specific one.
-
-			$events = $this->get_events( 'topic_created', $topic_id );
-
-			if ( ! empty( $events ) ) {
-
-				$args = array_merge(
-					$this->get_topic_vars( $topic_id ),
-					$this->get_forum_vars( $forum_id )
-				);
-
-				foreach ( $events as $event ) {
-					$event = $this->replace_tags( $event, $args );
-					$this->track_event( $event, $email_address );
-				}
-			}
-		}
+		$this->track_event(
+			'reply_created',
+			array(
+				'reply' => $reply_id,
+				'topic' => $reply->post_parent,
+				'forum' => $topic->post_parent,
+				'user'  => $reply->post_author,
+			)
+		);
 	}
-
 
 
 	/**

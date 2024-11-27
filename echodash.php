@@ -110,7 +110,6 @@ final class EchoDash {
 				}
 
 				self::$instance->integrations = new stdClass();
-
 				self::$instance->integrations_includes();
 
 			} else {
