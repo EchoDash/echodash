@@ -58,28 +58,62 @@ class EchoDash_AffiliateWP extends EchoDash_Integration {
 
 		$triggers = array(
 			'affiliate_created'        => array(
-				'name'         => __( 'New Affiliate', 'echodash' ),
-				'description'  => __( 'Triggered each time an affiliate registers.', 'echodash' ),
-				'has_global'   => true,
-				'option_types' => array( 'affiliate' ),
+				'name'               => __( 'New Affiliate', 'echodash' ),
+				'description'        => __( 'Triggered each time an affiliate registers.', 'echodash' ),
+				'has_global'         => true,
+				'option_types'       => array( 'affiliate' ),
+				'enabled_by_default' => true,
+				'default_event'      => array(
+					'name'     => 'New Affiliate Registration',
+					'mappings' => array(
+						'payment_email' => '{affiliate:payment_email}',
+						'rate'          => '{affiliate:rate}',
+						'status'        => '{affiliate:status}',
+					),
+				),
 			),
 			'affiliate_status_updated' => array(
-				'name'         => __( 'Affiliate Status Updated', 'echodash' ),
-				'description'  => __( 'Triggered each time an affiliate\'s status is updated.', 'echodash' ),
-				'has_global'   => true,
-				'option_types' => array( 'affiliate' ),
+				'name'               => __( 'Affiliate Status Updated', 'echodash' ),
+				'description'        => __( 'Triggered each time an affiliate\'s status is updated.', 'echodash' ),
+				'has_global'         => true,
+				'option_types'       => array( 'affiliate' ),
+				'enabled_by_default' => true,
+				'default_event'      => array(
+					'name'     => 'Affiliate Status Changed',
+					'mappings' => array(
+						'payment_email' => '{affiliate:payment_email}',
+						'status'        => '{affiliate:status}',
+					),
+				),
 			),
 			'link_visited'             => array(
-				'name'         => __( 'New Visit', 'echodash' ),
-				'description'  => __( 'Triggered each time a referral visits a link.' ),
-				'has_global'   => true,
-				'option_types' => array( 'affiliate', 'visit' ),
+				'name'               => __( 'New Visit', 'echodash' ),
+				'description'        => __( 'Triggered each time a referral visits a link.' ),
+				'has_global'         => true,
+				'option_types'       => array( 'affiliate', 'visit' ),
+				'enabled_by_default' => true,
+				'default_event'      => array(
+					'name'     => 'Affiliate Link Visited',
+					'mappings' => array(
+						'visited_url' => '{visit:url}',
+					),
+				),
 			),
 			'referral_earned'          => array(
-				'name'         => __( 'Referral Earned', 'echodash' ),
-				'description'  => __( 'Triggered each time a referral is earned.' ),
-				'has_global'   => true,
-				'option_types' => array( 'affiliate', 'visit', 'referral' ),
+				'name'               => __( 'Referral Earned', 'echodash' ),
+				'description'        => __( 'Triggered each time a referral is earned.' ),
+				'has_global'         => true,
+				'option_types'       => array( 'affiliate', 'visit', 'referral' ),
+				'enabled_by_default' => true,
+				'default_event'      => array(
+					'name'     => 'Referral Earned',
+					'mappings' => array(
+						'referral_amount' => '{referral:amount}',
+						'referral_type'   => '{referral:type}',
+						'referral_status' => '{referral:status}',
+						'customer_email'  => '{referral:customer_email}',
+					),
+				),
 			),
 		);
 

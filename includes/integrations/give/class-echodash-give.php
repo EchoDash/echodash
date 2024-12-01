@@ -50,10 +50,23 @@ class EchoDash_Give extends EchoDash_Integration {
 
 		$triggers = array(
 			'new_donation' => array(
-				'name'         => __( 'New Donation', 'echodash' ),
-				'description'  => __( 'Triggered each time a donation has been made.', 'echodash' ),
-				'has_global'   => true,
-				'option_types' => array( 'donation' ),
+				'name'               => __( 'New Donation', 'echodash' ),
+				'description'        => __( 'Triggered each time a donation has been made.', 'echodash' ),
+				'has_global'         => true,
+				'option_types'       => array( 'donation' ),
+				'enabled_by_default' => true,
+				'default_event'      => array(
+					'name'     => 'Donation Made',
+					'mappings' => array(
+						'donation_id'     => '{donation:ID}',
+						'donor_name'      => '{donation:first_name} {donation:last_name}',
+						'donor_email'     => '{donation:email}',
+						'donation_amount' => '{donation:subtotal}',
+						'payment_method'  => '{donation:payment_gateway}',
+						'donation_status' => '{donation:status}',
+						'form_title'      => '{donation:form_title}',
+					),
+				),
 			),
 		);
 

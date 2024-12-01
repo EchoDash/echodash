@@ -56,29 +56,54 @@ class EchoDash_LearnDash extends EchoDash_Integration {
 
 		$triggers = array(
 			'course_start'    => array(
-				'name'         => __( 'Course Start', 'echodash' ),
-				'description'  => __( 'Triggered whenever a course is started.', 'echodash' ),
-				'post_types'   => array( 'sfwd-courses' ),
-				'has_single'   => true,
-				'has_global'   => true,
-				'option_types' => array( 'course' ),
+				'name'               => __( 'Course Start', 'echodash' ),
+				'description'        => __( 'Triggered whenever a course is started.', 'echodash' ),
+				'post_types'         => array( 'sfwd-courses' ),
+				'has_single'         => true,
+				'has_global'         => true,
+				'option_types'       => array( 'course' ),
+				'enabled_by_default' => true,
+				'default_event'      => array(
+					'name'     => 'Course Started',
+					'mappings' => array(
+						'course_title' => '{course:title}',
+					),
+				),
 			),
 			'course_progress' => array(
-				'name'         => __( 'Course Progress', 'echodash' ),
-				'description'  => __( 'Triggered whenever a lesson or topic is completed within the course, as well as when the course itself is completed.', 'echodash' ),
-				'post_types'   => array( 'sfwd-courses' ),
-				'has_single'   => true,
-				'has_global'   => true,
-				'option_types' => array( 'course' ),
+				'name'               => __( 'Course Progress', 'echodash' ),
+				'description'        => __( 'Triggered whenever a lesson or topic is completed within the course.', 'echodash' ),
+				'post_types'         => array( 'sfwd-courses' ),
+				'has_single'         => true,
+				'has_global'         => true,
+				'option_types'       => array( 'course' ),
+				'enabled_by_default' => true,
+				'default_event'      => array(
+					'name'     => 'Course Progress',
+					'mappings' => array(
+						'course_title'        => '{course:title}',
+						'last_completed_step' => '{course:last_completed_step}',
+						'progress_percentage' => '{course:course_progress}',
+					),
+				),
 			),
 			'quiz_completed'  => array(
-				'name'         => __( 'Quiz Completed', 'echodash' ),
-				'description'  => __( 'Triggered whenever a quiz in this course is completed.', 'echodash' ),
-				'post_types'   => array( 'sfwd-courses' ),
-				'has_single'   => true,
-				'has_global'   => true,
-				'option_id'    => 'quiz',
-				'option_types' => array( 'course', 'quiz' ),
+				'name'               => __( 'Quiz Completed', 'echodash' ),
+				'description'        => __( 'Triggered whenever a quiz in this course is completed.', 'echodash' ),
+				'post_types'         => array( 'sfwd-courses' ),
+				'has_single'         => true,
+				'has_global'         => true,
+				'option_types'       => array( 'course', 'quiz' ),
+				'enabled_by_default' => true,
+				'default_event'      => array(
+					'name'     => 'Quiz Completed',
+					'mappings' => array(
+						'course_title' => '{course:title}',
+						'quiz_title'   => '{quiz:title}',
+						'percentage'   => '{quiz:percentage}',
+						'points'       => '{quiz:points}',
+					),
+				),
 			),
 		);
 

@@ -99,7 +99,7 @@
 								?>
 
 									<tr class="item">
-										<td class="order"><span><?php echo esc_html( $i ); ?></span></td>
+										<td class="order"><span class="dashicons dashicons-menu"></span></td>
 										<td class="trigger">
 											<div class="ecd-field">
 												<div class="ecd-label">
@@ -169,7 +169,7 @@
 									?>
 
 									<tr class="item" data-repeater-item <?php echo empty( $event['trigger'] ) ? 'style="display: none;"' : ''; ?>>
-										<td class="order"><span><?php echo esc_html( $i ); ?></span></td>
+										<td class="order"><span class="dashicons dashicons-menu"></span></td>
 										<td class="trigger">
 											<div class="ecd-field">
 												<div class="ecd-label">

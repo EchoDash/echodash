@@ -53,20 +53,39 @@ class EchoDash_Woo_Subscriptions extends EchoDash_Integration {
 
 		$triggers = array(
 			'renewal_payment'              => array(
-				'name'         => __( 'Renewal Payment Received', 'echodash' ),
-				'description'  => __( 'Triggered each time a single renewal payment is received.', 'echodash' ),
-				'post_types'   => array( 'product' ),
-				'has_single'   => true,
-				'has_global'   => true,
-				'option_types' => array( 'product', 'order', 'subscription' ),
+				'name'               => __( 'Renewal Payment Received', 'echodash' ),
+				'description'        => __( 'Triggered each time a single renewal payment is received.', 'echodash' ),
+				'post_types'         => array( 'product' ),
+				'has_single'         => true,
+				'has_global'         => true,
+				'option_types'       => array( 'product', 'order', 'subscription' ),
+				'enabled_by_default' => true,
+				'default_event'      => array(
+					'name'     => 'Subscription Renewed',
+					'mappings' => array(
+						'renewal_date'   => '{subscription:renewal_date}',
+						'order_id'       => '{order:id}',
+						'payment_total'  => '{order:total}',
+						'payment_method' => '{order:payment_method}',
+					),
+				),
 			),
 			'subscriptions_status_updated' => array(
-				'name'         => __( 'Subscription Status Changed', 'echodash' ),
-				'description'  => __( 'Triggered when a subscription status has changed.', 'echodash' ),
-				'post_types'   => array( 'product' ),
-				'has_single'   => true,
-				'has_global'   => true,
-				'option_types' => array( 'product', 'subscription' ),
+				'name'               => __( 'Subscription Status Changed', 'echodash' ),
+				'description'        => __( 'Triggered when a subscription status has changed.', 'echodash' ),
+				'post_types'         => array( 'product' ),
+				'has_single'         => true,
+				'has_global'         => true,
+				'option_types'       => array( 'product', 'subscription' ),
+				'enabled_by_default' => true,
+				'default_event'      => array(
+					'name'     => 'Subscription Status Changed',
+					'mappings' => array(
+						'old_status'   => '{subscription:old_status}',
+						'new_status'   => '{subscription:status}',
+						'renewal_date' => '{subscription:renewal_date}',
+					),
+				),
 			),
 		);
 

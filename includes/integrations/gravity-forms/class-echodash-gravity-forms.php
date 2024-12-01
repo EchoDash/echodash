@@ -59,11 +59,23 @@ class EchoDash_Gravity_Forms extends EchoDash_Integration {
 
 		$triggers = array(
 			'form_submitted' => array(
-				'name'         => __( 'Form Submitted', 'echodash' ),
-				'description'  => __( 'Triggered each time a form is submitted.', 'echodash' ),
-				'has_single'   => true,
-				'has_global'   => true,
-				'option_types' => array( 'entry' ),
+				'name'               => __( 'Form Submitted', 'echodash' ),
+				'description'        => __( 'Triggered each time a form is submitted.', 'echodash' ),
+				'has_single'         => true,
+				'has_global'         => true,
+				'option_types'       => array( 'entry' ),
+				'enabled_by_default' => true,
+				'default_event'      => array(
+					'name'     => 'Form Submitted',
+					'mappings' => array(
+						'form_title' => '{entry:form_title}',
+						'date'       => '{entry:date}',
+						'entry_url'  => '{entry:url}',
+						'page_title' => '{entry:embed_post_title}',
+						'page_url'   => '{entry:embed_post_url}',
+						'fields'     => '{entry:all_fields}',  // All form fields as array
+					),
+				),
 			),
 
 		);
@@ -203,13 +215,69 @@ class EchoDash_Gravity_Forms extends EchoDash_Integration {
 	 * @return array The form options.
 	 */
 	public function get_entry_options( $options, $entry_id = false ) {
-
 		$options = array(
 			'name'    => __( 'Entry', 'echodash' ),
 			'type'    => 'entry',
-			'options' => array(),
+			'options' => array(
+				array(
+					'meta'        => 'id',
+					'preview'     => '2459',
+					'placeholder' => __( 'The entry ID', 'echodash' ),
+				),
+				array(
+					'meta'        => 'form_id',
+					'preview'     => '12',
+					'placeholder' => __( 'The form ID', 'echodash' ),
+				),
+				array(
+					'meta'        => 'form_title',
+					'preview'     => 'Contact Form',
+					'placeholder' => __( 'The form title', 'echodash' ),
+				),
+				array(
+					'meta'        => 'date',
+					'preview'     => gmdate( 'Y-m-d H:i:s' ),
+					'placeholder' => __( 'The submission date', 'echodash' ),
+				),
+				array(
+					'meta'        => 'ip',
+					'preview'     => '192.168.1.1',
+					'placeholder' => __( 'The submitter IP address', 'echodash' ),
+				),
+				array(
+					'meta'        => 'user_agent',
+					'preview'     => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)',
+					'placeholder' => __( 'The submitter browser info', 'echodash' ),
+				),
+				array(
+					'meta'        => 'url',
+					'preview'     => admin_url( 'admin.php?page=gf_entries&view=entry&id=12&lid=2459' ),
+					'placeholder' => __( 'The entry URL in admin', 'echodash' ),
+				),
+				array(
+					'meta'        => 'embed_post_title',
+					'preview'     => 'Contact Us',
+					'placeholder' => __( 'The page title where form was submitted', 'echodash' ),
+				),
+				array(
+					'meta'        => 'embed_post_url',
+					'preview'     => site_url( '/contact-us/' ),
+					'placeholder' => __( 'The page URL where form was submitted', 'echodash' ),
+				),
+				array(
+					'meta'        => 'all_fields',
+					'preview'     => array(
+						'first_name' => 'John',
+						'last_name'  => 'Doe',
+						'email'      => 'john.doe@example.com',
+						'message'    => 'This is a sample message',
+					),
+					'placeholder' => __( 'All form fields as array', 'echodash' ),
+				),
+			),
 		);
 
+		// Get form fields if entry_id is provided
 		if ( $entry_id ) {
 			$entry  = GFAPI::get_entry( $entry_id );
 			$form   = GFAPI::get_form( $entry['form_id'] );
@@ -218,21 +286,20 @@ class EchoDash_Gravity_Forms extends EchoDash_Integration {
 			$fields = null;
 		}
 
+		// Add all available merge tags
 		foreach ( GFCommon::get_merge_tags( $fields, null ) as $tag_group ) {
-
 			foreach ( $tag_group['tags'] as $merge_tag ) {
-
+				// Skip user and IP tags as they're handled by core
 				if ( false !== strpos( $merge_tag['tag'], 'user:' ) || false !== strpos( $merge_tag['tag'], 'ip:' ) ) {
-					continue; // the core integration already handles these.
+					continue;
 				}
 
-				$id = str_replace( '{', '', $merge_tag['tag'] );
-				$id = str_replace( '}', '', $id );
+				// Process the merge tag to get the field ID
+				$tag = str_replace( array( '{', '}' ), '', $merge_tag['tag'] );
 
 				$options['options'][] = array(
-					'meta'        => $id,
-					'preview'     => $merge_tag['label'],
-					'placeholder' => $merge_tag['label'],
+					'meta'    => $tag,
+					'preview' => $merge_tag['label'],
 				);
 			}
 		}

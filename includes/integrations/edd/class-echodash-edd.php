@@ -50,20 +50,40 @@ class EchoDash_EDD extends EchoDash_Integration {
 
 		$triggers = array(
 			'purchased_download'  => array(
-				'name'         => __( 'Completed Purchase', 'echodash' ),
-				'description'  => __( 'Triggered each time a purchase is completed.', 'echodash' ),
-				'post_types'   => array( 'download' ),
-				'has_single'   => true,
-				'has_global'   => true,
-				'option_types' => array( 'download', 'payment' ),
+				'name'               => __( 'Completed Purchase', 'echodash' ),
+				'description'        => __( 'Triggered each time a purchase is completed.', 'echodash' ),
+				'post_types'         => array( 'download' ),
+				'has_single'         => true,
+				'has_global'         => true,
+				'option_types'       => array( 'download', 'payment' ),
+				'enabled_by_default' => true,
+				'default_event'      => array(
+					'name'     => 'Download Purchase',
+					'mappings' => array(
+						'download_name'  => '{download:title}',
+						'download_price' => '{download:price}',
+						'payment_id'     => '{payment:id}',
+						'payment_total'  => '{payment:total}',
+						'payment_method' => '{payment:payment_method}',
+					),
+				),
 			),
 			'downloaded_download' => array(
-				'name'         => __( 'Downloaded Download', 'echodash' ),
-				'description'  => __( 'Triggered each time a file is downloaded.', 'echodash' ),
-				'post_types'   => array( 'download' ),
-				'has_single'   => true,
-				'has_global'   => true,
-				'option_types' => array( 'download', 'file' ),
+				'name'               => __( 'Downloaded Download', 'echodash' ),
+				'description'        => __( 'Triggered each time a file is downloaded.', 'echodash' ),
+				'post_types'         => array( 'download' ),
+				'has_single'         => true,
+				'has_global'         => true,
+				'option_types'       => array( 'download', 'file' ),
+				'enabled_by_default' => true,
+				'default_event'      => array(
+					'name'     => 'File Download',
+					'mappings' => array(
+						'download_name' => '{download:title}',
+						'file_name'     => '{file:name}',
+						'file_path'     => '{file:file}',
+					),
+				),
 			),
 		);
 

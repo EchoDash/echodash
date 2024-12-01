@@ -58,26 +58,52 @@ class EchoDash_GamiPress extends EchoDash_Integration {
 
 		$triggers = array(
 			'points_earned'       => array(
-				'name'         => __( 'Points Earned', 'echodash' ),
-				'description'  => __( 'Triggered each time that points are earned.', 'echodash' ),
-				'has_global'   => true,
-				'option_types' => array( 'points' ),
+				'name'               => __( 'Points Earned', 'echodash' ),
+				'description'        => __( 'Triggered each time that points are earned.', 'echodash' ),
+				'has_global'         => true,
+				'option_types'       => array( 'points' ),
+				'enabled_by_default' => true,
+				'default_event'      => array(
+					'name'     => 'Points Earned',
+					'mappings' => array(
+						'points_earned' => '{points:new_points}',
+						'total_points'  => '{points:total_points}',
+					),
+				),
 			),
 			'rank_earned'         => array(
-				'name'         => __( 'Rank Earned', 'echodash' ),
-				'description'  => __( 'Triggered each time a rank is earned.', 'echodash' ),
-				'post_types'   => array_keys( GamiPress()->rank_types ),
-				'has_single'   => true,
-				'has_global'   => true,
-				'option_types' => array( 'rank' ),
+				'name'               => __( 'Rank Earned', 'echodash' ),
+				'description'        => __( 'Triggered each time a rank is earned.', 'echodash' ),
+				'post_types'         => array_keys( GamiPress()->rank_types ),
+				'has_single'         => true,
+				'has_global'         => true,
+				'option_types'       => array( 'rank' ),
+				'enabled_by_default' => true,
+				'default_event'      => array(
+					'name'     => 'Rank Earned',
+					'mappings' => array(
+						'rank_name'            => '{rank:rank_name}',
+						'congratulations_text' => '{rank:congratulations_text}',
+						'points_required'      => '{rank:points_to_unlock}',
+					),
+				),
 			),
 			'achievement_earned'  => array(
-				'name'         => __( 'Achievement Earned', 'echodash' ),
-				'description'  => __( 'Triggered each time that an achievement is earned.', 'echodash' ),
-				'post_types'   => array_keys( GamiPress()->achievement_types ),
-				'has_single'   => true,
-				'has_global'   => true,
-				'option_types' => array( 'achievement' ),
+				'name'               => __( 'Achievement Earned', 'echodash' ),
+				'description'        => __( 'Triggered each time that an achievement is earned.', 'echodash' ),
+				'post_types'         => array_keys( GamiPress()->achievement_types ),
+				'has_single'         => true,
+				'has_global'         => true,
+				'option_types'       => array( 'achievement' ),
+				'enabled_by_default' => true,
+				'default_event'      => array(
+					'name'     => 'Achievement Earned',
+					'mappings' => array(
+						'achievement_name'     => '{achievement:achievement_name}',
+						'congratulations_text' => '{achievement:congratulations_text}',
+						'points_awarded'       => '{achievement:points_awarded}',
+					),
+				),
 			),
 			'achievement_revoked' => array(
 				'name'         => __( 'Achievement Revoked', 'echodash' ),

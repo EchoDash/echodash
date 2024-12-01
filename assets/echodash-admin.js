@@ -35,43 +35,52 @@ jQuery( function ( $ ) {
 			// Change back text if it was sent.
 			$(this).html('<span class="dashicons dashicons-bell ecd-ring"></span>Send Test');
 
-			
 			let trigger = $(this).parents('span.echodash');
 			let data = {};
 			data.integration = trigger.attr('data-integration');
 			data.trigger = trigger.attr('data-trigger');
 			data.event_name = trigger.find('.ecd-preview .event-name').text();
+			data.event_keys_values = [];
 
-			if(trigger.find('.ecd-multi-key').length > 0){
-				data.event_keys_values = [];
-				$.each(trigger.find('.ecd-values tr'),function(index,item){
-					var key = $(item).find('td:first').text().slice(0,-1);
-					var value = $(item).find('td:last').text();
+			if (trigger.find('.ecd-multi-key').length > 0) {
+				$.each(trigger.find('.ecd-values tr'), function(index, item) {
+					var key = $(item).find('td:first').text().slice(0, -1); // Remove trailing colon
+					var value = $(item).find('td:last').html();
 					
-					data.event_keys_values[index] = {
-						key: key,
-						value: value
-					};
+					// Check if this is a list of fields (has <ul> tag)
+					if (value && value.includes('<ul')) {
+						// Extract field pairs from the <li> elements
+						$(value).find('li').each(function() {
+							let [fieldKey, fieldValue] = $(this).text().split(':').map(s => s.trim());
+							data.event_keys_values.push({
+								key: 'fields_' + fieldKey,
+								value: fieldValue
+							});
+						});
+					} else {
+						data.event_keys_values.push({
+							key: key,
+							value: value
+						});
+					}
 				});
-			
-			}else{
+			} else {
 				data.event_keys_values = trigger.find('.ecd-preview .event-value').text();
 			}
 
 			$.ajax({
 				type: "POST",
 				url: ecdEventData.ajaxurl,
-				data: { action: 'ecd_send_test',data,'_ajax_nonce':ecdEventData.nonce },
-				success: function(response){
-					if(response.success === true){
+				data: { action: 'ecd_send_test', data, '_ajax_nonce': ecdEventData.nonce },
+				success: function(response) {
+					if (response.success === true) {
 						trigger.find('.ecd-send-test').text('Sent!');
 					}
 				},
-				error: function(error){
+				error: function(error) {
 					console.log(error);
 				}
 			});
-	
 		},
 
 		/**
@@ -285,13 +294,6 @@ jQuery( function ( $ ) {
 						show: function () {
 		
 							$( this ).show();
-							var main_parent = $( this ).parents( '.ecd-repeater' );
-							$( '.order span',main_parent ).each(
-								function (i) {
-									var numbering = i + 1;
-									$( this ).text( numbering );
-								}
-							);
 		
 							// Hide event fields by default on new rows
 							$(this).find('.echodash').removeClass('visible');
@@ -351,14 +353,6 @@ jQuery( function ( $ ) {
 				$( ".ecd-repeater .table_body" ).sortable(
 					{
 						handle: '.order',
-						update: function (event, ui) {
-							$( '.order span',$( this ).parents( '.ecd-repeater' ) ).each(
-								function (i) {
-									var numbering = i + 1;
-									$( this ).text( numbering );
-								}
-							);
-						}
 					}
 				);
 			}
@@ -406,8 +400,16 @@ jQuery( function ( $ ) {
 	
 					previews.forEach( function( element ) {
 	
-						if ( element.text == new_match ) {
-							text_value = text_value.replace( new_match, '<b>' + element.preview + '</b>');
+						if (element.text == new_match) {
+							let previewText = element.preview;
+							if (typeof element.preview === 'object') {
+								previewText = '<ul style="margin:0;padding-left:20px">' + 
+									Object.entries(element.preview)
+										.map(([key, value]) => `<li>${key}: ${value}</li>`)
+										.join('') + 
+									'</ul>';
+							}
+							text_value = text_value.replace(new_match, '<b>' + previewText + '</b>');
 						}
 	
 					} );

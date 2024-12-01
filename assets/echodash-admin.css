@@ -256,9 +256,30 @@ form#ecd_option_page h1 svg {
     width: 30px;
     background: #f4f4f4;
     cursor: move;
-    color: #aaa;
-    text-shadow: #fff 0 1px 0;
     text-align: center;
+    padding: 15px 5px;
+}
+
+.ecd-integration table td.order .dashicons {
+    color: #999;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    transition: color 0.2s ease;
+}
+
+/* Hover state */
+.ecd-integration table td.order:hover .dashicons {
+    color: #666;
+}
+
+/* When being dragged */
+.ui-sortable-helper td.order {
+    background: #e8e8e8;
+}
+
+.ui-sortable-helper td.order .dashicons {
+    color: #666;
 }
 
 .ecd-integration table {

@@ -47,20 +47,36 @@ class EchoDash_Presto_Player extends EchoDash_Integration {
 
 		$triggers = array(
 			'video_play'     => array(
-				'name'         => __( 'Video Play', 'echodash' ),
-				'description'  => __( 'Triggered when a video is played.', 'echodash' ),
-				'post_types'   => array( 'pp_video_block' ),
-				'has_single'   => true,
-				'has_global'   => true,
-				'option_types' => array( 'video' ),
+				'name'               => __( 'Video Play', 'echodash' ),
+				'description'        => __( 'Triggered when a video is played.', 'echodash' ),
+				'post_types'         => array( 'pp_video_block' ),
+				'has_single'         => true,
+				'has_global'         => true,
+				'option_types'       => array( 'video' ),
+				'enabled_by_default' => true,
+				'default_event'      => array(
+					'name'     => 'Video Started',
+					'mappings' => array(
+						'video_title' => '{video:post_title}',
+						'video_src'   => '{video:src}',
+					),
+				),
 			),
 			'video_complete' => array(
-				'name'         => __( 'Video Complete', 'echodash' ),
-				'description'  => __( 'Triggered when a video is watched to completion.', 'echodash' ),
-				'post_types'   => array( 'pp_video_block' ),
-				'has_single'   => true,
-				'has_global'   => true,
-				'option_types' => array( 'video' ),
+				'name'               => __( 'Video Complete', 'echodash' ),
+				'description'        => __( 'Triggered when a video is watched to completion.', 'echodash' ),
+				'post_types'         => array( 'pp_video_block' ),
+				'has_single'         => true,
+				'has_global'         => true,
+				'option_types'       => array( 'video' ),
+				'enabled_by_default' => true,
+				'default_event'      => array(
+					'name'     => 'Video Completed',
+					'mappings' => array(
+						'video_title' => '{video:post_title}',
+						'video_src'   => '{video:src}',
+					),
+				),
 			),
 		);
 
