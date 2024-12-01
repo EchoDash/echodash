@@ -4,10 +4,13 @@ jQuery( function ( $ ) {
 			this.optionPageRepeater();
 			this.multiKeyRepeater();
 
+			// Initialize visibility for existing triggers
+			this.initializeExistingTriggers();
+
 			$(document).on('input change','.echodash input[type=text]',this.inputPreview);
 			$(document).on('click','.echodash a.open-list', this.selectorShortcodes);
 			$(document).on('click','.ecd-circles button[data-repeater-create]',this.repeaterButtonsFix);
-			$(document).on('change','td.trigger select.trigger', this.select4Fix);
+			$(document).on('change','td.trigger select.trigger', this.handleTriggerChange);
 			$(document).on('click','.ecd-send-test',this.sendEventTest);
 
 			// EDD Recurring Subscription.
@@ -72,14 +75,102 @@ jQuery( function ( $ ) {
 		},
 
 		/**
-		 * Fix select4 selector when a trigger is added/changed.
+		 * Handle trigger selection change
 		 */
-		select4Fix:function(){
-			$(this).closest( 'tr' ).find( 'select.select4-hidden-accessible option, select.select4-hidden-accessible optgroup' ).remove();
-			$(this).closest( 'tr' ).find( 'select.select4-hidden-accessible' ).select4( 'destroy' ); // clear out the old options
-			$(this).next( 'span.description' ).html( $(this).find( 'option:selected' ).attr( 'data-description' ) ); // update the description
-			$(this).closest( 'tr' ).find( 'span.echodash' ).attr( 'data-trigger', $(this).find( 'option:selected' ).val() ); // update the data atts on the container.
+		handleTriggerChange: function() {
+			var $select = $(this);
+			var $row = $select.closest('tr');
+			var integration = $select.data('integration');
+			var trigger = $select.val();
 
+			// Clean up select4
+			EchoDash.cleanupSelect4($select, $row);
+			
+			// Update trigger metadata
+			EchoDash.updateTriggerMetadata($select, $row, trigger);
+
+			// Toggle event fields visibility
+			var $eventFields = $row.find('.echodash .echodash-fields');
+			var $placeholder = $row.find('.echodash .ecd-placeholder');
+			
+			if (trigger) {
+				$eventFields.addClass('visible');
+				$placeholder.hide();
+				// Apply default event configuration if available
+				EchoDash.applyDefaultEventConfig($row, integration, trigger);
+			} else {
+				$eventFields.removeClass('visible');
+				$placeholder.show();
+			}
+		},
+
+		/**
+		 * Clean up select4 instance
+		 */
+		cleanupSelect4: function($select, $row) {
+			$row.find('select.select4-hidden-accessible option, select.select4-hidden-accessible optgroup').remove();
+			$row.find('select.select4-hidden-accessible').select4('destroy');
+		},
+
+		/**
+		 * Update trigger description and data attributes
+		 */
+		updateTriggerMetadata: function($select, $row, trigger) {
+			$select.next('span.description').html($select.find('option:selected').attr('data-description'));
+			$row.find('span.echodash').attr('data-trigger', trigger);
+		},
+
+		/**
+		 * Apply default event configuration if available
+		 */
+		applyDefaultEventConfig: function($row, integration, trigger) {
+			var defaultEvent = ecdEventData.triggers[integration][trigger].default_event;
+			if (!defaultEvent) return;
+
+			// Set event name
+			$row.find('input.ecd-name').val(defaultEvent.name).trigger('change');
+
+			// Handle mappings
+			this.resetMappings($row);
+			this.applyDefaultMappings($row, defaultEvent.mappings);
+		},
+
+		/**
+		 * Reset existing mappings to prepare for new ones
+		 */
+		resetMappings: function($row) {
+			$row.find('.ecd-multi-key .nr-item:not(:first)').remove();
+			var $firstRow = $row.find('.ecd-multi-key .nr-item:first');
+			$firstRow.find('input.ecd-key, input.ecd-value').val('');
+			return $firstRow;
+		},
+
+		/**
+		 * Apply the default mappings to the form
+		 */
+		applyDefaultMappings: function($row, mappings) {
+			var $firstRow = $row.find('.ecd-multi-key .nr-item:first');
+			var isFirst = true;
+
+			Object.entries(mappings).forEach(([key, value]) => {
+				if (isFirst) {
+					$firstRow.find('input.ecd-key').val(key).trigger('change');
+					$firstRow.find('input.ecd-value').val(value).trigger('change');
+					isFirst = false;
+				} else {
+					this.addNewMapping($row, key, value);
+				}
+			});
+		},
+
+		/**
+		 * Add a new mapping row with values
+		 */
+		addNewMapping: function($row, key, value) {
+			$row.find('.ecd-multi-key [data-repeater-create]').click();
+			var $newRow = $row.find('.ecd-multi-key .nr-item:last');
+			$newRow.find('input.ecd-key').val(key).trigger('change');
+			$newRow.find('input.ecd-value').val(value).trigger('change');
 		},
 
 		/**
@@ -201,6 +292,12 @@ jQuery( function ( $ ) {
 									$( this ).text( numbering );
 								}
 							);
+		
+							// Hide event fields by default on new rows
+							$(this).find('.echodash').removeClass('visible');
+
+							// Reset trigger select to placeholder
+							$(this).find('select.trigger').val('');
 		
 							// fixing the issue of the labels
 							var params = [this];
@@ -482,7 +579,21 @@ jQuery( function ( $ ) {
 				$('.select4-dropdown').css({"left":'0'});
 			}
 		
-		}
+		},
+
+		/**
+		 * Initialize visibility state for existing triggers
+		 */
+		initializeExistingTriggers: function() {
+			$('.ecd-repeater select.trigger').each(function() {
+				var $select = $(this);
+				if ($select.val()) {
+					var $row = $select.closest('tr');
+					$row.find('.echodash .echodash-fields').addClass('visible');
+					$row.find('.echodash .ecd-placeholder').hide();
+				}
+			});
+		},
 	};
 
 

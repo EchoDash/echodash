@@ -32,7 +32,7 @@
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
-define( 'ECHODASH_VERSION', '0.0.3' );
+define( 'ECHODASH_VERSION', '0.0.4' );
 
 /**
  * Class EchoDash
@@ -70,13 +70,12 @@ final class EchoDash {
 	/**
 	 * Allows interfacing with integrations.
 	 *
-	 * For example echodash()->integrations->{'woocommerce'}->get_events().
+	 * For example echodash()->integration( 'woocommerce' )->get_events().
 	 *
 	 * @var object
 	 * @since 1.0.0
 	 */
 	public $integrations;
-
 
 	/**
 	 * Main EchoDash Instance
@@ -164,6 +163,24 @@ final class EchoDash {
 	}
 
 	/**
+	 * Helper for accessing a single integration.
+	 *
+	 * @since  1.0.0
+	 *
+	 * @param  string $integration_name The integration name.
+	 * @return EchoDash_Integration|bool The integration class or false.
+	 */
+	public function integration( $integration_name ) {
+
+		if ( isset( self::$instance->integrations->{ $integration_name } ) ) {
+			return self::$instance->integrations->{ $integration_name };
+		} else {
+			return false;
+		}
+	}
+
+
+	/**
 	 * Setup plugin constants.
 	 *
 	 * @access private
@@ -245,23 +262,6 @@ final class EchoDash {
 		}
 
 		do_action( 'echodash_integrations_loaded' );
-	}
-
-	/**
-	 * Helper for accessing a single integration.
-	 *
-	 * @since  1.0.0
-	 *
-	 * @param  string $integration_name The integration name.
-	 * @return EchoDash_Integration|bool The integration class or false.
-	 */
-	public function integration( $integration_name ) {
-
-		if ( isset( self::$instance->integrations->{ $integration_name } ) ) {
-			return self::$instance->integrations->{ $integration_name };
-		} else {
-			return false;
-		}
 	}
 
 	/**

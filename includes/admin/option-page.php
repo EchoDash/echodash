@@ -3,6 +3,7 @@
 	<form id="ecd_option_page" action="" method="post">
 
 		<?php $settings = get_option( 'echodash_options' ); ?>
+		<?php $endpoint = get_option( 'echodash_endpoint' ); ?>
 
 		<h1><?php esc_html_e( 'EchoDash', 'echodash' ); ?></h1>
 
@@ -16,7 +17,7 @@
 			</p>
 
 			<?php
-			if ( empty( $settings['endpoint'] ) ) :
+			if ( empty( $endpoint ) ) :
 				?>
 
 				<p>
@@ -28,7 +29,7 @@
 
 			<?php else : ?>
 
-				<input type="text" id="echodash-endpoint" name="echodash_options[endpoint]" placeholder="https://echodash.com/endpoints/xyz/receive" class="regular-text code" value="<?php echo esc_url( $settings['endpoint'] ); ?>">
+				<input type="text" id="echodash-endpoint" name="echodash_options[endpoint]" placeholder="https://echodash.com/endpoints/xyz/receive" class="regular-text code" value="<?php echo esc_url( $endpoint ); ?>">
 
 				<p><?php esc_html_e( 'For each trigger, name your event, and enter one or more key / value pairs containing the data you\'d like sent with the event.', 'echodash' ); ?></p>
 
@@ -37,7 +38,7 @@
 		</div>
 
 		<?php
-		if ( ! empty( $settings['endpoint'] ) ) :
+		if ( ! empty( $endpoint ) ) :
 			?>
 
 			<?php wp_nonce_field( 'echodash_options', 'echodash_options_nonce' ); ?>
@@ -176,6 +177,7 @@
 												</div>
 												<div class="ecd-input">
 													<select data-integration="<?php echo esc_attr( $integration->slug ); ?>" class="trigger" name="trigger" id="trigger_<?php echo esc_attr( $j ); ?>">
+														<option value=""><?php esc_html_e( 'Select a trigger', 'echodash' ); ?></option>
 														<?php foreach ( $triggers as $id => $trigger_option ) : ?>
 															<?php if ( $trigger_option['has_global'] ) : ?>
 																<option data-description="<?php echo esc_html( $trigger_option['description'] ); ?>" <?php selected( $event['trigger'], $id, true ); ?> value="<?php echo $id; ?>"><?php echo esc_html( $trigger_option['name'] ); ?></option>
@@ -187,18 +189,20 @@
 											</div>
 										</td>
 										<td class="echodash">
-											<?php
-
-											ecd_render_event_tracking_fields(
-												array(
-													'meta_name' => 'echodash_options',
-													'setting'  => $event,
-													'field_id' => $id . '_' . $j,
-													'integration' => $integration->slug,
-													'trigger'  => $trigger_id,
-												)
-											);
-											?>
+											<div class="ecd-placeholder"><?php esc_html_e( 'Please select a trigger to configure the event', 'echodash' ); ?></div>
+											<div class="echodash-fields">
+												<?php
+												ecd_render_event_tracking_fields(
+													array(
+														'meta_name' => 'echodash_options',
+														'setting'  => $event,
+														'field_id' => $id . '_' . $j,
+														'integration' => $integration->slug,
+														'trigger'  => $trigger_id,
+													)
+												);
+												?>
+											</div>
 										</td>
 
 										<td class="close">

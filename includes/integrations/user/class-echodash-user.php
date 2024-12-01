@@ -56,14 +56,42 @@ class EchoDash_User extends EchoDash_Integration {
 
 		$triggers = array(
 			'logged_in' => array(
-				'name'         => __( 'Logged In', 'echodash' ),
-				'description'  => __( 'Triggered each time a user logs in.', 'echodash' ),
-				'has_global'   => true,
-				'option_types' => array( 'user' ),
+				'name'               => __( 'Logged In', 'echodash' ),
+				'description'        => __( 'Triggered each time a user logs in.', 'echodash' ),
+				'has_global'         => true,
+				'option_types'       => array( 'user' ),
+				'enabled_by_default' => true,
+				'default_event'      => array(
+					'name'     => 'User Login',
+					'mappings' => array(
+						'user_id'      => '{user:id}',
+						'email'        => '{user:user_email}',
+						'display_name' => '{user:display_name}',
+						'roles'        => '{user:roles}',
+					),
+				),
 			),
 		);
 
 		return $triggers;
+	}
+
+	/**
+	 * Sets the user ID to the current one if the integration hasn't provided one.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array  $objects The objects.
+	 * @param string $trigger The trigger.
+	 * @return array The objects.
+	 */
+	public function event_objects( $objects, $trigger ) {
+
+		if ( ! isset( $objects['user'] ) ) {
+			$objects['user'] = get_current_user_id();
+		}
+
+		return $objects;
 	}
 
 	/**

@@ -33,6 +33,7 @@ class EchoDash_Admin {
 		add_action( 'admin_init', array( $this, 'save_settings' ) );
 
 		add_action( 'wp_ajax_ecd_send_test', array( $this, 'send_event_test' ) );
+		add_action( 'wp_ajax_ecd_reset_to_defaults', array( $this, 'reset_to_defaults' ) );
 	}
 
 	/**
@@ -139,6 +140,11 @@ class EchoDash_Admin {
 		$endpoint_url = esc_url_raw( $_GET['endpoint_url'] );
 
 		update_option( 'echodash_endpoint', $endpoint_url, true );
+
+		$this->initialize_default_settings();
+
+		wp_safe_redirect( admin_url( 'options-general.php?page=echodash' ) );
+		exit;
 	}
 
 	/**
@@ -227,7 +233,12 @@ class EchoDash_Admin {
 	 */
 	public function admin_scripts() {
 
-		wp_register_script( 'echodash-admin', ECHODASH_DIR_URL . 'assets/echodash-admin.js', array( 'jquery', 'jquery-ui-sortable' ), ECHODASH_VERSION, true );
+		wp_register_style( 'select4', ECHODASH_DIR_URL . 'assets/select4/select4.min.css', array(), '4.0.1' );
+		wp_register_script( 'select4', ECHODASH_DIR_URL . 'assets/select4/select4.min.js', array( 'jquery' ), '4.0.1', true );
+
+		wp_register_script( 'echodash-jquery-repeater', ECHODASH_DIR_URL . 'assets/jquery-repeater/jquery.repeater.min.js', array( 'jquery' ), '1.2.2', true );
+
+		wp_register_script( 'echodash-admin', ECHODASH_DIR_URL . 'assets/echodash-admin.js', array( 'jquery', 'jquery-ui-sortable', 'select4' ), ECHODASH_VERSION, true );
 		wp_register_style( 'echodash-admin', ECHODASH_DIR_URL . 'assets/echodash-admin.css', array(), ECHODASH_VERSION );
 
 		if ( 'settings_page_echodash' === get_current_screen()->id ) {
@@ -242,14 +253,13 @@ class EchoDash_Admin {
 
 				foreach ( $integration->get_triggers() as $trigger => $trigger_data ) {
 
-					$this->localize_data['triggers'][ $slug ][ $trigger ] = array( 'options' => $integration->get_options( $trigger ) );
+					$this->localize_data['triggers'][ $slug ][ $trigger ] = array(
+						'options'       => $integration->get_options( $trigger ),
+						'default_event' => $integration->get_defaults( $trigger ),
+					);
 
 				}
 			}
-
-			// Repeater is always needed on the main settings page.
-			wp_enqueue_script( 'echodash-jquery-repeater', ECHODASH_DIR_URL . 'assets/jquery-repeater/jquery.repeater.min.js', array( 'jquery' ), ECHODASH_VERSION, true );
-
 		}
 
 		// Integrations set $this->localize_data based on the fields specific to the integration.
@@ -260,12 +270,110 @@ class EchoDash_Admin {
 			$this->localize_data['ajaxurl'] = admin_url( 'admin-ajax.php' );
 			$this->localize_data['nonce']   = wp_create_nonce( 'ecd_ajax_nonce' );
 
-			wp_enqueue_script( 'echodash-jquery-repeater', ECHODASH_DIR_URL . 'assets/jquery-repeater/jquery.repeater.min.js', array( 'jquery' ), ECHODASH_VERSION, true );
-
+			wp_enqueue_style( 'select4' );
+			wp_enqueue_script( 'select4' );
+			wp_enqueue_script( 'echodash-jquery-repeater' );
 			wp_enqueue_style( 'echodash-admin' );
 			wp_enqueue_script( 'echodash-admin' );
 			wp_localize_script( 'echodash-admin', 'ecdEventData', $this->localize_data );
 
 		}
+	}
+
+	/**
+	 * Initialize default settings for all integrations.
+	 *
+	 * @since 1.2.0
+	 */
+	public function initialize_default_settings() {
+		$settings = get_option( 'echodash_options', array() );
+		$modified = false;
+
+		foreach ( echodash()->integrations as $integration ) {
+			// Skip if this integration already has settings
+			if ( ! empty( $settings[ $integration->slug ] ) ) {
+				continue;
+			}
+
+			$default_settings = array();
+
+			foreach ( $integration->get_triggers() as $trigger => $config ) {
+				if ( ! empty( $config['enabled_by_default'] ) ) {
+					$default_event = $integration->get_defaults( $trigger );
+
+					if ( $default_event ) {
+						$default_settings[] = array(
+							'trigger' => $trigger,
+							'name'    => $default_event['name'],
+							'value'   => array_map(
+								function ( $key, $value ) {
+									return array(
+										'key'   => $key,
+										'value' => $value,
+									);
+								},
+								array_keys( $default_event['mappings'] ),
+								$default_event['mappings']
+							),
+						);
+					}
+				}
+			}
+
+			if ( ! empty( $default_settings ) ) {
+				$settings[ $integration->slug ] = $default_settings;
+				$modified                       = true;
+			}
+		}
+
+		if ( $modified ) {
+			update_option( 'echodash_options', $settings, false );
+		}
+	}
+
+	/**
+	 * Reset integration settings to defaults.
+	 *
+	 * @since 1.2.0
+	 */
+	public function reset_to_defaults() {
+		check_ajax_referer( 'ecd_ajax_nonce', '_ajax_nonce' );
+
+		$integration = isset( $_POST['integration'] ) ? sanitize_text_field( $_POST['integration'] ) : '';
+
+		if ( ! empty( $integration ) && isset( echodash()->integrations->$integration ) ) {
+			$settings         = get_option( 'echodash_options', array() );
+			$default_settings = array();
+
+			foreach ( echodash()->integration( $integration )->get_triggers() as $trigger => $config ) {
+				if ( ! empty( $config['enabled_by_default'] ) ) {
+					$default_event = echodash()->integration( $integration )->get_defaults( $trigger );
+
+					if ( $default_event ) {
+						$default_settings[] = array(
+							'trigger' => $trigger,
+							'name'    => $default_event['name'],
+							'value'   => array_map(
+								function ( $key, $value ) {
+									return array(
+										'key'   => $key,
+										'value' => $value,
+									);
+								},
+								array_keys( $default_event['mappings'] ),
+								$default_event['mappings']
+							),
+						);
+					}
+				}
+			}
+
+			$settings[ $integration ] = $default_settings;
+			update_option( 'echodash_options', $settings, false );
+
+			wp_send_json_success();
+		}
+
+		wp_send_json_error();
 	}
 }

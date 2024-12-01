@@ -51,6 +51,7 @@ abstract class EchoDash_Integration {
 	 * @since 1.0.0
 	 */
 	public function __construct() {
+
 		echodash()->integrations->{ $this->slug } = $this;
 
 		// Add the hooks in each integration.
@@ -58,6 +59,9 @@ abstract class EchoDash_Integration {
 
 		// So any global / shared options can be properly loaded.
 		add_filter( 'echodash_event_data', array( $this, 'get_event_data' ), 10, 2 );
+
+		// Allows other integrations to include relevant objects for the event, such as the current user.
+		add_filter( 'echodash_event_objects', array( $this, 'event_objects' ), 10, 2 );
 
 		// So any global / shared options can be properly loaded.
 		add_action( 'echodash_integrations_loaded', array( $this, 'initialize_triggers' ) );
@@ -82,6 +86,18 @@ abstract class EchoDash_Integration {
 	abstract protected function setup_triggers();
 
 	/**
+	 * Allows other integrations to include relevant objects for the event, such as the current user.
+	 *
+	 * @since 1.0.0
+	 * @param array  $objects The objects.
+	 * @param string $trigger The trigger.
+	 * @return array The objects.
+	 */
+	public function event_objects( $objects, $trigger ) {
+		return $objects;
+	}
+
+	/**
 	 * Return the available triggers for the integration.
 	 *
 	 * @since  1.0.0
@@ -100,6 +116,18 @@ abstract class EchoDash_Integration {
 	 */
 	public function get_trigger( $trigger ) {
 		return $this->triggers[ $trigger ];
+	}
+
+	/**
+	 * Gets the trigger name.
+	 *
+	 * @since 1.0.0
+	 * @param string $trigger The trigger.
+	 * @return string The trigger name.
+	 */
+	public function get_trigger_name( $trigger ) {
+		$trigger_name = isset( $this->triggers[ $trigger ]['name'] ) ? $this->triggers[ $trigger ]['name'] : $trigger;
+		return apply_filters( 'echodash_trigger_name', $trigger_name, $trigger );
 	}
 
 	/**
@@ -135,92 +163,14 @@ abstract class EchoDash_Integration {
 	}
 
 	/**
-	 * Tracks an event.
+	 * Gets the event data from the get_{$object_type}_vars method in each integration.
 	 *
 	 * @since 1.0.0
-	 * @param string $trigger The trigger.
-	 * @param array  $objects The objects.
-	 * @param array  $args    The event arguments.
-	 */
-	public function track_event( $trigger, $objects = array(), $args = array() ) {
-
-		// Get object ID if applicable
-		$object_id = $this->get_object_id_for_trigger( $trigger, $objects );
-
-		// Get events configured for this trigger
-		$events = $this->get_events( $trigger, $object_id );
-
-		error_log( print_r( 'events for trigger ' . $trigger, true ) );
-		error_log( print_r( $events, true ) );
-		error_log( print_r( 'args', true ) );
-		error_log( print_r( $args, true ) );
-
-		// Get merge variables
-		$event_data = apply_filters( 'echodash_event_data', array(), $objects );
-
-		// Merge in any custom arguments passed from the trigger
-		foreach ( $args as $object_type => $values ) {
-			if ( isset( $event_data[ $object_type ] ) ) {
-				error_log( print_r( 'merging values', true ) );
-				error_log( print_r( $values, true ) );
-				$event_data[ $object_type ] = array_merge( $event_data[ $object_type ], $values );
-			}
-		}
-
-		error_log( print_r( 'event data after merge', true ) );
-		error_log( print_r( $event_data, true ) );
-
-		// Process each event
-		foreach ( $events as $event ) {
-			// Replace merge tags in event data
-			$processed_event = $this->replace_tags( $event, $event_data );
-
-			error_log( print_r( 'processed event', true ) );
-			error_log( print_r( $processed_event, true ) );
-
-			// Format the values into key-value pairs
-			$formatted_values = $this->format_event_values( $processed_event['value'] );
-
-			// Get the trigger name from the triggers array
-			$trigger_name = isset( $this->triggers[ $trigger ]['name'] ) ? $this->triggers[ $trigger ]['name'] : $trigger;
-
-			// Track via public class
-			echodash()->public->track_event(
-				$processed_event['name'],
-				$formatted_values,
-				$this->name,
-				$trigger_name
-			);
-		}
-	}
-
-	/**
-	 * Format event values into key-value pairs
-	 *
-	 * @since 1.0.0
-	 * @param array $values Raw event values
-	 * @return array Formatted values
-	 */
-	private function format_event_values( $values ) {
-		if ( ! is_array( $values ) ) {
-			return array();
-		}
-
-		$formatted = array();
-		foreach ( $values as $item ) {
-			if ( isset( $item['key'] ) && isset( $item['value'] ) ) {
-				$formatted[ $item['key'] ] = trim( $item['value'] );
-			}
-		}
-		return $formatted;
-	}
-
-	/**
-	 * Replaces the merge variables.
-	 *
-	 * @since 1.0.0
+	 * @param array $objects The objects.
+	 * @return array The event data.
 	 */
 	public function get_event_data( $event_data = array(), $objects = array() ) {
+
 		foreach ( $objects as $object_type => $object_id ) {
 			if ( method_exists( $this, "get_{$object_type}_vars" ) ) {
 				$event_data = array_merge( $event_data, $this->{"get_{$object_type}_vars"}( $object_id ) );
@@ -231,61 +181,98 @@ abstract class EchoDash_Integration {
 	}
 
 	/**
-	 * Helper for replacing the placeholders with values.
+	 * Tracks an event.
 	 *
-	 * @since  1.0.0
-	 * @param  array $event  The event as saved in the database.
-	 * @param  array $args   The key value replacement pairs from the integration.
-	 * @return array The filtered event.
+	 * @since 1.0.0
+	 * @param string $trigger The trigger.
+	 * @param array  $objects The objects.
+	 * @param array  $args    The event arguments.
 	 */
-	public function replace_tags( $event, $args ) {
-		$defaults = array(
-			'name'  => '',
-			'value' => array(),
-		);
+	public function track_event( $trigger, $objects = array(), $args = array() ) {
 
-		$event = wp_parse_args( $event, $defaults );
+		$objects = apply_filters( 'echodash_event_objects', $objects, $trigger );
 
-		foreach ( $args as $type => $values ) {
-			foreach ( $values as $id => $value ) {
-				if ( ! is_scalar( $value ) ) {
-					continue;
-				}
+		// Get object ID if applicable
+		$object_id = $this->get_object_id_for_trigger( $trigger, $objects );
 
-				$search         = '{' . $type . ':' . $id . '}';
-				$event['name']  = trim( str_replace( $search, $value, $event['name'] ) );
-				$event['value'] = $this->replace_value( $event['value'], $search, $value );
+		// Get events configured for this trigger
+		$events = $this->get_events( $trigger, $object_id );
+
+		// Get merge variables
+		$event_data = apply_filters( 'echodash_event_data', array(), $objects );
+
+		// Merge in any custom arguments passed from the trigger
+		foreach ( $args as $object_type => $values ) {
+			if ( isset( $event_data[ $object_type ] ) ) {
+				$event_data[ $object_type ] = array_merge( $event_data[ $object_type ], $values );
 			}
 		}
 
-		$event = apply_filters( 'echodash_replace_tags', $event, $args );
+		// Process each event
+		foreach ( $events as $event ) {
 
-		return $event;
+			// Format the values from settings storage into key-value pairs.
+			$event['value'] = wp_list_pluck( $event['value'], 'value', 'key' );
+
+			// Replace merge tags in event data
+			$event['value'] = $this->replace_tags( $event['value'], $event_data );
+
+			// Track via public class
+			echodash()->public->track_event(
+				$event['name'],
+				$event['value'],
+				$this->name,
+				$this->get_trigger_name( $trigger )
+			);
+		}
 	}
 
 	/**
-	 * Helper for replacing placeholders in array values
+	 * Helper for replacing the placeholders with values.
 	 *
-	 * @since 1.0.0
-	 * @param array  $values The array of values to process
-	 * @param string $search The search string
-	 * @param string $replace The replacement string
-	 * @return array The processed values
+	 * @since  1.0.0
+	 * @param array $event_values The event values.
+	 * @param array $event_data   The event data.
+	 * @return array The filtered event values.
 	 */
-	private function replace_value( $values, $search, $replace ) {
-		if ( ! is_array( $values ) ) {
-			return $values;
-		}
+	public function replace_tags( $event_values, $event_data ) {
 
-		foreach ( $values as $key => $value ) {
-			if ( is_array( $value ) ) {
-				$values[ $key ] = $this->replace_value( $value, $search, $replace );
-			} elseif ( is_string( $value ) ) {
-				$values[ $key ] = str_replace( $search, $replace, $value );
+		foreach ( $event_values as $key => $event_value ) {
+
+			// At this point we have the user's configured mapping, like "first_name" => "{user:first_name}"
+
+			foreach ( $event_data as $object_type => $object_values ) {
+
+				// Object type is, for example, "user", or "order".
+
+				foreach ( $object_values as $object_key => $object_value ) {
+
+					// Object key is, for example, "first_name", object value is, for example, "John".
+
+					$search = '{' . $object_type . ':' . $object_key . '}';
+
+					if ( is_scalar( $object_value ) ) {
+
+						// Now we replace the placeholder text, like {user:first_name} with the actual value.
+						$event_values[ $key ] = str_replace( $search, $object_value, $event_values[ $key ] );
+
+					} elseif ( is_array( $object_value ) && false !== strpos( $event_value, $search ) ) {
+
+						unset( $event_values[ $key ] );
+
+						foreach ( $object_value as $object_value_key => $object_value_value ) {
+							$event_values[ $key . '_' . $object_value_key ] = $object_value_value;
+						}
+					}
+				}
 			}
 		}
 
-		return $values;
+		$event_values = array_filter( $event_values ); // Remove any empty values.
+
+		$event_values = apply_filters( 'echodash_replace_tags', $event_values, $event_data );
+
+		return $event_values;
 	}
 
 	/**
@@ -308,7 +295,6 @@ abstract class EchoDash_Integration {
 			if ( false !== $settings[ $trigger ] ) {
 				$events[] = $settings[ $trigger ];
 			}
-
 		} elseif ( false === $post_id && $this->triggers[ $trigger ]['has_single'] ) {
 			// Get all the single events for a trigger. Used when loading the global options.
 			$events = $this->get_single_events( $trigger );
@@ -441,7 +427,7 @@ abstract class EchoDash_Integration {
 	 * @param  int    $post_id The post ID.
 	 * @return array  The options.
 	 */
-	public function get_options( $trigger, $post_id = false ) {
+	public function get_options( $trigger, $post_id = 0 ) {
 		$options    = array();
 		$used_types = array(); // If two integrations use the same type, we don't want to duplicate them in the dropdown.
 
@@ -466,6 +452,28 @@ abstract class EchoDash_Integration {
 		}
 
 		return $options;
+	}
+
+	/**
+	 * Gets the default configuration for a trigger.
+	 *
+	 * @since 1.2.0
+	 * @param string $trigger The trigger ID.
+	 * @return array|false The default configuration or false if none exists.
+	 */
+	public function get_defaults( $trigger ) {
+		$triggers = $this->get_triggers();
+
+		if ( ! isset( $triggers[ $trigger ] ) || empty( $triggers[ $trigger ]['default_event'] ) ) {
+			return false;
+		}
+
+		return apply_filters(
+			'echodash_default_event_mappings',
+			$triggers[ $trigger ]['default_event'],
+			$trigger,
+			$this->slug
+		);
 	}
 
 	/**
