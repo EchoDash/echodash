@@ -65,18 +65,20 @@ class EchoDash_Public {
 	 * @since 1.0.0
 	 */
 	public function shutdown() {
+
 		if ( empty( $this->events ) ) {
 			return;
 		}
 
 		$endpoint = ecd_get_option( 'endpoint' );
+
 		if ( empty( $endpoint ) ) {
 			return;
 		}
 
 		foreach ( $this->events as $event ) {
 
-			wp_remote_post(
+			$res = wp_remote_post(
 				$endpoint,
 				array(
 					'headers'    => array(
@@ -90,6 +92,7 @@ class EchoDash_Public {
 					'user-agent' => 'EchoDash ' . ECHODASH_VERSION . '; ' . home_url(),
 				)
 			);
+
 		}
 	}
 }

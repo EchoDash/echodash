@@ -243,7 +243,7 @@ class EchoDash_LearnDash extends EchoDash_Integration {
 
 		foreach ( $header_data['tabs'] as $tabindex => $tab ) {
 
-			if ( 'wp-fusion-settings' === $tab['id'] ) {
+			if ( 'sfwd-courses-settings' === $tab['id'] ) {
 				$header_data['tabs'][ $tabindex ]['metaboxes'][] = 'echodash';
 			}
 		}

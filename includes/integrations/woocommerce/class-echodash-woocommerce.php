@@ -58,7 +58,7 @@ class EchoDash_WooCommerce extends EchoDash_Integration {
 				'has_global'         => true,
 				'placeholder'        => 'Order',
 				'option_types'       => array( 'order' ),
-				'enabled_by_default' => false,
+				'enabled_by_default' => true,
 				'default_event'      => array(
 					'name'     => 'Order Placed',
 					'mappings' => array(
@@ -95,7 +95,7 @@ class EchoDash_WooCommerce extends EchoDash_Integration {
 				'has_global'         => true,
 				'placeholder'        => 'Order',
 				'option_types'       => array( 'order' ),
-				'enabled_by_default' => false,
+				'enabled_by_default' => true,
 				'default_event'      => array(
 					'name'     => 'Order Status Update',
 					'mappings' => array(
@@ -139,6 +139,10 @@ class EchoDash_WooCommerce extends EchoDash_Integration {
 	 * @since 1.0.0
 	 */
 	public function purchased_product( $item_id, $item, $item_order_id ) {
+
+		if ( ! is_a( $item, 'WC_Order_Item_Product' ) ) {
+			return;
+		}
 
 		$this->track_event(
 			'purchased_product',
