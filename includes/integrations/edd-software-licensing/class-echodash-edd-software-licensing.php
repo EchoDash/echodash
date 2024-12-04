@@ -229,7 +229,7 @@ class EchoDash_EDD_Software_Licensing extends EchoDash_Integration {
 
 				// Installing an update. The user agent will be like "WordPress/5.4.2; https://example.com".
 				$parts                       = explode( ';', $_SERVER['HTTP_USER_AGENT'] );
-				$vars['license']['site_url'] = trim( $parts[1] );
+				$vars['license']['site_url'] = esc_url_raw( trim( $parts[1] ) );
 			}
 
 			$download = new EDD_SL_Download( $license->download_id );

@@ -64,7 +64,6 @@ class EchoDash_User extends EchoDash_Integration {
 				'default_event'      => array(
 					'name'     => 'User Login',
 					'mappings' => array(
-						'user_id'      => '{user:id}',
 						'email'        => '{user:user_email}',
 						'display_name' => '{user:display_name}',
 						'roles'        => '{user:roles}',
@@ -181,9 +180,6 @@ class EchoDash_User extends EchoDash_Integration {
 	/**
 	 * Gets the details from the user for merging.
 	 *
-	 * At the moment this passes the product ID in the admin when editing a
-	 * WooCommerce product. Will have to find a way to fix that later.
-	 *
 	 * @since  1.1.0
 	 *
 	 * @param  bool|int $user_id The user ID.
@@ -192,11 +188,14 @@ class EchoDash_User extends EchoDash_Integration {
 	public function get_user_vars( $user_id = false ) {
 
 		if ( empty( $user_id ) || empty( get_user_by( 'id', $user_id ) ) ) {
-
 			$user_id = get_current_user_id();
 		}
 
 		$user_meta = get_user_meta( $user_id );
+
+		if ( empty( $user_meta ) ) {
+			return array();
+		}
 
 		$user_meta = array_map(
 			function ( $a ) {
@@ -206,7 +205,6 @@ class EchoDash_User extends EchoDash_Integration {
 		);
 
 		foreach ( $user_meta as $key => $value ) {
-
 			if ( 'wp_capabilities' === $key ) {
 				$user_meta['role'] = implode( ', ', $value );
 			}
@@ -217,13 +215,14 @@ class EchoDash_User extends EchoDash_Integration {
 		}
 
 		// Page / leadsource stuff.
-
 		if ( ! empty( $_SERVER['REQUEST_URI'] ) ) {
-			$user_meta['current_url'] = home_url( $_SERVER['REQUEST_URI'] );
+			$request_uri              = wp_unslash( $_SERVER['REQUEST_URI'] );
+			$user_meta['current_url'] = esc_url_raw( home_url( sanitize_text_field( $request_uri ) ) );
 		}
 
 		if ( ! empty( $_SERVER['HTTP_REFERER'] ) ) {
-			$user_meta['referer'] = $_SERVER['HTTP_REFERER'];
+			$referer              = wp_unslash( $_SERVER['HTTP_REFERER'] );
+			$user_meta['referer'] = esc_url_raw( $referer );
 		}
 
 		$user_meta['id'] = $user_id;

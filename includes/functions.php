@@ -53,13 +53,22 @@ function ecd_get_option( $key, $default_value = false ) {
  * @return string|array
  */
 function ecd_clean( $var ) {
+
 	if ( is_array( $var ) ) {
+
+		// Clean up empty event values.
+		foreach ( $var as $id => $maybe_event ) {
+			if ( is_array( $maybe_event ) ) {
+				if ( ( is_array( $maybe_event['value'] ) && empty( $maybe_event['value'][0]['key'] ) ) || ( isset( $maybe_event['name'] ) && empty( $maybe_event['name'] ) ) ) {
+					unset( $var[ $id ] );
+				}
+			}
+		}
+
 		return array_map( 'ecd_clean', $var );
 	}
 
 	if ( is_scalar( $var ) ) {
 		return sanitize_text_field( $var );
 	}
-
-	return $var;
 }

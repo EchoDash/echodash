@@ -70,7 +70,7 @@ class EchoDash_Abandoned_Cart extends EchoDash_Integration {
 	public function get_cart_options() {
 
 		return array(
-			'name'    => __( 'Cart', 'wp-fus ion-event-tracking' ),
+			'name'    => __( 'Cart', 'echodash' ),
 			'type'    => 'cart',
 			'options' => array(
 				array(

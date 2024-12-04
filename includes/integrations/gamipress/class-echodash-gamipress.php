@@ -228,7 +228,7 @@ class EchoDash_GamiPress extends EchoDash_Integration {
 	public function get_rank_options() {
 
 		return array(
-			'name'    => __( 'Rank', 'wp-fus ion-event-tracking' ),
+			'name'    => __( 'Rank', 'echodash' ),
 			'type'    => 'rank',
 			'options' => array(
 				array(
@@ -289,7 +289,7 @@ class EchoDash_GamiPress extends EchoDash_Integration {
 	public function get_achievement_options() {
 
 		return array(
-			'name'    => __( 'Achievement', 'wp-fus ion-event-tracking' ),
+			'name'    => __( 'Achievement', 'echodash' ),
 			'type'    => 'achievement',
 			'options' => array(
 				array(
@@ -350,7 +350,7 @@ class EchoDash_GamiPress extends EchoDash_Integration {
 	public function get_points_options() {
 
 		return array(
-			'name'    => __( 'Points', 'wp-fus ion-event-tracking' ),
+			'name'    => __( 'Points', 'echodash' ),
 			'type'    => 'points',
 			'options' => array(
 				array(

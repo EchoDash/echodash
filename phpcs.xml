@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<ruleset name="WordPress Plugin">
+    <description>WordPress Plugin Coding Standards</description>
+
+    <rule ref="WordPress">
+        <!-- Add custom sanitization functions -->
+        <properties>
+            <property name="customSanitizingFunctions" type="array">
+                <element value="ecd_clean"/>
+            </property>
+        </properties>
+    </rule>
+</ruleset> 

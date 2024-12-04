@@ -108,7 +108,7 @@ class EchoDash_Gravity_Forms_Feed extends GFFeedAddOn {
 	 */
 	public function get_column_value_eventvalue( $feed ) {
 		$value = rgars( $feed, 'meta/form_submitted/value' );
-		return '<b>' . ( ! is_array( $value ) ? $value : json_encode( $value ) ) . '</b>';
+		return '<b>' . ( ! is_array( $value ) ? $value : wp_json_encode( $value ) ) . '</b>';
 	}
 
 

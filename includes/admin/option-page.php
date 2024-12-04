@@ -5,7 +5,13 @@
 		<?php $settings = get_option( 'echodash_options' ); ?>
 		<?php $endpoint = get_option( 'echodash_endpoint' ); ?>
 
-		<h1><?php esc_html_e( 'EchoDash', 'echodash' ); ?></h1>
+		<h1>
+			<?php
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo ecd_logo_svg( 24 );
+			?>
+			<?php esc_html_e( 'EchoDash', 'echodash' ); ?>
+		</h1>
 
 		<div id="echodash-info">
 
@@ -31,7 +37,10 @@
 
 				<input type="text" id="echodash-endpoint" name="echodash_options[endpoint]" placeholder="https://echodash.com/endpoints/xyz/receive" class="regular-text code" value="<?php echo esc_url( $endpoint ); ?>">
 
-				<p><?php esc_html_e( 'For each trigger, name your event, and enter one or more key / value pairs containing the data you\'d like sent with the event.', 'echodash' ); ?></p>
+				<p>
+					<?php esc_html_e( 'For each trigger, name your event, and enter the data you\'d like sent with the event. You can view your events at', 'echodash' ); ?>
+					<a href="<?php echo esc_url( 'https://echodash.com/events' ); ?>" target="_blank"><?php echo esc_url( 'https://echodash.com/events' ); ?></a>.
+				</p>
 
 			<?php endif; ?>
 
@@ -173,14 +182,16 @@
 										<td class="trigger">
 											<div class="ecd-field">
 												<div class="ecd-label">
-													<label for="trigger_<?php echo $j; ?>"><?php esc_html_e( 'Trigger', 'echodash' ); ?></label>
+													<label for="trigger_<?php echo esc_attr( $j ); ?>">
+														<?php esc_html_e( 'Trigger', 'echodash' ); ?>
+													</label>
 												</div>
 												<div class="ecd-input">
 													<select data-integration="<?php echo esc_attr( $integration->slug ); ?>" class="trigger" name="trigger" id="trigger_<?php echo esc_attr( $j ); ?>">
 														<option value=""><?php esc_html_e( 'Select a trigger', 'echodash' ); ?></option>
 														<?php foreach ( $triggers as $id => $trigger_option ) : ?>
 															<?php if ( $trigger_option['has_global'] ) : ?>
-																<option data-description="<?php echo esc_html( $trigger_option['description'] ); ?>" <?php selected( $event['trigger'], $id, true ); ?> value="<?php echo $id; ?>"><?php echo esc_html( $trigger_option['name'] ); ?></option>
+																<option data-description="<?php echo esc_html( $trigger_option['description'] ); ?>" <?php selected( $event['trigger'], $id, true ); ?> value="<?php echo esc_attr( $id ); ?>"><?php echo esc_html( $trigger_option['name'] ); ?></option>
 															<?php endif; ?>
 														<?php endforeach; ?>
 													</select>
@@ -196,7 +207,7 @@
 													array(
 														'meta_name' => 'echodash_options',
 														'setting'  => $event,
-														'field_id' => $id . '_' . $j,
+														'field_id' => ( isset( $id ) ? esc_attr( $id ) : 'default' ) . '_' . esc_attr( $j ),
 														'integration' => $integration->slug,
 														'trigger'  => $trigger_id,
 													)
@@ -241,7 +252,14 @@
 
 			<?php endforeach; // integrations ?>
 
-			<p class="submit"><input name="Submit" type="submit" class="button-primary" value="<?php esc_attr_e( 'Save Changes', 'echodash' ); ?>" /></p>
+			<p class="submit">
+				<input name="Submit" type="submit" class="button-primary" value="<?php esc_attr_e( 'Save Changes', 'echodash' ); ?>" />
+				<?php if ( ! empty( $endpoint ) ) : ?>	
+					<button type="button" id="ecd-reset-defaults" class="button">
+						<?php esc_html_e( 'Reset to Defaults', 'echodash' ); ?>
+					</button>
+				<?php endif; ?>
+			</p>
 
 		<?php endif; // end check for endpoint ?>
 

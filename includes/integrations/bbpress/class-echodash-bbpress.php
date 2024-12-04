@@ -137,66 +137,6 @@ class EchoDash_BbPress extends EchoDash_Integration {
 
 
 	/**
-	 * Gets the triggers for the integration.
-	 *
-	 * @access protected
-	 *
-	 * @since  1.2.0
-	 *
-	 * @return array The triggers.
-	 */
-	protected function setup_triggers() {
-
-		$triggers = array(
-			'topic_created'       => array(
-				'name'               => __( 'New Topic', 'echodash' ),
-				'description'        => __( 'Triggered each time a single topic is created.', 'echodash' ),
-				'has_global'         => true,
-				'option_types'       => array( 'topic', 'forum' ),
-				'enabled_by_default' => true,
-				'default_event'      => array(
-					'name'     => 'Forum Topic Created',
-					'mappings' => array(
-						'topic_id'    => '{topic:ID}',
-						'topic_title' => '{topic:post_title}',
-						'forum_id'    => '{forum:ID}',
-						'forum_name'  => '{forum:post_title}',
-					),
-				),
-			),
-			'topic_reply_created' => array(
-				'name'               => __( 'New Reply', 'echodash' ),
-				'description'        => __( 'Triggered each time a single topic reply is created.', 'echodash' ),
-				'post_types'         => array( 'reply' ),
-				'has_single'         => true,
-				'has_global'         => true,
-				'option_types'       => array( 'reply', 'topic', 'forum' ),
-				'enabled_by_default' => true,
-				'default_event'      => array(
-					'name'     => 'Topic Reply Created',
-					'mappings' => array(
-						'reply_id'    => '{reply:ID}',
-						'reply_title' => '{reply:post_title}',
-						'topic_id'    => '{topic:ID}',
-						'topic_title' => '{topic:post_title}',
-						'forum_id'    => '{forum:ID}',
-						'forum_name'  => '{forum:post_title}',
-					),
-				),
-			),
-			'forum_topic_created' => array(
-				'name'         => __( 'New Forum Topic', 'echodash' ),
-				'description'  => __( 'Triggered each time a single topic is created in the selected forum.', 'echodash' ),
-				'has_single'   => true,
-				'post_types'   => array( 'forum' ),
-				'option_types' => array( 'topic', 'forum' ),
-			),
-		);
-
-		return $triggers;
-	}
-
-	/**
 	 * Gets the topic options.
 	 *
 	 * @since  1.2.0

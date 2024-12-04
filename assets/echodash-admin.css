@@ -206,6 +206,10 @@ span.echodash {
     font-family: monospace;
 }
 
+div.postbox table.echodash th {
+    width: 200px;
+}
+
 div.postbox table.echodash label {
     display: block;
 }
@@ -225,6 +229,12 @@ td.echodash button {
     margin-left: -5px;
 }
 
+form#ecd_option_page h1 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
 form#ecd_option_page #echodash-info {
     background: #fff;
     width: 950px;
@@ -239,11 +249,10 @@ form#ecd_option_page #echodash-info #echodash-endpoint {
 }
 
 form#ecd_option_page h1 svg {
-    color: #e55b0e;
+    color: #070174;
     vertical-align: middle;
     position: relative;
-    top: -3px;
-    margin-right: 5px;
+    top: -1px;
 }
 
 .ecd-label label {
@@ -271,6 +280,18 @@ form#ecd_option_page h1 svg {
 /* Hover state */
 .ecd-integration table td.order:hover .dashicons {
     color: #666;
+}
+
+.echodash .ecd-error {
+    border-color: #cc0000 !important;
+    box-shadow: 0 0 2px rgba(204,0,0,.8);
+}
+
+.echodash .ecd-error-message {
+    color: #cc0000;
+    font-size: 12px;
+    margin-left: 10px;
+    display: inline-block;
 }
 
 /* When being dragged */

@@ -203,7 +203,7 @@ class EchoDash_BuddyPress extends EchoDash_Integration {
 	public function add_meta_box_groups() {
 		add_meta_box(
 			'echodash',
-			__( 'EchoDash - Event Tracking', 'wp-fusion' ),
+			__( 'EchoDash - Event Tracking', 'echodash' ),
 			array(
 				$this,
 				'meta_box_callback',
@@ -220,6 +220,8 @@ class EchoDash_BuddyPress extends EchoDash_Integration {
 	 * @param BP_Groups_Group $group  The group.
 	 */
 	public function meta_box_callback( $group ) {
+		// Add nonce field
+		wp_nonce_field( 'echodash_save_groups', 'echodash_groups_nonce' );
 
 		echo '<table class="form-table echodash"><tbody>';
 
@@ -261,23 +263,23 @@ class EchoDash_BuddyPress extends EchoDash_Integration {
 	 * @param integer $post_id The post id.
 	 */
 	public function save_groups_data( $post_id ) {
+		// Verify nonce
+		if ( ! isset( $_POST['echodash_groups_nonce'] ) || ! wp_verify_nonce( sanitize_key( $_POST['echodash_groups_nonce'] ), 'echodash_save_groups' ) ) {
+			return;
+		}
 
-		if ( isset( $_POST['bp-groups-slug'] ) ) {
+		// Verify user can edit groups
+		if ( ! current_user_can( 'bp_moderate' ) ) {
+			return;
+		}
 
-			$data = ! empty( $_POST['echodash_settings'] ) ? wp_unslash( $_POST['echodash_settings'] ) : array();
-			$data = array_filter( ecd_clean( $data ) ); // Sanitize and remove empty values.
+		$data = ! empty( $_POST['echodash_settings'] ) ? ecd_clean( wp_unslash( $_POST['echodash_settings'] ) ) : array();
 
-			foreach ( $data as $id => $event ) {
-				if ( empty( $event['name'] ) && empty( $event['value'] ) || ( is_array( $event['value'] ) && empty( $event['value'][0]['key'] ) ) ) {
-					unset( $data[ $id ] );
-				}
-			}
-
-			if ( ! empty( $data ) ) {
-				groups_update_groupmeta( $post_id, 'echodash_settings', $data );
-			} else {
-				groups_delete_groupmeta( $post_id, 'echodash_settings' );
-			}
+		// Update or delete the group meta
+		if ( ! empty( $data ) ) {
+			groups_update_groupmeta( $post_id, 'echodash_settings', $data );
+		} else {
+			groups_delete_groupmeta( $post_id, 'echodash_settings' );
 		}
 	}
 
@@ -292,7 +294,7 @@ class EchoDash_BuddyPress extends EchoDash_Integration {
 	public function get_group_options() {
 
 		return array(
-			'name'    => __( 'Social Groups', 'wp-fus ion-event-tracking' ),
+			'name'    => __( 'Social Groups', 'echodash' ),
 			'type'    => 'group',
 			'options' => array(
 				array(
@@ -367,6 +369,56 @@ class EchoDash_BuddyPress extends EchoDash_Integration {
 		return array(
 			'group' => $group_fields,
 		);
+	}
+
+	/**
+	 * Override get_single_events() to handle BuddyPress group meta.
+	 *
+	 * @since  1.0.0
+	 * @param  string $trigger The trigger.
+	 * @return array  The events.
+	 */
+	public function get_single_events( $trigger ) {
+		$events = array();
+		global $wpdb;
+		$bp = buddypress();
+
+		$table_name     = $bp->groups->table_name_groupmeta;
+		$cache_key      = 'echodash_group_meta';
+		$cached_results = wp_cache_get( $cache_key, 'echodash' );
+
+		if ( false === $cached_results ) {
+			$results = $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT group_id, meta_value FROM {$table_name} WHERE meta_key = %s",
+					'echodash_settings'
+				)
+			);
+			wp_cache_set( $cache_key, $results, 'echodash', 3600 ); // Cache for 1 hour
+		} else {
+			$results = $cached_results;
+		}
+
+		if ( ! empty( $results ) ) {
+			foreach ( $results as $result ) {
+				$settings = maybe_unserialize( $result->meta_value );
+
+				if ( ! empty( $settings[ $trigger ] ) ) {
+					// Build up events array
+					$event = array(
+						'trigger'    => $trigger,
+						'post_id'    => $result->group_id, // We'll use post_id for consistency
+						'edit_url'   => bp_get_admin_url( 'admin.php?page=bp-groups&gid=' . $result->group_id . '&action=edit' ),
+						'post_title' => bp_get_group_name( groups_get_group( $result->group_id ) ),
+					);
+
+					$event    = array_merge( $event, $settings[ $trigger ] );
+					$events[] = $event;
+				}
+			}
+		}
+
+		return $events;
 	}
 }
 

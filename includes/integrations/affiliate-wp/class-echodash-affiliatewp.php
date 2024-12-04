@@ -88,7 +88,7 @@ class EchoDash_AffiliateWP extends EchoDash_Integration {
 			),
 			'link_visited'             => array(
 				'name'               => __( 'New Visit', 'echodash' ),
-				'description'        => __( 'Triggered each time a referral visits a link.' ),
+				'description'        => __( 'Triggered each time a referral visits a link.', 'echodash' ),
 				'has_global'         => true,
 				'option_types'       => array( 'affiliate', 'visit' ),
 				'enabled_by_default' => true,
@@ -101,7 +101,7 @@ class EchoDash_AffiliateWP extends EchoDash_Integration {
 			),
 			'referral_earned'          => array(
 				'name'               => __( 'Referral Earned', 'echodash' ),
-				'description'        => __( 'Triggered each time a referral is earned.' ),
+				'description'        => __( 'Triggered each time a referral is earned.', 'echodash' ),
 				'has_global'         => true,
 				'option_types'       => array( 'affiliate', 'visit', 'referral' ),
 				'enabled_by_default' => true,

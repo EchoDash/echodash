@@ -674,14 +674,7 @@ abstract class EchoDash_Integration {
 			return;
 		}
 
-		$data = ! empty( $_POST['echodash_settings'] ) ? wp_unslash( $_POST['echodash_settings'] ) : array();
-		$data = array_filter( $data ); // Sanitize and remove empty values.
-
-		foreach ( $data as $id => $event ) {
-			if ( is_array( $event['value'] ) && empty( $event['value'][0]['key'] ) ) {
-				unset( $data[ $id ] );
-			}
-		}
+		$data = ! empty( $_POST['echodash_settings'] ) ? ecd_clean( wp_unslash( $_POST['echodash_settings'] ) ) : array();
 
 		if ( ! empty( $data ) ) {
 			update_post_meta( $post_id, 'echodash_settings', $data );

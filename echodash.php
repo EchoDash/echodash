@@ -1,13 +1,29 @@
 <?php
 
 /**
- * Plugin Name: EchoDash
+ * EchoDash - Event Tracking and Activity Log plugin for WordPress
+ *
+ * @package EchoDash
+ * @author  EchoDash
+ * @license GPL-2.0+
+ * @link    https://echodash.com
+ *
+ * @wordpress-plugin
+ * Plugin Name: EchoDash - Event Tracking and Activity Log
+ * Plugin URI:  https://echodash.com/
  * Description: Track events from WordPress plugins as real-time activities in the EchoDash platform.
- * Plugin URI: https://echodash.com/
- * Version: 0.0.3
- * Author: EchoDash
- * Author URI: https://echodash.com/
+ * Version:     1.0.0
+ * Author:      EchoDash
+ * Author URI:  https://echodash.com/
  * Text Domain: echodash
+ * Domain Path: /languages
+ * License:     GPL-2.0+
+ * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
  */
 
 /**
@@ -32,7 +48,7 @@
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
-define( 'ECHODASH_VERSION', '0.0.4' );
+define( 'ECHODASH_VERSION', '1.0.0' );
 
 /**
  * Class EchoDash

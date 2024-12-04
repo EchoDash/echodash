@@ -1,0 +1,26 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create ZIP file
+        run: |
+          # Create zip excluding development files
+          zip -r echodash.zip . -x "*.git*" "*.github*" "*.gitignore" "composer.*" "*.md" "*.json" "*.lock" "tests/*" "phpunit.xml*" "*.dist" "*.xml"
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: echodash.zip
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 

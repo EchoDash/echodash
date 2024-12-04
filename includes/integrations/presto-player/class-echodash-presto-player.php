@@ -144,11 +144,14 @@ class EchoDash_Presto_Player extends EchoDash_Integration {
 		}
 
 		global $wpdb;
-		$sql     = $wpdb->prepare(
-			"SELECT post_id FROM {$wpdb->prefix}presto_player_videos WHERE id = %d",
-			absint( $video_id )
+		$post_id = intval(
+			$wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT post_id FROM {$wpdb->prefix}presto_player_videos WHERE id = %d",
+					absint( $video_id )
+				)
+			)
 		);
-		$post_id = intval( $wpdb->get_var( $sql ) );
 
 		wp_cache_set( $video_id, $post_id, 'ecd_pp_vids', 3600 ); // 1 hour in seconds
 
