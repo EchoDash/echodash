@@ -59,7 +59,7 @@ function ecd_clean( $var ) {
 		// Clean up empty event values.
 		foreach ( $var as $id => $maybe_event ) {
 			if ( is_array( $maybe_event ) ) {
-				if ( ( is_array( $maybe_event['value'] ) && empty( $maybe_event['value'][0]['key'] ) ) || ( isset( $maybe_event['name'] ) && empty( $maybe_event['name'] ) ) ) {
+				if ( ( isset( $maybe_event['value'] ) && is_array( $maybe_event['value'] ) && empty( $maybe_event['value'][0]['key'] ) ) || ( isset( $maybe_event['name'] ) && empty( $maybe_event['name'] ) ) ) {
 					unset( $var[ $id ] );
 				}
 			}

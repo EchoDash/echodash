@@ -9,7 +9,7 @@
  * @link    https://echodash.com
  *
  * @wordpress-plugin
- * Plugin Name: EchoDash - Event Tracking and Activity Log
+ * Plugin Name: EchoDash
  * Plugin URI:  https://echodash.com/
  * Description: Track events from WordPress plugins as real-time activities in the EchoDash platform.
  * Version:     1.0.0
