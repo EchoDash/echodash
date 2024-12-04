@@ -4,7 +4,7 @@ Tags: analytics, events, tracking, woocommerce, gravity forms, buddypress, edd, 
 Requires at least: 6.0
 Tested up to: 6.8.0
 Requires PHP: 7.0
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -106,6 +106,11 @@ Yes, developers can use our API to track custom events. Documentation is availab
 4. Analytics dashboard
 
 == Changelog ==
+
+= 1.0.1 - December 4, 2024 =
+* Additional security and sanitization
+* Updated license to GPL-3.0-or-later
+* Updated README.md
 
 = 1.0.0 - December 2, 2024 =
 * Refactored, ready for production
