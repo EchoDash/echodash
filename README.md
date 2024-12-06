@@ -15,11 +15,10 @@ Track user events and interactions across your WordPress site with EchoDash anal
 
 - WordPress 6.0+
 - PHP 7.0+
-- SSL recommended for secure data transmission
 
 ## Installation
 
-1. Download the latest release
+1. Download the latest release from [GitHub Releases](../../releases/latest)
 2. Upload to wp-content/plugins/
 3. Activate through WordPress admin
 4. Connect to EchoDash in Settings → EchoDash

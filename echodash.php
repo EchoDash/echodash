@@ -12,7 +12,7 @@
  * Plugin Name: EchoDash
  * Plugin URI:  https://echodash.com/
  * Description: Track events from WordPress plugins as real-time activities in the EchoDash platform.
- * Version:     1.0.1
+ * Version:     1.0.2
  * Author:      EchoDash
  * Author URI:  https://echodash.com/
  * Text Domain: echodash
@@ -48,7 +48,7 @@
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
-define( 'ECHODASH_VERSION', '1.0.1' );
+define( 'ECHODASH_VERSION', '1.0.2' );
 
 /**
  * Class EchoDash

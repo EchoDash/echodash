@@ -108,7 +108,35 @@ class EchoDash_Gravity_Forms_Feed extends GFFeedAddOn {
 	 */
 	public function get_column_value_eventvalue( $feed ) {
 		$value = rgars( $feed, 'meta/form_submitted/value' );
-		return '<b>' . ( ! is_array( $value ) ? $value : wp_json_encode( $value ) ) . '</b>';
+
+		if ( empty( $value ) ) {
+			return '<i>' . esc_html__( 'No fields selected', 'echodash' ) . '</i>';
+		}
+
+		if ( ! is_array( $value ) ) {
+			return '<b>' . esc_html( $value ) . '</b>';
+		}
+
+		$field_preview = array_slice( $value, 0, 3 );
+		$preview_text  = implode(
+			', ',
+			array_map(
+				function ( $field ) {
+					return esc_html( $field['key'] );
+				},
+				$field_preview
+			)
+		);
+
+		if ( count( $value ) > 3 ) {
+			$preview_text .= sprintf(
+				/* translators: %d: number of additional fields */
+				esc_html__( ' (+%d more)', 'echodash' ),
+				count( $value ) - 3
+			);
+		}
+
+		return '<b>' . $preview_text . '</b>';
 	}
 
 

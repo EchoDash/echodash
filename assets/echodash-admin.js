@@ -439,10 +439,15 @@ jQuery(function ($) {
       var integration = input.closest(".echodash").attr("data-integration");
 
       var previews = [];
+      var meta = {};
 
-      ecdEventData.triggers[integration][trigger].options.forEach(function (
-        element
-      ) {
+      // Get all available options and meta data
+      ecdEventData.triggers[integration][trigger].options.forEach(function (element) {
+        // Store meta data if available
+        if (element.meta && typeof element.meta === 'object') {
+          meta = element.meta;
+        }
+
         element.options.forEach(function (option) {
           previews.push({
             text: "{" + element.type + ":" + option.meta + "}",
@@ -463,9 +468,12 @@ jQuery(function ($) {
           .map(function (value) {
             return value.split("}")[0];
           });
+
         matches.forEach(function (match) {
           let new_match = "{" + match + "}";
+          let found = false;
 
+          // First check predefined previews
           previews.forEach(function (element) {
             if (element.text == new_match) {
               let previewText = element.preview;
@@ -477,12 +485,18 @@ jQuery(function ($) {
                     .join("") +
                   "</ul>";
               }
-              text_value = text_value.replace(
-                new_match,
-                "<b>" + previewText + "</b>"
-              );
+              text_value = text_value.replace(new_match, "<b>" + previewText + "</b>");
+              found = true;
             }
           });
+
+          // If not found in previews, check meta data (currently just with user fields)
+          if (!found) {
+            let metaKey = match.split(":")[1];
+            if (meta[metaKey]) {
+              text_value = text_value.replace(new_match, "<b>" + meta[metaKey] + "</b>");
+            }
+          }
         });
       }
 

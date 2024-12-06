@@ -250,17 +250,17 @@ class EchoDash_Gravity_Forms extends EchoDash_Integration {
 					'placeholder' => __( 'The submitter browser info', 'echodash' ),
 				),
 				array(
-					'meta'        => 'url',
+					'meta'        => 'entry_url',
 					'preview'     => admin_url( 'admin.php?page=gf_entries&view=entry&id=12&lid=2459' ),
 					'placeholder' => __( 'The entry URL in admin', 'echodash' ),
 				),
 				array(
-					'meta'        => 'embed_post_title',
+					'meta'        => 'embed_post:post_title',
 					'preview'     => 'Contact Us',
 					'placeholder' => __( 'The page title where form was submitted', 'echodash' ),
 				),
 				array(
-					'meta'        => 'embed_post_url',
+					'meta'        => 'embed_url',
 					'preview'     => site_url( '/contact-us/' ),
 					'placeholder' => __( 'The page URL where form was submitted', 'echodash' ),
 				),

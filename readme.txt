@@ -4,7 +4,7 @@ Tags: analytics, events, tracking, woocommerce, gravity forms, buddypress, edd, 
 Requires at least: 6.0
 Tested up to: 6.8.0
 Requires PHP: 7.0
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -106,6 +106,13 @@ Yes, developers can use our API to track custom events. Documentation is availab
 4. Analytics dashboard
 
 == Changelog ==
+
+= 1.0.2 - December 6, 2024 =
+* Added support for WP Fusion tags when tracking user events
+* Improved - updated previews to show user meta fields dynamically
+* Improved preview data on Gravity Forms feed list
+* Fixed missing user data
+* Fixed broken tags in Gravity Forms integration: embed_post:post_title, entry_url, embed_url
 
 = 1.0.1 - December 4, 2024 =
 * Additional security and sanitization

@@ -119,58 +119,67 @@ class EchoDash_User extends EchoDash_Integration {
 	 * @return array The download options.
 	 */
 	public function get_user_options() {
+		// Get current user data for previews
+		$current_user = wp_get_current_user();
+		$user_meta    = array();
+
+		if ( $current_user->ID ) {
+			$user_meta = $this->get_user_vars( $current_user->ID )['user'];
+		}
 
 		return array(
 			'name'    => __( 'User', 'echodash' ),
 			'type'    => 'user',
+			'meta'    => $user_meta,
 			'options' => array(
 				array(
 					'meta'        => 'id',
-					'preview'     => 9,
+					'preview'     => $current_user->ID ?: 9,
 					'placeholder' => __( 'The user ID', 'echodash' ),
 				),
 				array(
 					'meta'        => 'user_email',
-					'preview'     => 'example@email.com',
+					'preview'     => $current_user->user_email ?: 'example@email.com',
 					'placeholder' => __( 'The user\'s email address', 'echodash' ),
 				),
 				array(
 					'meta'        => 'display_name',
-					'preview'     => 'Jane Doe',
+					'preview'     => $current_user->display_name ?: 'Jane Doe',
 					'placeholder' => __( 'The user\'s display name', 'echodash' ),
 				),
 				array(
 					'meta'        => 'first_name',
-					'preview'     => 'Jane',
+					'preview'     => $current_user->first_name ?: 'Jane',
 					'placeholder' => __( 'The user\'s first name', 'echodash' ),
 				),
 				array(
 					'meta'        => 'last_name',
-					'preview'     => 'Doe',
+					'preview'     => $current_user->last_name ?: 'Doe',
 					'placeholder' => __( 'The user\'s last name', 'echodash' ),
 				),
 				array(
 					'meta'        => 'user_login',
-					'preview'     => 'janeDoe',
-					'placeholder' => __( 'The the user\'s username', 'echodash' ),
+					'preview'     => $current_user->user_login ?: 'janeDoe',
+					'placeholder' => __( 'The user\'s username', 'echodash' ),
 				),
 				array(
 					'meta'        => 'roles',
-					'preview'     => 'Editor, Shop Manager',
+					'preview'     => $user_meta['roles'] ?: 'Editor, Shop Manager',
 					'placeholder' => __( 'The user\'s roles', 'echodash' ),
 				),
 				array(
 					'meta'        => '*meta*',
+					'preview'     => 'No user meta found',
 					'placeholder' => __( 'Any user meta key', 'echodash' ),
 				),
 				array(
 					'meta'        => 'current_url',
-					'preview'     => home_url( '/login/' ),
+					'preview'     => home_url( $_SERVER['REQUEST_URI'] ?? '/login/' ),
 					'placeholder' => __( 'The user\'s current URL', 'echodash' ),
 				),
 				array(
 					'meta'        => 'referer',
-					'preview'     => home_url( '/previous-page/' ),
+					'preview'     => $_SERVER['HTTP_REFERER'] ?? home_url( '/previous-page/' ),
 					'placeholder' => __( 'The user\'s previous URL', 'echodash' ),
 				),
 			),
@@ -204,13 +213,61 @@ class EchoDash_User extends EchoDash_Integration {
 			$user_meta
 		);
 
-		foreach ( $user_meta as $key => $value ) {
-			if ( 'wp_capabilities' === $key ) {
-				$user_meta['role'] = implode( ', ', $value );
-			}
+		$userdata = get_userdata( $user_id );
 
+		if ( false === $userdata ) {
+			return array();
+		}
+
+		$user_meta['id']              = $user_id;
+		$user_meta['user_id']         = $user_id;
+		$user_meta['user_login']      = $userdata->user_login;
+		$user_meta['user_email']      = $userdata->user_email;
+		$user_meta['user_registered'] = $userdata->user_registered;
+		$user_meta['user_nicename']   = $userdata->user_nicename;
+		$user_meta['user_url']        = $userdata->user_url;
+		$user_meta['display_name']    = $userdata->display_name;
+
+		if ( is_array( $userdata->roles ) ) {
+			$user_meta['role'] = reset( $userdata->roles );
+		}
+
+		$user_meta['roles'] = ! empty( $userdata->roles ) ? implode( ', ', $userdata->roles ) : '';
+
+		if ( ! empty( $userdata->caps ) ) {
+			$user_meta[ $userdata->cap_key ] = array_keys( $userdata->caps );
+		}
+
+		foreach ( $user_meta as $key => $value ) {
+			// WP Fusion support.
+			if ( false !== strpos( $key, '_tags' ) && function_exists( 'wpf_get_tag_label' ) ) {
+				$user_meta[ $key ] = array_map( 'wpf_get_tag_label', $value );
+			}
+		}
+
+		foreach ( $user_meta as $key => $value ) {
 			if ( is_array( $value ) ) {
-				unset( $user_meta[ $key ] ); // no arrays for now.
+
+				if ( count( $value ) === count( $value, COUNT_RECURSIVE ) ) {
+					// Check each value isn't an object before imploding
+					$can_implode = true;
+					foreach ( $value as $item ) {
+						if ( is_object( $item ) ) {
+							$can_implode = false;
+							break;
+						}
+					}
+					if ( $can_implode ) {
+						$user_meta[ $key ] = implode( ', ', $value );
+					} else {
+						unset( $user_meta[ $key ] );
+					}
+				} else {
+					// Multi-dimensional array - skip it
+					unset( $user_meta[ $key ] );
+				}
+			} elseif ( is_object( $value ) ) {
+				unset( $user_meta[ $key ] );
 			}
 		}
 
@@ -224,8 +281,6 @@ class EchoDash_User extends EchoDash_Integration {
 			$referer              = wp_unslash( $_SERVER['HTTP_REFERER'] );
 			$user_meta['referer'] = esc_url_raw( $referer );
 		}
-
-		$user_meta['id'] = $user_id;
 
 		return array(
 			'user' => $user_meta,
