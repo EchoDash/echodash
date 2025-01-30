@@ -48,3 +48,5 @@ wp-config.php
 #/wp-content/themes
 echodash.code-workspace
 .DS_Store
+composer.lock
+vendor/*

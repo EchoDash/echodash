@@ -5,16 +5,16 @@
  * @package EchoDash
  */
 
+// WordPress core constants
 if ( ! defined( 'ABSPATH' ) ) {
-	/**
-	 * Absolute path to WordPress.
-	 *
-	 * @phpstan-type string $abspath
-	 * @var string $abspath
-	 */
-	define( 'ABSPATH', '/path/to/wordpress/' );
+	define( 'ABSPATH', __DIR__ . '/../../' );
 }
 
+if ( ! defined( 'WP_PLUGIN_DIR' ) ) {
+	define( 'WP_PLUGIN_DIR', ABSPATH . 'wp-content/plugins' );
+}
+
+// EchoDash constants
 if ( ! defined( 'ECHODASH_DIR_PATH' ) ) {
 	/**
 	 * Directory path where EchoDash is located.
@@ -22,7 +22,7 @@ if ( ! defined( 'ECHODASH_DIR_PATH' ) ) {
 	 * @phpstan-type string $dir_path
 	 * @var string $dir_path
 	 */
-	define( 'ECHODASH_DIR_PATH', 'path/to/echodash' );
+	define( 'ECHODASH_DIR_PATH', __DIR__ . '/' );
 }
 
 if ( ! defined( 'ECHODASH_PLUGIN_PATH' ) ) {
@@ -32,7 +32,7 @@ if ( ! defined( 'ECHODASH_PLUGIN_PATH' ) ) {
 	 * @phpstan-type string $plugin_path
 	 * @var string $plugin_path
 	 */
-	define( 'ECHODASH_PLUGIN_PATH', 'path/to/echodash' );
+	define( 'ECHODASH_PLUGIN_PATH', __DIR__ );
 }
 
 if ( ! defined( 'ECHODASH_DIR_URL' ) ) {
@@ -42,5 +42,20 @@ if ( ! defined( 'ECHODASH_DIR_URL' ) ) {
 	 * @phpstan-type string $dir_url
 	 * @var string $dir_url
 	 */
-	define( 'ECHODASH_DIR_URL', 'https://site.com/path/to/echodash' );
+	define( 'ECHODASH_DIR_URL', 'https://example.com/wp-content/plugins/echodash/' );
+}
+
+// WordPress Core stubs
+if ( ! defined( 'COOKIEPATH' ) ) {
+	/**
+	 * Cookie path.
+	 */
+	define( 'COOKIEPATH', 'path' );
+}
+
+if ( ! defined( 'COOKIEDOMAIN' ) ) {
+	/**
+	 * Cookie domain.
+	 */
+	define( 'COOKIEDOMAIN', 'domain' );
 }

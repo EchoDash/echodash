@@ -1,18 +1,17 @@
 parameters:
     level: 5
-    errorFormat: table
     checkExplicitMixedMissingReturn: false
-    paths:
-        - echodash.php
-        - includes/
-    scanDirectories:
-        - ../woocommerce
-        - ../easy-digital-downloads
-        - ../../../wp-includes/
-        - ../../../wp-admin/
     bootstrapFiles:
-        - bin/phpstan-bootstrap.php
-    dynamicConstantNames:
-        - 'ECHODASH_DIR_PATH'
-        - 'ECHODASH_PLUGIN_PATH'
-        - 'ECHODASH_DIR_URL'
+        - ./bin/phpstan-bootstrap.php
+        - ./vendor/php-stubs/wordpress-stubs/wordpress-stubs.php
+        - ./vendor/php-stubs/woocommerce-stubs/woocommerce-stubs.php
+        - ./vendor/php-stubs/woocommerce-stubs/woocommerce-packages-stubs.php
+    excludePaths:
+        - **/node_modules/*
+        - **/vendor/*
+        - **/tests/*
+        - !**/*.php
+    paths:
+        - ./
+    ignoreErrors:
+        - '#Class file names should be based on the class name#'

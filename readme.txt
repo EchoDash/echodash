@@ -1,18 +1,18 @@
 === EchoDash - Event Tracking and Activity Log ===
 Contributors: verygoodplugins
-Tags: analytics, events, tracking, woocommerce, gravity forms, buddypress, edd, gamipress, learndash, give, activity log
+Tags: analytics, tracking, activity, log, events
 Requires at least: 6.0
 Tested up to: 6.8.0
-Requires PHP: 7.0
-Stable tag: 1.0.2
-License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Requires PHP: 7.4
+Stable tag: 1.1.0
+License: GPLv3 or later
+License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
 Track user events and interactions from popular WordPress plugins in real-time with EchoDash analytics.
 
 == Description ==
 
-EchoDash is a powerful event tracking and analytics platform designed specifically for WordPress. It helps you monitor user interactions, track important events, and gather valuable analytics data across your WordPress site and supported plugins.
+[EchoDash](https://echodash.com) is a powerful event tracking and analytics platform designed specifically for WordPress. It helps you monitor user interactions, track important events, and gather valuable analytics data across your WordPress sites and supported plugins.
 
 = Key Features =
 
@@ -41,6 +41,8 @@ EchoDash is a powerful event tracking and analytics platform designed specifical
 * **Presto Player** - Track video engagement and watch time
 * **WooCommerce** - Track orders, cart actions, and customer behavior
 * **WooCommerce Subscriptions** - Monitor subscription status changes and renewals
+* **WordPress** - Track core and plugin updates
+* **Users** - Track user logins
 
 = Use Cases =
 
@@ -67,6 +69,8 @@ EchoDash is a powerful event tracking and analytics platform designed specifical
    * Track donor behavior
    * Analyze campaign success
    * Follow recurring donations
+
+For more information, please visit the [EchoDash plugin documentation](https://echodash.com/docs/echodash-plugin/)
 
 == Installation ==
 
@@ -96,16 +100,21 @@ Yes, you'll need a free EchoDash account to use the plugin. You can create one d
 
 = Can I track custom events? =
 
-Yes, developers can use our API to track custom events. Documentation is available at https://echodash.com/docs/
+Yes, developers can use our API to track custom events. Documentation is available at https://echodash.com/docs/api/
 
 == Screenshots ==
 
-1. Main settings page with integration list
-2. Event configuration interface
-3. Real-time event stream
-4. Analytics dashboard
+1. Main settings page with Gravity Forms event configuration
+2. Send events based on WooCommerce orders, product purchases, and order status changes
+3. Track learner progress in real time with LearnDash and LifterLMS
+4. The EchoDash dashboard with real-time event stream and analytics
+5. Soon EchoDash will incorporate reports, dashboards, alerts, and summaries
 
 == Changelog ==
+
+= 1.1.0 - January 30, 2025 =
+* Added event triggers for WordPress core and plugin updates
+* Fixed PHP warnings preparing nested arrays for user meta
 
 = 1.0.2 - December 6, 2024 =
 * Added support for WP Fusion tags when tracking user events

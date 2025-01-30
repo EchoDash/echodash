@@ -37,6 +37,10 @@ function ecd_render_event_tracking_fields( $args = array() ) {
 		);
 	}
 
+	if ( ! isset( $args['setting']['name'] ) ) {
+		$args['setting']['name'] = '';
+	}
+
 	// Get the field ID.
 	if ( false === $args['field_id'] ) {
 		$field_id = sanitize_html_class( $args['meta_name'] );

@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: EchoDash\n"
-"POT-Creation-Date: 2024-12-04 14:33+0100\n"
+"POT-Creation-Date: 2025-01-30 11:14+0200\n"
 "PO-Revision-Date: 2024-12-04 13:15+0100\n"
 "Last-Translator: Jack Arturo <info@verygoodplugins.com>\n"
 "Language-Team: Jack Arturo <info@verygoodplugins.com>\n"
@@ -16,46 +16,57 @@ msgstr ""
 "X-Poedit-WPHeader: echodash.php\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
-"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
-"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;"
+"_n_noop:1,2;_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: *.min.js\n"
+"X-Poedit-SearchPathExcluded-1: vendor\n"
 
 #: echodash.php:150 echodash.php:162
 msgid "Cheatin&#8217; huh?"
 msgstr ""
 
-#: includes/admin/admin-functions.php:120
+#: echodash.php:311
+msgid "The EchoDash plugin requires PHP 7.0 or higher."
+msgstr ""
+
+#: echodash.php:316
+msgid "The EchoDash plugin requires WordPress 6.0 or higher."
+msgstr ""
+
+#: includes/admin/admin-functions.php:124
 #: includes/integrations/gravity-forms/class-echodash-gravity-forms-feed.php:83
 msgid "Event Name"
 msgstr ""
 
 #: includes/admin/class-echodash-admin.php:118
+#: includes/integrations/wordpress/class-echodash-wordpress.php:93
 msgid "WordPress"
 msgstr ""
 
-#: includes/admin/class-echodash-admin.php:193
+#: includes/admin/class-echodash-admin.php:191
 msgid "Settings saved."
 msgstr ""
 
+#. Plugin Name of the plugin/theme
 #. Author of the plugin/theme
-#: includes/admin/class-echodash-admin.php:206
-#: includes/admin/class-echodash-admin.php:207
+#: includes/admin/class-echodash-admin.php:204
+#: includes/admin/class-echodash-admin.php:205
 #: includes/admin/option-page.php:13
 msgid "EchoDash"
 msgstr ""
 
-#: includes/admin/class-echodash-admin.php:244
+#: includes/admin/class-echodash-admin.php:242
 msgid ""
 "Are you sure you want to reset all settings to defaults? This cannot be "
 "undone."
 msgstr ""
 
-#: includes/admin/class-echodash-admin.php:245
+#: includes/admin/class-echodash-admin.php:243
 msgid "There was an error resetting to defaults. Please try again."
 msgstr ""
 
-#: includes/admin/class-echodash-admin.php:246
+#: includes/admin/class-echodash-admin.php:244
 msgid "Event Name is required"
 msgstr ""
 
@@ -420,7 +431,7 @@ msgid "Triggered when a user completes their profile."
 msgstr ""
 
 #: includes/integrations/buddypress/class-echodash-buddypress.php:206
-#: includes/integrations/class-echodash-integration.php:584
+#: includes/integrations/class-echodash-integration.php:590
 msgid "EchoDash - Event Tracking"
 msgstr ""
 
@@ -815,6 +826,16 @@ msgstr ""
 msgid "Event Value"
 msgstr ""
 
+#: includes/integrations/gravity-forms/class-echodash-gravity-forms-feed.php:113
+msgid "No fields selected"
+msgstr ""
+
+#. translators: %d: number of additional fields
+#: includes/integrations/gravity-forms/class-echodash-gravity-forms-feed.php:134
+#, php-format
+msgid " (+%d more)"
+msgstr ""
+
 #: includes/integrations/gravity-forms/class-echodash-gravity-forms.php:62
 msgid "Form Submitted"
 msgstr ""
@@ -1027,47 +1048,47 @@ msgstr ""
 msgid "Triggered each time a user logs in."
 msgstr ""
 
-#: includes/integrations/user/class-echodash-user.php:124
+#: includes/integrations/user/class-echodash-user.php:131
 msgid "User"
 msgstr ""
 
-#: includes/integrations/user/class-echodash-user.php:130
+#: includes/integrations/user/class-echodash-user.php:138
 msgid "The user ID"
 msgstr ""
 
-#: includes/integrations/user/class-echodash-user.php:135
+#: includes/integrations/user/class-echodash-user.php:143
 msgid "The user's email address"
 msgstr ""
 
-#: includes/integrations/user/class-echodash-user.php:140
+#: includes/integrations/user/class-echodash-user.php:148
 msgid "The user's display name"
 msgstr ""
 
-#: includes/integrations/user/class-echodash-user.php:145
+#: includes/integrations/user/class-echodash-user.php:153
 msgid "The user's first name"
 msgstr ""
 
-#: includes/integrations/user/class-echodash-user.php:150
+#: includes/integrations/user/class-echodash-user.php:158
 msgid "The user's last name"
 msgstr ""
 
-#: includes/integrations/user/class-echodash-user.php:155
-msgid "The the user's username"
+#: includes/integrations/user/class-echodash-user.php:163
+msgid "The user's username"
 msgstr ""
 
-#: includes/integrations/user/class-echodash-user.php:160
+#: includes/integrations/user/class-echodash-user.php:168
 msgid "The user's roles"
 msgstr ""
 
-#: includes/integrations/user/class-echodash-user.php:164
+#: includes/integrations/user/class-echodash-user.php:173
 msgid "Any user meta key"
 msgstr ""
 
-#: includes/integrations/user/class-echodash-user.php:169
+#: includes/integrations/user/class-echodash-user.php:178
 msgid "The user's current URL"
 msgstr ""
 
-#: includes/integrations/user/class-echodash-user.php:174
+#: includes/integrations/user/class-echodash-user.php:183
 msgid "The user's previous URL"
 msgstr ""
 
@@ -1263,8 +1284,52 @@ msgstr ""
 msgid "The product categories (comma separated)"
 msgstr ""
 
-#. Plugin Name of the plugin/theme
-msgid "EchoDash - Event Tracking and Activity Log"
+#: includes/integrations/wordpress/class-echodash-wordpress.php:50
+msgid "WordPress Core Updated"
+msgstr ""
+
+#: includes/integrations/wordpress/class-echodash-wordpress.php:51
+msgid "Triggered when WordPress core is updated."
+msgstr ""
+
+#: includes/integrations/wordpress/class-echodash-wordpress.php:56
+msgid "WordPress Core Update"
+msgstr ""
+
+#: includes/integrations/wordpress/class-echodash-wordpress.php:64
+msgid "Plugin Updated"
+msgstr ""
+
+#: includes/integrations/wordpress/class-echodash-wordpress.php:65
+msgid "Triggered when a plugin is updated."
+msgstr ""
+
+#: includes/integrations/wordpress/class-echodash-wordpress.php:70
+msgid "Plugin Update"
+msgstr ""
+
+#: includes/integrations/wordpress/class-echodash-wordpress.php:99
+msgid "The previous version"
+msgstr ""
+
+#: includes/integrations/wordpress/class-echodash-wordpress.php:104
+msgid "The new version"
+msgstr ""
+
+#: includes/integrations/wordpress/class-echodash-wordpress.php:108
+msgid "WooCommerce"
+msgstr ""
+
+#: includes/integrations/wordpress/class-echodash-wordpress.php:109
+msgid "The plugin name"
+msgstr ""
+
+#: includes/integrations/wordpress/class-echodash-wordpress.php:113
+msgid "An ecommerce toolkit that helps you sell anything. Beautifully."
+msgstr ""
+
+#: includes/integrations/wordpress/class-echodash-wordpress.php:114
+msgid "The plugin description"
 msgstr ""
 
 #. Plugin URI of the plugin/theme

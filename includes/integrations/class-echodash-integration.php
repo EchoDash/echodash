@@ -205,6 +205,8 @@ abstract class EchoDash_Integration {
 		foreach ( $args as $object_type => $values ) {
 			if ( isset( $event_data[ $object_type ] ) ) {
 				$event_data[ $object_type ] = array_merge( $event_data[ $object_type ], $values );
+			} else {
+				$event_data[ $object_type ] = $values;
 			}
 		}
 

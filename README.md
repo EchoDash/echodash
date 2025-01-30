@@ -1,3 +1,5 @@
+[![EchoDash Banner](assets/banner-1544x500.jpg)](https://echodash.com)
+
 # EchoDash for WordPress
 
 Track user events and interactions across your WordPress site with EchoDash analytics. Built for developers and site owners who need detailed insights into user behavior across multiple WordPress plugins.
@@ -14,7 +16,7 @@ Track user events and interactions across your WordPress site with EchoDash anal
 ## Requirements
 
 - WordPress 6.0+
-- PHP 7.0+
+- PHP 7.4+
 
 ## Installation
 
@@ -190,10 +192,10 @@ add_filter( 'echodash_your-integration_triggers', function( $triggers ) {
 
 ## Support
 
-- Documentation: https://echodash.com/docs/
+- Documentation: https://echodash.com/docs/echodash-plugin/
 - Support: https://echodash.com/support/
-- Issues: Create a GitHub issue
+- Issues: [Create a GitHub issue](../../issues/new)
 
 ## License
 
-GPL v2 or later
+GPL v3 or later

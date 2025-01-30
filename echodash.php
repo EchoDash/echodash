@@ -1,7 +1,7 @@
 <?php
 
 /**
- * EchoDash - Event Tracking and Activity Log plugin for WordPress
+ * EchoDash - Event Tracking and Activity Log
  *
  * @package EchoDash
  * @author  EchoDash
@@ -12,7 +12,7 @@
  * Plugin Name: EchoDash
  * Plugin URI:  https://echodash.com/
  * Description: Track events from WordPress plugins as real-time activities in the EchoDash platform.
- * Version:     1.0.2
+ * Version:     1.1.0
  * Author:      EchoDash
  * Author URI:  https://echodash.com/
  * Text Domain: echodash
@@ -48,7 +48,7 @@
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
-define( 'ECHODASH_VERSION', '1.0.2' );
+define( 'ECHODASH_VERSION', '1.1.0' );
 
 /**
  * Class EchoDash
@@ -70,7 +70,7 @@ final class EchoDash {
 	/**
 	 * Allows interfacing with the main class.
 	 *
-	 * @var EchoDash_Queue
+	 * @var EchoDash_Public
 	 * @since 1.0.0
 	 */
 	public $public;
@@ -107,7 +107,7 @@ final class EchoDash {
 	 */
 	public static function instance() {
 
-		if ( ! isset( self::$instance ) && ! ( self::$instance instanceof EchoDash ) ) {
+		if ( ! isset( self::$instance ) ) {
 
 			self::$instance = new EchoDash();
 
@@ -250,6 +250,7 @@ final class EchoDash {
 		// Extend integrations for integrations that does not have files in WPF integrations folder.
 
 		$integrations = array(
+			'wordpress'              => 'WP',
 			'user'                   => 'WP_User',
 			'presto-player'          => 'PrestoPlayer\Core',
 			'abandoned-cart'         => 'WP_Fusion_Abandoned_Cart',
@@ -281,6 +282,22 @@ final class EchoDash {
 	}
 
 	/**
+	 * Show error message if install check failed.
+	 *
+	 * @since  1.0.0
+	 */
+	public function admin_notices() {
+		$return = self::$instance->check_install();
+
+		if ( is_wp_error( $return ) && 'error' === $return->get_error_code() ) {
+			printf(
+				'<div class="notice notice-error"><p>%s</p></div>',
+				wp_kses_post( $return->get_error_message() )
+			);
+		}
+	}
+
+	/**
 	 * Check install.
 	 *
 	 * Checks if the minimum WordPress and PHP versions are met.
@@ -290,35 +307,16 @@ final class EchoDash {
 	 * @return mixed True on success, WP_Error on error
 	 */
 	public function check_install() {
-
 		if ( version_compare( PHP_VERSION, '7.0.0', '<' ) ) {
-			return new WP_Error( 'error', 'The EchoDash plugin requires PHP 7.0 or higher.' );
+			return new WP_Error( 'error', esc_html__( 'The EchoDash plugin requires PHP 7.0 or higher.', 'echodash' ) );
 		}
 
 		// Make sure WordPress is at least 6.0.
 		if ( version_compare( get_bloginfo( 'version' ), '6.0', '<' ) ) {
-			return new WP_Error( 'error', 'The EchoDash plugin requires WordPress 6.0 or higher.' );
+			return new WP_Error( 'error', esc_html__( 'The EchoDash plugin requires WordPress 6.0 or higher.', 'echodash' ) );
 		}
-	}
 
-	/**
-	 * Show error message if install check failed.
-	 *
-	 * @since  1.0.0
-	 *
-	 * @return mixed error message.
-	 */
-	public function admin_notices() {
-
-		$return = self::$instance->check_install();
-
-		if ( is_wp_error( $return ) && 'error' === $return->get_error_code() ) {
-
-			echo '<div class="notice notice-error">';
-			echo '<p>' . wp_kses_post( $return->get_error_message() ) . '</p>';
-			echo '</div>';
-
-		}
+		return true;
 	}
 }
 

@@ -42,6 +42,7 @@ class EchoDash_Admin {
 	 * @return void
 	 */
 	public function send_event_test() {
+
 		check_ajax_referer( 'ecd_ajax_nonce', '_ajax_nonce' );
 
 		if ( ! isset( $_POST['data'] ) ) {
@@ -143,9 +144,7 @@ class EchoDash_Admin {
 			return;
 		}
 
-		$nonce = wp_unslash( sanitize_key( $_GET['wpnonce'] ) );
-
-		if ( ! wp_verify_nonce( $nonce, 'echodash_connect' ) ) {
+		if ( ! wp_verify_nonce( wp_unslash( sanitize_key( $_GET['wpnonce'] ) ), 'echodash_connect' ) ) {
 			return;
 		}
 
@@ -217,7 +216,7 @@ class EchoDash_Admin {
 	 * @return void
 	 */
 	public function submenu_callback() {
-		include_once ECHODASH_DIR_PATH . '/includes/admin/option-page.php';
+		include_once ECHODASH_DIR_PATH . 'includes/admin/option-page.php';
 	}
 
 	/**

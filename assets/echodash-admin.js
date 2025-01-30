@@ -1,6 +1,7 @@
 jQuery(function ($) {
   var EchoDash = {
     init: function () {
+
       this.optionPageRepeater();
       this.multiKeyRepeater();
 

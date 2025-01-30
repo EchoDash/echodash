@@ -174,12 +174,12 @@ class EchoDash_User extends EchoDash_Integration {
 				),
 				array(
 					'meta'        => 'current_url',
-					'preview'     => home_url( $_SERVER['REQUEST_URI'] ?? '/login/' ),
+					'preview'     => sanitize_url( home_url( wp_unslash( $_SERVER['REQUEST_URI'] ?? '/login/' ) ) ),
 					'placeholder' => __( 'The user\'s current URL', 'echodash' ),
 				),
 				array(
 					'meta'        => 'referer',
-					'preview'     => $_SERVER['HTTP_REFERER'] ?? home_url( '/previous-page/' ),
+					'preview'     => sanitize_url( wp_unslash( $_SERVER['HTTP_REFERER'] ?? home_url( '/previous-page/' ) ) ),
 					'placeholder' => __( 'The user\'s previous URL', 'echodash' ),
 				),
 			),
@@ -240,30 +240,30 @@ class EchoDash_User extends EchoDash_Integration {
 
 		foreach ( $user_meta as $key => $value ) {
 			// WP Fusion support.
-			if ( false !== strpos( $key, '_tags' ) && function_exists( 'wpf_get_tag_label' ) ) {
+			if ( false !== strpos( $key, '_tags' ) && is_array( $value ) && function_exists( 'wpf_get_tag_label' ) ) {
 				$user_meta[ $key ] = array_map( 'wpf_get_tag_label', $value );
 			}
 		}
 
 		foreach ( $user_meta as $key => $value ) {
 			if ( is_array( $value ) ) {
-
-				if ( count( $value ) === count( $value, COUNT_RECURSIVE ) ) {
-					// Check each value isn't an object before imploding
-					$can_implode = true;
-					foreach ( $value as $item ) {
-						if ( is_object( $item ) ) {
-							$can_implode = false;
-							break;
+				// Recursively flatten array and filter out non-scalar values
+				$flatten = function ( $arr ) use ( &$flatten ) {
+					$result = array();
+					foreach ( $arr as $item ) {
+						if ( is_array( $item ) ) {
+							$result = array_merge( $result, $flatten( $item ) );
+						} elseif ( is_scalar( $item ) ) {
+							$result[] = $item;
 						}
 					}
-					if ( $can_implode ) {
-						$user_meta[ $key ] = implode( ', ', $value );
-					} else {
-						unset( $user_meta[ $key ] );
-					}
+					return $result;
+				};
+
+				$flattened = $flatten( $value );
+				if ( ! empty( $flattened ) ) {
+					$user_meta[ $key ] = implode( ', ', $flattened );
 				} else {
-					// Multi-dimensional array - skip it
 					unset( $user_meta[ $key ] );
 				}
 			} elseif ( is_object( $value ) ) {
@@ -273,13 +273,11 @@ class EchoDash_User extends EchoDash_Integration {
 
 		// Page / leadsource stuff.
 		if ( ! empty( $_SERVER['REQUEST_URI'] ) ) {
-			$request_uri              = wp_unslash( $_SERVER['REQUEST_URI'] );
-			$user_meta['current_url'] = esc_url_raw( home_url( sanitize_text_field( $request_uri ) ) );
+			$user_meta['current_url'] = esc_url( home_url( wp_unslash( $_SERVER['REQUEST_URI'] ) ) );
 		}
 
 		if ( ! empty( $_SERVER['HTTP_REFERER'] ) ) {
-			$referer              = wp_unslash( $_SERVER['HTTP_REFERER'] );
-			$user_meta['referer'] = esc_url_raw( $referer );
+			$user_meta['referer'] = sanitize_url( wp_unslash( $_SERVER['HTTP_REFERER'] ) );
 		}
 
 		return array(

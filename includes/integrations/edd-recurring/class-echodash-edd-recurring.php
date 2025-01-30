@@ -73,8 +73,8 @@ class EchoDash_EDD_Recurring extends EchoDash_Integration {
 	 *
 	 * @since 1.3.0
 	 *
-	 * @param string          $old_status   The old status.
-	 * @param string          $new_status   The new status.
+	 * @param string           $old_status   The old status.
+	 * @param string           $new_status   The new status.
 	 * @param EDD_Subscription $subscription The subscription.
 	 */
 	public function subscription_change( $old_status, $new_status, $subscription ) {
