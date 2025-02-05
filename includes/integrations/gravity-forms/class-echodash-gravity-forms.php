@@ -70,7 +70,7 @@ class EchoDash_Gravity_Forms extends EchoDash_Integration {
 					'mappings' => array(
 						'form_title' => '{entry:form_title}',
 						'date'       => '{entry:date}',
-						'entry_url'  => '{entry:url}',
+						'entry_url'  => '{entry:entry_url}',
 						'page_title' => '{entry:embed_post_title}',
 						'page_url'   => '{entry:embed_post_url}',
 						'fields'     => '{entry:all_fields}',  // All form fields as array

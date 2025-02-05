@@ -127,6 +127,9 @@ class EchoDash_User extends EchoDash_Integration {
 			$user_meta = $this->get_user_vars( $current_user->ID )['user'];
 		}
 
+		$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_url( sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) ) : '/login/';
+		$referer     = isset( $_SERVER['HTTP_REFERER'] ) ? sanitize_url( sanitize_text_field( wp_unslash( $_SERVER['HTTP_REFERER'] ) ) ) : home_url( '/previous-page/' );
+
 		return array(
 			'name'    => __( 'User', 'echodash' ),
 			'type'    => 'user',
@@ -134,52 +137,52 @@ class EchoDash_User extends EchoDash_Integration {
 			'options' => array(
 				array(
 					'meta'        => 'id',
-					'preview'     => $current_user->ID ?: 9,
+					'preview'     => isset( $current_user->ID ) ? $current_user->ID : 9,
 					'placeholder' => __( 'The user ID', 'echodash' ),
 				),
 				array(
 					'meta'        => 'user_email',
-					'preview'     => $current_user->user_email ?: 'example@email.com',
+					'preview'     => isset( $current_user->user_email ) ? $current_user->user_email : 'example@email.com',
 					'placeholder' => __( 'The user\'s email address', 'echodash' ),
 				),
 				array(
 					'meta'        => 'display_name',
-					'preview'     => $current_user->display_name ?: 'Jane Doe',
+					'preview'     => isset( $current_user->display_name ) ? $current_user->display_name : 'Jane Doe',
 					'placeholder' => __( 'The user\'s display name', 'echodash' ),
 				),
 				array(
 					'meta'        => 'first_name',
-					'preview'     => $current_user->first_name ?: 'Jane',
+					'preview'     => isset( $current_user->first_name ) ? $current_user->first_name : 'Jane',
 					'placeholder' => __( 'The user\'s first name', 'echodash' ),
 				),
 				array(
 					'meta'        => 'last_name',
-					'preview'     => $current_user->last_name ?: 'Doe',
+					'preview'     => isset( $current_user->last_name ) ? $current_user->last_name : 'Doe',
 					'placeholder' => __( 'The user\'s last name', 'echodash' ),
 				),
 				array(
 					'meta'        => 'user_login',
-					'preview'     => $current_user->user_login ?: 'janeDoe',
+					'preview'     => isset( $current_user->user_login ) ? $current_user->user_login : 'janeDoe',
 					'placeholder' => __( 'The user\'s username', 'echodash' ),
 				),
 				array(
 					'meta'        => 'roles',
-					'preview'     => $user_meta['roles'] ?: 'Editor, Shop Manager',
+					'preview'     => isset( $user_meta['roles'] ) ? $user_meta['roles'] : 'Editor, Shop Manager',
 					'placeholder' => __( 'The user\'s roles', 'echodash' ),
 				),
 				array(
 					'meta'        => '*meta*',
-					'preview'     => 'No user meta found',
+					'preview'     => __( 'No user meta found', 'echodash' ),
 					'placeholder' => __( 'Any user meta key', 'echodash' ),
 				),
 				array(
 					'meta'        => 'current_url',
-					'preview'     => sanitize_url( home_url( wp_unslash( $_SERVER['REQUEST_URI'] ?? '/login/' ) ) ),
+					'preview'     => esc_url( home_url( $request_uri ) ),
 					'placeholder' => __( 'The user\'s current URL', 'echodash' ),
 				),
 				array(
 					'meta'        => 'referer',
-					'preview'     => sanitize_url( wp_unslash( $_SERVER['HTTP_REFERER'] ?? home_url( '/previous-page/' ) ) ),
+					'preview'     => esc_url( $referer ),
 					'placeholder' => __( 'The user\'s previous URL', 'echodash' ),
 				),
 			),
@@ -273,11 +276,11 @@ class EchoDash_User extends EchoDash_Integration {
 
 		// Page / leadsource stuff.
 		if ( ! empty( $_SERVER['REQUEST_URI'] ) ) {
-			$user_meta['current_url'] = esc_url( home_url( wp_unslash( $_SERVER['REQUEST_URI'] ) ) );
+			$user_meta['current_url'] = home_url( sanitize_url( sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) ) );
 		}
 
 		if ( ! empty( $_SERVER['HTTP_REFERER'] ) ) {
-			$user_meta['referer'] = sanitize_url( wp_unslash( $_SERVER['HTTP_REFERER'] ) );
+			$user_meta['referer'] = sanitize_url( sanitize_text_field( wp_unslash( $_SERVER['HTTP_REFERER'] ) ) );
 		}
 
 		return array(

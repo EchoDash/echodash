@@ -1,10 +1,10 @@
-=== EchoDash - Event Tracking and Activity Log ===
-Contributors: verygoodplugins
+=== EchoDash ===
+Contributors: echodash, verygoodplugins
 Tags: analytics, tracking, activity, log, events
 Requires at least: 6.0
-Tested up to: 6.8.0
+Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -112,6 +112,14 @@ Yes, developers can use our API to track custom events. Documentation is availab
 
 == Changelog ==
 
+= 1.1.1 - February 5, 2025 =
+* Fixed type to search not working in the event variables dropdown
+* Fixed Gravity Forms entry_url not being sent
+* Fixed - Upgraded jQuery Repeater to latest version 1.2.2
+* Fixed deprecated jQuery method notices in the admin
+* Fixed improper sanitization and escaping of HTTP referrer and request URI data in the user variables
+* Developers: all functions and filters are prefixed with `echodash_` instead of `ecd` to avoid conflicts
+
 = 1.1.0 - January 30, 2025 =
 * Added event triggers for WordPress core and plugin updates
 * Fixed PHP warnings preparing nested arrays for user meta
@@ -146,7 +154,7 @@ Yes, developers can use our API to track custom events. Documentation is availab
 * Improved - Removed merge tags on event name field
 * Improved - API calls to EchoDash are sent non-blocking
 * Simplified array format of events sent to EchoDash
-* Fixed fatal error call to `ecd_logo_svg()`
+* Fixed fatal error call to `echodash_logo_svg()`
 
 = 0.0.1 - September 11, 2024 =
 * Initial release

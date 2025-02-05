@@ -1,5 +1,8 @@
 <?php
 
+// Exit if accessed directly.
+defined( 'ABSPATH' ) || exit;
+
 GFForms::include_feed_addon_framework();
 
 /**
@@ -148,6 +151,6 @@ class EchoDash_Gravity_Forms_Feed extends GFFeedAddOn {
 	 * @return string
 	 */
 	public function get_menu_icon() {
-		return ecd_logo_svg();
+		return echodash_logo_svg();
 	}
 }

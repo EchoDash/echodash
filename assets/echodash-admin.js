@@ -43,7 +43,7 @@ jQuery(function ($) {
       $(document).on('click', '#ecd-reset-defaults', this.resetToDefaults);
 
       // Add form validation
-      $('#ecd_option_page').on('submit', function(e) {
+      $('#echodash_option_page').on('submit', function(e) {
         if (!EchoDash.validateForm()) {
           e.preventDefault();
         }
@@ -105,7 +105,7 @@ jQuery(function ($) {
         type: "POST",
         url: ecdEventData.ajaxurl,
         data: {
-          action: "ecd_send_test",
+          action: "echodash_send_test",
           data,
           _ajax_nonce: ecdEventData.nonce,
         },
@@ -337,8 +337,8 @@ jQuery(function ($) {
      * Init option page repeater.
      */
     optionPageRepeater: function () {
-      if ($("#ecd_option_page .ecd-repeater").length) {
-        $("#ecd_option_page .ecd-repeater").repeater({
+      if ($("#echodash_option_page .ecd-repeater").length) {
+        $("#echodash_option_page .ecd-repeater").repeater({
           repeaters: [
             {
               selector: ".ecd-multi-key",
@@ -631,6 +631,45 @@ jQuery(function ($) {
             theme: "ecd-events",
             width: "250px",
             data: data,
+            minimumInputLength: 0,
+            minimumResultsForSearch: 1,
+            matcher: function(params, data) {
+              // Check if params exists and has a term
+              if (!params || !params.term) {
+                return data;
+              }
+
+              // Return all data if no search term
+              if (params.term.trim() === '') {
+                return data;
+              }
+
+              // Handle optgroup children
+              if (data.children) {
+                // Clone the data object to avoid modifying original
+                var match = $.extend(true, {}, data);
+                
+                // Check children for matches
+                match.children = [];
+                
+                for (var c = 0; c < data.children.length; c++) {
+                  var child = data.children[c];
+                  // Add null check for child.text
+                  if (child && child.text && 
+                      child.text.toLowerCase().indexOf(params.term.toLowerCase()) > -1) {
+                    match.children.push(child);
+                  }
+                }
+
+                // Return the matched children
+                if (match.children.length > 0) {
+                  return match;
+                }
+              }
+
+              // Return null if no matches
+              return null;
+            }
           })
           .on("select4:select", function (event) {
             let value = event.params.data.text;
@@ -694,7 +733,7 @@ jQuery(function ($) {
         url: ecdEventData.ajaxurl,
         type: 'POST',
         data: {
-          action: 'ecd_reset_to_defaults',
+          action: 'echodash_reset_to_defaults',
           integration: 'all', // Reset all integrations
           _ajax_nonce: ecdEventData.nonce
         },

@@ -70,7 +70,7 @@ class EchoDash_Public {
 			return;
 		}
 
-		$endpoint = ecd_get_option( 'endpoint' );
+		$endpoint = esc_url( echodash_get_option( 'endpoint' ) );
 
 		if ( empty( $endpoint ) ) {
 			return;
@@ -78,7 +78,7 @@ class EchoDash_Public {
 
 		foreach ( $this->events as $event ) {
 
-			$res = wp_remote_post(
+			wp_remote_post(
 				$endpoint,
 				array(
 					'headers'    => array(

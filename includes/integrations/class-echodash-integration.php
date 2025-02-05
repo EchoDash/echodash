@@ -436,11 +436,11 @@ abstract class EchoDash_Integration {
 		// Options from this integration.
 		foreach ( $this->triggers[ $trigger ]['option_types'] as $option_type ) {
 			// Get the options.
-			$option = apply_filters( "get_{$option_type}_options", array(), $post_id );
+			$option = apply_filters( "echodash_get_{$option_type}_options", array(), $post_id );
 
 			// Maybe fill in previews.
-			if ( ! empty( $post_id ) && has_filter( "get_{$option_type}_vars" ) ) {
-				$values = apply_filters( "get_{$option_type}_vars", $post_id );
+			if ( ! empty( $post_id ) && has_filter( "echodash_get_{$option_type}_vars" ) ) {
+				$values = apply_filters( "echodash_get_{$option_type}_vars", $post_id );
 
 				foreach ( $option['options'] as $i => $sub_option ) {
 					if ( ! empty( $values[ $option['type'] ][ $sub_option['meta'] ] ) ) {
@@ -523,13 +523,13 @@ abstract class EchoDash_Integration {
 
 			foreach ( $this->triggers[ $trigger ]['option_types'] as $option_type ) {
 				// Add the filter for getting the available options.
-				if ( ! has_filter( "get_{$option_type}_options" ) && method_exists( $this, "get_{$option_type}_options" ) ) {
-					add_filter( "get_{$option_type}_options", array( $this, "get_{$option_type}_options" ), 10, 2 );
+				if ( ! has_filter( "echodash_get_{$option_type}_options" ) && method_exists( $this, "get_{$option_type}_options" ) ) {
+					add_filter( "echodash_get_{$option_type}_options", array( $this, "get_{$option_type}_options" ), 10, 2 );
 				}
 
 				// Add the filter for filling the options with the real variables.
 				if ( method_exists( $this, "get_{$option_type}_vars" ) ) {
-					add_filter( "get_{$option_type}_vars", array( $this, "get_{$option_type}_vars" ), 10, 2 );
+					add_filter( "echodash_get_{$option_type}_vars", array( $this, "get_{$option_type}_vars" ), 10, 2 );
 				}
 			}
 
@@ -654,7 +654,7 @@ abstract class EchoDash_Integration {
 			ob_start();
 		}
 
-		ecd_render_event_tracking_fields( $args );
+		echodash_render_event_tracking_fields( $args );
 
 		// Localize the script data.
 		echodash()->admin->localize( $this->slug, $trigger, $this->get_options( $trigger, $post_id ) );
@@ -676,7 +676,7 @@ abstract class EchoDash_Integration {
 			return;
 		}
 
-		$data = ! empty( $_POST['echodash_settings'] ) ? ecd_clean( wp_unslash( $_POST['echodash_settings'] ) ) : array();
+		$data = ! empty( $_POST['echodash_settings'] ) ? echodash_clean( wp_unslash( $_POST['echodash_settings'] ) ) : array();
 
 		if ( ! empty( $data ) ) {
 			update_post_meta( $post_id, 'echodash_settings', $data );

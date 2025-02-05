@@ -1,6 +1,13 @@
+<?php
+
+// Exit if accessed directly.
+defined( 'ABSPATH' ) || exit;
+
+?>
+
 <div class="wrap">
 
-	<form id="ecd_option_page" action="" method="post">
+	<form id="echodash_option_page" action="" method="post">
 
 		<?php $settings = get_option( 'echodash_options' ); ?>
 		<?php $endpoint = get_option( 'echodash_endpoint' ); ?>
@@ -8,7 +15,7 @@
 		<h1>
 			<?php
 			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-			echo ecd_logo_svg( 24 );
+			echo echodash_logo_svg( 24 );
 			?>
 			<?php esc_html_e( 'EchoDash', 'echodash' ); ?>
 		</h1>
@@ -203,7 +210,7 @@
 											<div class="ecd-placeholder"><?php esc_html_e( 'Please select a trigger to configure the event', 'echodash' ); ?></div>
 											<div class="echodash-fields">
 												<?php
-												ecd_render_event_tracking_fields(
+												echodash_render_event_tracking_fields(
 													array(
 														'meta_name' => 'echodash_options',
 														'setting'  => $event,

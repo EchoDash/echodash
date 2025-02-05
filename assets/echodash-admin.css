@@ -229,13 +229,13 @@ td.echodash button {
     margin-left: -5px;
 }
 
-form#ecd_option_page h1 {
+form#echodash_option_page h1 {
     display: flex;
     align-items: center;
     gap: 8px;
 }
 
-form#ecd_option_page #echodash-info {
+form#echodash_option_page #echodash-info {
     background: #fff;
     width: 950px;
     max-width: 100%;
@@ -244,11 +244,11 @@ form#ecd_option_page #echodash-info {
     border: 1px solid #ddd;
 }
 
-form#ecd_option_page #echodash-info #echodash-endpoint {
+form#echodash_option_page #echodash-info #echodash-endpoint {
     width: 100%;
 }
 
-form#ecd_option_page h1 svg {
+form#echodash_option_page h1 svg {
     color: #070174;
     vertical-align: middle;
     position: relative;

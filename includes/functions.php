@@ -26,7 +26,7 @@ function echodash_track_event( $event_name, $values = array(), $source = false, 
  * @param mixed  $default The default value.
  * @return mixed The option value.
  */
-function ecd_get_option( $key, $default_value = false ) {
+function echodash_get_option( $key, $default_value = false ) {
 
 	if ( 'endpoint' === $key ) {
 		$value = get_option( 'echodash_endpoint', $default );
@@ -49,26 +49,27 @@ function ecd_get_option( $key, $default_value = false ) {
  *
  * @since 1.0.0
  *
- * @param string|array $var Data to sanitize.
+ * @param string|array $data Data to sanitize.
  * @return string|array
  */
-function ecd_clean( $var ) {
+function echodash_clean( $data ) {
 
-	if ( is_array( $var ) ) {
+	if ( is_array( $data ) ) {
 
 		// Clean up empty event values.
-		foreach ( $var as $id => $maybe_event ) {
+		foreach ( $data as $id => $maybe_event ) {
 			if ( is_array( $maybe_event ) ) {
 				if ( ( isset( $maybe_event['value'] ) && is_array( $maybe_event['value'] ) && empty( $maybe_event['value'][0]['key'] ) ) || ( isset( $maybe_event['name'] ) && empty( $maybe_event['name'] ) ) ) {
-					unset( $var[ $id ] );
+					unset( $data[ $id ] );
 				}
 			}
 		}
 
-		return array_map( 'ecd_clean', $var );
+		// Recursively sanitize arrays.
+		return array_map( 'echodash_clean', $data );
 	}
 
-	if ( is_scalar( $var ) ) {
-		return sanitize_text_field( $var );
+	if ( is_scalar( $data ) ) {
+		return sanitize_text_field( $data );
 	}
 }

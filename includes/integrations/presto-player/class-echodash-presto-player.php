@@ -137,7 +137,7 @@ class EchoDash_Presto_Player extends EchoDash_Integration {
 	 * @return int The post ID.
 	 */
 	public function get_post_id( $video_id ) {
-		$post_id = wp_cache_get( $video_id, 'ecd_pp_vids' );
+		$post_id = wp_cache_get( $video_id, 'echodash_pp_vids' );
 
 		if ( false !== $post_id ) {
 			return $post_id;
@@ -153,7 +153,7 @@ class EchoDash_Presto_Player extends EchoDash_Integration {
 			)
 		);
 
-		wp_cache_set( $video_id, $post_id, 'ecd_pp_vids', 3600 ); // 1 hour in seconds
+		wp_cache_set( $video_id, $post_id, 'echodash_pp_vids', 3600 ); // 1 hour in seconds
 
 		return $post_id;
 	}

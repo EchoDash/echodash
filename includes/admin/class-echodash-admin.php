@@ -32,8 +32,8 @@ class EchoDash_Admin {
 		add_action( 'admin_init', array( $this, 'save_echodash_callback' ) );
 		add_action( 'admin_init', array( $this, 'save_settings' ) );
 
-		add_action( 'wp_ajax_ecd_send_test', array( $this, 'send_event_test' ) );
-		add_action( 'wp_ajax_ecd_reset_to_defaults', array( $this, 'reset_to_defaults' ) );
+		add_action( 'wp_ajax_echodash_send_test', array( $this, 'send_event_test' ) );
+		add_action( 'wp_ajax_echodash_reset_to_defaults', array( $this, 'reset_to_defaults' ) );
 	}
 
 	/**
@@ -43,16 +43,16 @@ class EchoDash_Admin {
 	 */
 	public function send_event_test() {
 
-		check_ajax_referer( 'ecd_ajax_nonce', '_ajax_nonce' );
+		check_ajax_referer( 'echodash_ajax_nonce', '_ajax_nonce' );
 
 		if ( ! isset( $_POST['data'] ) ) {
-			wp_send_json_error( 'ecd_empty_data' );
+			wp_send_json_error( 'echodash_empty_data' );
 		}
 
-		$data = wp_unslash( $_POST['data'] );
+		$data = echodash_clean( wp_unslash( $_POST['data'] ) );
 
 		if ( empty( $data['event_name'] ) || empty( $data['integration'] ) ) {
-			wp_send_json_error( 'ecd_missing_required_fields' );
+			wp_send_json_error( 'echodash_missing_required_fields' );
 		}
 
 		$event_name = sanitize_text_field( $data['event_name'] );
@@ -172,7 +172,7 @@ class EchoDash_Admin {
 			return;
 		}
 
-		$data = ecd_clean( wp_unslash( $_POST['echodash_options'] ) );
+		$data = echodash_clean( wp_unslash( $_POST['echodash_options'] ) );
 
 		if ( ! empty( $data ) ) {
 			update_option( 'echodash_options', $data, false );
@@ -226,8 +226,8 @@ class EchoDash_Admin {
 	 */
 	public function admin_scripts() {
 
-		wp_register_style( 'select4', ECHODASH_DIR_URL . 'assets/select4/select4.min.css', array(), '4.0.1' );
-		wp_register_script( 'select4', ECHODASH_DIR_URL . 'assets/select4/select4.min.js', array( 'jquery' ), '4.0.1', true );
+		wp_register_style( 'select4', ECHODASH_DIR_URL . 'assets/select4/select4.min.css', array(), '4.0.13' );
+		wp_register_script( 'select4', ECHODASH_DIR_URL . 'assets/select4/select4.min.js', array( 'jquery' ), '4.0.13', true );
 
 		wp_register_script( 'echodash-jquery-repeater', ECHODASH_DIR_URL . 'assets/jquery-repeater/jquery.repeater.min.js', array( 'jquery' ), '1.2.2', true );
 
@@ -268,7 +268,7 @@ class EchoDash_Admin {
 		if ( ! empty( $this->localize_data ) ) {
 
 			$this->localize_data['ajaxurl'] = admin_url( 'admin-ajax.php' );
-			$this->localize_data['nonce']   = wp_create_nonce( 'ecd_ajax_nonce' );
+			$this->localize_data['nonce']   = wp_create_nonce( 'echodash_ajax_nonce' );
 
 			wp_enqueue_style( 'select4' );
 			wp_enqueue_script( 'select4' );
@@ -337,7 +337,7 @@ class EchoDash_Admin {
 	 * @since 1.0.0
 	 */
 	public function reset_to_defaults() {
-		check_ajax_referer( 'ecd_ajax_nonce', '_ajax_nonce' );
+		check_ajax_referer( 'echodash_ajax_nonce', '_ajax_nonce' );
 
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_send_json_error( 'insufficient_permissions' );

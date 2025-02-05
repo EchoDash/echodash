@@ -33,7 +33,7 @@ class EchoDash_Abandoned_Cart extends EchoDash_Integration {
 	 */
 	public function init() {
 
-		add_action( 'ecd_abandoned_cart_created', array( $this, 'cart_created' ), 10, 2 );
+		add_action( 'echodash_abandoned_cart_created', array( $this, 'cart_created' ), 10, 2 );
 	}
 
 	/**

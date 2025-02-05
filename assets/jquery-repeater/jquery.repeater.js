@@ -26,7 +26,7 @@ var isFunction = function (value) {
 };
 
 var indexOf = function (object, value) {
-    return $.inArray(value, object);
+    return Array.prototype.indexOf.call(object, value);
 };
 
 var inArray = function (array, value) {
@@ -314,6 +314,7 @@ var createInputCheckbox = function (fig) {
     my.equalTo = inputEqualToArray;
 
     self.$().change(function (e) {
+        $(this).prop('checked', !$(this).prop('checked'));
         my.publishChange(e, this);
     });
 

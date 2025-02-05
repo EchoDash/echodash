@@ -10,7 +10,7 @@ defined( 'ABSPATH' ) || exit;
  * @param  array $args   The arguments.
  * @return mixed HTML inputs.
  */
-function ecd_render_event_tracking_fields( $args = array() ) {
+function echodash_render_event_tracking_fields( $args = array() ) {
 
 	// Default values.
 
@@ -48,7 +48,7 @@ function ecd_render_event_tracking_fields( $args = array() ) {
 		$field_id = sanitize_html_class( $args['meta_name'] ) . '-' . $args['field_id'];
 	}
 
-	$in_option_page = ecd_in_option_page();
+	$in_option_page = echodash_in_option_page();
 
 	$field_name           = esc_attr( $args['meta_name'] ) . ( ! is_null( $args['field_id'] ) ? '[' . esc_attr( $args['field_id'] ) . ']' : '' );
 	$single_trigger_class = ( ! $in_option_page ? ' single-trigger' : '' );
@@ -63,7 +63,7 @@ function ecd_render_event_tracking_fields( $args = array() ) {
 
 			' .
 			// wpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-			ecd_get_event_tracking_value_field( $args, $field_name, $field_id ) . '
+			echodash_get_event_tracking_value_field( $args, $field_name, $field_id ) . '
   
 		</span>
 	';
@@ -78,13 +78,13 @@ function ecd_render_event_tracking_fields( $args = array() ) {
  * @param string $field_name
  * @param string $field_id
  */
-function ecd_get_event_tracking_value_field( $args, $field_name, $field_id ) {
+function echodash_get_event_tracking_value_field( $args, $field_name, $field_id ) {
 
 	$output = '';
 
 	$value = ( isset( $args['setting']['value'] ) ? $args['setting']['value'] : '' );
 
-	$in_option_page = ecd_in_option_page();
+	$in_option_page = echodash_in_option_page();
 
 	$output .= '
 		<span class="ecd-multi-key">
@@ -145,7 +145,7 @@ function ecd_get_event_tracking_value_field( $args, $field_name, $field_id ) {
  * @param  int $width The width.
  * @return string The logo SVG.
  */
-function ecd_logo_svg( $width = 24 ) {
+function echodash_logo_svg( $width = 24 ) {
 	$height  = $width; // Logo is square
 	$content = '
 	<svg width="' . esc_attr( (string) $width ) . '" height="' . esc_attr( (string) $height ) . '" viewBox="0 0 422 422" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -161,7 +161,7 @@ function ecd_logo_svg( $width = 24 ) {
  * @since  1.0.0
  * @return bool
  */
-function ecd_in_option_page() {
+function echodash_in_option_page() {
 	$screen = get_current_screen();
 	return $screen && $screen->id === 'settings_page_echodash';
 }

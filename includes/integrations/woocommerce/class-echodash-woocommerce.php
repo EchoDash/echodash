@@ -35,7 +35,7 @@ class EchoDash_WooCommerce extends EchoDash_Integration {
 	 */
 	public function init() {
 
-		add_action( 'woocommerce_payment_complete', array( $this, 'order_placed' ), 10, 3 );
+		add_action( 'woocommerce_payment_complete', array( $this, 'order_placed' ) );
 		add_action( 'woocommerce_new_order_item', array( $this, 'purchased_product' ), 10, 3 );
 		add_action( 'woocommerce_order_status_changed', array( $this, 'order_status_changed' ), 10, 4 );
 	}

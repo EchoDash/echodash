@@ -223,13 +223,19 @@ class EchoDash_EDD_Software_Licensing extends EchoDash_Integration {
 			if ( isset( $_REQUEST['url'] ) ) {
 
 				// If we're activating / deactivating a URL, grab it.// If we're activating / deactivating a URL, grab it.
-				$vars['license']['site_url'] = sanitize_url( wp_unslash( $_REQUEST['url'] ) );
+				$vars['license']['site_url'] = sanitize_url( sanitize_text_field( wp_unslash( $_REQUEST['url'] ) ) );
 
-			} elseif ( isset( $_SERVER['HTTP_USER_AGENT'] ) && false !== strpos( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ), 'WordPress' ) ) {
+			} elseif ( isset( $_SERVER['HTTP_USER_AGENT'] ) ) {
 
-				// Installing an update. The user agent will be like "WordPress/5.4.2; https://example.com".
-				$parts                       = explode( ';', wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) );
-				$vars['license']['site_url'] = sanitize_url( trim( $parts[1] ) );
+				$user_agent = sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) );
+
+				if ( false !== strpos( $user_agent, 'WordPress' ) ) {
+
+					// Installing an update. The user agent will be like "WordPress/5.4.2; https://example.com".
+					$parts                       = explode( ';', $user_agent );
+					$vars['license']['site_url'] = sanitize_url( trim( $parts[1] ) );
+
+				}
 			}
 
 			$download = new EDD_SL_Download( $license->download_id );

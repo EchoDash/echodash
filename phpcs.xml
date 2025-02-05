@@ -56,11 +56,11 @@
 		</properties>
 	</rule>
 
-	<!-- Register ecd_clean as valid sanitization function -->
+	<!-- Register echodash_clean as valid sanitization function -->
 	<rule ref="WordPress.Security.ValidatedSanitizedInput">
 		<properties>
 			<property name="customSanitizingFunctions" type="array">
-				<element value="ecd_clean"/>
+				<element value="echodash_clean"/>
 			</property>
 		</properties>
 	</rule>

@@ -131,7 +131,7 @@ class EchoDash_BuddyPress extends EchoDash_Integration {
 	public function profile_completed( $progress_details ) {
 		if ( 100 === (int) $progress_details['completion_percentage'] ) {
 			$user = wp_get_current_user();
-			if ( ! $user->exists() || ! empty( get_user_meta( $user->ID, 'ecd_bp_profile_complete', true ) ) ) {
+			if ( ! $user->exists() || ! empty( get_user_meta( $user->ID, 'echodash_bp_profile_complete', true ) ) ) {
 				return $progress_details;
 			}
 
@@ -273,7 +273,7 @@ class EchoDash_BuddyPress extends EchoDash_Integration {
 			return;
 		}
 
-		$data = ! empty( $_POST['echodash_settings'] ) ? ecd_clean( wp_unslash( $_POST['echodash_settings'] ) ) : array();
+		$data = ! empty( $_POST['echodash_settings'] ) ? echodash_clean( wp_unslash( $_POST['echodash_settings'] ) ) : array();
 
 		// Update or delete the group meta
 		if ( ! empty( $data ) ) {
