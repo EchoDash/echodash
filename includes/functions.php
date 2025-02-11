@@ -22,14 +22,14 @@ function echodash_track_event( $event_name, $values = array(), $source = false, 
  *
  * @since 1.0.0
  *
- * @param string $key     The option key.
- * @param mixed  $default The default value.
+ * @param string $key           The option key.
+ * @param mixed  $default_value The default value.
  * @return mixed The option value.
  */
 function echodash_get_option( $key, $default_value = false ) {
 
 	if ( 'endpoint' === $key ) {
-		$value = get_option( 'echodash_endpoint', $default );
+		$value = get_option( 'echodash_endpoint' );
 	} else {
 		$options = get_option( 'echodash_options', array() );
 

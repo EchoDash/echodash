@@ -71,7 +71,7 @@ jQuery(function ($) {
       if (trigger.find(".ecd-multi-key").length > 0) {
         $.each(trigger.find(".ecd-values tr"), function (index, item) {
           var key = $(item).find("td:first").text().slice(0, -1); // Remove trailing colon
-          var value = $(item).find("td:last").html();
+          var value = $('<div/>').html($(item).find("td:last").html()).text(); // Decode HTML entities
 
           // Check if this is a list of fields (has <ul> tag)
           if (value && value.includes("<ul")) {
@@ -96,9 +96,10 @@ jQuery(function ($) {
           }
         });
       } else {
-        data.event_keys_values = trigger
-          .find(".ecd-preview .event-value")
-          .text();
+        // Decode HTML entities in single value case too
+        data.event_keys_values = $('<div/>').html(
+          trigger.find(".ecd-preview .event-value").html()
+        ).text();
       }
 
       $.ajax({

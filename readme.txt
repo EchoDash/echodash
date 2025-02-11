@@ -4,7 +4,7 @@ Tags: analytics, tracking, activity, log, events
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.1.1
+Stable tag: 1.1.2
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -111,6 +111,11 @@ Yes, developers can use our API to track custom events. Documentation is availab
 5. Soon EchoDash will incorporate reports, dashboards, alerts, and summaries
 
 == Changelog ==
+
+= 1.1.2 - February 11, 2025 =
+* Fixed URLs in test event data being sent as HTML entities
+* Fixed undefined variable `$default` notice when getting the endpoint URL with `echodash_get_option()`
+* Updated .pot file
 
 = 1.1.1 - February 5, 2025 =
 * Fixed type to search not working in the event variables dropdown
