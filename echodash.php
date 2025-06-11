@@ -12,7 +12,7 @@
  * Plugin Name: EchoDash
  * Plugin URI:  https://echodash.com/
  * Description: Track events from WordPress plugins as real-time activities in the EchoDash platform.
- * Version:     1.1.2
+ * Version:     1.2.0
  * Author:      EchoDash
  * Text Domain: echodash
  * Domain Path: /languages
@@ -47,7 +47,7 @@
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
-define( 'ECHODASH_VERSION', '1.1.2' );
+define( 'ECHODASH_VERSION', '1.2.0' );
 
 /**
  * Class EchoDash
@@ -253,30 +253,31 @@ final class EchoDash {
 		// Extend integrations for integrations that does not have files in WPF integrations folder.
 
 		$integrations = array(
-			'wordpress'              => 'WP',
-			'user'                   => 'WP_User',
-			'presto-player'          => 'PrestoPlayer\Core',
-			'abandoned-cart'         => 'WP_Fusion_Abandoned_Cart',
-			'gravity-forms'          => 'GFForms',
-			'affiliatewp'            => 'AffWP',
-			'bbpress'                => 'bbPress',
-			'buddypress'             => 'BuddyPress',
-			'edd'                    => 'Easy_Digital_Downloads',
-			'edd-software-licensing' => 'EDD_Software_Licensing',
-			'edd-recurring'          => 'EDD_Recurring',
-			'gamipress'              => 'GamiPress',
-			'give'                   => 'Give',
-			'learndash'              => 'SFWD_LMS',
-			'lifterlms'              => 'LLMS',
-			'woocommerce'            => 'WooCommerce',
-			'woo-subscriptions'      => 'WC_Subscriptions_Product',
+			'wordpress'               => 'WP',
+			'user'                    => 'WP_User',
+			'presto-player'           => 'PrestoPlayer\Core',
+			'abandoned-cart'          => 'WP_Fusion_Abandoned_Cart',
+			'gravity-forms'           => 'GFForms',
+			'affiliatewp'             => 'AffWP',
+			'bbpress'                 => 'bbPress',
+			'buddypress'              => 'BuddyPress',
+			'edd'                     => 'Easy_Digital_Downloads',
+			'edd-software-licensing'  => 'EDD_Software_Licensing',
+			'edd-recurring'           => 'EDD_Recurring',
+			'edd-cancellation-survey' => 'edd_cancellation_survey_load',
+			'gamipress'               => 'GamiPress',
+			'give'                    => 'Give',
+			'learndash'               => 'SFWD_LMS',
+			'lifterlms'               => 'LLMS',
+			'woocommerce'             => 'WooCommerce',
+			'woo-subscriptions'       => 'WC_Subscriptions_Product',
 		);
 
-		foreach ( $integrations as $filename => $dependency_class ) {
+		foreach ( $integrations as $filename => $dependency ) {
 
 			$filename = sanitize_file_name( $filename );
 
-			if ( class_exists( $dependency_class ) ) {
+			if ( class_exists( $dependency ) || function_exists( $dependency ) ) {
 				require_once ECHODASH_DIR_PATH . 'includes/integrations/' . $filename . '/class-echodash-' . $filename . '.php';
 			}
 		}

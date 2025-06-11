@@ -4,7 +4,7 @@ Tags: analytics, tracking, activity, log, events
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.1.2
+Stable tag: 1.2.0
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -12,7 +12,7 @@ Track user events and interactions from popular WordPress plugins in real-time w
 
 == Description ==
 
-[EchoDash](https://echodash.com) is a powerful event tracking and analytics platform designed specifically for WordPress. It helps you monitor user interactions, track important events, and gather valuable analytics data across your WordPress sites and supported plugins.
+[EchoDash](https://echodash.com?utm_source=wp-org&utm_medium=wp-plugin&utm_campaign=echodash-plugin) is a powerful event tracking and analytics platform designed specifically for WordPress. It helps you monitor user interactions, track important events, and gather valuable analytics data across your WordPress sites and supported plugins.
 
 = Key Features =
 
@@ -24,12 +24,17 @@ Track user events and interactions from popular WordPress plugins in real-time w
 * **Test Events** - Send test events to verify your tracking setup
 * **Clean Interface** - Modern, intuitive settings panel
 
+= Completely Free =
+
+While in beta, **EchoDash is completely free to use**. You can create an account at [https://echodash.com](https://echodash.com?utm_source=wp-org&utm_medium=wp-plugin&utm_campaign=echodash-plugin) to get started.
+
+We will always offer a free tier of service with an activity feed. As we add reporting and automated alerts, we will offer additional paid addons.
+
 = Supported Integrations =
 
 * **AffiliateWP** - Track referrals and affiliate activity
-* **Abandoned Cart** - Monitor abandoned shopping carts
 * **bbPress** - Track forum activity and user engagement
-* **BuddyPress** - Follow group activities, profile updates, and member interactions
+* **BuddyPress + BuddyBoss** - Follow group activities, profile updates, and member interactions
 * **Easy Digital Downloads** - Monitor purchases and downloads
 * **EDD Recurring** - Track subscription payments and renewals
 * **EDD Software Licensing** - Monitor license activations and software updates
@@ -44,33 +49,42 @@ Track user events and interactions from popular WordPress plugins in real-time w
 * **WordPress** - Track core and plugin updates
 * **Users** - Track user logins
 
+= Not Limited to WordPress =
+
+EchoDash is not limited to WordPress. You can send any webhook to EchoDash from any website or application. We use a large language model to parse webhook data and extract the relevant information to display in the EchoDash activity feed.
+
 = Use Cases =
 
-1. **E-commerce Analytics**
+1. **Centralized Activity Logging**
+   * Track user logins, content changes, and plugin updates across unlimited WordPress sites
+   * No database bloat: all event data is stored in the cloud
+   * Integrates with [Fatal Error Notify](https://fatalerrornotify.com/?utm_source=wp-org&utm_medium=wp-plugin&utm_campaign=echodash-plugin) for errors, timeouts, and JavaScript conflicts
+
+2. **E-commerce Analytics**
    * Track purchase patterns
    * Monitor subscription renewals
    * Analyze refund rates
    * Track software license usage
 
-2. **Community Engagement**
+3. **Community Engagement**
    * Monitor group activities
    * Track member interactions
    * Follow profile completions
    * Analyze forum engagement
 
-3. **Learning Management**
+4. **Learning Management**
    * Track course completions
    * Monitor quiz attempts
    * Follow student progress
    * Analyze engagement patterns
 
-4. **Donation Tracking**
+5. **Donation Tracking**
    * Monitor donation frequency
    * Track donor behavior
    * Analyze campaign success
    * Follow recurring donations
 
-For more information, please visit the [EchoDash plugin documentation](https://echodash.com/docs/echodash-plugin/)
+For more information, please visit the [EchoDash plugin documentation](https://echodash.com/docs/echodash-plugin?utm_source=wp-org&utm_medium=wp-plugin&utm_campaign=echodash-plugin)
 
 == Installation ==
 
@@ -100,17 +114,22 @@ Yes, you'll need a free EchoDash account to use the plugin. You can create one d
 
 = Can I track custom events? =
 
-Yes, developers can use our API to track custom events. Documentation is available at https://echodash.com/docs/api/
+Yes, developers can use our API to track custom events. Documentation is available at [https://echodash.com/docs/sending-data](https://echodash.com/docs/sending-data?utm_source=wp-org&utm_medium=wp-plugin&utm_campaign=echodash-plugin)
 
 == Screenshots ==
 
-1. Main settings page with Gravity Forms event configuration
-2. Send events based on WooCommerce orders, product purchases, and order status changes
-3. Track learner progress in real time with LearnDash and LifterLMS
-4. The EchoDash dashboard with real-time event stream and analytics
-5. Soon EchoDash will incorporate reports, dashboards, alerts, and summaries
+1. The EchoDash dashboard with real-time event stream and analytics.
+2. Main settings page with Gravity Forms event configuration.
+3. Send events based on WooCommerce orders, product purchases, and order status changes.
+4. Track learner progress in real time with LearnDash and LifterLMS.
+5. Connect unlimited sources. Anything that can send a webhook can appear on your EchoDash activity feed.
+6. Soon EchoDash will incorporate reports, dashboards, alerts, and summaries.
 
 == Changelog ==
+
+= 1.2.0 - June 11, 2025 =
+* Added support for EDD Cancellation Survey
+* Fixed fatal error adding products to a blank WooCommerce subscription
 
 = 1.1.2 - February 11, 2025 =
 * Fixed URLs in test event data being sent as HTML entities
@@ -171,4 +190,4 @@ Major release with improved UI, default configurations, and better error handlin
 
 == Developer Documentation ==
 
-For developer documentation and API reference, please visit https://echodash.com/docs/
+For developer documentation and API reference, please visit [https://echodash.com/docs/sending-data](https://echodash.com/docs/sending-data?utm_source=wp-org&utm_medium=wp-plugin&utm_campaign=echodash-plugin), or check us out on [GitHub](https://github.com/echodash).

@@ -253,7 +253,7 @@ abstract class EchoDash_Integration {
 
 					$search = '{' . $object_type . ':' . $object_key . '}';
 
-					if ( is_scalar( $object_value ) ) {
+					if ( is_scalar( $object_value ) && isset( $event_values[ $key ] ) ) {
 
 						// Now we replace the placeholder text, like {user:first_name} with the actual value.
 						$event_values[ $key ] = str_replace( $search, $object_value, $event_values[ $key ] );

@@ -308,8 +308,8 @@ class EchoDash_WooCommerce extends EchoDash_Integration {
 		return array(
 			'order' => array(
 				'id'                 => $data['id'],
-				'date_created'       => $data['date_created']->date_i18n(),
-				'date_modified'      => $data['date_modified']->date_i18n(),
+				'date_created'       => ! empty( $data['date_created'] ) ? $data['date_created']->date_i18n() : '',
+				'date_modified'      => ! empty( $data['date_modified'] ) ? $data['date_modified']->date_i18n() : '',
 				'status'             => $data['status'],
 				'old_status'         => $data['status'],
 				'currency'           => $data['currency'],
