@@ -1,0 +1,57 @@
+{
+  "name": "echodash",
+  "version": "1.0.0",
+  "description": "EchoDash WordPress Plugin - React Admin Interface",
+  "main": "index.js",
+  "scripts": {
+    "build": "wp-scripts build",
+    "start": "wp-scripts start",
+    "dev": "wp-scripts start",
+    "check-engines": "wp-scripts check-engines",
+    "check-licenses": "wp-scripts check-licenses",
+    "format": "wp-scripts format",
+    "lint:css": "wp-scripts lint-style",
+    "lint:js": "wp-scripts lint-js",
+    "lint": "npm run lint:js && npm run lint:css",
+    "packages-update": "wp-scripts packages-update",
+    "plugin-zip": "wp-scripts plugin-zip",
+    "test:e2e": "wp-scripts test-e2e",
+    "test:unit": "wp-scripts test-unit-js",
+    "test": "npm run test:unit",
+    "test:visual": "playwright test --config=tests/visual/playwright.config.ts",
+    "test:visual:update": "playwright test --config=tests/visual/playwright.config.ts --update-snapshots",
+    "test:visual:ui": "playwright test --config=tests/visual/playwright.config.ts --ui"
+  },
+  "keywords": [
+    "wordpress",
+    "plugin",
+    "react",
+    "typescript",
+    "event-tracking",
+    "analytics"
+  ],
+  "author": "Very Good Plugins",
+  "license": "GPL-3.0+",
+  "devDependencies": {
+    "@playwright/test": "^1.40.0",
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@wordpress/scripts": "^26.19.0",
+    "pixelmatch": "^5.3.0",
+    "pngjs": "^7.0.0",
+    "typescript": "^5.3.0"
+  },
+  "dependencies": {
+    "@wordpress/api-fetch": "^6.44.0",
+    "@wordpress/components": "^25.13.0",
+    "@wordpress/element": "^5.24.0",
+    "@wordpress/i18n": "^4.47.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  }
+}
