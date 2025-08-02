@@ -7,7 +7,7 @@ import { defineConfig, devices } from '@playwright/test';
  * with visual regression capabilities against design mockups.
  */
 export default defineConfig({
-  testDir: './tests/visual',
+  testDir: '.',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
@@ -81,7 +81,6 @@ export default defineConfig({
     // Visual comparison threshold - 3% pixel difference allowed
     toHaveScreenshot: {
       threshold: 0.03,
-      mode: 'strict',
     },
   },
 });

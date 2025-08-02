@@ -1,0 +1,1119 @@
+{
+  "config": {
+    "configFile": "/Users/jgarturo/Local Sites/dev/app/public/wp-content/plugins/echodash/tests/visual/playwright.config.ts",
+    "rootDir": "/Users/jgarturo/Local Sites/dev/app/public/wp-content/plugins/echodash/tests/visual",
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": "/Users/jgarturo/Local Sites/dev/app/public/wp-content/plugins/echodash/tests/visual/utils/global-setup.ts",
+    "globalTeardown": "/Users/jgarturo/Local Sites/dev/app/public/wp-content/plugins/echodash/tests/visual/utils/global-teardown.ts",
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {},
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "html",
+        {
+          "outputFolder": "tests/visual/reports/html"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "tests/visual/reports/results.json"
+        }
+      ],
+      [
+        "line",
+        null
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "/Users/jgarturo/Local Sites/dev/app/public/wp-content/plugins/echodash/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/Users/jgarturo/Local Sites/dev/app/public/wp-content/plugins/echodash/tests/visual",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/jgarturo/Local Sites/dev/app/public/wp-content/plugins/echodash/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "id": "firefox",
+        "name": "firefox",
+        "testDir": "/Users/jgarturo/Local Sites/dev/app/public/wp-content/plugins/echodash/tests/visual",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/jgarturo/Local Sites/dev/app/public/wp-content/plugins/echodash/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "id": "webkit",
+        "name": "webkit",
+        "testDir": "/Users/jgarturo/Local Sites/dev/app/public/wp-content/plugins/echodash/tests/visual",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/jgarturo/Local Sites/dev/app/public/wp-content/plugins/echodash/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "id": "desktop-xl",
+        "name": "desktop-xl",
+        "testDir": "/Users/jgarturo/Local Sites/dev/app/public/wp-content/plugins/echodash/tests/visual",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/jgarturo/Local Sites/dev/app/public/wp-content/plugins/echodash/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "id": "tablet-landscape",
+        "name": "tablet-landscape",
+        "testDir": "/Users/jgarturo/Local Sites/dev/app/public/wp-content/plugins/echodash/tests/visual",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "/Users/jgarturo/Local Sites/dev/app/public/wp-content/plugins/echodash/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "id": "tablet-portrait",
+        "name": "tablet-portrait",
+        "testDir": "/Users/jgarturo/Local Sites/dev/app/public/wp-content/plugins/echodash/tests/visual",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "shard": null,
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.54.1",
+    "workers": 5,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "echodash-mockups.spec.ts",
+      "file": "echodash-mockups.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "EchoDash Visual Mockup Validation",
+          "file": "echodash-mockups.spec.ts",
+          "line": 11,
+          "column": 6,
+          "specs": [
+            {
+              "title": "Setup flow matches mockup design",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "43d2c6db5b267ed1f08a-bb656ca92bce3c9edba6",
+              "file": "echodash-mockups.spec.ts",
+              "line": 18,
+              "column": 7
+            },
+            {
+              "title": "Empty integration page matches mockup",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "43d2c6db5b267ed1f08a-30abbe3685cf60a93d1b",
+              "file": "echodash-mockups.spec.ts",
+              "line": 51,
+              "column": 7
+            },
+            {
+              "title": "Integration with triggers matches mockup",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "43d2c6db5b267ed1f08a-7e9459166f2aae9db322",
+              "file": "echodash-mockups.spec.ts",
+              "line": 76,
+              "column": 7
+            },
+            {
+              "title": "Add trigger modal matches mockup",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "43d2c6db5b267ed1f08a-f02e067fc4fa5566742d",
+              "file": "echodash-mockups.spec.ts",
+              "line": 109,
+              "column": 7
+            },
+            {
+              "title": "Responsive design validation",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "43d2c6db5b267ed1f08a-72e772f598eabcb85e44",
+              "file": "echodash-mockups.spec.ts",
+              "line": 149,
+              "column": 7
+            },
+            {
+              "title": "Cross-browser visual consistency",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "43d2c6db5b267ed1f08a-80328cc02f4c5bedf2f4",
+              "file": "echodash-mockups.spec.ts",
+              "line": 183,
+              "column": 7
+            },
+            {
+              "title": "Animation and interaction states",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "43d2c6db5b267ed1f08a-d8389e8c5c9a74dc31f3",
+              "file": "echodash-mockups.spec.ts",
+              "line": 208,
+              "column": 7
+            },
+            {
+              "title": "Error states and validation",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "43d2c6db5b267ed1f08a-73916828f6b6b47aa7f1",
+              "file": "echodash-mockups.spec.ts",
+              "line": 235,
+              "column": 7
+            },
+            {
+              "title": "Setup flow matches mockup design",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "43d2c6db5b267ed1f08a-07f7b7c3a7e8688c1310",
+              "file": "echodash-mockups.spec.ts",
+              "line": 18,
+              "column": 7
+            },
+            {
+              "title": "Empty integration page matches mockup",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "43d2c6db5b267ed1f08a-9763c7f495cd33e9ce33",
+              "file": "echodash-mockups.spec.ts",
+              "line": 51,
+              "column": 7
+            },
+            {
+              "title": "Integration with triggers matches mockup",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "43d2c6db5b267ed1f08a-f9b87bd3467c0bd9c6de",
+              "file": "echodash-mockups.spec.ts",
+              "line": 76,
+              "column": 7
+            },
+            {
+              "title": "Add trigger modal matches mockup",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "43d2c6db5b267ed1f08a-2d1eda2eacb6d2f2783c",
+              "file": "echodash-mockups.spec.ts",
+              "line": 109,
+              "column": 7
+            },
+            {
+              "title": "Responsive design validation",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "43d2c6db5b267ed1f08a-af4b6bc04df2c1cd9327",
+              "file": "echodash-mockups.spec.ts",
+              "line": 149,
+              "column": 7
+            },
+            {
+              "title": "Cross-browser visual consistency",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "43d2c6db5b267ed1f08a-3123067cfd05ae02f5dc",
+              "file": "echodash-mockups.spec.ts",
+              "line": 183,
+              "column": 7
+            },
+            {
+              "title": "Animation and interaction states",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "43d2c6db5b267ed1f08a-f113032c876f47821cd5",
+              "file": "echodash-mockups.spec.ts",
+              "line": 208,
+              "column": 7
+            },
+            {
+              "title": "Error states and validation",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "43d2c6db5b267ed1f08a-571c558048c77f9fc2e7",
+              "file": "echodash-mockups.spec.ts",
+              "line": 235,
+              "column": 7
+            },
+            {
+              "title": "Setup flow matches mockup design",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "43d2c6db5b267ed1f08a-75efc9071d6d7333cefb",
+              "file": "echodash-mockups.spec.ts",
+              "line": 18,
+              "column": 7
+            },
+            {
+              "title": "Empty integration page matches mockup",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "43d2c6db5b267ed1f08a-b7e0c637d2ffa9537426",
+              "file": "echodash-mockups.spec.ts",
+              "line": 51,
+              "column": 7
+            },
+            {
+              "title": "Integration with triggers matches mockup",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "43d2c6db5b267ed1f08a-d3d3139afd63bdcf616d",
+              "file": "echodash-mockups.spec.ts",
+              "line": 76,
+              "column": 7
+            },
+            {
+              "title": "Add trigger modal matches mockup",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "43d2c6db5b267ed1f08a-e37fbb07bee52cb697d6",
+              "file": "echodash-mockups.spec.ts",
+              "line": 109,
+              "column": 7
+            },
+            {
+              "title": "Responsive design validation",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "43d2c6db5b267ed1f08a-1bd18583fa66d348a564",
+              "file": "echodash-mockups.spec.ts",
+              "line": 149,
+              "column": 7
+            },
+            {
+              "title": "Cross-browser visual consistency",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "43d2c6db5b267ed1f08a-0fc23134072206101ad5",
+              "file": "echodash-mockups.spec.ts",
+              "line": 183,
+              "column": 7
+            },
+            {
+              "title": "Animation and interaction states",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "43d2c6db5b267ed1f08a-dae70613687e26277657",
+              "file": "echodash-mockups.spec.ts",
+              "line": 208,
+              "column": 7
+            },
+            {
+              "title": "Error states and validation",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "43d2c6db5b267ed1f08a-34801e8c2b857a76dae9",
+              "file": "echodash-mockups.spec.ts",
+              "line": 235,
+              "column": 7
+            },
+            {
+              "title": "Setup flow matches mockup design",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-xl",
+                  "projectName": "desktop-xl",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "43d2c6db5b267ed1f08a-9423fea7329e5a8f8754",
+              "file": "echodash-mockups.spec.ts",
+              "line": 18,
+              "column": 7
+            },
+            {
+              "title": "Empty integration page matches mockup",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-xl",
+                  "projectName": "desktop-xl",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "43d2c6db5b267ed1f08a-58133baaeaf6b2156dd8",
+              "file": "echodash-mockups.spec.ts",
+              "line": 51,
+              "column": 7
+            },
+            {
+              "title": "Integration with triggers matches mockup",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-xl",
+                  "projectName": "desktop-xl",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "43d2c6db5b267ed1f08a-3d9ac0ad60c3dc98d54a",
+              "file": "echodash-mockups.spec.ts",
+              "line": 76,
+              "column": 7
+            },
+            {
+              "title": "Add trigger modal matches mockup",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-xl",
+                  "projectName": "desktop-xl",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "43d2c6db5b267ed1f08a-99d508eedf5aa7268d1f",
+              "file": "echodash-mockups.spec.ts",
+              "line": 109,
+              "column": 7
+            },
+            {
+              "title": "Responsive design validation",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-xl",
+                  "projectName": "desktop-xl",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "43d2c6db5b267ed1f08a-a3fc5167c368f1157a9d",
+              "file": "echodash-mockups.spec.ts",
+              "line": 149,
+              "column": 7
+            },
+            {
+              "title": "Cross-browser visual consistency",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-xl",
+                  "projectName": "desktop-xl",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "43d2c6db5b267ed1f08a-08c536d68436a6ab73f6",
+              "file": "echodash-mockups.spec.ts",
+              "line": 183,
+              "column": 7
+            },
+            {
+              "title": "Animation and interaction states",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-xl",
+                  "projectName": "desktop-xl",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "43d2c6db5b267ed1f08a-13d25a2db1a1b4279b72",
+              "file": "echodash-mockups.spec.ts",
+              "line": 208,
+              "column": 7
+            },
+            {
+              "title": "Error states and validation",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "desktop-xl",
+                  "projectName": "desktop-xl",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "43d2c6db5b267ed1f08a-bdbf0e2544ccbe5d4f55",
+              "file": "echodash-mockups.spec.ts",
+              "line": 235,
+              "column": 7
+            },
+            {
+              "title": "Setup flow matches mockup design",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet-landscape",
+                  "projectName": "tablet-landscape",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "43d2c6db5b267ed1f08a-9be7e02ea71f0e442568",
+              "file": "echodash-mockups.spec.ts",
+              "line": 18,
+              "column": 7
+            },
+            {
+              "title": "Empty integration page matches mockup",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet-landscape",
+                  "projectName": "tablet-landscape",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "43d2c6db5b267ed1f08a-ccafc1bc0a7d02ccee11",
+              "file": "echodash-mockups.spec.ts",
+              "line": 51,
+              "column": 7
+            },
+            {
+              "title": "Integration with triggers matches mockup",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet-landscape",
+                  "projectName": "tablet-landscape",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "43d2c6db5b267ed1f08a-d8620786f4545d14ddc1",
+              "file": "echodash-mockups.spec.ts",
+              "line": 76,
+              "column": 7
+            },
+            {
+              "title": "Add trigger modal matches mockup",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet-landscape",
+                  "projectName": "tablet-landscape",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "43d2c6db5b267ed1f08a-a9a54d57e0ab61ab091d",
+              "file": "echodash-mockups.spec.ts",
+              "line": 109,
+              "column": 7
+            },
+            {
+              "title": "Responsive design validation",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet-landscape",
+                  "projectName": "tablet-landscape",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "43d2c6db5b267ed1f08a-748ce5477a41128d1002",
+              "file": "echodash-mockups.spec.ts",
+              "line": 149,
+              "column": 7
+            },
+            {
+              "title": "Cross-browser visual consistency",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet-landscape",
+                  "projectName": "tablet-landscape",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "43d2c6db5b267ed1f08a-fb7b723e3f6bc0acd677",
+              "file": "echodash-mockups.spec.ts",
+              "line": 183,
+              "column": 7
+            },
+            {
+              "title": "Animation and interaction states",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet-landscape",
+                  "projectName": "tablet-landscape",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "43d2c6db5b267ed1f08a-5052a6354d1d6fe07857",
+              "file": "echodash-mockups.spec.ts",
+              "line": 208,
+              "column": 7
+            },
+            {
+              "title": "Error states and validation",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet-landscape",
+                  "projectName": "tablet-landscape",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "43d2c6db5b267ed1f08a-48e33ac51b9cf75b1ac7",
+              "file": "echodash-mockups.spec.ts",
+              "line": 235,
+              "column": 7
+            },
+            {
+              "title": "Setup flow matches mockup design",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet-portrait",
+                  "projectName": "tablet-portrait",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "43d2c6db5b267ed1f08a-f934878e8dfcb57982d0",
+              "file": "echodash-mockups.spec.ts",
+              "line": 18,
+              "column": 7
+            },
+            {
+              "title": "Empty integration page matches mockup",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet-portrait",
+                  "projectName": "tablet-portrait",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "43d2c6db5b267ed1f08a-aee6e352ca8e23bfbbb6",
+              "file": "echodash-mockups.spec.ts",
+              "line": 51,
+              "column": 7
+            },
+            {
+              "title": "Integration with triggers matches mockup",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet-portrait",
+                  "projectName": "tablet-portrait",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "43d2c6db5b267ed1f08a-bdd68962f2c66b879b6c",
+              "file": "echodash-mockups.spec.ts",
+              "line": 76,
+              "column": 7
+            },
+            {
+              "title": "Add trigger modal matches mockup",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet-portrait",
+                  "projectName": "tablet-portrait",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "43d2c6db5b267ed1f08a-d53b4ff9868017aa67c5",
+              "file": "echodash-mockups.spec.ts",
+              "line": 109,
+              "column": 7
+            },
+            {
+              "title": "Responsive design validation",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet-portrait",
+                  "projectName": "tablet-portrait",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "43d2c6db5b267ed1f08a-f5200c6e35fb51a172e8",
+              "file": "echodash-mockups.spec.ts",
+              "line": 149,
+              "column": 7
+            },
+            {
+              "title": "Cross-browser visual consistency",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet-portrait",
+                  "projectName": "tablet-portrait",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "43d2c6db5b267ed1f08a-edad6252ffd0d457d506",
+              "file": "echodash-mockups.spec.ts",
+              "line": 183,
+              "column": 7
+            },
+            {
+              "title": "Animation and interaction states",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet-portrait",
+                  "projectName": "tablet-portrait",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "43d2c6db5b267ed1f08a-7eba021350b97f42ebfd",
+              "file": "echodash-mockups.spec.ts",
+              "line": 208,
+              "column": 7
+            },
+            {
+              "title": "Error states and validation",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "tablet-portrait",
+                  "projectName": "tablet-portrait",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "43d2c6db5b267ed1f08a-d1eed7cb9fe92fd0fbf6",
+              "file": "echodash-mockups.spec.ts",
+              "line": 235,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2025-08-02T15:01:23.028Z",
+    "duration": 77.18700000000001,
+    "expected": 0,
+    "skipped": 48,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

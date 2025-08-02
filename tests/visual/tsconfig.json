@@ -15,11 +15,13 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["../../assets/src/*"]
-    }
+    },
+    "types": ["@playwright/test", "node"]
   },
   "include": [
     "**/*.ts",
-    "**/*.tsx"
+    "**/*.tsx",
+    "types/**/*.d.ts"
   ],
   "exclude": [
     "node_modules",

@@ -1,0 +1,18 @@
+# Ignore build outputs
+assets/dist/
+assets/echodash-admin.js
+assets/jquery-repeater/
+
+# Ignore vendor files
+vendor/
+node_modules/
+
+# Ignore legacy files (will be removed in later phases)
+assets/select4/
+
+# Ignore test reports and screenshots
+tests/visual/reports/
+tests/visual/screenshots/
+
+# Ignore validation script (legacy)
+tests/visual/validate-setup.js

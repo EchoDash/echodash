@@ -35,11 +35,18 @@
   "devDependencies": {
     "@playwright/test": "^1.40.0",
     "@types/node": "^20.0.0",
+    "@types/pixelmatch": "^5.2.6",
+    "@types/pngjs": "^6.0.5",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
+    "@typescript-eslint/eslint-plugin": "^8.38.0",
+    "@typescript-eslint/parser": "^8.38.0",
     "@wordpress/scripts": "^26.19.0",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
     "pixelmatch": "^5.3.0",
     "pngjs": "^7.0.0",
+    "ts-loader": "^9.5.2",
     "typescript": "^5.3.0"
   },
   "dependencies": {
