@@ -4,7 +4,7 @@
  * Manages global application state for EchoDash React interface.
  */
 
-import { IntegrationState, Integration, Trigger } from '../../types';
+import { IntegrationState, Integration, Trigger, EventConfig, Settings } from '../../types';
 
 export type AppAction =
 	| { type: 'SET_INTEGRATIONS'; payload: Integration[] }
@@ -13,16 +13,29 @@ export type AppAction =
 	| { type: 'SET_LOADING'; payload: { key: keyof IntegrationState['loading']; value: boolean } }
 	| { type: 'SET_ERROR'; payload: { key: keyof IntegrationState['errors']; value: string | undefined } }
 	| { type: 'UPDATE_INTEGRATION'; payload: Integration }
-	| { type: 'UPDATE_TRIGGER'; payload: { integrationSlug: string; trigger: Trigger } };
+	| { type: 'UPDATE_TRIGGER'; payload: { integrationSlug: string; trigger: Trigger } }
+	| { type: 'ADD_TRIGGER'; payload: { integrationSlug: string; trigger: Trigger } }
+	| { type: 'REMOVE_TRIGGER'; payload: { integrationSlug: string; triggerId: string } }
+	| { type: 'SET_SETTINGS'; payload: Settings }
+	| { type: 'UPDATE_SETTINGS'; payload: Partial<Settings> }
+	| { type: 'SET_PREVIEW_DATA'; payload: { event: EventConfig; data: any } | null }
+	| { type: 'ADD_NOTIFICATION'; payload: { id: string; message: string; type: 'success' | 'error' | 'warning' | 'info' } }
+	| { type: 'REMOVE_NOTIFICATION'; payload: string }
+	| { type: 'CLEAR_ERRORS' }
+	| { type: 'RESET_STATE' };
 
 export const initialState: IntegrationState = {
 	integrations: window.ecdReactData?.integrations || [],
 	currentIntegration: null,
 	triggers: {},
+	settings: null,
+	previewData: null,
+	notifications: [],
 	loading: {
 		integrations: false,
 		triggers: false,
 		saving: false,
+		settings: false,
 	},
 	errors: {},
 };
@@ -91,6 +104,67 @@ export const appReducer = (state: IntegrationState, action: AppAction): Integrat
 					),
 				},
 			};
+
+		case 'ADD_TRIGGER':
+			return {
+				...state,
+				triggers: {
+					...state.triggers,
+					[action.payload.integrationSlug]: [
+						...(state.triggers[action.payload.integrationSlug] || []),
+						action.payload.trigger,
+					],
+				},
+			};
+
+		case 'REMOVE_TRIGGER':
+			return {
+				...state,
+				triggers: {
+					...state.triggers,
+					[action.payload.integrationSlug]: (state.triggers[action.payload.integrationSlug] || [])
+						.filter(trigger => trigger.id !== action.payload.triggerId),
+				},
+			};
+
+		case 'SET_SETTINGS':
+			return {
+				...state,
+				settings: action.payload,
+			};
+
+		case 'UPDATE_SETTINGS':
+			return {
+				...state,
+				settings: state.settings ? { ...state.settings, ...action.payload } : null,
+			};
+
+		case 'SET_PREVIEW_DATA':
+			return {
+				...state,
+				previewData: action.payload,
+			};
+
+		case 'ADD_NOTIFICATION':
+			return {
+				...state,
+				notifications: [...state.notifications, action.payload],
+			};
+
+		case 'REMOVE_NOTIFICATION':
+			return {
+				...state,
+				notifications: state.notifications.filter(n => n.id !== action.payload),
+			};
+
+		case 'CLEAR_ERRORS':
+			return {
+				...state,
+				errors: {},
+			};
+
+		case 'RESET_STATE':
+			return initialState;
 
 		default:
 			return state;

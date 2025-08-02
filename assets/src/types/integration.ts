@@ -99,6 +99,41 @@ export interface EventMapping {
 	type?: 'string' | 'number' | 'boolean' | 'array' | 'object';
 }
 
+export interface Settings {
+	/** EchoDash API endpoint */
+	endpoint: string;
+	
+	/** Debug mode status */
+	debug_mode: boolean;
+	
+	/** Plugin version */
+	version: string;
+	
+	/** General settings object */
+	settings: Record<string, any>;
+	
+	/** User capabilities */
+	capabilities: {
+		can_manage_options: boolean;
+		can_edit_posts: boolean;
+		is_admin: boolean;
+	};
+}
+
+export interface Notification {
+	/** Unique identifier */
+	id: string;
+	
+	/** Notification message */
+	message: string;
+	
+	/** Notification type */
+	type: 'success' | 'error' | 'warning' | 'info';
+	
+	/** Optional auto-dismiss timeout in milliseconds */
+	timeout?: number;
+}
+
 export interface IntegrationState {
 	/** All available integrations */
 	integrations: Integration[];
@@ -109,11 +144,21 @@ export interface IntegrationState {
 	/** Triggers by integration slug */
 	triggers: Record<string, Trigger[]>;
 	
+	/** Global settings */
+	settings: Settings | null;
+	
+	/** Current preview data */
+	previewData: { event: EventConfig; data: any } | null;
+	
+	/** Active notifications */
+	notifications: Notification[];
+	
 	/** Loading states */
 	loading: {
 		integrations: boolean;
 		triggers: boolean;
 		saving: boolean;
+		settings: boolean;
 	};
 	
 	/** Error states */
@@ -121,5 +166,6 @@ export interface IntegrationState {
 		general?: string;
 		integration?: string;
 		trigger?: string;
+		settings?: string;
 	};
 }
