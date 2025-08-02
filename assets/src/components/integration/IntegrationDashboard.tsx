@@ -7,11 +7,21 @@
 import React from 'react';
 import { IntegrationGrid } from './IntegrationGrid';
 
-export const IntegrationDashboard: React.FC = () => {
+interface IntegrationDashboardProps {
+	onIntegrationSelect?: (slug: string) => void;
+}
+
+export const IntegrationDashboard: React.FC<IntegrationDashboardProps> = ({ 
+	onIntegrationSelect 
+}) => {
 	const handleIntegrationSelect = (slug: string) => {
-		// Navigation logic would go here
-		// For now, we'll just log the selection
-		console.log(`Selected integration: ${slug}`);
+		// Call the parent handler if provided
+		if (onIntegrationSelect) {
+			onIntegrationSelect(slug);
+		} else {
+			// Fallback for when no handler is provided
+			console.log(`Selected integration: ${slug}`);
+		}
 	};
 
 	return (

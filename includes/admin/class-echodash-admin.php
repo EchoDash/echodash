@@ -240,7 +240,7 @@ class EchoDash_Admin {
 		<div class="wrap">
 			<div id="echodash-react-app">
 				<!-- React app will be mounted here -->
-				<div class="ecd-loading">
+				<div id="echodash-loading" class="ecd-loading">
 					<p><?php esc_html_e( 'Loading EchoDash...', 'echodash' ); ?></p>
 				</div>
 			</div>

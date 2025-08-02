@@ -9,11 +9,11 @@ import {
 	Modal,
 	Button,
 	Flex,
-	Text,
 	Notice,
-	Spinner,
-	__experimentalSpacer as Spacer
+	Spinner
 } from '@wordpress/components';
+
+// Spacer is not needed - we can use CSS for spacing
 
 import { Trigger } from '../triggers/TriggerCard';
 import { DynamicForm } from '../forms/DynamicForm';
@@ -218,7 +218,7 @@ export const TriggerEditModal: React.FC<TriggerEditModalProps> = ({
 					<div className="modal-loading">
 						<Flex align="center" justify="center" gap="2">
 							<Spinner />
-							<Text>Loading trigger data...</Text>
+							<span>Loading trigger data...</span>
 						</Flex>
 					</div>
 				)}
@@ -239,7 +239,7 @@ export const TriggerEditModal: React.FC<TriggerEditModalProps> = ({
 				)}
 
 				{/* Custom actions */}
-				<Spacer marginY="4" />
+									<div style={{ marginTop: '16px', marginBottom: '16px' }} />
 				
 				<Flex justify="flex-end" gap="3" className="modal-actions">
 					<Button 

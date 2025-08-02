@@ -51,12 +51,8 @@ module.exports = {
 	output: {
 		...defaultConfig.output,
 		path: path.resolve(process.cwd(), 'assets/dist'),
-		filename: process.env.NODE_ENV === 'production' 
-			? '[name].[contenthash:8].js' 
-			: '[name].js',
-		chunkFilename: process.env.NODE_ENV === 'production'
-			? '[name].[contenthash:8].js'
-			: '[name].js',
+		filename: '[name].js', // Disable hashing for WordPress integration
+		chunkFilename: '[name].js',
 		// Enable cross-origin loading for better performance
 		crossOriginLoading: 'anonymous',
 		// Clean dist folder on build
@@ -74,67 +70,16 @@ module.exports = {
 		extensions: ['.js', '.jsx', '.ts', '.tsx'],
 	},
 	
-	// Advanced code splitting and optimization
+	// Simplified optimization for WordPress compatibility
 	optimization: {
 		...defaultConfig.optimization,
-		splitChunks: {
-			chunks: 'all',
-			minSize: 20000,
-			maxSize: 250000,
-			minChunks: 1,
-			maxAsyncRequests: 30,
-			maxInitialRequests: 30,
-			cacheGroups: {
-				// WordPress dependencies chunk (highest priority)
-				wordpress: {
-					test: /[\\/]node_modules[\\/]@wordpress[\\/]/,
-					name: 'wordpress',
-					chunks: 'all',
-					priority: 30,
-					reuseExistingChunk: true,
-					enforce: true,
-				},
-				// React and related libraries
-				react: {
-					test: /[\\/]node_modules[\\/](react|react-dom|scheduler)[\\/]/,
-					name: 'react',
-					chunks: 'all',
-					priority: 25,
-					reuseExistingChunk: true,
-				},
-				// Third-party vendor libraries
-				vendor: {
-					test: /[\\/]node_modules[\\/](?!@wordpress[\\/]|react|react-dom|scheduler)/,
-					name: 'vendors',
-					chunks: 'all',
-					priority: 20,
-					reuseExistingChunk: true,
-				},
-				// Common application code
-				common: {
-					name: 'common',
-					minChunks: 2,
-					chunks: 'all',
-					priority: 10,
-					reuseExistingChunk: true,
-				},
-				// Default group
-				default: {
-					minChunks: 2,
-					priority: -20,
-					reuseExistingChunk: true,
-				},
-			},
-		},
-		// Tree shaking and dead code elimination
+		// Disable code splitting for now to prevent execution order issues
+		splitChunks: false,
+		// Disable runtime chunk to keep everything in one file
+		runtimeChunk: false,
+		// Keep tree shaking but be conservative with side effects
 		usedExports: true,
 		sideEffects: false,
-		// Runtime chunk for better caching
-		runtimeChunk: {
-			name: 'runtime',
-		},
-		// Module concatenation for smaller bundles
-		concatenateModules: true,
 	},
 
 	// Performance budgets and warnings

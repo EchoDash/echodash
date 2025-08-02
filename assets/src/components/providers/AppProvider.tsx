@@ -6,7 +6,7 @@
 
 import React, { createContext, useContext, useReducer, ReactNode, useCallback, useEffect } from 'react';
 import { IntegrationState, Integration, Trigger } from '../../types';
-import { appReducer, initialState, AppAction } from './appReducer';
+import { appReducer, getInitialState, AppAction } from './appReducer';
 
 interface AppContextType {
 	state: IntegrationState;
@@ -30,7 +30,7 @@ interface AppProviderProps {
 }
 
 export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
-	const [state, dispatch] = useReducer(appReducer, initialState);
+	const [state, dispatch] = useReducer(appReducer, undefined, getInitialState);
 
 	// Helper function to generate unique ID for notifications
 	const generateId = useCallback(() => {

@@ -24,21 +24,28 @@ export type AppAction =
 	| { type: 'CLEAR_ERRORS' }
 	| { type: 'RESET_STATE' };
 
-export const initialState: IntegrationState = {
-	integrations: window.ecdReactData?.integrations || [],
-	currentIntegration: null,
-	triggers: {},
-	settings: null,
-	previewData: null,
-	notifications: [],
-	loading: {
-		integrations: false,
-		triggers: false,
-		saving: false,
-		settings: false,
-	},
-	errors: {},
+export const getInitialState = (): IntegrationState => {
+	// Access window.ecdReactData lazily to avoid errors during module initialization
+	const data = typeof window !== 'undefined' && window.ecdReactData ? window.ecdReactData : null;
+	
+	return {
+		integrations: data?.integrations || [],
+		currentIntegration: null,
+		triggers: data?.triggers || {},
+		settings: data?.settings || null,
+		previewData: null,
+		notifications: [],
+		loading: {
+			integrations: false,
+			triggers: false,
+			saving: false,
+			settings: false,
+		},
+		errors: {},
+	};
 };
+
+export const initialState: IntegrationState = getInitialState();
 
 export const appReducer = (state: IntegrationState, action: AppAction): IntegrationState => {
 	switch (action.type) {

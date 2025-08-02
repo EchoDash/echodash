@@ -39,15 +39,15 @@ class EchoDash_React_Admin {
 
 		// Core hooks
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_react_assets' ) );
-		add_action( 'admin_footer', array( $this, 'render_react_container' ) );
-		
+
 		// Performance and monitoring hooks
 		add_action( 'admin_head', array( $this, 'add_performance_monitoring' ) );
 		add_action( 'wp_ajax_ecd_log_client_event', array( $this, 'handle_client_logging' ) );
-		
+
 		// Asset optimization hooks
 		add_filter( 'script_loader_tag', array( $this, 'add_script_attributes' ), 10, 3 );
-		add_action( 'admin_print_scripts', array( $this, 'preload_critical_assets' ) );
+		// Temporarily disabled preload to debug script execution issue
+		// add_action( 'admin_print_scripts', array( $this, 'preload_critical_assets' ) );
 	}
 
 	/**
@@ -94,8 +94,7 @@ class EchoDash_React_Admin {
 			true
 		);
 
-		// Add script attributes for performance
-		add_filter( 'script_loader_tag', array( $this, 'optimize_script_loading' ), 10, 3 );
+		// Script attributes are already handled by add_script_attributes method in constructor
 
 		// Enqueue React styles with media optimization
 		wp_enqueue_style(
@@ -113,7 +112,7 @@ class EchoDash_React_Admin {
 		wp_localize_script( 'echodash-react', 'ecdReactData', $localized_data );
 
 		// Performance monitoring end
-		$load_time = ( microtime( true ) - $start_time ) * 1000;
+		$load_time                                 = ( microtime( true ) - $start_time ) * 1000;
 		$this->performance_data['asset_load_time'] = $load_time;
 
 		// Log performance if debug mode
@@ -156,7 +155,7 @@ class EchoDash_React_Admin {
 	 */
 	private function get_localized_data() {
 		// Use transient caching for expensive operations
-		$cache_key = 'ecd_react_data_' . get_current_user_id();
+		$cache_key   = 'ecd_react_data_' . get_current_user_id();
 		$cached_data = get_transient( $cache_key );
 
 		if ( false !== $cached_data && ! ( defined( 'WP_DEBUG' ) && WP_DEBUG ) ) {
@@ -165,64 +164,64 @@ class EchoDash_React_Admin {
 
 		$localized_data = array(
 			// API Configuration
-			'apiUrl' => rest_url( 'echodash/v1/' ),
-			'nonce' => wp_create_nonce( 'wp_rest' ),
-			
+			'apiUrl'       => rest_url( 'echodash/v1/' ),
+			'nonce'        => wp_create_nonce( 'wp_rest' ),
+
 			// User Data
-			'currentUser' => array(
-				'ID' => get_current_user_id(),
+			'currentUser'  => array(
+				'ID'           => get_current_user_id(),
 				'display_name' => wp_get_current_user()->display_name,
-				'user_email' => wp_get_current_user()->user_email,
-				'roles' => wp_get_current_user()->roles,
+				'user_email'   => wp_get_current_user()->user_email,
+				'roles'        => wp_get_current_user()->roles,
 				'capabilities' => array(
 					'manage_options' => current_user_can( 'manage_options' ),
 				),
 			),
-			
+
 			// Integrations Data
 			'integrations' => $this->get_integrations_data(),
-			
+
 			// Settings and Configuration
-			'settings' => $this->get_settings_data(),
-			
+			'settings'     => $this->get_settings_data(),
+
 			// Feature Flags
 			'featureFlags' => array(
 				'reactEnabled' => $this->should_use_react_ui(),
-				'betaUser' => $this->feature_flags->is_beta_user(),
+				'betaUser'     => $this->feature_flags->is_beta_user(),
 				'rolloutStats' => $this->feature_flags->get_rollout_stats(),
 			),
-			
+
 			// Environment and Debug
-			'environment' => array(
-				'debugMode' => defined( 'WP_DEBUG' ) && WP_DEBUG,
-				'wpVersion' => get_bloginfo( 'version' ),
+			'environment'  => array(
+				'debugMode'     => defined( 'WP_DEBUG' ) && WP_DEBUG,
+				'wpVersion'     => get_bloginfo( 'version' ),
 				'pluginVersion' => ECHODASH_VERSION,
-				'adminUrl' => admin_url(),
-				'assetsUrl' => ECHODASH_DIR_URL . 'assets/',
+				'adminUrl'      => admin_url(),
+				'assetsUrl'     => ECHODASH_DIR_URL . 'assets/',
 			),
-			
+
 			// Internationalization
-			'i18n' => array(
-				'loading' => __( 'Loading...', 'echodash' ),
-				'error' => __( 'Error', 'echodash' ),
-				'success' => __( 'Success', 'echodash' ),
-				'saving' => __( 'Saving...', 'echodash' ),
-				'saved' => __( 'Saved', 'echodash' ),
-				'cancel' => __( 'Cancel', 'echodash' ),
-				'delete' => __( 'Delete', 'echodash' ),
-				'edit' => __( 'Edit', 'echodash' ),
-				'add' => __( 'Add', 'echodash' ),
-				'remove' => __( 'Remove', 'echodash' ),
-				'confirm' => __( 'Confirm', 'echodash' ),
-				'confirmDelete' => __( 'Are you sure you want to delete this item?', 'echodash' ),
-				'noResults' => __( 'No results found', 'echodash' ),
+			'i18n'         => array(
+				'loading'           => __( 'Loading...', 'echodash' ),
+				'error'             => __( 'Error', 'echodash' ),
+				'success'           => __( 'Success', 'echodash' ),
+				'saving'            => __( 'Saving...', 'echodash' ),
+				'saved'             => __( 'Saved', 'echodash' ),
+				'cancel'            => __( 'Cancel', 'echodash' ),
+				'delete'            => __( 'Delete', 'echodash' ),
+				'edit'              => __( 'Edit', 'echodash' ),
+				'add'               => __( 'Add', 'echodash' ),
+				'remove'            => __( 'Remove', 'echodash' ),
+				'confirm'           => __( 'Confirm', 'echodash' ),
+				'confirmDelete'     => __( 'Are you sure you want to delete this item?', 'echodash' ),
+				'noResults'         => __( 'No results found', 'echodash' ),
 				'searchPlaceholder' => __( 'Search...', 'echodash' ),
 			),
-			
+
 			// Performance and Monitoring
-			'performance' => array(
+			'performance'  => array(
 				'enableMetrics' => defined( 'WP_DEBUG' ) && WP_DEBUG,
-				'bundleSize' => $this->get_bundle_size(),
+				'bundleSize'    => $this->get_bundle_size(),
 			),
 		);
 
@@ -238,8 +237,8 @@ class EchoDash_React_Admin {
 	 */
 	private function get_settings_data() {
 		return array(
-			'endpoint' => get_option( 'echodash_endpoint', '' ),
-			'options' => get_option( 'echodash_options', array() ),
+			'endpoint'    => get_option( 'echodash_endpoint', '' ),
+			'options'     => get_option( 'echodash_options', array() ),
 			'isConnected' => ! empty( get_option( 'echodash_endpoint', '' ) ),
 		);
 	}
@@ -248,18 +247,18 @@ class EchoDash_React_Admin {
 	 * Get bundle size information
 	 */
 	private function get_bundle_size() {
-		$js_file = ECHODASH_DIR_PATH . 'assets/dist/index.js';
+		$js_file  = ECHODASH_DIR_PATH . 'assets/dist/index.js';
 		$css_file = ECHODASH_DIR_PATH . 'assets/dist/index.css';
 
 		$sizes = array(
-			'js' => file_exists( $js_file ) ? filesize( $js_file ) : 0,
+			'js'  => file_exists( $js_file ) ? filesize( $js_file ) : 0,
 			'css' => file_exists( $css_file ) ? filesize( $css_file ) : 0,
 		);
 
-		$sizes['total'] = $sizes['js'] + $sizes['css'];
+		$sizes['total']     = $sizes['js'] + $sizes['css'];
 		$sizes['formatted'] = array(
-			'js' => size_format( $sizes['js'] ),
-			'css' => size_format( $sizes['css'] ),
+			'js'    => size_format( $sizes['js'] ),
+			'css'   => size_format( $sizes['css'] ),
 			'total' => size_format( $sizes['total'] ),
 		);
 
@@ -390,7 +389,7 @@ class EchoDash_React_Admin {
 	public function handle_client_logging() {
 		check_ajax_referer( 'wp_rest', 'nonce' );
 
-		$level = sanitize_text_field( $_POST['level'] ?? 'info' );
+		$level   = sanitize_text_field( $_POST['level'] ?? 'info' );
 		$message = sanitize_text_field( $_POST['message'] ?? '' );
 		$context = sanitize_text_field( $_POST['context'] ?? 'react-app' );
 
@@ -405,15 +404,15 @@ class EchoDash_React_Admin {
 	 * Add script attributes for performance optimization
 	 */
 	public function add_script_attributes( $tag, $handle, $src ) {
-		// Add defer to non-critical scripts
+		// Add defer to non-critical scripts only
 		if ( in_array( $handle, array( 'echodash-vendors', 'echodash-wordpress' ), true ) ) {
 			$tag = str_replace( ' src', ' defer src', $tag );
 		}
 
-		// Add preload hints for critical resources
-		if ( 'echodash-react' === $handle ) {
-			$tag = str_replace( ' src', ' defer src', $tag );
-		}
+		// Don't defer the main React script - let it load normally after dependencies
+		// if ( 'echodash-react' === $handle ) {
+		// $tag = str_replace( ' src', ' defer src', $tag );
+		// }
 
 		return $tag;
 	}
@@ -435,7 +434,7 @@ class EchoDash_React_Admin {
 
 		// Preload main JS file
 		echo '<link rel="preload" href="' . esc_url( ECHODASH_DIR_URL . 'assets/dist/index.js' ) . '" as="script">' . "\n";
-		
+
 		// Preload main CSS file
 		echo '<link rel="preload" href="' . esc_url( ECHODASH_DIR_URL . 'assets/dist/index.css' ) . '" as="style">' . "\n";
 
@@ -450,11 +449,14 @@ class EchoDash_React_Admin {
 	 */
 	private function handle_missing_assets() {
 		if ( current_user_can( 'manage_options' ) ) {
-			add_action( 'admin_notices', function() {
-				echo '<div class="notice notice-error"><p>';
-				echo esc_html__( 'EchoDash React assets are missing. Please run "npm run build" to generate them.', 'echodash' );
-				echo '</p></div>';
-			} );
+			add_action(
+				'admin_notices',
+				function () {
+					echo '<div class="notice notice-error"><p>';
+					echo esc_html__( 'EchoDash React assets are missing. Please run "npm run build" to generate them.', 'echodash' );
+					echo '</p></div>';
+				}
+			);
 		}
 
 		// Log error for debugging
@@ -468,11 +470,14 @@ class EchoDash_React_Admin {
 	 */
 	private function handle_invalid_assets() {
 		if ( current_user_can( 'manage_options' ) ) {
-			add_action( 'admin_notices', function() {
-				echo '<div class="notice notice-error"><p>';
-				echo esc_html__( 'EchoDash React asset file is invalid. Please rebuild the assets.', 'echodash' );
-				echo '</p></div>';
-			} );
+			add_action(
+				'admin_notices',
+				function () {
+					echo '<div class="notice notice-error"><p>';
+					echo esc_html__( 'EchoDash React asset file is invalid. Please rebuild the assets.', 'echodash' );
+					echo '</p></div>';
+				}
+			);
 		}
 	}
 
@@ -487,7 +492,7 @@ class EchoDash_React_Admin {
 	 * Get integrations data with full trigger information
 	 */
 	private function get_integrations_data() {
-		$echodash = echodash();
+		$echodash     = echodash();
 		$integrations = array();
 
 		if ( ! $echodash || ! isset( $echodash->integrations ) ) {
@@ -498,36 +503,36 @@ class EchoDash_React_Admin {
 
 		foreach ( $echodash->integrations as $slug => $integration ) {
 			$triggers = array();
-			
+
 			// Get configured triggers for this integration
 			if ( ! empty( $settings[ $slug ] ) ) {
 				foreach ( $settings[ $slug ] as $trigger_setting ) {
-					$trigger_id = $trigger_setting['trigger'] ?? '';
+					$trigger_id     = $trigger_setting['trigger'] ?? '';
 					$trigger_config = $integration->get_trigger( $trigger_id );
-					
+
 					if ( $trigger_config ) {
 						$triggers[] = array(
-							'id' => $trigger_id,
-							'name' => $trigger_setting['name'] ?? $trigger_config['name'],
-							'description' => $trigger_config['description'] ?? '',
-							'enabled' => true,
+							'id'           => $trigger_id,
+							'name'         => $trigger_setting['name'] ?? $trigger_config['name'],
+							'description'  => $trigger_config['description'] ?? '',
+							'enabled'      => true,
 							'mappingCount' => count( $trigger_setting['value'] ?? array() ),
 							'lastModified' => '', // Will be populated if needed
-							'hasErrors' => false,
+							'hasErrors'    => false,
 						);
 					}
 				}
 			}
 
 			$integrations[] = array(
-				'slug' => $slug,
-				'name' => $integration->name,
-				'icon' => $this->get_integration_icon( $slug ),
-				'triggerCount' => count( $triggers ),
-				'enabled' => ! empty( $triggers ),
-				'triggers' => $triggers,
-				'isActive' => $integration->is_active(),
-				'description' => $this->get_integration_description( $slug ),
+				'slug'              => $slug,
+				'name'              => $integration->name,
+				'icon'              => $this->get_integration_icon( $slug ),
+				'triggerCount'      => count( $triggers ),
+				'enabled'           => ! empty( $triggers ),
+				'triggers'          => $triggers,
+				'isActive'          => true, // All loaded integrations are active
+				'description'       => $this->get_integration_description( $slug ),
 				'availableTriggers' => $this->get_available_triggers( $integration ),
 			);
 		}
@@ -540,12 +545,12 @@ class EchoDash_React_Admin {
 	 */
 	private function get_integration_icon( $slug ) {
 		$icons = array(
-			'woocommerce' => 'store',
-			'learndash' => 'welcome-learn-more',
-			'gravity-forms' => 'feedback',
-			'contact-form-7' => 'email-alt',
-			'ninja-forms' => 'forms',
-			'memberpress' => 'groups',
+			'woocommerce'          => 'store',
+			'learndash'            => 'welcome-learn-more',
+			'gravity-forms'        => 'feedback',
+			'contact-form-7'       => 'email-alt',
+			'ninja-forms'          => 'forms',
+			'memberpress'          => 'groups',
 			'restrict-content-pro' => 'lock',
 		);
 
@@ -557,12 +562,12 @@ class EchoDash_React_Admin {
 	 */
 	private function get_integration_description( $slug ) {
 		$descriptions = array(
-			'woocommerce' => __( 'Track WooCommerce store events and customer actions', 'echodash' ),
-			'learndash' => __( 'Monitor course progress and student engagement', 'echodash' ),
-			'gravity-forms' => __( 'Capture form submissions and user interactions', 'echodash' ),
-			'contact-form-7' => __( 'Track contact form submissions', 'echodash' ),
-			'ninja-forms' => __( 'Monitor form completions and user data', 'echodash' ),
-			'memberpress' => __( 'Track membership events and subscription changes', 'echodash' ),
+			'woocommerce'          => __( 'Track WooCommerce store events and customer actions', 'echodash' ),
+			'learndash'            => __( 'Monitor course progress and student engagement', 'echodash' ),
+			'gravity-forms'        => __( 'Capture form submissions and user interactions', 'echodash' ),
+			'contact-form-7'       => __( 'Track contact form submissions', 'echodash' ),
+			'ninja-forms'          => __( 'Monitor form completions and user data', 'echodash' ),
+			'memberpress'          => __( 'Track membership events and subscription changes', 'echodash' ),
 			'restrict-content-pro' => __( 'Monitor subscription and access events', 'echodash' ),
 		);
 
@@ -574,16 +579,16 @@ class EchoDash_React_Admin {
 	 */
 	private function get_available_triggers( $integration ) {
 		$available = array();
-		
+
 		foreach ( $integration->get_triggers() as $trigger_id => $trigger_config ) {
 			$available[] = array(
-				'id' => $trigger_id,
-				'name' => $trigger_config['name'],
-				'description' => $trigger_config['description'] ?? '',
-				'hasGlobal' => $trigger_config['has_global'] ?? false,
-				'hasSingle' => $trigger_config['has_single'] ?? false,
-				'postTypes' => $trigger_config['post_types'] ?? array(),
-				'optionTypes' => $trigger_config['option_types'] ?? array(),
+				'id'           => $trigger_id,
+				'name'         => $trigger_config['name'],
+				'description'  => $trigger_config['description'] ?? '',
+				'hasGlobal'    => $trigger_config['has_global'] ?? false,
+				'hasSingle'    => $trigger_config['has_single'] ?? false,
+				'postTypes'    => $trigger_config['post_types'] ?? array(),
+				'optionTypes'  => $trigger_config['option_types'] ?? array(),
 				'defaultEvent' => $integration->get_defaults( $trigger_id ),
 			);
 		}

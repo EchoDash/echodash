@@ -7,15 +7,41 @@
 import React from 'react';
 import { AppProvider } from './providers/AppProvider';
 import { IntegrationDashboard } from './integration/IntegrationDashboard';
-import { NotificationSystem } from './common/NotificationSystem';
+import { NotificationSystem } from './notifications/NotificationSystem';
+import { ErrorBoundary } from './common/ErrorBoundary';
+
+// Get global data from PHP
+declare global {
+	interface Window {
+		ecdReactData: {
+			settings: {
+				endpoint?: string;
+				isConnected?: boolean;
+			};
+			integrations: Array<{
+				slug: string;
+				name: string;
+				icon: string;
+				triggerCount: number;
+				enabled: boolean;
+			}>;
+			triggers: Record<string, any[]>;
+			nonce: string;
+			apiUrl: string;
+			i18n: Record<string, string>;
+		};
+	}
+}
 
 export const App: React.FC = () => {
 	return (
-		<AppProvider>
-			<div className="echodash-react-app">
-				<NotificationSystem />
-				<IntegrationDashboard />
-			</div>
-		</AppProvider>
+		<ErrorBoundary>
+			<AppProvider>
+				<div className="echodash-react-app">
+					<NotificationSystem />
+					<IntegrationDashboard />
+				</div>
+			</AppProvider>
+		</ErrorBoundary>
 	);
 };

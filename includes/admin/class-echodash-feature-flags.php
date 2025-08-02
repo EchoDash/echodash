@@ -118,7 +118,7 @@ class EchoDash_Feature_Flags {
 	 *
 	 * @return bool
 	 */
-	private function is_beta_user() {
+	public function is_beta_user() {
 		$beta_users         = get_option( self::FLAG_BETA_USERS, array() );
 		$current_user_id    = get_current_user_id();
 		$current_user_email = wp_get_current_user()->user_email;
