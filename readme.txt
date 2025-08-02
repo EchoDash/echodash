@@ -127,6 +127,9 @@ Yes, developers can use our API to track custom events. Documentation is availab
 
 == Changelog ==
 
+= 1.2.1
+* Fixed PHP warning when users logged in with an invalid username
+
 = 1.2.0 - June 11, 2025 =
 * Added support for EDD Cancellation Survey
 * Fixed fatal error adding products to a blank WooCommerce subscription

@@ -103,6 +103,10 @@ class EchoDash_User extends EchoDash_Integration {
 	public function login( $user_login ) {
 		$user = get_user_by( 'login', $user_login );
 
+		if ( ! $user ) {
+			return;
+		}
+
 		$this->track_event(
 			'logged_in',
 			array(
