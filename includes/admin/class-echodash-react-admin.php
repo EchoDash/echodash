@@ -1,9 +1,9 @@
 <?php
 /**
  * EchoDash React Admin Integration
- * 
+ *
  * Handles the integration of the React admin interface with WordPress.
- * 
+ *
  * @package EchoDash
  * @since 2.0.0
  */
@@ -38,7 +38,7 @@ class EchoDash_React_Admin {
 		}
 
 		$asset_file = include ECHODASH_DIR_PATH . 'assets/dist/index.asset.php';
-		
+
 		// Enqueue React script
 		wp_enqueue_script(
 			'echodash-react',
@@ -47,7 +47,7 @@ class EchoDash_React_Admin {
 			$asset_file['version'],
 			true
 		);
-		
+
 		// Enqueue React styles
 		wp_enqueue_style(
 			'echodash-react',
@@ -55,19 +55,23 @@ class EchoDash_React_Admin {
 			array( 'wp-components' ),
 			$asset_file['version']
 		);
-		
+
 		// Localize script data
-		wp_localize_script( 'echodash-react', 'ecdReactData', array(
-			'apiUrl' => rest_url( 'echodash/v1/' ),
-			'nonce' => wp_create_nonce( 'wp_rest' ),
-			'integrations' => $this->get_integrations_data(),
-			'currentUser' => array(
-				'id' => get_current_user_id(),
-				'name' => wp_get_current_user()->display_name,
-				'email' => wp_get_current_user()->user_email,
-			),
-			'debugMode' => defined( 'WP_DEBUG' ) && WP_DEBUG,
-		) );
+		wp_localize_script(
+			'echodash-react',
+			'ecdReactData',
+			array(
+				'apiUrl'       => rest_url( 'echodash/v1/' ),
+				'nonce'        => wp_create_nonce( 'wp_rest' ),
+				'integrations' => $this->get_integrations_data(),
+				'currentUser'  => array(
+					'id'    => get_current_user_id(),
+					'name'  => wp_get_current_user()->display_name,
+					'email' => wp_get_current_user()->user_email,
+				),
+				'debugMode'    => defined( 'WP_DEBUG' ) && WP_DEBUG,
+			)
+		);
 	}
 
 	/**
@@ -75,7 +79,7 @@ class EchoDash_React_Admin {
 	 */
 	public function render_react_container() {
 		$screen = get_current_screen();
-		
+
 		if ( 'settings_page_echodash' !== $screen->id ) {
 			return;
 		}
@@ -101,7 +105,7 @@ class EchoDash_React_Admin {
 	 */
 	private function get_integrations_data() {
 		// Get all integrations from the main EchoDash instance
-		$echodash = echodash();
+		$echodash     = echodash();
 		$integrations = array();
 
 		if ( ! $echodash || ! isset( $echodash->integrations ) ) {
@@ -110,14 +114,14 @@ class EchoDash_React_Admin {
 
 		foreach ( $echodash->integrations as $slug => $integration ) {
 			$integrations[] = array(
-				'slug' => $slug,
-				'name' => $integration->name,
-				'icon' => '', // Will be populated in later phases
+				'slug'         => $slug,
+				'name'         => $integration->name,
+				'icon'         => '', // Will be populated in later phases
 				'triggerCount' => count( $integration->triggers ),
-				'enabled' => $integration->is_active(),
-				'triggers' => array(), // Will be populated when needed
-				'isActive' => $integration->is_active(),
-				'description' => '', // Will be added in later phases
+				'enabled'      => $integration->is_active(),
+				'triggers'     => array(), // Will be populated when needed
+				'isActive'     => $integration->is_active(),
+				'description'  => '', // Will be added in later phases
 			);
 		}
 
