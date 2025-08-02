@@ -27,6 +27,14 @@ class EchoDash_Migration {
 		add_action( 'wp_ajax_ecd_migrate_data', array( $this, 'ajax_migrate_data' ) );
 		add_action( 'wp_ajax_ecd_rollback_data', array( $this, 'ajax_rollback_data' ) );
 		add_action( 'wp_ajax_ecd_validate_migration', array( $this, 'ajax_validate_migration' ) );
+		add_action( 'wp_ajax_ecd_disable_emergency_mode', array( $this, 'ajax_disable_emergency_mode' ) );
+		add_action( 'wp_ajax_ecd_get_migration_progress', array( $this, 'ajax_get_migration_progress' ) );
+		
+		// Schedule cleanup of migration logs
+		if ( ! wp_next_scheduled( 'ecd_cleanup_migration_logs' ) ) {
+			wp_schedule_event( time(), 'daily', 'ecd_cleanup_migration_logs' );
+		}
+		add_action( 'ecd_cleanup_migration_logs', array( $this, 'cleanup_migration_logs' ) );
 	}
 
 	/**
@@ -658,6 +666,329 @@ class EchoDash_Migration {
 			'backup_exists' => $backup_exists,
 			'can_rollback' => $backup_exists,
 		);
+	}
+
+	/**
+	 * AJAX handler for disabling emergency mode
+	 */
+	public function ajax_disable_emergency_mode() {
+		check_ajax_referer( 'ecd_disable_emergency_mode', 'nonce' );
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( 'Insufficient permissions' );
+		}
+
+		// Get feature flags instance and disable emergency mode
+		if ( class_exists( 'EchoDash_Feature_Flags' ) ) {
+			$feature_flags = new EchoDash_Feature_Flags();
+			$result = $feature_flags->disable_emergency_mode();
+
+			if ( $result ) {
+				wp_send_json_success( 'Emergency mode disabled' );
+			} else {
+				wp_send_json_error( 'Failed to disable emergency mode' );
+			}
+		} else {
+			wp_send_json_error( 'Feature flags system not available' );
+		}
+	}
+
+	/**
+	 * AJAX handler for getting migration progress
+	 */
+	public function ajax_get_migration_progress() {
+		check_ajax_referer( 'ecd_get_migration_progress', 'nonce' );
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( 'Insufficient permissions' );
+		}
+
+		$progress = get_transient( 'ecd_migration_progress' );
+		
+		if ( $progress === false ) {
+			$progress = array(
+				'step' => 0,
+				'total_steps' => 6,
+				'message' => __( 'Migration not started', 'echodash' ),
+				'percent' => 0
+			);
+		}
+
+		wp_send_json_success( $progress );
+	}
+
+	/**
+	 * Update migration progress
+	 */
+	private function update_migration_progress( $step, $message, $total_steps = 6 ) {
+		$percent = round( ( $step / $total_steps ) * 100, 2 );
+		
+		$progress = array(
+			'step' => $step,
+			'total_steps' => $total_steps,
+			'message' => $message,
+			'percent' => $percent,
+			'timestamp' => time()
+		);
+
+		set_transient( 'ecd_migration_progress', $progress, 300 ); // 5 minutes
+	}
+
+	/**
+	 * Log migration event
+	 */
+	private function log_migration_event( $event, $details = array() ) {
+		$log_entry = array(
+			'timestamp' => time(),
+			'event' => $event,
+			'user_id' => get_current_user_id(),
+			'details' => $details,
+			'wordpress_version' => get_bloginfo( 'version' ),
+			'plugin_version' => defined( 'ECHODASH_VERSION' ) ? ECHODASH_VERSION : 'unknown',
+		);
+
+		$existing_logs = get_option( 'ecd_migration_logs', array() );
+		$existing_logs[] = $log_entry;
+
+		// Keep only last 50 log entries
+		if ( count( $existing_logs ) > 50 ) {
+			$existing_logs = array_slice( $existing_logs, -50 );
+		}
+
+		update_option( 'ecd_migration_logs', $existing_logs );
+
+		// Also log to WordPress error log for debugging
+		error_log( 'EchoDash Migration: ' . $event . ' - ' . wp_json_encode( $details ) );
+	}
+
+	/**
+	 * Cleanup old migration logs
+	 */
+	public function cleanup_migration_logs() {
+		$logs = get_option( 'ecd_migration_logs', array() );
+		$cutoff_time = time() - ( 30 * DAY_IN_SECONDS ); // 30 days
+
+		$filtered_logs = array_filter( $logs, function( $log ) use ( $cutoff_time ) {
+			return $log['timestamp'] > $cutoff_time;
+		});
+
+		update_option( 'ecd_migration_logs', $filtered_logs );
+	}
+
+	/**
+	 * Get migration logs
+	 */
+	public function get_migration_logs( $limit = 20 ) {
+		$logs = get_option( 'ecd_migration_logs', array() );
+
+		// Sort by timestamp descending (newest first)
+		usort( $logs, function( $a, $b ) {
+			return $b['timestamp'] - $a['timestamp'];
+		});
+
+		return array_slice( $logs, 0, $limit );
+	}
+
+	/**
+	 * Enhanced migration with progress tracking
+	 */
+	public function migrate_settings_with_progress() {
+		$this->update_migration_progress( 0, __( 'Starting migration...', 'echodash' ) );
+		$this->log_migration_event( 'migration_started' );
+
+		$results = array(
+			'success' => false,
+			'migrated_count' => 0,
+			'backup_created' => false,
+			'errors' => array(),
+		);
+
+		try {
+			// Step 1: Create backup
+			$this->update_migration_progress( 1, __( 'Creating backup...', 'echodash' ) );
+			$backup_created = $this->create_backup();
+			$results['backup_created'] = $backup_created;
+
+			if ( ! $backup_created ) {
+				throw new Exception( __( 'Failed to create backup', 'echodash' ) );
+			}
+
+			$this->log_migration_event( 'backup_created', array( 'backup_key' => get_option( 'echodash_current_backup' ) ) );
+
+			// Step 2: Migrate global settings
+			$this->update_migration_progress( 2, __( 'Migrating global settings...', 'echodash' ) );
+			$global_migrated = $this->migrate_global_settings();
+			$results['migrated_count'] += $global_migrated;
+
+			$this->log_migration_event( 'global_settings_migrated', array( 'count' => $global_migrated ) );
+
+			// Step 3: Migrate post-specific settings
+			$this->update_migration_progress( 3, __( 'Migrating post settings...', 'echodash' ) );
+			$post_migrated = $this->migrate_post_settings();
+			$results['migrated_count'] += $post_migrated;
+
+			$this->log_migration_event( 'post_settings_migrated', array( 'count' => $post_migrated ) );
+
+			// Step 4: Migrate user preferences
+			$this->update_migration_progress( 4, __( 'Migrating user preferences...', 'echodash' ) );
+			$user_migrated = $this->migrate_user_preferences();
+			$results['migrated_count'] += $user_migrated;
+
+			$this->log_migration_event( 'user_preferences_migrated', array( 'count' => $user_migrated ) );
+
+			// Step 5: Validate migration
+			$this->update_migration_progress( 5, __( 'Validating migration...', 'echodash' ) );
+			$validation_result = $this->validate_migration();
+			if ( ! $validation_result['valid'] ) {
+				throw new Exception( __( 'Migration validation failed: ', 'echodash' ) . implode( ', ', $validation_result['errors'] ) );
+			}
+
+			$this->log_migration_event( 'migration_validated', $validation_result );
+
+			// Step 6: Update version and complete
+			$this->update_migration_progress( 6, __( 'Finalizing migration...', 'echodash' ) );
+			update_option( 'echodash_migration_version', self::MIGRATION_VERSION );
+
+			$results['success'] = true;
+			$this->log_migration_event( 'migration_completed', $results );
+
+		} catch ( Exception $e ) {
+			$results['errors'][] = $e->getMessage();
+			$this->log_migration_event( 'migration_failed', array( 'error' => $e->getMessage() ) );
+
+			// Attempt rollback on failure
+			$this->update_migration_progress( 0, __( 'Migration failed, attempting rollback...', 'echodash' ) );
+			$rollback_result = $this->rollback_settings();
+			
+			if ( $rollback_result['success'] ) {
+				$this->log_migration_event( 'rollback_successful' );
+			} else {
+				$this->log_migration_event( 'rollback_failed', $rollback_result );
+			}
+		}
+
+		// Clear progress transient
+		delete_transient( 'ecd_migration_progress' );
+
+		return $results;
+	}
+
+	/**
+	 * Test migration safety
+	 */
+	public function test_migration_safety() {
+		$safety_checks = array(
+			'database_writable' => false,
+			'backup_space_available' => false,
+			'settings_readable' => false,
+			'no_other_migrations_running' => false,
+			'sufficient_memory' => false,
+		);
+
+		// Check database writability
+		$test_option = 'ecd_migration_test_' . time();
+		if ( update_option( $test_option, 'test' ) && get_option( $test_option ) === 'test' ) {
+			$safety_checks['database_writable'] = true;
+			delete_option( $test_option );
+		}
+
+		// Check backup space (approximate)
+		$settings_size = strlen( serialize( get_option( 'echodash_options', array() ) ) );
+		$post_meta_size = strlen( serialize( $this->get_all_post_meta() ) );
+		$total_size = $settings_size + $post_meta_size;
+		
+		// Assume we need at least 10x the data size for safe backup storage
+		$safety_checks['backup_space_available'] = $total_size < 1000000; // 1MB limit for safety
+
+		// Check settings readability
+		$settings = get_option( 'echodash_options' );
+		$safety_checks['settings_readable'] = ( $settings !== false );
+
+		// Check for concurrent migrations
+		$migration_lock = get_transient( 'ecd_migration_lock' );
+		$safety_checks['no_other_migrations_running'] = ( $migration_lock === false );
+
+		// Check memory limit
+		$memory_limit = wp_convert_hr_to_bytes( ini_get( 'memory_limit' ) );
+		$safety_checks['sufficient_memory'] = ( $memory_limit === -1 || $memory_limit >= 134217728 ); // 128MB
+
+		return $safety_checks;
+	}
+
+	/**
+	 * Create migration lock to prevent concurrent migrations
+	 */
+	private function create_migration_lock() {
+		return set_transient( 'ecd_migration_lock', get_current_user_id(), 600 ); // 10 minutes
+	}
+
+	/**
+	 * Release migration lock
+	 */
+	private function release_migration_lock() {
+		delete_transient( 'ecd_migration_lock' );
+	}
+
+	/**
+	 * Enhanced create backup with size and integrity checks
+	 */
+	private function create_backup_enhanced() {
+		// Create migration lock
+		if ( ! $this->create_migration_lock() ) {
+			throw new Exception( __( 'Could not create migration lock', 'echodash' ) );
+		}
+
+		$timestamp = time();
+		$backup_key = self::BACKUP_OPTION_KEY . $timestamp;
+
+		// Collect all data to backup
+		$data_to_backup = array(
+			'echodash_options' => get_option( 'echodash_options', array() ),
+			'echodash_endpoint' => get_option( 'echodash_endpoint', '' ),
+			'post_meta' => $this->get_all_post_meta(),
+			'user_preferences' => $this->get_all_user_preferences(),
+			'timestamp' => $timestamp,
+			'version' => get_option( 'echodash_migration_version', '1.0.0' ),
+			'wordpress_version' => get_bloginfo( 'version' ),
+			'plugin_version' => defined( 'ECHODASH_VERSION' ) ? ECHODASH_VERSION : 'unknown',
+			'checksum' => '', // Will be calculated
+		);
+
+		// Calculate checksum for integrity verification
+		$data_to_backup['checksum'] = md5( serialize( $data_to_backup ) );
+
+		// Attempt to create backup
+		$backup_success = update_option( $backup_key, $data_to_backup );
+
+		if ( $backup_success ) {
+			// Verify backup integrity
+			$stored_backup = get_option( $backup_key );
+			$stored_checksum = $stored_backup['checksum'];
+			unset( $stored_backup['checksum'] );
+			$calculated_checksum = md5( serialize( $stored_backup ) );
+
+			if ( $stored_checksum !== $calculated_checksum ) {
+				delete_option( $backup_key );
+				throw new Exception( __( 'Backup integrity check failed', 'echodash' ) );
+			}
+
+			// Cleanup old backups
+			$this->cleanup_old_backups();
+
+			// Store current backup reference
+			update_option( 'echodash_current_backup', $backup_key );
+
+			$this->log_migration_event( 'backup_created', array(
+				'backup_key' => $backup_key,
+				'data_size' => strlen( serialize( $data_to_backup ) ),
+				'checksum' => $stored_checksum
+			) );
+		}
+
+		// Release migration lock
+		$this->release_migration_lock();
+
+		return $backup_success;
 	}
 }
 
