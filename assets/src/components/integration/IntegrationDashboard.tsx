@@ -1,24 +1,18 @@
 /**
  * Integration Dashboard Component
  * 
- * Main dashboard showing all available integrations.
+ * Main dashboard showing all available integrations with improved UX.
  */
 
 import React from 'react';
-import { Card, CardBody, CardHeader, Flex } from '@wordpress/components';
-import { useAppContext } from '../providers/AppProvider';
+import { IntegrationGrid } from './IntegrationGrid';
 
 export const IntegrationDashboard: React.FC = () => {
-	const { state } = useAppContext();
-	const { integrations, loading } = state;
-
-	if (loading.integrations) {
-		return (
-			<div className="echodash-loading">
-				<p>Loading integrations...</p>
-			</div>
-		);
-	}
+	const handleIntegrationSelect = (slug: string) => {
+		// Navigation logic would go here
+		// For now, we'll just log the selection
+		console.log(`Selected integration: ${slug}`);
+	};
 
 	return (
 		<div className="echodash-dashboard">
@@ -31,47 +25,7 @@ export const IntegrationDashboard: React.FC = () => {
 				</p>
 			</div>
 
-			<div className="echodash-integration-grid">
-				{integrations.length === 0 ? (
-					<Card>
-						<CardBody>
-							<p>No integrations available.</p>
-						</CardBody>
-					</Card>
-				) : (
-					integrations.map(integration => (
-						<Card key={integration.slug} className="echodash-integration-card">
-							<CardHeader>
-								<Flex align="center" gap={3}>
-									<div className="integration-icon">
-										{integration.icon && (
-											<img
-												src={integration.icon}
-												alt={integration.name}
-												width={24}
-												height={24}
-											/>
-										)}
-									</div>
-									<strong className="integration-name">
-										{integration.name}
-									</strong>
-								</Flex>
-							</CardHeader>
-							<CardBody>
-								<Flex justify="space-between" align="center">
-									<span className="trigger-count">
-										{integration.triggerCount} triggers configured
-									</span>
-									<span className={`status ${integration.enabled ? 'active' : 'inactive'}`}>
-										{integration.enabled ? 'Active' : 'Inactive'}
-									</span>
-								</Flex>
-							</CardBody>
-						</Card>
-					))
-				)}
-			</div>
+			<IntegrationGrid onIntegrationSelect={handleIntegrationSelect} />
 		</div>
 	);
 };

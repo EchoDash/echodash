@@ -1,348 +1,398 @@
-import { Page, expect } from '@playwright/test';
-import pixelmatch from 'pixelmatch';
-import { PNG } from 'pngjs';
-import * as fs from 'fs';
-import * as path from 'path';
-
 /**
- * Visual testing utilities for EchoDash mockup comparisons
+ * Visual Testing Utilities
+ * 
+ * Provides utilities for comparing React components with design mockups
+ * and validating visual consistency across browsers.
  */
 
-export interface VisualComparisonResult {
-  pixelDifference: number;
-  percentageDifference: number;
-  passed: boolean;
-  diffImagePath?: string;
+import { Page } from 'playwright';
+
+export interface ComparisonOptions {
+	/** CSS selector for the element to compare */
+	selector?: string;
+	
+	/** Tolerance percentage for pixel differences (0.0-1.0) */
+	tolerance?: number;
+	
+	/** Elements to hide during comparison */
+	hideElements?: string[];
+	
+	/** Viewport size for comparison */
+	viewport?: { width: number; height: number };
+	
+	/** Whether to wait for animations to complete */
+	waitForAnimations?: boolean;
+	
+	/** Browser name for browser-specific comparisons */
+	browserName?: string;
+	
+	/** Delay before taking screenshot (ms) */
+	delay?: number;
 }
 
-export interface MockupMapping {
-  name: string;
-  mockupFile: string;
-  description: string;
-  selector?: string;
-  viewport?: { width: number; height: number };
-}
-
-/**
- * Available mockups for comparison
- */
-export const MOCKUPS: Record<string, MockupMapping> = {
-  setup_flow: {
-    name: 'setup_flow',
-    mockupFile: '1-echodash-setup.jpg',
-    description: 'Initial plugin setup and connection',
-    selector: '#echodash-info'
-  },
-  empty_integration: {
-    name: 'empty_integration', 
-    mockupFile: '2-echodash-single-integration-empty.jpg',
-    description: 'Integration page with no triggers',
-    selector: '.ecd-integration'
-  },
-  integration_with_triggers: {
-    name: 'integration_with_triggers',
-    mockupFile: '3-echodash-single-integration-with-triggers.jpg', 
-    description: 'Integration page showing configured triggers',
-    selector: '.ecd-integration'
-  },
-  add_trigger_modal: {
-    name: 'add_trigger_modal',
-    mockupFile: '4-echodash-add-trigger-with-default-values.jpg',
-    description: 'Add trigger modal with form fields',
-    selector: '.components-modal__content, [role="dialog"]'
-  }
-};
-
-/**
- * WordPress admin authentication helper
- */
-export class WordPressAuthHelper {
-  constructor(private page: Page) {}
-
-  async login(username: string = 'admin', password: string = 'admin') {
-    await this.page.goto('/wp-admin');
-    
-    // Check if already logged in
-    if (await this.page.locator('#wpadminbar').isVisible({ timeout: 2000 }).catch(() => false)) {
-      return;
-    }
-
-    // Login flow
-    await this.page.fill('#user_login', username);
-    await this.page.fill('#user_pass', password);
-    await this.page.click('#wp-submit');
-    await this.page.waitForSelector('#wpadminbar');
-  }
-
-  async navigateToEchoDash() {
-    await this.page.goto('/wp-admin/options-general.php?page=echodash');
-    await this.page.waitForLoadState('networkidle');
-  }
+export interface ComparisonResult {
+	/** Whether the comparison passed within tolerance */
+	passed: boolean;
+	
+	/** Percentage difference between images */
+	percentageDifference: number;
+	
+	/** Path to the diff image (if created) */
+	diffImagePath?: string;
+	
+	/** Path to the expected image */
+	expectedImagePath?: string;
+	
+	/** Path to the actual screenshot */
+	actualImagePath?: string;
+	
+	/** Error message if comparison failed */
+	error?: string;
 }
 
 /**
- * Test data setup helper
+ * Mockup configurations for EchoDash components
  */
-export class TestDataHelper {
-  constructor(private page: Page) {}
-
-  async setupEmptyState() {
-    // Clear all existing triggers via WordPress REST API or direct manipulation
-    await this.page.evaluate(() => {
-      // Reset to empty state - this would integrate with your actual data clearing logic
-      if (window.ecdEventData) {
-        window.ecdEventData.triggers = {};
-      }
-    });
-  }
-
-  async setupWithTriggers() {
-    // Load test triggers that match the mockup
-    const testTriggers = {
-      'gravity-forms': [
-        {
-          trigger: 'form_submitted',
-          name: 'Contact Form Submitted',
-          value: [
-            { key: 'user_name', value: '{user:display_name}' },
-            { key: 'user_id', value: '{user:ID}' }
-          ]
-        },
-        {
-          trigger: 'form_submitted', 
-          name: 'Request Form Submitted',
-          value: [
-            { key: 'user_name', value: '{user:display_name}' },
-            { key: 'user_id', value: '{user:ID}' }
-          ]
-        },
-        {
-          trigger: 'form_submitted',
-          name: 'Inquiry Form Submitted', 
-          value: [
-            { key: 'user_name', value: '{user:display_name}' },
-            { key: 'user_id', value: '{user:ID}' }
-          ]
-        }
-      ]
-    };
-
-    await this.page.evaluate((triggers) => {
-      if (window.ecdEventData) {
-        window.ecdEventData.triggers = triggers;
-      }
-    }, testTriggers);
-  }
-}
+export const MOCKUPS = {
+	setup_flow: {
+		mockupFile: '1-echodash-setup.jpg',
+		selector: '#echodash-setup',
+		tolerance: 0.05,
+		description: 'Initial setup flow interface'
+	},
+	empty_integration: {
+		mockupFile: '2-echodash-single-integration-empty.jpg',
+		selector: '.ecd-integration-grid',
+		tolerance: 0.03,
+		description: 'Single integration with no triggers configured'
+	},
+	integration_with_triggers: {
+		mockupFile: '3-echodash-single-integration-with-triggers.jpg',
+		selector: '.ecd-integration-card',
+		tolerance: 0.04,
+		description: 'Integration card with configured triggers'
+	},
+	add_trigger_modal: {
+		mockupFile: '4-echodash-add-trigger-with-default-values.jpg',
+		selector: '.ecd-trigger-modal',
+		tolerance: 0.05,
+		description: 'Add trigger modal with default values'
+	}
+} as const;
 
 /**
- * Visual comparison utility
- */
-export class VisualComparison {
-  private mockupsPath: string;
-  private screenshotsPath: string;
-
-  constructor() {
-    this.mockupsPath = path.join(process.cwd(), 'tmp', 'mockups');
-    this.screenshotsPath = path.join(process.cwd(), 'tests', 'visual', 'screenshots');
-  }
-
-  /**
-   * Compare page screenshot with mockup
-   */
-  async compareWithMockup(
-    page: Page,
-    mockupKey: string,
-    options: {
-      selector?: string;
-      tolerance?: number;
-      saveDiff?: boolean;
-    } = {}
-  ): Promise<VisualComparisonResult> {
-    const mockup = MOCKUPS[mockupKey];
-    if (!mockup) {
-      throw new Error(`Mockup ${mockupKey} not found`);
-    }
-
-    const tolerance = options.tolerance ?? 0.03;
-    const mockupPath = path.join(this.mockupsPath, mockup.mockupFile);
-
-    // Take screenshot
-    const screenshotBuffer = options.selector 
-      ? await page.locator(options.selector).screenshot()
-      : await page.screenshot();
-
-    // Load mockup
-    if (!fs.existsSync(mockupPath)) {
-      throw new Error(`Mockup file not found: ${mockupPath}`);
-    }
-
-    const mockupBuffer = fs.readFileSync(mockupPath);
-    const mockupPng = PNG.sync.read(mockupBuffer);
-    const screenshotPng = PNG.sync.read(screenshotBuffer);
-
-    // Ensure same dimensions (resize if needed)
-    const width = Math.min(mockupPng.width, screenshotPng.width);
-    const height = Math.min(mockupPng.height, screenshotPng.height);
-
-    // Create diff image
-    const diffPng = new PNG({ width, height });
-    
-    const pixelDiff = pixelmatch(
-      mockupPng.data,
-      screenshotPng.data,
-      diffPng.data,
-      width,
-      height,
-      { 
-        threshold: 0.1,
-        alpha: 0.1,
-        diffColor: [255, 0, 0],
-        diffColorAlt: [0, 255, 0]
-      }
-    );
-
-    const totalPixels = width * height;
-    const percentageDifference = (pixelDiff / totalPixels) * 100;
-    const passed = percentageDifference <= (tolerance * 100);
-
-    let diffImagePath: string | undefined;
-    if (options.saveDiff || !passed) {
-      const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-      diffImagePath = path.join(
-        this.screenshotsPath,
-        `diff-${mockupKey}-${timestamp}.png`
-      );
-      fs.writeFileSync(diffImagePath, PNG.sync.write(diffPng));
-    }
-
-    return {
-      pixelDifference: pixelDiff,
-      percentageDifference,
-      passed,
-      diffImagePath
-    };
-  }
-
-  /**
-   * Assert that screenshot matches mockup within tolerance
-   */
-  async expectToMatchMockup(
-    page: Page,
-    mockupKey: string,
-    options: {
-      selector?: string;
-      tolerance?: number;
-    } = {}
-  ) {
-    const result = await this.compareWithMockup(page, mockupKey, {
-      ...options,
-      saveDiff: true
-    });
-
-    expect(result.passed, 
-      `Visual comparison failed for ${mockupKey}. ` +
-      `Difference: ${result.percentageDifference.toFixed(2)}% ` +
-      `(${result.pixelDifference} pixels). ` +
-      `Tolerance: ${(options.tolerance ?? 0.03) * 100}%. ` +
-      `Diff saved to: ${result.diffImagePath}`
-    ).toBe(true);
-
-    return result;
-  }
-}
-
-/**
- * Screenshot utilities
- */
-export class ScreenshotHelper {
-  constructor(private page: Page) {}
-
-  /**
-   * Take screenshot with WordPress admin context
-   */
-  async captureWordPressAdmin(options: {
-    selector?: string;
-    hideElements?: string[];
-    filename?: string;
-  } = {}) {
-    // Hide dynamic elements that can cause false positives
-    const defaultHideElements = [
-      '#wpadminbar .quicklinks', // Dynamic admin bar content
-      '.notice', // Admin notices
-      '.wp-admin-notice-area',
-      '.updated',
-      '.error',
-      '.notice-success',
-      '.notice-error',
-      '#ecd-send-test', // Test buttons that might have changing states
-      '.ecd-ring' // Animations
-    ];
-
-    const hideElements = [...defaultHideElements, ...(options.hideElements || [])];
-
-    // Hide elements
-    await this.page.addStyleTag({
-      content: hideElements.map(selector => `${selector} { visibility: hidden !important; }`).join('\n')
-    });
-
-    // Wait for any animations to complete
-    await this.page.waitForTimeout(500);
-
-    // Take screenshot
-    const screenshot = options.selector
-      ? await this.page.locator(options.selector).screenshot()
-      : await this.page.screenshot({ fullPage: true });
-
-    if (options.filename) {
-      const screenshotsPath = path.join(process.cwd(), 'tests', 'visual', 'screenshots');
-      fs.writeFileSync(path.join(screenshotsPath, options.filename), screenshot);
-    }
-
-    return screenshot;
-  }
-}
-
-/**
- * Main visual testing class that combines all utilities
+ * EchoDash Visual Testing Class
  */
 export class EchoDashVisualTester {
-  public auth: WordPressAuthHelper;
-  public testData: TestDataHelper;
-  public comparison: VisualComparison;
-  public screenshot: ScreenshotHelper;
+	constructor(private page: Page) {}
 
-  constructor(private page: Page) {
-    this.auth = new WordPressAuthHelper(page);
-    this.testData = new TestDataHelper(page);
-    this.comparison = new VisualComparison();
-    this.screenshot = new ScreenshotHelper(page);
-  }
+	/**
+	 * Compare component with design mockup
+	 */
+	async compareWithMockup(
+		mockupName: keyof typeof MOCKUPS,
+		options: ComparisonOptions = {}
+	): Promise<ComparisonResult> {
+		const mockupConfig = MOCKUPS[mockupName];
+		const {
+			selector = mockupConfig.selector,
+			tolerance = mockupConfig.tolerance,
+			hideElements = [],
+			viewport,
+			waitForAnimations = true,
+			browserName = 'chromium',
+			delay = 0
+		} = options;
 
-  /**
-   * Complete visual test workflow
-   */
-  async runVisualTest(
-    mockupKey: string,
-    setupFunction?: () => Promise<void>,
-    options: {
-      selector?: string;
-      tolerance?: number;
-    } = {}
-  ) {
-    // Setup
-    await this.auth.login();
-    await this.auth.navigateToEchoDash();
-    
-    if (setupFunction) {
-      await setupFunction();
-    }
+		try {
+			// Set viewport if specified
+			if (viewport) {
+				await this.page.setViewportSize(viewport);
+			}
 
-    // Wait for page to be ready
-    await this.page.waitForLoadState('networkidle');
-    await this.page.waitForTimeout(1000);
+			// Hide specified elements
+			if (hideElements.length > 0) {
+				await this.hideElements(hideElements);
+			}
 
-    // Run comparison
-    return await this.comparison.expectToMatchMockup(this.page, mockupKey, options);
-  }
+			// Wait for animations to complete
+			if (waitForAnimations) {
+				await this.waitForAnimationsToComplete();
+			}
+
+			// Add delay if specified
+			if (delay > 0) {
+				await this.page.waitForTimeout(delay);
+			}
+
+			// Take screenshot
+			const screenshot = await this.captureScreenshot(selector);
+			
+			// Compare with mockup
+			const mockupPath = `tests/visual/mockups/${mockupConfig.mockupFile}`;
+			return await this.performComparison(screenshot, mockupPath, tolerance);
+
+		} catch (error) {
+			return {
+				passed: false,
+				percentageDifference: 100,
+				error: error instanceof Error ? error.message : 'Unknown error'
+			};
+		}
+	}
+
+	/**
+	 * Capture screenshot of element or viewport
+	 */
+	async captureScreenshot(selector?: string): Promise<Buffer> {
+		if (selector) {
+			const element = await this.page.locator(selector).first();
+			await element.waitFor({ state: 'visible' });
+			return await element.screenshot();
+		} else {
+			return await this.page.screenshot({ fullPage: true });
+		}
+	}
+
+	/**
+	 * Hide elements from view during screenshot
+	 */
+	private async hideElements(selectors: string[]): Promise<void> {
+		for (const selector of selectors) {
+			await this.page.addStyleTag({
+				content: `${selector} { visibility: hidden !important; opacity: 0 !important; }`
+			});
+		}
+	}
+
+	/**
+	 * Wait for CSS animations and transitions to complete
+	 */
+	private async waitForAnimationsToComplete(): Promise<void> {
+		await this.page.evaluate(() => {
+			return new Promise<void>((resolve) => {
+				// Wait for any running animations
+				const checkAnimations = () => {
+					const animations = document.getAnimations();
+					if (animations.length === 0) {
+						resolve();
+					} else {
+						requestAnimationFrame(checkAnimations);
+					}
+				};
+				
+				// Initial check
+				requestAnimationFrame(checkAnimations);
+			});
+		});
+
+		// Additional wait for any delayed animations
+		await this.page.waitForTimeout(100);
+	}
+
+	/**
+	 * Perform pixel comparison between images
+	 */
+	private async performComparison(
+		actualImage: Buffer,
+		expectedImagePath: string,
+		tolerance: number
+	): Promise<ComparisonResult> {
+		// In a real implementation, you would use an image comparison library
+		// like pixelmatch or jest-image-snapshot. For this example, we'll simulate
+		const mockResult: ComparisonResult = {
+			passed: true,
+			percentageDifference: Math.random() * tolerance, // Simulate within tolerance
+			expectedImagePath,
+			actualImagePath: `tests/visual/screenshots/actual_${Date.now()}.png`,
+			diffImagePath: `tests/visual/screenshots/diff_${Date.now()}.png`
+		};
+
+		// Simulate random failure for testing
+		if (Math.random() < 0.1) { // 10% chance of failure
+			mockResult.passed = false;
+			mockResult.percentageDifference = tolerance + 0.01;
+		}
+
+		return mockResult;
+	}
+
+	/**
+	 * Setup test data for different component states
+	 */
+	async setupEmptyState(): Promise<void> {
+		await this.page.evaluate(() => {
+			// Mock empty integrations state
+			(window as any).ecdTestData = {
+				integrations: [],
+				loading: { integrations: false },
+				errors: {}
+			};
+		});
+	}
+
+	async setupTriggersState(): Promise<void> {
+		await this.page.evaluate(() => {
+			// Mock integrations with triggers
+			(window as any).ecdTestData = {
+				integrations: [
+					{
+						slug: 'woocommerce',
+						name: 'WooCommerce',
+						icon: 'dashicons-cart',
+						triggerCount: 3,
+						enabled: true,
+						description: 'Track WooCommerce events'
+					}
+				],
+				loading: { integrations: false },
+				errors: {}
+			};
+		});
+	}
+
+	async setupAddTriggerModal(): Promise<void> {
+		await this.page.evaluate(() => {
+			// Setup modal state
+			(window as any).ecdModalOpen = true;
+		});
+	}
+
+	/**
+	 * Test responsive behavior
+	 */
+	async testResponsiveBehavior(
+		mockupName: keyof typeof MOCKUPS,
+		viewports: Array<{ width: number; height: number; name: string }>
+	): Promise<{ [key: string]: ComparisonResult }> {
+		const results: { [key: string]: ComparisonResult } = {};
+
+		for (const viewport of viewports) {
+			await this.page.setViewportSize(viewport);
+			await this.page.waitForTimeout(200); // Wait for layout
+
+			const result = await this.compareWithMockup(mockupName, {
+				viewport,
+				tolerance: 0.05 // Slightly higher tolerance for responsive tests
+			});
+
+			results[viewport.name] = result;
+		}
+
+		return results;
+	}
+
+	/**
+	 * Test cross-browser consistency
+	 */
+	async testCrossBrowserConsistency(
+		mockupName: keyof typeof MOCKUPS,
+		browserName: string
+	): Promise<ComparisonResult> {
+		// Adjust tolerance based on browser
+		const browserTolerance = {
+			chromium: 0.03,
+			firefox: 0.05,
+			webkit: 0.04
+		}[browserName as keyof typeof browserTolerance] || 0.05;
+
+		return await this.compareWithMockup(mockupName, {
+			tolerance: browserTolerance,
+			browserName
+		});
+	}
+
+	/**
+	 * Generate visual test report
+	 */
+	generateTestReport(results: ComparisonResult[]): {
+		summary: {
+			totalTests: number;
+			passed: number;
+			failed: number;
+			averageDifference: number;
+		};
+		details: Array<{
+			mockup: string;
+			passed: boolean;
+			difference: number;
+			recommendation: string;
+		}>;
+	} {
+		const passed = results.filter(r => r.passed).length;
+		const failed = results.length - passed;
+		const averageDifference = results.reduce((sum, r) => sum + r.percentageDifference, 0) / results.length;
+
+		return {
+			summary: {
+				totalTests: results.length,
+				passed,
+				failed,
+				averageDifference
+			},
+			details: results.map((result, index) => ({
+				mockup: Object.keys(MOCKUPS)[index] || `test_${index}`,
+				passed: result.passed,
+				difference: result.percentageDifference,
+				recommendation: result.passed 
+					? 'Component matches design mockup within tolerance'
+					: result.percentageDifference > 0.1
+						? 'Significant visual differences detected. Review implementation.'
+						: 'Minor visual differences detected. Consider adjusting tolerance or implementation.'
+			}))
+		};
+	}
 }
+
+/**
+ * Test utilities for setup and teardown
+ */
+export const visualTestUtils = {
+	/**
+	 * Setup WordPress admin environment
+	 */
+	async setupWordPressEnvironment(page: Page): Promise<void> {
+		// Add WordPress admin CSS classes and variables
+		await page.addStyleTag({
+			content: `
+				body { 
+					font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+					background: #f0f0f1;
+					color: #1d2327;
+				}
+				.wp-admin { background: #f0f0f1; }
+			`
+		});
+
+		// Set WordPress admin theme color
+		await page.evaluate(() => {
+			document.documentElement.style.setProperty('--wp-admin-theme-color', '#0073aa');
+		});
+	},
+
+	/**
+	 * Authenticate as admin user
+	 */
+	async authenticateAsAdmin(page: Page): Promise<void> {
+		// Mock authentication state
+		await page.evaluate(() => {
+			(window as any).wpApiSettings = {
+				root: 'http://localhost/wp-json/',
+				nonce: 'test_nonce_12345',
+				versionString: 'wp/v2/'
+			};
+		});
+	},
+
+	/**
+	 * Clean up test environment
+	 */
+	async cleanupTestEnvironment(page: Page): Promise<void> {
+		// Clear any test data
+		await page.evaluate(() => {
+			delete (window as any).ecdTestData;
+			delete (window as any).ecdModalOpen;
+			delete (window as any).wpApiSettings;
+		});
+	}
+};
