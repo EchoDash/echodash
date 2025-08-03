@@ -5,9 +5,7 @@
  */
 
 import { createRoot } from 'react-dom/client';
-// import { App } from './components/App';
-// import { SimpleApp as App } from './SimpleApp';
-import { SimpleAppWithProvider as App } from './SimpleAppWithProvider';
+import { App } from './App';
 
 // Import our styles (WordPress styles are loaded separately via PHP)
 import './styles/main.css';

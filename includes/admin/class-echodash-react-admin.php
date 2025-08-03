@@ -406,25 +406,39 @@ class EchoDash_React_Admin {
 		$settings = get_option( 'echodash_options', array() );
 
 		foreach ( $echodash->integrations as $slug => $integration ) {
-			$triggers = array();
+			$configured_triggers = 0;
+			$triggers           = array();
+			$available_triggers = array();
 
-			// Get configured triggers for this integration
-			if ( ! empty( $settings[ $slug ] ) ) {
-				foreach ( $settings[ $slug ] as $trigger_setting ) {
-					$trigger_id     = $trigger_setting['trigger'] ?? '';
-					$trigger_config = $integration->get_trigger( $trigger_id );
+			// Count configured triggers
+			if ( ! empty( $settings[ $slug ] ) && is_array( $settings[ $slug ] ) ) {
+				$configured_triggers = count( $settings[ $slug ] );
+			}
 
-					if ( $trigger_config ) {
-						$triggers[] = array(
-							'id'           => $trigger_id,
-							'name'         => $trigger_setting['name'] ?? $trigger_config['name'],
-							'description'  => $trigger_config['description'] ?? '',
-							'enabled'      => true,
-							'mappingCount' => count( $trigger_setting['value'] ?? array() ),
-							'lastModified' => '', // Will be populated if needed
-							'hasErrors'    => false,
-						);
+			// Get available triggers safely
+			if ( method_exists( $integration, 'get_triggers' ) ) {
+				try {
+					$integration_triggers = $integration->get_triggers();
+					if ( is_array( $integration_triggers ) ) {
+						foreach ( $integration_triggers as $trigger_id => $trigger_config ) {
+							$available_triggers[] = array(
+								'id'           => $trigger_id,
+								'name'         => $trigger_config['name'] ?? $trigger_id,
+								'description'  => $trigger_config['description'] ?? '',
+								'defaultEvent' => array(),
+							);
+						}
 					}
+				} catch ( Exception $e ) {
+					// Fallback if method fails
+					$available_triggers = array(
+						array(
+							'id'           => 'default_trigger',
+							'name'         => 'Default Trigger',
+							'description'  => 'Default trigger for ' . $integration->name,
+							'defaultEvent' => array(),
+						),
+					);
 				}
 			}
 
@@ -432,12 +446,12 @@ class EchoDash_React_Admin {
 				'slug'              => $slug,
 				'name'              => $integration->name,
 				'icon'              => $this->get_integration_icon( $slug ),
-				'triggerCount'      => count( $triggers ),
-				'enabled'           => ! empty( $triggers ),
+				'triggerCount'      => $configured_triggers,
+				'enabled'           => $configured_triggers > 0,
 				'triggers'          => $triggers,
 				'isActive'          => true, // All loaded integrations are active
 				'description'       => $this->get_integration_description( $slug ),
-				'availableTriggers' => $this->get_available_triggers( $integration ),
+				'availableTriggers' => $available_triggers,
 			);
 		}
 
@@ -478,27 +492,6 @@ class EchoDash_React_Admin {
 		return $descriptions[ $slug ] ?? __( 'Track events and user interactions', 'echodash' );
 	}
 
-	/**
-	 * Get available triggers for an integration
-	 */
-	private function get_available_triggers( $integration ) {
-		$available = array();
-
-		foreach ( $integration->get_triggers() as $trigger_id => $trigger_config ) {
-			$available[] = array(
-				'id'           => $trigger_id,
-				'name'         => $trigger_config['name'],
-				'description'  => $trigger_config['description'] ?? '',
-				'hasGlobal'    => $trigger_config['has_global'] ?? false,
-				'hasSingle'    => $trigger_config['has_single'] ?? false,
-				'postTypes'    => $trigger_config['post_types'] ?? array(),
-				'optionTypes'  => $trigger_config['option_types'] ?? array(),
-				'defaultEvent' => $integration->get_defaults( $trigger_id ),
-			);
-		}
-
-		return $available;
-	}
 }
 
 // Initialize React admin if in admin area
