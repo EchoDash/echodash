@@ -44,6 +44,7 @@ export const App: React.FC = () => {
 	const [selectedIntegration, setSelectedIntegration] = useState<string | null>(null);
 	const [showTriggerModal, setShowTriggerModal] = useState(false);
 	const [triggers, setTriggers] = useState<Record<string, any[]>>(window.ecdReactData?.triggers || {});
+	const [integrations, setIntegrations] = useState(window.ecdReactData?.integrations || []);
 
 	const data = window.ecdReactData || {
 		settings: {},
@@ -69,29 +70,73 @@ export const App: React.FC = () => {
 	};
 
 	const handleSaveTrigger = async (triggerData: any) => {
-		// TODO: Call API to save trigger
 		console.log('Saving trigger:', triggerData);
 		
-		// For now, just update local state
-		if (selectedIntegration) {
-			const integrationTriggers = triggers[selectedIntegration] || [];
-			integrationTriggers.push(triggerData);
-			setTriggers({
-				...triggers,
-				[selectedIntegration]: integrationTriggers
+		try {
+			const response = await fetch(`${data.apiUrl}integrations/${selectedIntegration}/triggers`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'X-WP-Nonce': data.nonce,
+				},
+				body: JSON.stringify({
+					trigger: triggerData.trigger,
+					name: triggerData.name,
+					mappings: triggerData.mappings,
+					send_test: triggerData.sendTest
+				}),
 			});
+
+			if (response.ok) {
+				const result = await response.json();
+				console.log('Trigger saved successfully:', result);
+				
+				// Update local state with new trigger
+				if (selectedIntegration) {
+					const integrationTriggers = triggers[selectedIntegration] || [];
+					integrationTriggers.push({
+						id: result.id || Date.now().toString(),
+						name: triggerData.name,
+						trigger: triggerData.trigger,
+						enabled: true
+					});
+					setTriggers({
+						...triggers,
+						[selectedIntegration]: integrationTriggers
+					});
+
+					// Update integration trigger count
+					setIntegrations(prev => prev.map(integration => {
+						if (integration.slug === selectedIntegration) {
+							return {
+								...integration,
+								triggerCount: integration.triggerCount + 1,
+								enabled: true
+							};
+						}
+						return integration;
+					}));
+				}
+				
+				setShowTriggerModal(false);
+			} else {
+				const errorData = await response.json();
+				console.error('Failed to save trigger:', errorData);
+				alert('Failed to save trigger. Please try again.');
+			}
+		} catch (error) {
+			console.error('Error saving trigger:', error);
+			alert('Error saving trigger. Please check your connection and try again.');
 		}
-		
-		setShowTriggerModal(false);
 	};
 
-	const selectedIntegrationData = data.integrations.find(i => i.slug === selectedIntegration);
+	const selectedIntegrationData = integrations.find(i => i.slug === selectedIntegration);
 
 	return (
 		<div className="wrap">
 			{currentView === 'list' ? (
 				<IntegrationList
-					integrations={data.integrations}
+					integrations={integrations}
 					settings={data.settings}
 					onIntegrationClick={handleIntegrationClick}
 				/>

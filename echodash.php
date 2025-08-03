@@ -235,13 +235,15 @@ final class EchoDash {
 		require_once ECHODASH_DIR_PATH . 'includes/public/class-echodash-public.php';
 		require_once ECHODASH_DIR_PATH . 'includes/integrations/class-echodash-integration.php';
 
+		// REST API needs to be available for both admin and frontend
+		require_once ECHODASH_DIR_PATH . 'includes/admin/class-echodash-rest-api.php';
+
 		if ( is_admin() ) {
 			require_once ECHODASH_DIR_PATH . 'includes/admin/class-echodash-admin.php';
 			require_once ECHODASH_DIR_PATH . 'includes/admin/admin-functions.php';
 
 			// Add the new React admin classes
 			require_once ECHODASH_DIR_PATH . 'includes/admin/class-echodash-react-admin.php';
-			require_once ECHODASH_DIR_PATH . 'includes/admin/class-echodash-rest-api.php';
 		}
 	}
 
