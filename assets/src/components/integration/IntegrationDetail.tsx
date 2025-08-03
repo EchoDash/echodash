@@ -97,13 +97,6 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 					description: 'Select the type of trigger to create'
 				},
 				{
-					id: 'name',
-					label: 'Trigger Name',
-					type: 'text' as const,
-					required: true,
-					placeholder: 'Enter a name for this trigger'
-				},
-				{
 					id: 'enabled',
 					label: 'Enabled',
 					type: 'toggle' as const,

@@ -1,9 +1,9 @@
 <?php
 /**
  * EchoDash REST API Controller
- * 
+ *
  * Handles REST API endpoints for the React admin interface.
- * 
+ *
  * @package EchoDash
  * @since 2.0.0
  */
@@ -28,129 +28,157 @@ class EchoDash_REST_API extends WP_REST_Controller {
 	 */
 	public function register_routes() {
 		// Settings endpoints
-		register_rest_route( $this->namespace, '/' . $this->rest_base, array(
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base,
 			array(
-				'methods'             => WP_REST_Server::READABLE,
-				'callback'            => array( $this, 'get_settings' ),
-				'permission_callback' => array( $this, 'get_settings_permissions_check' ),
-			),
-			array(
-				'methods'             => WP_REST_Server::CREATABLE,
-				'callback'            => array( $this, 'update_settings' ),
-				'permission_callback' => array( $this, 'update_settings_permissions_check' ),
-				'args'                => $this->get_endpoint_args_for_item_schema( WP_REST_Server::CREATABLE ),
-			),
-		) );
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_settings' ),
+					'permission_callback' => array( $this, 'get_settings_permissions_check' ),
+				),
+				array(
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'update_settings' ),
+					'permission_callback' => array( $this, 'update_settings_permissions_check' ),
+					'args'                => $this->get_endpoint_args_for_item_schema( WP_REST_Server::CREATABLE ),
+				),
+			)
+		);
 
 		// Integrations endpoints
-		register_rest_route( $this->namespace, '/integrations', array(
+		register_rest_route(
+			$this->namespace,
+			'/integrations',
 			array(
-				'methods'             => WP_REST_Server::READABLE,
-				'callback'            => array( $this, 'get_integrations' ),
-				'permission_callback' => array( $this, 'get_integrations_permissions_check' ),
-			),
-		) );
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_integrations' ),
+					'permission_callback' => array( $this, 'get_integrations_permissions_check' ),
+				),
+			)
+		);
 
 		// Single integration endpoint
-		register_rest_route( $this->namespace, '/integrations/(?P<slug>[a-z0-9-]+)', array(
+		register_rest_route(
+			$this->namespace,
+			'/integrations/(?P<slug>[a-z0-9-]+)',
 			array(
-				'methods'             => WP_REST_Server::READABLE,
-				'callback'            => array( $this, 'get_integration' ),
-				'permission_callback' => array( $this, 'get_integration_permissions_check' ),
-				'args'                => array(
-					'slug' => array(
-						'description' => __( 'Integration slug', 'echodash' ),
-						'type'        => 'string',
-						'required'    => true,
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_integration' ),
+					'permission_callback' => array( $this, 'get_integration_permissions_check' ),
+					'args'                => array(
+						'slug' => array(
+							'description' => __( 'Integration slug', 'echodash' ),
+							'type'        => 'string',
+							'required'    => true,
+						),
 					),
 				),
-			),
-			array(
-				'methods'             => WP_REST_Server::EDITABLE,
-				'callback'            => array( $this, 'update_integration' ),
-				'permission_callback' => array( $this, 'update_integration_permissions_check' ),
-				'args'                => $this->get_integration_update_args(),
-			),
-		) );
+				array(
+					'methods'             => WP_REST_Server::EDITABLE,
+					'callback'            => array( $this, 'update_integration' ),
+					'permission_callback' => array( $this, 'update_integration_permissions_check' ),
+					'args'                => $this->get_integration_update_args(),
+				),
+			)
+		);
 
 		// Triggers endpoints
-		register_rest_route( $this->namespace, '/integrations/(?P<slug>[a-z0-9-]+)/triggers', array(
+		register_rest_route(
+			$this->namespace,
+			'/integrations/(?P<slug>[a-z0-9-]+)/triggers',
 			array(
-				'methods'             => WP_REST_Server::READABLE,
-				'callback'            => array( $this, 'get_triggers' ),
-				'permission_callback' => array( $this, 'get_triggers_permissions_check' ),
-				'args'                => array(
-					'slug' => array(
-						'description' => __( 'Integration slug', 'echodash' ),
-						'type'        => 'string',
-						'required'    => true,
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_triggers' ),
+					'permission_callback' => array( $this, 'get_triggers_permissions_check' ),
+					'args'                => array(
+						'slug' => array(
+							'description' => __( 'Integration slug', 'echodash' ),
+							'type'        => 'string',
+							'required'    => true,
+						),
 					),
 				),
-			),
-			array(
-				'methods'             => WP_REST_Server::CREATABLE,
-				'callback'            => array( $this, 'create_trigger' ),
-				'permission_callback' => array( $this, 'create_trigger_permissions_check' ),
-				'args'                => $this->get_trigger_create_args(),
-			),
-		) );
+				array(
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'create_trigger' ),
+					'permission_callback' => array( $this, 'create_trigger_permissions_check' ),
+					'args'                => $this->get_trigger_create_args(),
+				),
+			)
+		);
 
 		// Single trigger endpoint
-		register_rest_route( $this->namespace, '/integrations/(?P<slug>[a-z0-9-]+)/triggers/(?P<trigger_id>[a-z0-9_]+)', array(
+		register_rest_route(
+			$this->namespace,
+			'/integrations/(?P<slug>[a-z0-9-]+)/triggers/(?P<trigger_id>[a-z0-9_]+)',
 			array(
-				'methods'             => WP_REST_Server::EDITABLE,
-				'callback'            => array( $this, 'update_trigger' ),
-				'permission_callback' => array( $this, 'update_trigger_permissions_check' ),
-				'args'                => $this->get_trigger_update_args(),
-			),
-			array(
-				'methods'             => WP_REST_Server::DELETABLE,
-				'callback'            => array( $this, 'delete_trigger' ),
-				'permission_callback' => array( $this, 'delete_trigger_permissions_check' ),
-			),
-		) );
+				array(
+					'methods'             => WP_REST_Server::EDITABLE,
+					'callback'            => array( $this, 'update_trigger' ),
+					'permission_callback' => array( $this, 'update_trigger_permissions_check' ),
+					'args'                => $this->get_trigger_update_args(),
+				),
+				array(
+					'methods'             => WP_REST_Server::DELETABLE,
+					'callback'            => array( $this, 'delete_trigger' ),
+					'permission_callback' => array( $this, 'delete_trigger_permissions_check' ),
+				),
+			)
+		);
 
 		// Event preview endpoint
-		register_rest_route( $this->namespace, '/preview', array(
+		register_rest_route(
+			$this->namespace,
+			'/preview',
 			array(
-				'methods'             => WP_REST_Server::CREATABLE,
-				'callback'            => array( $this, 'generate_preview' ),
-				'permission_callback' => array( $this, 'preview_permissions_check' ),
-				'args'                => array(
-					'eventConfig' => array(
-						'description' => __( 'Event configuration to preview', 'echodash' ),
-						'type'        => 'object',
-						'required'    => true,
-					),
-					'integrationSlug' => array(
-						'description' => __( 'Integration slug for context', 'echodash' ),
-						'type'        => 'string',
-						'required'    => true,
-					),
-					'testData' => array(
-						'description' => __( 'Test data for merge tag processing', 'echodash' ),
-						'type'        => 'object',
-						'required'    => false,
+				array(
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'generate_preview' ),
+					'permission_callback' => array( $this, 'preview_permissions_check' ),
+					'args'                => array(
+						'eventConfig'     => array(
+							'description' => __( 'Event configuration to preview', 'echodash' ),
+							'type'        => 'object',
+							'required'    => true,
+						),
+						'integrationSlug' => array(
+							'description' => __( 'Integration slug for context', 'echodash' ),
+							'type'        => 'string',
+							'required'    => true,
+						),
+						'testData'        => array(
+							'description' => __( 'Test data for merge tag processing', 'echodash' ),
+							'type'        => 'object',
+							'required'    => false,
+						),
 					),
 				),
-			),
-		) );
+			)
+		);
 
 		// Test event endpoint
-		register_rest_route( $this->namespace, '/test-event', array(
+		register_rest_route(
+			$this->namespace,
+			'/test-event',
 			array(
-				'methods'             => WP_REST_Server::CREATABLE,
-				'callback'            => array( $this, 'send_test_event' ),
-				'permission_callback' => array( $this, 'test_event_permissions_check' ),
-				'args'                => array(
-					'eventData' => array(
-						'description' => __( 'Event data to send', 'echodash' ),
-						'type'        => 'object',
-						'required'    => true,
+				array(
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'send_test_event' ),
+					'permission_callback' => array( $this, 'test_event_permissions_check' ),
+					'args'                => array(
+						'eventData' => array(
+							'description' => __( 'Event data to send', 'echodash' ),
+							'type'        => 'object',
+							'required'    => true,
+						),
 					),
 				),
-			),
-		) );
+			)
+		);
 	}
 
 	/**
@@ -196,7 +224,7 @@ class EchoDash_REST_API extends WP_REST_Controller {
 	 * Get all integrations
 	 */
 	public function get_integrations( $request ) {
-		$echodash = echodash();
+		$echodash          = echodash();
 		$integrations_data = array();
 
 		if ( ! $echodash || ! isset( $echodash->integrations ) ) {
@@ -207,17 +235,19 @@ class EchoDash_REST_API extends WP_REST_Controller {
 			$integrations_data[] = $this->prepare_integration_for_response( $integration, $slug );
 		}
 
-		return rest_ensure_response( array(
-			'integrations' => $integrations_data,
-			'total'        => count( $integrations_data ),
-		) );
+		return rest_ensure_response(
+			array(
+				'integrations' => $integrations_data,
+				'total'        => count( $integrations_data ),
+			)
+		);
 	}
 
 	/**
 	 * Get single integration
 	 */
 	public function get_integration( $request ) {
-		$slug = $request->get_param( 'slug' );
+		$slug     = $request->get_param( 'slug' );
 		$echodash = echodash();
 
 		if ( ! $echodash || ! isset( $echodash->integrations[ $slug ] ) ) {
@@ -225,7 +255,7 @@ class EchoDash_REST_API extends WP_REST_Controller {
 		}
 
 		$integration = $echodash->integrations[ $slug ];
-		$data = $this->prepare_integration_for_response( $integration, $slug, true );
+		$data        = $this->prepare_integration_for_response( $integration, $slug, true );
 
 		return rest_ensure_response( $data );
 	}
@@ -234,7 +264,7 @@ class EchoDash_REST_API extends WP_REST_Controller {
 	 * Update integration settings
 	 */
 	public function update_integration( $request ) {
-		$slug = $request->get_param( 'slug' );
+		$slug   = $request->get_param( 'slug' );
 		$params = $request->get_json_params();
 
 		// Get current settings
@@ -266,7 +296,7 @@ class EchoDash_REST_API extends WP_REST_Controller {
 	 * Get triggers for an integration
 	 */
 	public function get_triggers( $request ) {
-		$slug = $request->get_param( 'slug' );
+		$slug     = $request->get_param( 'slug' );
 		$echodash = echodash();
 
 		if ( ! $echodash || ! isset( $echodash->integrations[ $slug ] ) ) {
@@ -274,7 +304,7 @@ class EchoDash_REST_API extends WP_REST_Controller {
 		}
 
 		$integration = $echodash->integrations[ $slug ];
-		$triggers = array();
+		$triggers    = array();
 
 		if ( isset( $integration->triggers ) && is_array( $integration->triggers ) ) {
 			foreach ( $integration->triggers as $trigger_id => $trigger ) {
@@ -282,17 +312,19 @@ class EchoDash_REST_API extends WP_REST_Controller {
 			}
 		}
 
-		return rest_ensure_response( array(
-			'triggers' => $triggers,
-			'total'    => count( $triggers ),
-		) );
+		return rest_ensure_response(
+			array(
+				'triggers' => $triggers,
+				'total'    => count( $triggers ),
+			)
+		);
 	}
 
 	/**
 	 * Create a new trigger
 	 */
 	public function create_trigger( $request ) {
-		$slug = $request->get_param( 'slug' );
+		$slug   = $request->get_param( 'slug' );
 		$params = $request->get_json_params();
 
 		// Validate required fields
@@ -324,20 +356,22 @@ class EchoDash_REST_API extends WP_REST_Controller {
 		update_option( 'echodash_options', $settings );
 
 		// Return created trigger
-		return rest_ensure_response( array(
-			'id'      => $trigger_id,
-			'trigger' => $settings['integrations'][ $slug ]['triggers'][ $trigger_id ],
-			'message' => __( 'Trigger created successfully', 'echodash' ),
-		) );
+		return rest_ensure_response(
+			array(
+				'id'      => $trigger_id,
+				'trigger' => $settings['integrations'][ $slug ]['triggers'][ $trigger_id ],
+				'message' => __( 'Trigger created successfully', 'echodash' ),
+			)
+		);
 	}
 
 	/**
 	 * Update a trigger
 	 */
 	public function update_trigger( $request ) {
-		$slug = $request->get_param( 'slug' );
+		$slug       = $request->get_param( 'slug' );
 		$trigger_id = $request->get_param( 'trigger_id' );
-		$params = $request->get_json_params();
+		$params     = $request->get_json_params();
 
 		// Get current settings
 		$settings = get_option( 'echodash_options', array() );
@@ -357,18 +391,20 @@ class EchoDash_REST_API extends WP_REST_Controller {
 		update_option( 'echodash_options', $settings );
 
 		// Return updated trigger
-		return rest_ensure_response( array(
-			'id'      => $trigger_id,
-			'trigger' => $settings['integrations'][ $slug ]['triggers'][ $trigger_id ],
-			'message' => __( 'Trigger updated successfully', 'echodash' ),
-		) );
+		return rest_ensure_response(
+			array(
+				'id'      => $trigger_id,
+				'trigger' => $settings['integrations'][ $slug ]['triggers'][ $trigger_id ],
+				'message' => __( 'Trigger updated successfully', 'echodash' ),
+			)
+		);
 	}
 
 	/**
 	 * Delete a trigger
 	 */
 	public function delete_trigger( $request ) {
-		$slug = $request->get_param( 'slug' );
+		$slug       = $request->get_param( 'slug' );
 		$trigger_id = $request->get_param( 'trigger_id' );
 
 		// Get current settings
@@ -385,41 +421,45 @@ class EchoDash_REST_API extends WP_REST_Controller {
 		// Save settings
 		update_option( 'echodash_options', $settings );
 
-		return rest_ensure_response( array(
-			'message' => __( 'Trigger deleted successfully', 'echodash' ),
-		) );
+		return rest_ensure_response(
+			array(
+				'message' => __( 'Trigger deleted successfully', 'echodash' ),
+			)
+		);
 	}
 
 	/**
 	 * Generate event preview
 	 */
 	public function generate_preview( $request ) {
-		$params = $request->get_json_params();
-		$event_config = $params['eventConfig'];
+		$params           = $request->get_json_params();
+		$event_config     = $params['eventConfig'];
 		$integration_slug = $params['integrationSlug'];
-		$test_data = isset( $params['testData'] ) ? $params['testData'] : $this->get_default_test_data();
+		$test_data        = isset( $params['testData'] ) ? $params['testData'] : $this->get_default_test_data();
 
 		// Process merge tags
 		$processed_data = array();
 		foreach ( $event_config['mappings'] as $mapping ) {
-			$key = $mapping['key'];
-			$value = $this->process_merge_tag( $mapping['value'], $test_data );
+			$key                    = $mapping['key'];
+			$value                  = $this->process_merge_tag( $mapping['value'], $test_data );
 			$processed_data[ $key ] = $value;
 		}
 
-		return rest_ensure_response( array(
-			'eventName'     => $event_config['name'],
-			'processedData' => $processed_data,
-			'rawData'       => $event_config,
-			'testData'      => $test_data,
-		) );
+		return rest_ensure_response(
+			array(
+				'eventName'     => $event_config['name'],
+				'processedData' => $processed_data,
+				'rawData'       => $event_config,
+				'testData'      => $test_data,
+			)
+		);
 	}
 
 	/**
 	 * Send test event
 	 */
 	public function send_test_event( $request ) {
-		$params = $request->get_json_params();
+		$params     = $request->get_json_params();
 		$event_data = $params['eventData'];
 
 		// Get EchoDash instance
@@ -432,10 +472,12 @@ class EchoDash_REST_API extends WP_REST_Controller {
 		$result = $echodash->public->track_event( $event_data['name'], $event_data['properties'], true );
 
 		if ( $result ) {
-			return rest_ensure_response( array(
-				'success' => true,
-				'message' => __( 'Test event sent successfully', 'echodash' ),
-			) );
+			return rest_ensure_response(
+				array(
+					'success' => true,
+					'message' => __( 'Test event sent successfully', 'echodash' ),
+				)
+			);
 		} else {
 			return new WP_Error( 'event_send_failed', __( 'Failed to send test event', 'echodash' ), array( 'status' => 500 ) );
 		}
@@ -463,7 +505,7 @@ class EchoDash_REST_API extends WP_REST_Controller {
 				}
 			}
 
-			$data['settings'] = $this->get_integration_settings( $slug );
+			$data['settings']     = $this->get_integration_settings( $slug );
 			$data['capabilities'] = array(
 				'hasGlobalSettings' => true,
 				'hasSingleSettings' => isset( $integration->has_single ) ? $integration->has_single : false,
@@ -520,18 +562,22 @@ class EchoDash_REST_API extends WP_REST_Controller {
 			return $template;
 		}
 
-		return preg_replace_callback( '/\{([^}]+)\}/', function( $matches ) use ( $test_data ) {
-			$parts = explode( ':', $matches[1] );
-			if ( count( $parts ) === 2 ) {
-				$object_type = $parts[0];
-				$field_name = $parts[1];
-				
-				if ( isset( $test_data[ $object_type ][ $field_name ] ) ) {
-					return $test_data[ $object_type ][ $field_name ];
+		return preg_replace_callback(
+			'/\{([^}]+)\}/',
+			function ( $matches ) use ( $test_data ) {
+				$parts = explode( ':', $matches[1] );
+				if ( count( $parts ) === 2 ) {
+					$object_type = $parts[0];
+					$field_name  = $parts[1];
+
+					if ( isset( $test_data[ $object_type ][ $field_name ] ) ) {
+						return $test_data[ $object_type ][ $field_name ];
+					}
 				}
-			}
-			return $matches[0];
-		}, $template );
+				return $matches[0];
+			},
+			$template
+		);
 	}
 
 	/**
@@ -541,14 +587,14 @@ class EchoDash_REST_API extends WP_REST_Controller {
 		$current_user = wp_get_current_user();
 
 		return array(
-			'user' => array(
+			'user'    => array(
 				'user_email'   => $current_user->user_email,
 				'display_name' => $current_user->display_name,
 				'first_name'   => $current_user->first_name,
 				'last_name'    => $current_user->last_name,
 				'ID'           => $current_user->ID,
 			),
-			'post' => array(
+			'post'    => array(
 				'post_title'   => 'Sample Post Title',
 				'post_content' => 'Sample post content',
 				'post_excerpt' => 'Sample excerpt',
@@ -605,10 +651,10 @@ class EchoDash_REST_API extends WP_REST_Controller {
 	 */
 	private function sanitize_trigger_data( $data ) {
 		$sanitized = array(
-			'name'         => sanitize_text_field( $data['name'] ),
-			'trigger'      => sanitize_key( $data['trigger'] ),
-			'event_name'   => sanitize_text_field( isset( $data['event_name'] ) ? $data['event_name'] : $data['name'] ),
-			'mappings'     => array(),
+			'name'       => sanitize_text_field( $data['name'] ),
+			'trigger'    => sanitize_key( $data['trigger'] ),
+			'event_name' => sanitize_text_field( isset( $data['event_name'] ) ? $data['event_name'] : $data['name'] ),
+			'mappings'   => array(),
 		);
 
 		if ( isset( $data['mappings'] ) && is_array( $data['mappings'] ) ) {
@@ -628,7 +674,7 @@ class EchoDash_REST_API extends WP_REST_Controller {
 	 */
 	private function get_integration_update_args() {
 		return array(
-			'enabled' => array(
+			'enabled'  => array(
 				'description' => __( 'Whether the integration is enabled', 'echodash' ),
 				'type'        => 'boolean',
 				'required'    => false,
@@ -646,12 +692,7 @@ class EchoDash_REST_API extends WP_REST_Controller {
 	 */
 	private function get_trigger_create_args() {
 		return array(
-			'name' => array(
-				'description' => __( 'Trigger name', 'echodash' ),
-				'type'        => 'string',
-				'required'    => true,
-			),
-			'trigger' => array(
+			'trigger'    => array(
 				'description' => __( 'Trigger type', 'echodash' ),
 				'type'        => 'string',
 				'required'    => true,
@@ -661,7 +702,7 @@ class EchoDash_REST_API extends WP_REST_Controller {
 				'type'        => 'string',
 				'required'    => false,
 			),
-			'mappings' => array(
+			'mappings'   => array(
 				'description' => __( 'Event property mappings', 'echodash' ),
 				'type'        => 'array',
 				'required'    => false,
@@ -674,17 +715,12 @@ class EchoDash_REST_API extends WP_REST_Controller {
 	 */
 	private function get_trigger_update_args() {
 		return array(
-			'name' => array(
-				'description' => __( 'Trigger name', 'echodash' ),
-				'type'        => 'string',
-				'required'    => false,
-			),
 			'event_name' => array(
 				'description' => __( 'Event name', 'echodash' ),
 				'type'        => 'string',
 				'required'    => false,
 			),
-			'mappings' => array(
+			'mappings'   => array(
 				'description' => __( 'Event property mappings', 'echodash' ),
 				'type'        => 'array',
 				'required'    => false,
@@ -771,7 +807,10 @@ class EchoDash_REST_API extends WP_REST_Controller {
 }
 
 // Initialize the REST API
-add_action( 'rest_api_init', function() {
-	$controller = new EchoDash_REST_API();
-	$controller->register_routes();
-} );
+add_action(
+	'rest_api_init',
+	function () {
+		$controller = new EchoDash_REST_API();
+		$controller->register_routes();
+	}
+);

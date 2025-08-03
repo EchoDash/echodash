@@ -100,10 +100,6 @@ export const TriggerEditModal: React.FC<TriggerEditModalProps> = ({
 		setValidationError('');
 
 		try {
-			// Basic validation
-			if (!data.name || data.name.trim() === '') {
-				throw new Error('Trigger name is required');
-			}
 
 			if (!data.mappings || data.mappings.length === 0) {
 				throw new Error('At least one property mapping is required');

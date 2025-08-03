@@ -17,13 +17,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 class EchoDash_React_Admin {
 
 	/**
-	 * Feature flags instance
-	 *
-	 * @var EchoDash_Feature_Flags
-	 */
-	private $feature_flags;
-
-	/**
 	 * Performance monitoring data
 	 *
 	 * @var array
@@ -34,14 +27,11 @@ class EchoDash_React_Admin {
 	 * Initialize the React admin interface
 	 */
 	public function __construct() {
-		// Initialize feature flags
-		$this->feature_flags = new EchoDash_Feature_Flags();
 
 		// Core hooks
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_react_assets' ) );
 
 		// Performance and monitoring hooks
-		add_action( 'admin_head', array( $this, 'add_performance_monitoring' ) );
 		add_action( 'wp_ajax_ecd_log_client_event', array( $this, 'handle_client_logging' ) );
 
 		// Asset optimization hooks
@@ -56,11 +46,6 @@ class EchoDash_React_Admin {
 	public function enqueue_react_assets( $hook ) {
 		// Only load on EchoDash settings page
 		if ( 'settings_page_echodash' !== $hook ) {
-			return;
-		}
-
-		// Check if React interface is enabled
-		if ( ! $this->should_use_react_ui() ) {
 			return;
 		}
 
@@ -184,13 +169,6 @@ class EchoDash_React_Admin {
 			// Settings and Configuration
 			'settings'     => $this->get_settings_data(),
 
-			// Feature Flags
-			'featureFlags' => array(
-				'reactEnabled' => $this->should_use_react_ui(),
-				'betaUser'     => $this->feature_flags->is_beta_user(),
-				'rolloutStats' => $this->feature_flags->get_rollout_stats(),
-			),
-
 			// Environment and Debug
 			'environment'  => array(
 				'debugMode'     => defined( 'WP_DEBUG' ) && WP_DEBUG,
@@ -216,12 +194,6 @@ class EchoDash_React_Admin {
 				'confirmDelete'     => __( 'Are you sure you want to delete this item?', 'echodash' ),
 				'noResults'         => __( 'No results found', 'echodash' ),
 				'searchPlaceholder' => __( 'Search...', 'echodash' ),
-			),
-
-			// Performance and Monitoring
-			'performance'  => array(
-				'enableMetrics' => defined( 'WP_DEBUG' ) && WP_DEBUG,
-				'bundleSize'    => $this->get_bundle_size(),
 			),
 		);
 
@@ -272,10 +244,6 @@ class EchoDash_React_Admin {
 		$screen = get_current_screen();
 
 		if ( 'settings_page_echodash' !== $screen->id ) {
-			return;
-		}
-
-		if ( ! $this->should_use_react_ui() ) {
 			return;
 		}
 
@@ -330,60 +298,6 @@ class EchoDash_React_Admin {
 	}
 
 	/**
-	 * Add performance monitoring scripts
-	 */
-	public function add_performance_monitoring() {
-		$screen = get_current_screen();
-
-		if ( 'settings_page_echodash' !== $screen->id || ! $this->should_use_react_ui() ) {
-			return;
-		}
-
-		if ( ! ( defined( 'WP_DEBUG' ) && WP_DEBUG ) ) {
-			return;
-		}
-
-		?>
-		<script>
-		// Performance monitoring for React app
-		window.EchoDashPerformance = {
-			marks: {},
-			measures: {},
-			
-			mark: function(name) {
-				if (window.performance && window.performance.mark) {
-					window.performance.mark(name);
-					this.marks[name] = Date.now();
-				}
-			},
-			
-			measure: function(name, startMark, endMark) {
-				if (window.performance && window.performance.measure) {
-					window.performance.measure(name, startMark, endMark);
-					
-					const measure = window.performance.getEntriesByName(name)[0];
-					if (measure) {
-						this.measures[name] = measure.duration;
-						console.log('Performance:', name, measure.duration.toFixed(2) + 'ms');
-					}
-				}
-			},
-			
-			logBundleSize: function() {
-				const bundleInfo = window.ecdReactData?.performance?.bundleSize;
-				if (bundleInfo) {
-					console.log('Bundle sizes:', bundleInfo.formatted);
-				}
-			}
-		};
-		
-		// Mark initial load
-		window.EchoDashPerformance.mark('echodash-admin-start');
-		</script>
-		<?php
-	}
-
-	/**
 	 * Handle client-side logging
 	 */
 	public function handle_client_logging() {
@@ -421,9 +335,6 @@ class EchoDash_React_Admin {
 	 * Preload critical assets
 	 */
 	public function preload_critical_assets() {
-		if ( ! $this->should_use_react_ui() ) {
-			return;
-		}
 
 		$asset_file_path = ECHODASH_DIR_PATH . 'assets/dist/index.asset.php';
 		if ( ! file_exists( $asset_file_path ) ) {
@@ -479,13 +390,6 @@ class EchoDash_React_Admin {
 				}
 			);
 		}
-	}
-
-	/**
-	 * Check if React UI should be used (delegate to feature flags)
-	 */
-	private function should_use_react_ui() {
-		return $this->feature_flags->should_use_react_ui();
 	}
 
 	/**

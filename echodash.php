@@ -240,9 +240,7 @@ final class EchoDash {
 			require_once ECHODASH_DIR_PATH . 'includes/admin/admin-functions.php';
 
 			// Add the new React admin classes
-			require_once ECHODASH_DIR_PATH . 'includes/admin/class-echodash-feature-flags.php';
 			require_once ECHODASH_DIR_PATH . 'includes/admin/class-echodash-react-admin.php';
-			require_once ECHODASH_DIR_PATH . 'includes/admin/class-echodash-migration.php';
 			require_once ECHODASH_DIR_PATH . 'includes/admin/class-echodash-rest-api.php';
 		}
 	}

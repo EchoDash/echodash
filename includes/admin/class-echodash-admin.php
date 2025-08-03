@@ -216,27 +216,8 @@ class EchoDash_Admin {
 	 * @return void
 	 */
 	public function submenu_callback() {
-		// Check if React interface should be used
-		if ( class_exists( 'EchoDash_Feature_Flags' ) ) {
-			$feature_flags = new EchoDash_Feature_Flags();
-			if ( $feature_flags->should_use_react_ui() ) {
-				// Load React interface container
-				$this->render_react_interface();
-				return;
-			}
-		}
-
-		// Fall back to legacy interface
-		include_once ECHODASH_DIR_PATH . 'includes/admin/option-page.php';
-	}
-
-	/**
-	 * Render the React interface container
-	 *
-	 * @return void
-	 */
-	private function render_react_interface() {
 		?>
+
 		<div class="wrap">
 			<div id="echodash-react-app">
 				<!-- React app will be mounted here -->
@@ -245,6 +226,7 @@ class EchoDash_Admin {
 				</div>
 			</div>
 		</div>
+
 		<?php
 	}
 

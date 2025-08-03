@@ -34,7 +34,6 @@ export const SimpleTriggerModal: React.FC<SimpleTriggerModalProps> = ({
 	availableTriggers = []
 }) => {
 	const [triggerType, setTriggerType] = useState('');
-	const [name, setName] = useState('');
 	const [enabled, setEnabled] = useState(true);
 	const [error, setError] = useState('');
 	const [keyValuePairs, setKeyValuePairs] = useState<KeyValuePair[]>([
@@ -51,8 +50,6 @@ export const SimpleTriggerModal: React.FC<SimpleTriggerModalProps> = ({
 			console.log('Selected trigger:', selectedTrigger);
 			
 			if (selectedTrigger?.defaultEvent) {
-				// Set default name
-				setName(selectedTrigger.defaultEvent.name || selectedTrigger.name);
 				
 				// Set default mappings
 				if (selectedTrigger.defaultEvent.mappings) {
@@ -73,10 +70,6 @@ export const SimpleTriggerModal: React.FC<SimpleTriggerModalProps> = ({
 			setError('Please select a trigger type');
 			return;
 		}
-		if (!name.trim()) {
-			setError('Please enter a trigger name');
-			return;
-		}
 
 		// Create trigger data with mappings
 		const mappings = keyValuePairs
@@ -90,14 +83,12 @@ export const SimpleTriggerModal: React.FC<SimpleTriggerModalProps> = ({
 		onSave({
 			id: triggerType,
 			trigger_type: triggerType,
-			name: name.trim(),
 			enabled,
 			mappings
 		});
 
 		// Reset form
 		setTriggerType('');
-		setName('');
 		setEnabled(true);
 		setError('');
 		setKeyValuePairs([{ key: '', value: '' }]);
@@ -149,14 +140,6 @@ export const SimpleTriggerModal: React.FC<SimpleTriggerModalProps> = ({
 						console.log('Selected trigger:', value);
 					}}
 					help="Select the type of trigger to create"
-				/>
-
-				<TextControl
-					label="Trigger Name" 
-					value={name}
-					onChange={setName}
-					placeholder="Enter a name for this trigger"
-					help="Give your trigger a descriptive name"
 				/>
 
 				<ToggleControl
