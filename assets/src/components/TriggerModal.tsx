@@ -37,6 +37,7 @@ interface TriggerModalProps {
 	onClose: () => void;
 	onSave: (data: any) => void;
 	integration: Integration;
+	editingTrigger?: any;
 }
 
 interface KeyValuePair {
@@ -49,27 +50,52 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 	onClose,
 	onSave,
 	integration,
+	editingTrigger,
 }) => {
 	const availableTriggers = integration.availableTriggers || [
 		{ id: 'form_submitted', name: 'Form Submitted', description: 'Triggered each time a form is submitted.' }
 	];
 
-	// Auto-select first trigger and initialize state based on it
-	const firstTrigger = availableTriggers[0];
-	const [selectedTrigger, setSelectedTrigger] = useState(firstTrigger?.id || '');
-	const [eventName, setEventName] = useState(firstTrigger?.defaultEvent?.name || firstTrigger?.name || '');
-	
-	// Initialize key-value pairs from defaultEvent.mappings or use fallback
+	// Initialize state based on whether we're editing or creating
+	const getInitialTrigger = () => {
+		if (editingTrigger) {
+			return editingTrigger.trigger || editingTrigger.id || '';
+		}
+		return availableTriggers[0]?.id || '';
+	};
+
+	const getInitialEventName = () => {
+		if (editingTrigger) {
+			return editingTrigger.name || editingTrigger.event_name || '';
+		}
+		const firstTrigger = availableTriggers[0];
+		return firstTrigger?.defaultEvent?.name || firstTrigger?.name || '';
+	};
+
+	// Initialize key-value pairs from editing data or default event mappings
 	const getInitialKeyValuePairs = () => {
-		if (firstTrigger?.defaultEvent?.mappings && typeof firstTrigger.defaultEvent.mappings === 'object') {
-			// Convert mappings object to key-value pairs
-			const pairs = Object.entries(firstTrigger.defaultEvent.mappings).map(([key, value]) => ({
-				key,
-				value: String(value)
+		if (editingTrigger?.mappings && Array.isArray(editingTrigger.mappings)) {
+			// Use existing mappings from editing trigger
+			const pairs = editingTrigger.mappings.map((mapping: any) => ({
+				key: mapping.key || '',
+				value: mapping.value || ''
 			}));
-			// Add empty row at the end
-			pairs.push({ key: '', value: '' });
+			// Add empty row at the end if not already present
+			if (pairs.length === 0 || (pairs[pairs.length - 1].key !== '' || pairs[pairs.length - 1].value !== '')) {
+				pairs.push({ key: '', value: '' });
+			}
 			return pairs;
+		} else if (!editingTrigger) {
+			// For new triggers, use default event mappings if available
+			const firstTrigger = availableTriggers[0];
+			if (firstTrigger?.defaultEvent?.mappings && typeof firstTrigger.defaultEvent.mappings === 'object') {
+				const pairs = Object.entries(firstTrigger.defaultEvent.mappings).map(([key, value]) => ({
+					key,
+					value: String(value)
+				}));
+				pairs.push({ key: '', value: '' });
+				return pairs;
+			}
 		}
 		// Fallback to default pairs
 		return [
@@ -79,8 +105,9 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 		];
 	};
 
+	const [selectedTrigger, setSelectedTrigger] = useState(getInitialTrigger());
+	const [eventName, setEventName] = useState(getInitialEventName());
 	const [keyValuePairs, setKeyValuePairs] = useState<KeyValuePair[]>(getInitialKeyValuePairs());
-	const [sendTest, setSendTest] = useState(false);
 	const [openDropdownIndex, setOpenDropdownIndex] = useState<{type: 'name' | 'value', index: number} | null>(null);
 	
 	// Refs for merge tag buttons
@@ -150,7 +177,6 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 			trigger: selectedTrigger,
 			name: eventName,
 			mappings: keyValuePairs.filter(pair => pair.key && pair.value),
-			sendTest
 		};
 		onSave(data);
 	};
@@ -167,9 +193,11 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 							></span>
 						</div>
 						<div className="echodash-modal__header-text">
-							<h2 className="echodash-modal__title">Add Trigger</h2>
+							<h2 className="echodash-modal__title">
+								{editingTrigger ? 'Edit Trigger' : 'Add Trigger'}
+							</h2>
 							<p className="echodash-modal__subtitle">
-								Create a trigger for {integration.name}
+								{editingTrigger ? `Edit trigger for ${integration.name}` : `Create a trigger for ${integration.name}`}
 							</p>
 						</div>
 					</div>
@@ -192,6 +220,7 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 							value={selectedTrigger}
 							onChange={(e) => handleTriggerChange(e.target.value)}
 							className="echodash-form-group__select"
+							disabled={!!editingTrigger}
 						>
 							{availableTriggers.map(trigger => (
 								<option key={trigger.id} value={trigger.id}>
@@ -298,20 +327,6 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 							</div>
 						))}
 					</div>
-
-					{/* Send Test */}
-					<div className="echodash-send-test">
-						<label className="echodash-send-test__label">
-							<input 
-								type="checkbox"
-								checked={sendTest}
-								onChange={(e) => setSendTest(e.target.checked)}
-								className="echodash-send-test__checkbox"
-							/>
-							<span className="dashicons dashicons-admin-tools echodash-send-test__icon"></span>
-							Send Test
-						</label>
-					</div>
 				</div>
 
 				{/* Merge Tag Selector */}
@@ -342,7 +357,7 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 						className="button button-primary"
 						disabled={!selectedTrigger}
 					>
-						Add Trigger
+						{editingTrigger ? 'Update Trigger' : 'Add Trigger'}
 					</button>
 				</div>
 			</div>

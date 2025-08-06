@@ -36,6 +36,7 @@ interface IntegrationDetailProps {
 	triggers: Trigger[];
 	onBack: () => void;
 	onAddTrigger: () => void;
+	onEditTrigger: (trigger: Trigger) => void;
 }
 
 export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
@@ -43,6 +44,7 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 	triggers,
 	onBack,
 	onAddTrigger,
+	onEditTrigger,
 }) => {
 	return (
 		<>
@@ -160,7 +162,12 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 								{/* Actions */}
 								<div className="echodash-trigger-item__actions">
 									<button className="echodash-button">Send Test</button>
-									<button className="echodash-button">Edit</button>
+									<button 
+										className="echodash-button"
+										onClick={() => onEditTrigger(trigger)}
+									>
+										Edit
+									</button>
 									<button className="echodash-button">
 										<span className="dashicons dashicons-trash"></span>
 									</button>

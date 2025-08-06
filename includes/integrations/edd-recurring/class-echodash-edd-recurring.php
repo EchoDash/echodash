@@ -26,6 +26,14 @@ class EchoDash_EDD_Recurring extends EchoDash_Integration {
 	public $name = 'EDD Recurring Payments';
 
 	/**
+	 * The icon background color for EchoDash's module tracking.
+	 *
+	 * @since 2.0.0
+	 * @var string $icon_background_color
+	 */
+	protected $icon_background_color = '#35495c';
+
+	/**
 	 * Get things started.
 	 *
 	 * @since 1.3.0

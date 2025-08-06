@@ -25,6 +25,14 @@ class EchoDash_EDD_Cancellation_Survey extends EchoDash_Integration {
 	public $name = 'EDD Cancellation Survey';
 
 	/**
+	 * The icon background color for EchoDash's module tracking.
+	 *
+	 * @since 2.0.0
+	 * @var string $icon_background_color
+	 */
+	protected $icon_background_color = '#35495c';
+
+	/**
 	 * Get things started.
 	 *
 	 * @since 1.2.0

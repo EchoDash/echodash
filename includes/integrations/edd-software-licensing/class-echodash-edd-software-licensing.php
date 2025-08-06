@@ -27,6 +27,14 @@ class EchoDash_EDD_Software_Licensing extends EchoDash_Integration {
 	public $name = 'Easy Digital Downloads Software Licensing';
 
 	/**
+	 * The icon background color for EchoDash's module tracking.
+	 *
+	 * @since 2.0.0
+	 * @var string $icon_background_color
+	 */
+	protected $icon_background_color = '#35495c';
+
+	/**
 	 * Get things started.
 	 *
 	 * @since 1.0.0

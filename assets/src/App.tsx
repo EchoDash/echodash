@@ -45,6 +45,7 @@ export const App: React.FC = () => {
 	const [currentView, setCurrentView] = useState<'list' | 'detail'>('list');
 	const [selectedIntegration, setSelectedIntegration] = useState<string | null>(null);
 	const [showTriggerModal, setShowTriggerModal] = useState(false);
+	const [editingTrigger, setEditingTrigger] = useState<any | null>(null);
 	const [triggers, setTriggers] = useState<Record<string, any[]>>(window.ecdReactData?.triggers || {});
 	const [integrations, setIntegrations] = useState(window.ecdReactData?.integrations || []);
 
@@ -115,13 +116,24 @@ export const App: React.FC = () => {
 	};
 
 	const handleAddTrigger = () => {
+		setEditingTrigger(null); // Clear any editing state
+		setShowTriggerModal(true);
+	};
+
+	const handleEditTrigger = (trigger: any) => {
+		setEditingTrigger(trigger);
 		setShowTriggerModal(true);
 	};
 
 	const handleSaveTrigger = async (triggerData: any) => {
 		try {
-			const response = await fetch(`${data.apiUrl}integrations/${selectedIntegration}/triggers`, {
-				method: 'POST',
+			const isEditing = editingTrigger !== null;
+			const url = isEditing
+				? `${data.apiUrl}integrations/${selectedIntegration}/triggers/${editingTrigger.id}`
+				: `${data.apiUrl}integrations/${selectedIntegration}/triggers`;
+			
+			const response = await fetch(url, {
+				method: isEditing ? 'PUT' : 'POST',
 				headers: {
 					'Content-Type': 'application/json',
 					'X-WP-Nonce': data.nonce,
@@ -129,6 +141,7 @@ export const App: React.FC = () => {
 				body: JSON.stringify({
 					trigger: triggerData.trigger,
 					name: triggerData.name,
+					event_name: triggerData.name,
 					mappings: triggerData.mappings,
 					send_test: triggerData.sendTest
 				}),
@@ -137,34 +150,60 @@ export const App: React.FC = () => {
 			if (response.ok) {
 				const result = await response.json();
 				
-				// Update local state with new trigger
+				// Update local state
 				if (selectedIntegration) {
 					const integrationTriggers = triggers[selectedIntegration] || [];
-					integrationTriggers.push({
-						id: result.id || Date.now().toString(),
-						name: triggerData.name,
-						trigger: triggerData.trigger,
-						enabled: true
-					});
-					setTriggers({
-						...triggers,
-						[selectedIntegration]: integrationTriggers
-					});
+					
+					if (isEditing) {
+						// Update existing trigger
+						const updatedTriggers = integrationTriggers.map(t => 
+							t.id === editingTrigger.id 
+								? {
+									...t,
+									id: result.id || editingTrigger.id,
+									name: triggerData.name,
+									trigger: triggerData.trigger,
+									event_name: triggerData.name,
+									mappings: triggerData.mappings,
+									enabled: true
+								}
+								: t
+						);
+						setTriggers({
+							...triggers,
+							[selectedIntegration]: updatedTriggers
+						});
+					} else {
+						// Add new trigger
+						integrationTriggers.push({
+							id: result.id || Date.now().toString(),
+							name: triggerData.name,
+							trigger: triggerData.trigger,
+							event_name: triggerData.name,
+							mappings: triggerData.mappings,
+							enabled: true
+						});
+						setTriggers({
+							...triggers,
+							[selectedIntegration]: integrationTriggers
+						});
 
-					// Update integration trigger count
-					setIntegrations(prev => prev.map(integration => {
-						if (integration.slug === selectedIntegration) {
-							return {
-								...integration,
-								triggerCount: integration.triggerCount + 1,
-								enabled: true
-							};
-						}
-						return integration;
-					}));
+						// Update integration trigger count for new triggers only
+						setIntegrations(prev => prev.map(integration => {
+							if (integration.slug === selectedIntegration) {
+								return {
+									...integration,
+									triggerCount: integration.triggerCount + 1,
+									enabled: true
+								};
+							}
+							return integration;
+						}));
+					}
 				}
 				
 				setShowTriggerModal(false);
+				setEditingTrigger(null);
 			} else {
 				const errorData = await response.json();
 				console.error('Failed to save trigger:', errorData);
@@ -193,6 +232,7 @@ export const App: React.FC = () => {
 						triggers={triggers[selectedIntegration!] || []}
 						onBack={handleBackToList}
 						onAddTrigger={handleAddTrigger}
+						onEditTrigger={handleEditTrigger}
 					/>
 				)
 			)}
@@ -200,9 +240,13 @@ export const App: React.FC = () => {
 			{showTriggerModal && selectedIntegrationData && (
 				<TriggerModal
 					isOpen={showTriggerModal}
-					onClose={() => setShowTriggerModal(false)}
+					onClose={() => {
+						setShowTriggerModal(false);
+						setEditingTrigger(null);
+					}}
 					onSave={handleSaveTrigger}
 					integration={selectedIntegrationData}
+					editingTrigger={editingTrigger}
 				/>
 			)}
 		</div>
