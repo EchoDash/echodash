@@ -27,6 +27,14 @@ class EchoDash_BuddyPress extends EchoDash_Integration {
 	public $name = 'BuddyPress';
 
 	/**
+	 * The icon background color for EchoDash's module tracking.
+	 *
+	 * @since 2.0.0
+	 * @var string $icon_background_color
+	 */
+	protected $icon_background_color = '#F6EFE8';
+
+	/**
 	 * Get things started.
 	 *
 	 * @since 1.2.0
@@ -46,6 +54,14 @@ class EchoDash_BuddyPress extends EchoDash_Integration {
 		add_action( 'groups_join_group', array( $this, 'join_group' ), 10, 2 );
 		add_action( 'groups_leave_group', array( $this, 'leave_group' ), 10, 2 );
 		add_action( 'groups_remove_member', array( $this, 'leave_group' ), 10, 2 );
+
+		// Is it BuddyPress or BuddyBoss?
+		if ( function_exists( 'bp_rest_namespace' ) && 'buddyboss' === bp_rest_namespace() ) {
+			$this->name = 'BuddyBoss';
+			$this->icon = 'buddyboss-icon.png';
+		} else {
+			$this->name = 'BuddyPress';
+		}
 	}
 
 	/**

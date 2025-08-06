@@ -85,7 +85,7 @@ export const IntegrationList: React.FC<IntegrationListProps> = ({
 					<EchoDashLogo className="echodash-header__logo" />
 				</a>
 				<a 
-					href="https://docs.echodash.com" 
+					href="https://echodash.com/docs/echodash-plugin" 
 					target="_blank" 
 					rel="noopener noreferrer"
 					className="echodash-button echodash-header__docs-link"

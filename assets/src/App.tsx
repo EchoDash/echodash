@@ -32,6 +32,18 @@ declare global {
 					description?: string;
 					defaultEvent?: any;
 				}>;
+				singleItemTriggers?: Array<{
+					trigger: string;
+					name: string;
+					description?: string;
+					items: Array<{
+						post_id: number;
+						post_title: string;
+						edit_url: string;
+						event_name: string;
+						mappings: any;
+					}>;
+				}>;
 			}>;
 			triggers: Record<string, any[]>;
 			nonce: string;

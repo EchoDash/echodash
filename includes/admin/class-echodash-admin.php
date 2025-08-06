@@ -27,6 +27,7 @@ class EchoDash_Admin {
 	 */
 	public function __construct() {
 
+		add_action( 'admin_footer', array( $this, 'admin_scripts' ) );
 		add_action( 'admin_menu', array( $this, 'add_settings_submenu' ), 11 );
 		add_action( 'admin_init', array( $this, 'save_echodash_callback' ) );
 		add_action( 'admin_init', array( $this, 'save_settings' ) );
@@ -227,6 +228,39 @@ class EchoDash_Admin {
 		</div>
 
 		<?php
+	}
+
+	/**
+	 * Register scripts and styles.
+	 *
+	 * @since 1.0.0
+	 */
+	public function admin_scripts() {
+
+		wp_register_style( 'select4', ECHODASH_DIR_URL . 'assets/select4/select4.min.css', array(), '4.0.13' );
+		wp_register_script( 'select4', ECHODASH_DIR_URL . 'assets/select4/select4.min.js', array( 'jquery' ), '4.0.13', true );
+
+		wp_register_script( 'echodash-jquery-repeater', ECHODASH_DIR_URL . 'assets/jquery-repeater/jquery.repeater.min.js', array( 'jquery' ), '1.2.2', true );
+
+		wp_register_script( 'echodash-admin', ECHODASH_DIR_URL . 'assets/echodash-admin.js', array( 'jquery', 'jquery-ui-sortable', 'select4' ), ECHODASH_VERSION, true );
+		wp_register_style( 'echodash-admin', ECHODASH_DIR_URL . 'assets/echodash-admin.css', array(), ECHODASH_VERSION );
+
+		// Integrations set $this->localize_data based on the fields specific to the integration.
+		// We only want to enqueue the scripts and styles if the current page has settings on it.
+
+		if ( ! empty( $this->localize_data ) ) {
+
+			$this->localize_data['ajaxurl'] = admin_url( 'admin-ajax.php' );
+			$this->localize_data['nonce']   = wp_create_nonce( 'echodash_ajax_nonce' );
+
+			wp_enqueue_style( 'select4' );
+			wp_enqueue_script( 'select4' );
+			wp_enqueue_script( 'echodash-jquery-repeater' );
+			wp_enqueue_style( 'echodash-admin' );
+			wp_enqueue_script( 'echodash-admin' );
+			wp_localize_script( 'echodash-admin', 'ecdEventData', $this->localize_data );
+
+		}
 	}
 
 	/**

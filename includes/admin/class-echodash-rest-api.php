@@ -305,6 +305,7 @@ class EchoDash_REST_API extends WP_REST_Controller {
 
 		$integration = $echodash->integrations[ $slug ];
 		$triggers    = array();
+		$single_item_triggers = array();
 
 		// Get configured triggers from database settings
 		$settings            = get_option( 'echodash_options', array() );
@@ -313,10 +314,12 @@ class EchoDash_REST_API extends WP_REST_Controller {
 			$configured_triggers = $settings['integrations'][ $slug ]['triggers'];
 		}
 
+		// Get available trigger definitions ONCE
+		$available_triggers = $integration->get_triggers();
+
 		// Convert configured triggers to API response format
 		foreach ( $configured_triggers as $trigger_id => $trigger_data ) {
 			// Get trigger definition for additional metadata
-			$available_triggers = $integration->get_triggers();
 			$trigger_definition = isset( $available_triggers[ $trigger_data['trigger'] ] ) ? $available_triggers[ $trigger_data['trigger'] ] : array();
 
 			$triggers[] = array(
@@ -334,10 +337,46 @@ class EchoDash_REST_API extends WP_REST_Controller {
 			);
 		}
 
+		// Get single-item events for each trigger type (using the same $available_triggers)
+		foreach ( $available_triggers as $trigger_key => $trigger_config ) {
+			if ( isset( $trigger_config['has_single'] ) && $trigger_config['has_single'] ) {
+				// Get single events for this trigger
+				$single_events = $integration->get_single_events( $trigger_key );
+				
+				if ( ! empty( $single_events ) ) {
+					// Group single events by trigger type
+					$grouped_events = array();
+					foreach ( $single_events as $event ) {
+						// Get post title and edit URL
+						$post_title = isset( $event['post_title'] ) ? $event['post_title'] : get_the_title( $event['post_id'] );
+						$edit_url   = isset( $event['edit_url'] ) ? $event['edit_url'] : get_edit_post_link( $event['post_id'] ) . '#echodash';
+						
+						$grouped_events[] = array(
+							'post_id'    => $event['post_id'],
+							'post_title' => $post_title,
+							'edit_url'   => $edit_url,
+							'event_name' => $event['name'] ?? '',
+							'mappings'   => $event['value'] ?? array(),
+						);
+					}
+					
+					if ( ! empty( $grouped_events ) ) {
+						$single_item_triggers[] = array(
+							'trigger'     => $trigger_key,
+							'name'        => $trigger_config['name'],
+							'description' => $trigger_config['description'] ?? '',
+							'items'       => $grouped_events,
+						);
+					}
+				}
+			}
+		}
+
 		return rest_ensure_response(
 			array(
-				'triggers' => $triggers,
-				'total'    => count( $triggers ),
+				'triggers'             => $triggers,
+				'single_item_triggers' => $single_item_triggers,
+				'total'                => count( $triggers ),
 			)
 		);
 	}
@@ -516,6 +555,20 @@ class EchoDash_REST_API extends WP_REST_Controller {
 			$configured_trigger_count = count( $settings['integrations'][ $slug ]['triggers'] );
 		}
 
+		// Get available trigger definitions ONCE (we always need this to calculate accurate trigger count)
+		$available_triggers = $integration->get_triggers();
+		$single_item_count = 0;
+		
+		// Add count of single-item events
+		foreach ( $available_triggers as $trigger_key => $trigger_config ) {
+			if ( isset( $trigger_config['has_single'] ) && $trigger_config['has_single'] ) {
+				$single_events = $integration->get_single_events( $trigger_key );
+				$single_item_count += count( $single_events );
+			}
+		}
+
+		$total_trigger_count = $configured_trigger_count + $single_item_count;
+
 		$data = array(
 			'slug'         => $slug,
 			'name'         => $integration->name,
@@ -523,7 +576,7 @@ class EchoDash_REST_API extends WP_REST_Controller {
 			'description'  => isset( $integration->description ) ? $integration->description : '',
 			'isActive'     => $integration->is_active(),
 			'enabled'      => $integration->is_active(),
-			'triggerCount' => $configured_trigger_count,
+			'triggerCount' => $total_trigger_count,
 		);
 
 		if ( $detailed ) {
@@ -535,10 +588,9 @@ class EchoDash_REST_API extends WP_REST_Controller {
 				$configured_triggers = $settings['integrations'][ $slug ]['triggers'];
 			}
 
-			// Convert configured triggers to API response format
+			// Convert configured triggers to API response format (reusing $available_triggers)
 			foreach ( $configured_triggers as $trigger_id => $trigger_data ) {
 				// Get trigger definition for additional metadata
-				$available_triggers = $integration->get_triggers();
 				$trigger_definition = isset( $available_triggers[ $trigger_data['trigger'] ] ) ? $available_triggers[ $trigger_data['trigger'] ] : array();
 
 				$data['triggers'][] = array(

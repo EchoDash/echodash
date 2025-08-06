@@ -19,8 +19,9 @@ button.echodash-button {
 
 a.echodash-button:hover,
 button.echodash-button:hover {
-	text-decoration: underline;
 	cursor: pointer;
+    background-color: #202E41;
+    color: #fff;
 }
 
 a.echodash-button-primary,

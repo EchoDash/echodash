@@ -341,6 +341,8 @@ class EchoDash_React_Admin {
 			$configured_triggers = 0;
 			$triggers            = array();
 			$available_triggers  = array();
+			$single_item_triggers = array();
+			$single_item_count   = 0;
 
 			// Load configured triggers from the correct settings path
 			$configured_trigger_data = array();
@@ -362,8 +364,50 @@ class EchoDash_React_Admin {
 				);
 			}
 
+			// Get single-item events for each trigger type
+			$available_trigger_definitions = $integration->get_triggers();
+			foreach ( $available_trigger_definitions as $trigger_key => $trigger_config ) {
+				if ( isset( $trigger_config['has_single'] ) && $trigger_config['has_single'] ) {
+					// Get single events for this trigger
+					$single_events = $integration->get_single_events( $trigger_key );
+					
+					if ( ! empty( $single_events ) ) {
+						// Count single events for the total
+						$single_item_count += count( $single_events );
+						
+						// Group single events by trigger type
+						$grouped_events = array();
+						foreach ( $single_events as $event ) {
+							// Get post title and edit URL
+							$post_title = isset( $event['post_title'] ) ? $event['post_title'] : get_the_title( $event['post_id'] );
+							$edit_url   = isset( $event['edit_url'] ) ? $event['edit_url'] : get_edit_post_link( $event['post_id'] ) . '#echodash';
+							
+							$grouped_events[] = array(
+								'post_id'    => $event['post_id'],
+								'post_title' => $post_title,
+								'edit_url'   => $edit_url,
+								'event_name' => $event['name'] ?? '',
+								'mappings'   => $event['value'] ?? array(),
+							);
+						}
+						
+						if ( ! empty( $grouped_events ) ) {
+							$single_item_triggers[] = array(
+								'trigger'     => $trigger_key,
+								'name'        => $trigger_config['name'],
+								'description' => $trigger_config['description'] ?? '',
+								'items'       => $grouped_events,
+							);
+						}
+					}
+				}
+			}
+
+			// Calculate total trigger count (global + single-item)
+			$total_trigger_count = $configured_triggers + $single_item_count;
+
 			// Get available trigger definitions
-			foreach ( $integration->get_triggers() as $trigger_id => $trigger_config ) {
+			foreach ( $available_trigger_definitions as $trigger_id => $trigger_config ) {
 				$available_triggers[] = array(
 					'id'           => $trigger_id,
 					'name'         => $trigger_config['name'] ?? $trigger_id,
@@ -381,14 +425,15 @@ class EchoDash_React_Admin {
 			}
 
 			$integrations[] = array(
-				'slug'                => $slug,
-				'name'                => $integration->name,
-				'icon'                => $integration->get_icon(),
-				'iconBackgroundColor' => $integration->get_icon_background_color(),
-				'triggerCount'        => $configured_triggers,
-				'enabled'             => $configured_triggers > 0,
-				'triggers'            => $triggers,
-				'availableTriggers'   => $available_triggers,
+				'slug'                 => $slug,
+				'name'                 => $integration->name,
+				'icon'                 => $integration->get_icon(),
+				'iconBackgroundColor'  => $integration->get_icon_background_color(),
+				'triggerCount'         => $total_trigger_count,
+				'enabled'              => $total_trigger_count > 0,
+				'triggers'             => $triggers,
+				'availableTriggers'    => $available_triggers,
+				'singleItemTriggers'   => $single_item_triggers,
 			);
 		}
 

@@ -16,6 +16,18 @@ interface Integration {
 	triggerCount: number;
 	enabled: boolean;
 	description?: string;
+	singleItemTriggers?: Array<{
+		trigger: string;
+		name: string;
+		description?: string;
+		items: Array<{
+			post_id: number;
+			post_title: string;
+			edit_url: string;
+			event_name: string;
+			mappings: any;
+		}>;
+	}>;
 }
 
 interface Trigger {
@@ -59,7 +71,7 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 					<EchoDashLogo className="echodash-header__logo" />
 				</a>
 				<a 
-					href="https://docs.echodash.com" 
+					href="https://echodash.com/docs/echodash-plugin" 
 					target="_blank" 
 					rel="noopener noreferrer"
 					className="echodash-button echodash-header__docs-link"
@@ -113,7 +125,7 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 
 			{/* Triggers section */}
 			<div className="echodash-card echodash-triggers">
-				<h2 className="echodash-triggers__title">Triggers</h2>
+				<h2 className="echodash-triggers__title">Global Triggers</h2>
 				
 				{triggers.length === 0 ? (
 					<div className="echodash-triggers__empty-state">
@@ -129,8 +141,7 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 						</div>
 						<h3 className="echodash-triggers__empty-title">Add your first {integration.name} trigger</h3>
 						<p className="echodash-triggers__empty-description">
-							Accumsan augue sapien lorem blandit leo. In fringilla aliquam mattis phasellus.<br />
-							Feugiat feugiat risus cursus tempor tortor.
+							Global triggers fire for all events of the selected type across your site.
 						</p>
 						<button 
 							className="echodash-button echodash-button-primary"
@@ -177,6 +188,56 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 					</div>
 				)}
 			</div>
+
+			{/* Single-item triggers section */}
+			{integration.singleItemTriggers && integration.singleItemTriggers.length > 0 && (
+				<div className="echodash-card echodash-single-triggers">
+					<h2 className="echodash-triggers__title">Single-Item Events</h2>
+					<p className="echodash-single-triggers__description">
+						These events are configured on individual posts, forms, products, or courses.
+					</p>
+					
+					{integration.singleItemTriggers.map((triggerGroup, groupIndex) => (
+						<div key={`${triggerGroup.trigger}-${groupIndex}`} className="echodash-single-trigger-group">
+							<h3 className="echodash-single-trigger-group__title">
+								{triggerGroup.name}
+							</h3>
+							<p className="echodash-single-trigger-group__description">
+								{triggerGroup.description}
+							</p>
+							
+							<div className="echodash-single-triggers__list">
+								{triggerGroup.items.map((item, itemIndex) => (
+									<div 
+										key={`${item.post_id}-${itemIndex}`}
+										className="echodash-single-trigger-item echodash-integration-item"
+									>
+										<div className="echodash-single-trigger-item__info">
+											<div className="echodash-single-trigger-item__title">
+												{item.event_name || 'Untitled Event'}
+											</div>
+											<div className="echodash-single-trigger-item__post">
+												Configured on: <strong>{item.post_title}</strong>
+											</div>
+										</div>
+										
+										<div className="echodash-single-trigger-item__actions">
+											<a 
+												href={item.edit_url}
+												className="echodash-button"
+												target="_blank"
+												rel="noopener noreferrer"
+											>
+												Edit Item →
+											</a>
+										</div>
+									</div>
+								))}
+							</div>
+						</div>
+					))}
+				</div>
+			)}
 		</>
 	);
 };
