@@ -1,0 +1,202 @@
+/**
+ * IntegrationList Component Styles
+ * Uses WordPress design tokens and patterns
+ */
+
+/* Header Styles */
+.echodash-header {
+	display: flex;
+	align-items: center;
+	margin-bottom: 20px;
+}
+
+.echodash-header__logo {
+	font-size: 36px;
+	margin-right: 10px;
+}
+
+.echodash-header__title {
+	margin: 0;
+}
+
+.echodash-header__docs-link {
+	margin-left: auto;
+}
+
+/* Welcome Section */
+.echodash-welcome {
+	background-color: #fff;
+	border: 1px solid #c3c4c7;
+	border-radius: 8px;
+	padding: 30px;
+	margin-bottom: 30px;
+	display: flex;
+	gap: 30px;
+}
+
+.echodash-welcome__content {
+	flex: 1;
+}
+
+.echodash-welcome__title {
+	margin-top: 0;
+}
+
+.echodash-welcome__description {
+	color: #646970;
+	margin-bottom: 20px;
+}
+
+.echodash-welcome__instructions {
+	margin-bottom: 8px;
+}
+
+.echodash-welcome__instructions-link {
+	color: #2271b1;
+}
+
+.echodash-welcome__field-group {
+	margin-top: 20px;
+}
+
+.echodash-welcome__label {
+	display: block;
+	margin-bottom: 8px;
+	font-weight: 600;
+}
+
+.echodash-welcome__input {
+	width: 100%;
+}
+
+/* Video Placeholder */
+.echodash-video-placeholder {
+	width: 400px;
+	height: 225px;
+	background-color: #f0f0f1;
+	border-radius: 8px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	position: relative;
+}
+
+.echodash-video-placeholder__play-button {
+	width: 60px;
+	height: 60px;
+	background-color: rgba(255, 255, 255, 0.9);
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	transition: transform 0.2s ease;
+}
+
+.echodash-video-placeholder__play-button:hover {
+	transform: scale(1.1);
+}
+
+.echodash-video-placeholder__play-icon {
+	font-size: 30px;
+	margin-left: 3px;
+}
+
+/* Integrations Section */
+.echodash-integrations {
+	background-color: #fff;
+	border: 1px solid #c3c4c7;
+	border-radius: 8px;
+	padding: 20px;
+}
+
+.echodash-integrations__title {
+	margin-top: 0;
+	margin-bottom: 20px;
+}
+
+.echodash-integrations__list {
+	display: flex;
+	flex-direction: column;
+	gap: 1px;
+}
+
+/* Integration Item */
+.echodash-integration-item {
+	display: flex;
+	align-items: center;
+	padding: 16px;
+	background-color: #f6f7f7;
+	border-radius: 4px;
+	margin-bottom: 8px;
+	transition: background-color 0.2s ease;
+}
+
+.echodash-integration-item:hover {
+	background-color: #f0f0f1;
+}
+
+.echodash-integration-item__icon {
+	width: 40px;
+	height: 40px;
+	border-radius: 8px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-right: 16px;
+}
+
+.echodash-integration-item__icon--wordpress {
+	background-color: #2271b1;
+}
+
+.echodash-integration-item__icon--default {
+	background-color: #ff6900;
+}
+
+.echodash-integration-item__icon-dashicon {
+	font-size: 24px;
+	color: white;
+}
+
+.echodash-integration-item__info {
+	flex: 1;
+}
+
+.echodash-integration-item__name {
+	margin: 0;
+	font-size: 16px;
+	font-weight: normal;
+}
+
+.echodash-integration-item__trigger-count {
+	color: #646970;
+	font-size: 13px;
+}
+
+.echodash-integration-item__actions {
+	display: flex;
+	gap: 10px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+	.echodash-welcome {
+		flex-direction: column;
+	}
+
+	.echodash-video-placeholder {
+		width: 100%;
+		max-width: 400px;
+		margin: 0 auto;
+	}
+
+	.echodash-integration-item {
+		flex-wrap: wrap;
+	}
+
+	.echodash-integration-item__actions {
+		width: 100%;
+		margin-top: 10px;
+	}
+}

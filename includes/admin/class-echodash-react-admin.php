@@ -17,13 +17,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 class EchoDash_React_Admin {
 
 	/**
-	 * Performance monitoring data
-	 *
-	 * @var array
-	 */
-	private $performance_data = array();
-
-	/**
 	 * Initialize the React admin interface
 	 */
 	public function __construct() {

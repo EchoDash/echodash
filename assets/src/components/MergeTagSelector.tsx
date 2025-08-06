@@ -5,6 +5,7 @@
  */
 
 import React, { useState, useRef, useEffect } from 'react';
+import './MergeTagSelector.css';
 
 interface MergeTagOption {
 	meta: string;
@@ -35,26 +36,48 @@ export const MergeTagSelector: React.FC<MergeTagSelectorProps> = ({
 }) => {
 	const dropdownRef = useRef<HTMLDivElement>(null);
 	const [position, setPosition] = useState({ top: 0, left: 0 });
+	const [isInModal, setIsInModal] = useState(false);
 
 	useEffect(() => {
-		if (isOpen && buttonRef.current && dropdownRef.current) {
+		if (isOpen && buttonRef.current) {
 			const buttonRect = buttonRef.current.getBoundingClientRect();
-			const dropdownRect = dropdownRef.current.getBoundingClientRect();
 			
-			// Position dropdown below the button
-			let top = buttonRect.bottom + window.scrollY + 5;
-			let left = buttonRect.left + window.scrollX;
+			// Check if we're inside a modal
+			const modalParent = buttonRef.current.closest('.echodash-modal');
+			setIsInModal(!!modalParent);
 			
-			// Adjust if dropdown would go off screen
-			if (left + dropdownRect.width > window.innerWidth) {
-				left = buttonRect.right + window.scrollX - dropdownRect.width;
+			if (modalParent) {
+				// For modal context, use fixed positioning
+				let top = buttonRect.bottom + 2;
+				let left = buttonRect.left;
+				
+				// Get dropdown dimensions after render
+				setTimeout(() => {
+					if (dropdownRef.current) {
+						const dropdownRect = dropdownRef.current.getBoundingClientRect();
+						
+						// Adjust if dropdown would go off screen to the right
+						if (left + dropdownRect.width > window.innerWidth - 20) {
+							left = buttonRect.right - dropdownRect.width;
+						}
+						
+						// Adjust if dropdown would go off screen to the bottom
+						if (top + dropdownRect.height > window.innerHeight - 20) {
+							top = buttonRect.top - dropdownRect.height - 2;
+						}
+						
+						setPosition({ top, left });
+					}
+				}, 0);
+				
+				setPosition({ top, left });
+			} else {
+				// For non-modal context, use absolute positioning
+				let top = buttonRect.bottom + window.scrollY + 2;
+				let left = buttonRect.left + window.scrollX;
+				
+				setPosition({ top, left });
 			}
-			
-			if (top + dropdownRect.height > window.innerHeight + window.scrollY) {
-				top = buttonRect.top + window.scrollY - dropdownRect.height - 5;
-			}
-			
-			setPosition({ top, left });
 		}
 	}, [isOpen, buttonRef]);
 
@@ -83,31 +106,20 @@ export const MergeTagSelector: React.FC<MergeTagSelectorProps> = ({
 	return (
 		<div
 			ref={dropdownRef}
+			className={`echodash-merge-dropdown ${isInModal ? 'echodash-merge-dropdown--in-modal' : ''}`}
 			style={{
-				position: 'fixed',
+				position: isInModal ? 'fixed' : 'absolute',
 				top: position.top,
-				left: position.left,
-				backgroundColor: 'white',
-				border: '1px solid #ddd',
-				borderRadius: '4px',
-				boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-				zIndex: 10000,
-				minWidth: '300px',
-				maxHeight: '300px',
-				overflowY: 'auto'
+				left: position.left
 			}}
 		>
 			{options.map((group, groupIndex) => (
-				<div key={groupIndex} style={{ borderBottom: groupIndex < options.length - 1 ? '1px solid #eee' : 'none' }}>
+				<div 
+					key={groupIndex} 
+					className="echodash-merge-dropdown__group"
+				>
 					{/* Group Header */}
-					<div style={{
-						padding: '8px 12px',
-						backgroundColor: '#f7f7f7',
-						fontWeight: 'bold',
-						fontSize: '13px',
-						color: '#555',
-						borderBottom: '1px solid #eee'
-					}}>
+					<div className="echodash-merge-dropdown__group-header">
 						{group.name}
 					</div>
 					
@@ -116,27 +128,15 @@ export const MergeTagSelector: React.FC<MergeTagSelectorProps> = ({
 						<div
 							key={optionIndex}
 							onClick={() => handleSelect(group.type, option.meta)}
-							style={{
-								padding: '8px 12px',
-								cursor: 'pointer',
-								borderBottom: optionIndex < group.options.length - 1 ? '1px solid #f0f0f0' : 'none',
-								fontSize: '13px',
-								transition: 'background-color 0.1s'
-							}}
-							onMouseEnter={(e) => {
-								e.currentTarget.style.backgroundColor = '#f5f5f5';
-							}}
-							onMouseLeave={(e) => {
-								e.currentTarget.style.backgroundColor = 'transparent';
-							}}
+							className="echodash-merge-dropdown__option"
 						>
-							<div style={{ fontWeight: '500', marginBottom: '2px' }}>
+							<div className="echodash-merge-dropdown__option-tag">
 								{`{${group.type}:${option.meta}}`}
 							</div>
-							<div style={{ color: '#666', fontSize: '12px' }}>
+							<div className="echodash-merge-dropdown__option-placeholder">
 								{option.placeholder}
 							</div>
-							<div style={{ color: '#999', fontSize: '11px', marginTop: '2px' }}>
+							<div className="echodash-merge-dropdown__option-preview">
 								Preview: {String(option.preview)}
 							</div>
 						</div>
@@ -145,12 +145,7 @@ export const MergeTagSelector: React.FC<MergeTagSelectorProps> = ({
 			))}
 			
 			{options.length === 0 && (
-				<div style={{ 
-					padding: '12px', 
-					color: '#666', 
-					fontSize: '13px',
-					textAlign: 'center'
-				}}>
+				<div className="echodash-merge-dropdown__empty">
 					No merge tags available
 				</div>
 			)}

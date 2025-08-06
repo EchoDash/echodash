@@ -8,8 +8,6 @@ import React, { useState } from 'react';
 import { Button } from '@wordpress/components';
 import { useAppContext } from '../providers/AppProvider';
 import { SortableTriggerList } from '../triggers/SortableTriggerList';
-// import { TriggerEditModal } from '../modals/TriggerEditModal';
-import { SimpleTriggerModal } from '../modals/SimpleTriggerModal';
 import { useIntegrations } from '../../hooks/useIntegrations';
 
 interface IntegrationDetailProps {
@@ -166,15 +164,6 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 					/>
 				)}
 			</div>
-
-			{isModalOpen && (
-				<SimpleTriggerModal
-					isOpen={isModalOpen}
-					onClose={() => setIsModalOpen(false)}
-					onSave={handleSaveTrigger}
-					availableTriggers={(integration as any).availableTriggers || []}
-				/>
-			)}
 		</div>
 	);
 };

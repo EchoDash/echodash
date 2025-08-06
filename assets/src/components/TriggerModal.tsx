@@ -6,6 +6,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { MergeTagSelector } from './MergeTagSelector';
+import './TriggerModal.css';
 
 interface MergeTagOption {
 	meta: string;
@@ -155,80 +156,42 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 	};
 
 	return (
-		<div style={{
-			position: 'fixed',
-			top: 0,
-			left: 0,
-			right: 0,
-			bottom: 0,
-			backgroundColor: 'rgba(0,0,0,0.7)',
-			display: 'flex',
-			alignItems: 'center',
-			justifyContent: 'center',
-			zIndex: 1000
-		}}>
-			<div style={{
-				backgroundColor: 'white',
-				borderRadius: '8px',
-				width: '500px',
-				maxHeight: '90vh',
-				overflow: 'auto'
-			}}>
+		<div className="echodash-modal-overlay">
+			<div className="echodash-modal">
 				{/* Header */}
-				<div style={{
-					padding: '20px 24px',
-					borderBottom: '1px solid #ddd',
-					display: 'flex',
-					alignItems: 'center',
-					justifyContent: 'space-between'
-				}}>
-					<div style={{ display: 'flex', alignItems: 'center' }}>
-						<div style={{ 
-							width: '32px', 
-							height: '32px',
-							backgroundColor: '#FF6900',
-							borderRadius: '6px',
-							display: 'flex',
-							alignItems: 'center',
-							justifyContent: 'center',
-							marginRight: '12px'
-						}}>
+				<div className="echodash-modal__header">
+					<div className="echodash-modal__header-content">
+						<div className="echodash-modal__header-icon">
 							<span 
-								className={`dashicons dashicons-${integration.slug === 'gravity-forms' ? 'feedback' : 'admin-plugins'}`} 
-								style={{ fontSize: '18px', color: 'white' }}
+								className={`dashicons dashicons-${integration.slug === 'gravity-forms' ? 'feedback' : 'admin-plugins'} echodash-modal__header-icon-dashicon`} 
 							></span>
 						</div>
-						<div>
-							<h2 style={{ margin: 0, fontSize: '18px' }}>Add Trigger</h2>
-							<p style={{ margin: 0, color: '#646970', fontSize: '14px' }}>
+						<div className="echodash-modal__header-text">
+							<h2 className="echodash-modal__title">Add Trigger</h2>
+							<p className="echodash-modal__subtitle">
 								Create a trigger for {integration.name}
 							</p>
 						</div>
 					</div>
 					<button 
 						onClick={onClose}
-						style={{
-							background: 'none',
-							border: 'none',
-							cursor: 'pointer',
-							padding: '4px'
-						}}
+						className="echodash-modal__close"
 					>
 						<span className="dashicons dashicons-no-alt"></span>
 					</button>
 				</div>
 
 				{/* Content */}
-				<div style={{ padding: '24px' }}>
+				<div className="echodash-modal__content">
 					{/* Trigger Type */}
-					<div style={{ marginBottom: '20px' }}>
-						<label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
+					<div className="echodash-form-group">
+						<label className="echodash-form-group__label">
 							Trigger
 						</label>
 						<select 
 							value={selectedTrigger}
 							onChange={(e) => handleTriggerChange(e.target.value)}
-							style={{ width: '100%', padding: '8px' }}
+							className="echodash-form-group__select"
 						>
 							{availableTriggers.map(trigger => (
 								<option key={trigger.id} value={trigger.id}>
@@ -237,19 +200,11 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 							))}
 						</select>
 						{selectedTrigger && (
-							<div style={{
-								backgroundColor: '#e7f3ff',
-								padding: '12px',
-								borderRadius: '4px',
-								marginTop: '8px',
-								display: 'flex',
-								alignItems: 'flex-start'
-							}}>
+							<div className="echodash-info-box">
 								<span 
-									className="dashicons dashicons-info" 
-									style={{ color: '#0073aa', marginRight: '8px', marginTop: '2px' }}
+									className="dashicons dashicons-info echodash-info-box__icon" 
 								></span>
-								<span style={{ fontSize: '14px' }}>
+								<span className="echodash-info-box__text">
 									{availableTriggers.find(t => t.id === selectedTrigger)?.description || 'No description available.'}
 								</span>
 							</div>
@@ -257,15 +212,15 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 					</div>
 
 					{/* Payload */}
-					<div style={{ marginBottom: '20px' }}>
-						<h3 style={{ margin: '0 0 8px 0', fontSize: '16px' }}>Payload</h3>
-						<p style={{ color: '#646970', fontSize: '14px', marginBottom: '16px' }}>
+					<div className="echodash-payload">
+						<h3 className="echodash-payload__title">Payload</h3>
+						<p className="echodash-payload__description">
 							Configure the data to send when this trigger fires.
 						</p>
 
 						{/* Event Name */}
-						<div style={{ marginBottom: '16px' }}>
-							<label style={{ display: 'block', marginBottom: '4px', fontWeight: 'bold' }}>
+						<div className="echodash-event-name">
+							<label className="echodash-event-name__label">
 								Name:
 							</label>
 							<input 
@@ -273,20 +228,13 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 								value={eventName}
 								onChange={(e) => setEventName(e.target.value)}
 								placeholder="Contact Form Submitted"
-								style={{ width: '100%', padding: '8px' }}
+								className="echodash-event-name__input"
 							/>
 							<button 
 								ref={nameButtonRef}
 								type="button"
 								onClick={() => setOpenDropdownIndex({ type: 'name', index: -1 })}
-								style={{
-									background: 'none',
-									border: 'none',
-									color: '#646970',
-									cursor: 'pointer',
-									fontSize: '12px',
-									padding: '4px 0'
-								}}
+								className="echodash-merge-tag-button"
 							>
 								{'{...}'}
 							</button>
@@ -294,45 +242,34 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 
 						{/* Key-Value Pairs */}
 						{keyValuePairs.map((pair, index) => (
-							<div key={index} style={{ 
-								display: 'flex', 
-								gap: '8px', 
-								marginBottom: '8px',
-								alignItems: 'center'
-							}}>
-								<div style={{ flex: 1 }}>
-									<label style={{ display: 'block', fontSize: '12px', marginBottom: '2px' }}>
+							<div key={index} className="echodash-key-value-pair">
+								<div className="echodash-key-value-pair__field">
+									<label className="echodash-key-value-pair__label">
 										Key:
 									</label>
 									<input 
 										type="text"
 										value={pair.key}
 										onChange={(e) => updateKeyValuePair(index, 'key', e.target.value)}
-										style={{ width: '100%', padding: '6px' }}
+										className="echodash-key-value-pair__input"
 									/>
 								</div>
-								<div style={{ flex: 1 }}>
-									<label style={{ display: 'block', fontSize: '12px', marginBottom: '2px' }}>
+								<div className="echodash-key-value-pair__field">
+									<label className="echodash-key-value-pair__label">
 										Value:
 									</label>
 									<input 
 										type="text"
 										value={pair.value}
 										onChange={(e) => updateKeyValuePair(index, 'value', e.target.value)}
-										style={{ width: '100%', padding: '6px' }}
+										className="echodash-key-value-pair__input"
 									/>
 								</div>
-								<div style={{ display: 'flex', gap: '4px', alignItems: 'flex-end', paddingBottom: '2px' }}>
+								<div className="echodash-key-value-pair__actions">
 									<button 
 										type="button"
 										onClick={addKeyValuePair}
-										style={{
-											background: 'none',
-											border: 'none',
-											color: '#646970',
-											cursor: 'pointer',
-											padding: '4px'
-										}}
+										className="echodash-key-value-pair__action-button"
 									>
 										<span className="dashicons dashicons-plus-alt"></span>
 									</button>
@@ -340,13 +277,7 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 										<button 
 											type="button"
 											onClick={() => removeKeyValuePair(index)}
-											style={{
-												background: 'none',
-												border: 'none',
-												color: '#646970',
-												cursor: 'pointer',
-												padding: '4px'
-											}}
+											className="echodash-key-value-pair__action-button"
 										>
 											<span className="dashicons dashicons-minus"></span>
 										</button>
@@ -360,15 +291,7 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 									}}
 									type="button"
 									onClick={() => setOpenDropdownIndex({ type: 'value', index })}
-									style={{
-										background: 'none',
-										border: 'none',
-										color: '#646970',
-										cursor: 'pointer',
-										fontSize: '12px',
-										alignSelf: 'flex-end',
-										paddingBottom: '6px'
-									}}
+									className="echodash-key-value-pair__merge-button"
 								>
 									{'{...}'}
 								</button>
@@ -377,15 +300,15 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 					</div>
 
 					{/* Send Test */}
-					<div style={{ marginBottom: '20px' }}>
-						<label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
+					<div className="echodash-send-test">
+						<label className="echodash-send-test__label">
 							<input 
 								type="checkbox"
 								checked={sendTest}
 								onChange={(e) => setSendTest(e.target.checked)}
-								style={{ marginRight: '8px' }}
+								className="echodash-send-test__checkbox"
 							/>
-							<span className="dashicons dashicons-admin-tools" style={{ marginRight: '6px' }}></span>
+							<span className="dashicons dashicons-admin-tools echodash-send-test__icon"></span>
 							Send Test
 						</label>
 					</div>
@@ -407,13 +330,7 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 				)}
 
 				{/* Footer */}
-				<div style={{
-					padding: '16px 24px',
-					borderTop: '1px solid #ddd',
-					display: 'flex',
-					justifyContent: 'flex-end',
-					gap: '10px'
-				}}>
+				<div className="echodash-modal__footer">
 					<button 
 						onClick={onClose}
 						className="button button-secondary"

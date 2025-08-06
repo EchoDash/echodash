@@ -1,0 +1,277 @@
+/**
+ * TriggerModal Component Styles
+ * Uses WordPress design tokens and patterns
+ */
+
+/* Modal Overlay */
+.echodash-modal-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0, 0, 0, 0.7);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 1000;
+}
+
+/* Modal Container */
+.echodash-modal {
+	background-color: #fff;
+	border-radius: 8px;
+	width: 500px;
+	max-height: 90vh;
+	overflow: auto;
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Modal Header */
+.echodash-modal__header {
+	padding: 20px 24px;
+	border-bottom: 1px solid #ddd;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.echodash-modal__header-content {
+	display: flex;
+	align-items: center;
+}
+
+.echodash-modal__header-icon {
+	width: 32px;
+	height: 32px;
+	background-color: #ff6900;
+	border-radius: 6px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-right: 12px;
+}
+
+.echodash-modal__header-icon-dashicon {
+	font-size: 18px;
+	color: white;
+}
+
+.echodash-modal__header-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.echodash-modal__title {
+	margin: 0;
+	font-size: 18px;
+}
+
+.echodash-modal__subtitle {
+	margin: 0;
+	color: #646970;
+	font-size: 14px;
+}
+
+.echodash-modal__close {
+	background: none;
+	border: none;
+	cursor: pointer;
+	padding: 4px;
+	color: #646970;
+	transition: color 0.2s ease;
+}
+
+.echodash-modal__close:hover {
+	color: #135e96;
+}
+
+/* Modal Content */
+.echodash-modal__content {
+	padding: 24px;
+}
+
+/* Form Groups */
+.echodash-form-group {
+	margin-bottom: 20px;
+}
+
+.echodash-form-group__label {
+	display: block;
+	margin-bottom: 8px;
+	font-weight: bold;
+}
+
+.echodash-form-group__select,
+.echodash-form-group__input {
+	width: 100%;
+	padding: 8px;
+}
+
+/* Info Box */
+.echodash-info-box {
+	background-color: #e7f3ff;
+	padding: 12px;
+	border-radius: 4px;
+	margin-top: 8px;
+	display: flex;
+	align-items: flex-start;
+}
+
+.echodash-info-box__icon {
+	color: #0073aa;
+	margin-right: 8px;
+	margin-top: 2px;
+}
+
+.echodash-info-box__text {
+	font-size: 14px;
+}
+
+/* Payload Section */
+.echodash-payload {
+	margin-bottom: 20px;
+}
+
+.echodash-payload__title {
+	margin: 0 0 8px 0;
+	font-size: 16px;
+}
+
+.echodash-payload__description {
+	color: #646970;
+	font-size: 14px;
+	margin-bottom: 16px;
+}
+
+/* Event Name Field */
+.echodash-event-name {
+	margin-bottom: 16px;
+}
+
+.echodash-event-name__label {
+	display: block;
+	margin-bottom: 4px;
+	font-weight: bold;
+}
+
+.echodash-event-name__input {
+	width: 100%;
+	padding: 8px;
+}
+
+.echodash-merge-tag-button {
+	background: none;
+	border: none;
+	color: #8c8f94;
+	cursor: pointer;
+	font-size: 12px;
+	padding: 4px 8px;
+	margin-top: 4px;
+	transition: color 0.2s ease, background-color 0.2s ease;
+	border-radius: 3px;
+	font-family: Consolas, Monaco, 'Courier New', monospace;
+}
+
+.echodash-merge-tag-button:hover {
+	color: #2271b1;
+	background-color: #f0f0f1;
+}
+
+/* Key-Value Pairs */
+.echodash-key-value-pair {
+	display: flex;
+	gap: 8px;
+	margin-bottom: 8px;
+	align-items: flex-end;
+}
+
+.echodash-key-value-pair__field {
+	flex: 1;
+}
+
+.echodash-key-value-pair__label {
+	display: block;
+	font-size: 12px;
+	margin-bottom: 2px;
+}
+
+.echodash-key-value-pair__input {
+	width: 100%;
+	padding: 6px;
+}
+
+.echodash-key-value-pair__actions {
+	display: flex;
+	gap: 4px;
+	align-items: flex-end;
+	padding-bottom: 2px;
+}
+
+.echodash-key-value-pair__action-button {
+	background: none;
+	border: none;
+	color: #646970;
+	cursor: pointer;
+	padding: 4px;
+	transition: color 0.2s ease;
+}
+
+.echodash-key-value-pair__action-button:hover {
+	color: #0073aa;
+}
+
+.echodash-key-value-pair__merge-button {
+	background: none;
+	border: none;
+	color: #8c8f94;
+	cursor: pointer;
+	font-size: 12px;
+	align-self: flex-end;
+	padding: 4px 6px;
+	margin-bottom: 2px;
+	transition: color 0.2s ease, background-color 0.2s ease;
+	border-radius: 3px;
+	font-family: Consolas, Monaco, 'Courier New', monospace;
+}
+
+.echodash-key-value-pair__merge-button:hover {
+	color: #2271b1;
+	background-color: #f0f0f1;
+}
+
+/* Send Test Checkbox */
+.echodash-send-test {
+	margin-bottom: 20px;
+}
+
+.echodash-send-test__label {
+	display: flex;
+	align-items: center;
+	cursor: pointer;
+}
+
+.echodash-send-test__checkbox {
+	margin-right: 8px;
+}
+
+.echodash-send-test__icon {
+	margin-right: 6px;
+}
+
+/* Modal Footer */
+.echodash-modal__footer {
+	padding: 16px 24px;
+	border-top: 1px solid #ddd;
+	display: flex;
+	justify-content: flex-end;
+	gap: 10px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+	.echodash-modal {
+		width: 90%;
+		margin: 20px;
+	}
+}

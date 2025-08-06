@@ -5,6 +5,8 @@
  */
 
 import React from 'react';
+import './IntegrationDetail.css';
+import { EchoDashLogo } from './EchoDashLogo';
 
 interface Integration {
 	slug: string;
@@ -38,70 +40,57 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 	return (
 		<>
 			{/* Header with logo */}
-			<div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
-				<span className="dashicons dashicons-rss" style={{ fontSize: '36px', marginRight: '10px' }}></span>
-				<h1 style={{ margin: 0 }}>EchoDash</h1>
+			<div className="echodash-header">
+				<a 
+					href="https://echodash.com" 
+					target="_blank" 
+					rel="noopener noreferrer"
+					className="echodash-header__logo-link"
+				>
+					<EchoDashLogo className="echodash-header__logo" />
+				</a>
 				<a 
 					href="https://docs.echodash.com" 
 					target="_blank" 
 					rel="noopener noreferrer"
-					style={{ marginLeft: 'auto' }}
-					className="button button-link"
+					className="button button-link echodash-header__docs-link"
 				>
 					Documentation →
 				</a>
 			</div>
 
 			{/* Breadcrumb navigation */}
-			<div style={{ marginBottom: '20px' }}>
+			<div className="echodash-breadcrumb">
 				<button 
 					onClick={onBack}
-					className="button button-link"
-					style={{ padding: 0 }}
+					className="button button-link echodash-breadcrumb__link"
 				>
 					Integrations
 				</button>
-				<span style={{ margin: '0 8px', color: '#646970' }}>/</span>
+				<span className="echodash-breadcrumb__separator">/</span>
 				<span>{integration.name}</span>
 			</div>
 
 			{/* Integration header */}
-			<div style={{ 
-				backgroundColor: 'white', 
-				border: '1px solid #c3c4c7', 
-				borderRadius: '8px', 
-				padding: '30px',
-				marginBottom: '30px'
-			}}>
-				<div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
+			<div className="echodash-integration-header">
+				<div className="echodash-integration-header__content">
 					{/* Icon */}
-					<div style={{ 
-						width: '48px', 
-						height: '48px',
-						backgroundColor: integration.slug === 'wordpress' ? '#2271b1' : '#FF6900',
-						borderRadius: '8px',
-						display: 'flex',
-						alignItems: 'center',
-						justifyContent: 'center',
-						marginRight: '16px'
-					}}>
+					<div className={`echodash-integration-header__icon ${integration.slug === 'wordpress' ? 'echodash-integration-header__icon--wordpress' : 'echodash-integration-header__icon--default'}`}>
 						<span 
-							className={`dashicons dashicons-${integration.icon}`} 
-							style={{ fontSize: '28px', color: 'white' }}
+							className={`dashicons dashicons-${integration.icon} echodash-integration-header__icon-dashicon`} 
 						></span>
 					</div>
 
-					<div>
-						<h1 style={{ margin: 0, fontSize: '24px' }}>{integration.name}</h1>
-						<p style={{ margin: 0, color: '#646970' }}>
+					<div className="echodash-integration-header__info">
+						<h1 className="echodash-integration-header__title">{integration.name}</h1>
+						<p className="echodash-integration-header__description">
 							{integration.description || 'Configure triggers for this integration'}
 						</p>
 					</div>
 
 					<button 
-						className="button button-primary"
+						className="button button-primary echodash-integration-header__add-trigger"
 						onClick={onAddTrigger}
-						style={{ marginLeft: 'auto' }}
 					>
 						+ Add Trigger
 					</button>
@@ -109,37 +98,18 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 			</div>
 
 			{/* Triggers section */}
-			<div style={{ 
-				backgroundColor: 'white', 
-				border: '1px solid #c3c4c7', 
-				borderRadius: '8px', 
-				padding: '20px'
-			}}>
-				<h2 style={{ marginTop: 0, marginBottom: '20px' }}>Triggers</h2>
+			<div className="echodash-triggers">
+				<h2 className="echodash-triggers__title">Triggers</h2>
 				
 				{triggers.length === 0 ? (
-					<div style={{ 
-						textAlign: 'center',
-						padding: '60px 20px',
-						color: '#646970'
-					}}>
-						<div style={{ 
-							width: '48px', 
-							height: '48px',
-							backgroundColor: '#FF6900',
-							borderRadius: '8px',
-							display: 'flex',
-							alignItems: 'center',
-							justifyContent: 'center',
-							margin: '0 auto 20px'
-						}}>
+					<div className="echodash-triggers__empty-state">
+						<div className="echodash-triggers__empty-icon">
 							<span 
-								className={`dashicons dashicons-${integration.icon}`} 
-								style={{ fontSize: '28px', color: 'white' }}
+								className={`dashicons dashicons-${integration.icon} echodash-triggers__empty-icon-dashicon`} 
 							></span>
 						</div>
-						<h3 style={{ marginBottom: '10px' }}>Add your first {integration.name} trigger</h3>
-						<p style={{ marginBottom: '20px' }}>
+						<h3 className="echodash-triggers__empty-title">Add your first {integration.name} trigger</h3>
+						<p className="echodash-triggers__empty-description">
 							Accumsan augue sapien lorem blandit leo. In fringilla aliquam mattis phasellus.<br />
 							Feugiat feugiat risus cursus tempor tortor.
 						</p>
@@ -151,32 +121,25 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 						</button>
 					</div>
 				) : (
-					<div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+					<div className="echodash-triggers__list">
 						{triggers.map((trigger, index) => (
 							<div
 								key={trigger.id || index}
-								style={{
-									display: 'flex',
-									alignItems: 'center',
-									padding: '16px',
-									backgroundColor: '#f6f7f7',
-									borderRadius: '4px'
-								}}
+								className="echodash-trigger-item"
 							>
 								{/* Drag handle */}
 								<span 
-									className="dashicons dashicons-menu" 
-									style={{ color: '#646970', marginRight: '12px', cursor: 'grab' }}
+									className="dashicons dashicons-menu echodash-trigger-item__handle" 
 								></span>
 
 								{/* Trigger info */}
-								<div style={{ flex: 1 }}>
-									<div style={{ fontWeight: 'bold', marginBottom: '4px' }}>Form Submitted</div>
-									<div style={{ color: '#646970', fontSize: '14px' }}>{trigger.name}</div>
+								<div className="echodash-trigger-item__info">
+									<div className="echodash-trigger-item__type">Form Submitted</div>
+									<div className="echodash-trigger-item__name">{trigger.name}</div>
 								</div>
 
 								{/* Actions */}
-								<div style={{ display: 'flex', gap: '10px' }}>
+								<div className="echodash-trigger-item__actions">
 									<button className="button button-secondary">Send Test</button>
 									<button className="button button-secondary">Edit</button>
 									<button className="button button-link-delete">

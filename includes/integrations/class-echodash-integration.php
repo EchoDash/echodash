@@ -30,6 +30,14 @@ abstract class EchoDash_Integration {
 	public $name;
 
 	/**
+	 * The icon for the integration.
+	 *
+	 * @since 2.0.0
+	 * @var string $icon
+	 */
+	public $icon;
+
+	/**
 	 * Stores the triggers for the integration.
 	 *
 	 * @since 1.0.0
@@ -51,6 +59,11 @@ abstract class EchoDash_Integration {
 	 * @since 1.0.0
 	 */
 	public function __construct() {
+
+		// Set default icon if not already set by child class
+		if ( empty( $this->icon ) ) {
+			$this->icon = $this->slug . '-logo.png';
+		}
 
 		echodash()->integrations->{ $this->slug } = $this;
 

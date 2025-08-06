@@ -1,1 +1,886 @@
-.echodash-react-app{max-width:1200px;padding:20px}.echodash-dashboard__header{margin-bottom:24px}.echodash-title{font-size:24px;font-weight:600;margin:0 0 8px}.echodash-subtitle{color:#757575;margin:0}.integration-name{font-size:16px;font-weight:600}.trigger-count{color:#757575;font-size:14px}.status{font-size:14px;font-weight:500}.status.active{color:#46b450}.status.inactive{color:#d54e21}.echodash-integration-grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));margin-top:24px}.echodash-integration-card{transition:box-shadow .2s ease}.echodash-integration-card:hover{box-shadow:0 4px 12px rgba(0,0,0,.15)}.integration-icon img{border-radius:4px}.echodash-loading{align-items:center;display:flex;justify-content:center;padding:40px}.echodash-notifications{max-width:400px;position:fixed;right:20px;top:32px;z-index:999999}
+/*!***********************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[2].use[2]!./assets/src/components/IntegrationList.css ***!
+  \***********************************************************************************************************************************************************************************************/
+/**
+ * IntegrationList Component Styles
+ * Uses WordPress design tokens and patterns
+ */
+
+/* Header Styles */
+.echodash-header {
+	display: flex;
+	align-items: center;
+	margin-bottom: 20px;
+}
+
+.echodash-header__logo {
+	font-size: 36px;
+	margin-right: 10px;
+}
+
+.echodash-header__title {
+	margin: 0;
+}
+
+.echodash-header__docs-link {
+	margin-left: auto;
+}
+
+/* Welcome Section */
+.echodash-welcome {
+	background-color: #fff;
+	border: 1px solid #c3c4c7;
+	border-radius: 8px;
+	padding: 30px;
+	margin-bottom: 30px;
+	display: flex;
+	gap: 30px;
+}
+
+.echodash-welcome__content {
+	flex: 1;
+}
+
+.echodash-welcome__title {
+	margin-top: 0;
+}
+
+.echodash-welcome__description {
+	color: #646970;
+	margin-bottom: 20px;
+}
+
+.echodash-welcome__instructions {
+	margin-bottom: 8px;
+}
+
+.echodash-welcome__instructions-link {
+	color: #2271b1;
+}
+
+.echodash-welcome__field-group {
+	margin-top: 20px;
+}
+
+.echodash-welcome__label {
+	display: block;
+	margin-bottom: 8px;
+	font-weight: 600;
+}
+
+.echodash-welcome__input {
+	width: 100%;
+}
+
+/* Video Placeholder */
+.echodash-video-placeholder {
+	width: 400px;
+	height: 225px;
+	background-color: #f0f0f1;
+	border-radius: 8px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	position: relative;
+}
+
+.echodash-video-placeholder__play-button {
+	width: 60px;
+	height: 60px;
+	background-color: rgba(255, 255, 255, 0.9);
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	transition: transform 0.2s ease;
+}
+
+.echodash-video-placeholder__play-button:hover {
+	transform: scale(1.1);
+}
+
+.echodash-video-placeholder__play-icon {
+	font-size: 30px;
+	margin-left: 3px;
+}
+
+/* Integrations Section */
+.echodash-integrations {
+	background-color: #fff;
+	border: 1px solid #c3c4c7;
+	border-radius: 8px;
+	padding: 20px;
+}
+
+.echodash-integrations__title {
+	margin-top: 0;
+	margin-bottom: 20px;
+}
+
+.echodash-integrations__list {
+	display: flex;
+	flex-direction: column;
+	gap: 1px;
+}
+
+/* Integration Item */
+.echodash-integration-item {
+	display: flex;
+	align-items: center;
+	padding: 16px;
+	background-color: #f6f7f7;
+	border-radius: 4px;
+	margin-bottom: 8px;
+	transition: background-color 0.2s ease;
+}
+
+.echodash-integration-item:hover {
+	background-color: #f0f0f1;
+}
+
+.echodash-integration-item__icon {
+	width: 40px;
+	height: 40px;
+	border-radius: 8px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-right: 16px;
+}
+
+.echodash-integration-item__icon--wordpress {
+	background-color: #2271b1;
+}
+
+.echodash-integration-item__icon--default {
+	background-color: #ff6900;
+}
+
+.echodash-integration-item__icon-dashicon {
+	font-size: 24px;
+	color: white;
+}
+
+.echodash-integration-item__info {
+	flex: 1;
+}
+
+.echodash-integration-item__name {
+	margin: 0;
+	font-size: 16px;
+	font-weight: normal;
+}
+
+.echodash-integration-item__trigger-count {
+	color: #646970;
+	font-size: 13px;
+}
+
+.echodash-integration-item__actions {
+	display: flex;
+	gap: 10px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+	.echodash-welcome {
+		flex-direction: column;
+	}
+
+	.echodash-video-placeholder {
+		width: 100%;
+		max-width: 400px;
+		margin: 0 auto;
+	}
+
+	.echodash-integration-item {
+		flex-wrap: wrap;
+	}
+
+	.echodash-integration-item__actions {
+		width: 100%;
+		margin-top: 10px;
+	}
+}
+/*!*************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[2].use[2]!./assets/src/components/IntegrationDetail.css ***!
+  \*************************************************************************************************************************************************************************************************/
+/**
+ * IntegrationDetail Component Styles
+ * Uses WordPress design tokens and patterns
+ */
+
+/* Breadcrumb Navigation */
+.echodash-breadcrumb {
+	margin-bottom: 20px;
+}
+
+.echodash-breadcrumb__link {
+	padding: 0;
+}
+
+.echodash-breadcrumb__separator {
+	margin: 0 8px;
+	color: #646970;
+}
+
+/* Integration Header */
+.echodash-integration-header {
+	background-color: #fff;
+	border: 1px solid #c3c4c7;
+	border-radius: 8px;
+	padding: 30px;
+	margin-bottom: 30px;
+}
+
+.echodash-integration-header__content {
+	display: flex;
+	align-items: center;
+	margin-bottom: 20px;
+}
+
+.echodash-integration-header__icon {
+	width: 48px;
+	height: 48px;
+	border-radius: 8px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-right: 16px;
+}
+
+.echodash-integration-header__icon--wordpress {
+	background-color: #2271b1;
+}
+
+.echodash-integration-header__icon--default {
+	background-color: #ff6900;
+}
+
+.echodash-integration-header__icon-dashicon {
+	font-size: 28px;
+	color: white;
+}
+
+.echodash-integration-header__info {
+	flex: 1;
+}
+
+.echodash-integration-header__title {
+	margin: 0;
+	font-size: 24px;
+}
+
+.echodash-integration-header__description {
+	margin: 0;
+	color: #646970;
+}
+
+.echodash-integration-header__add-trigger {
+	margin-left: auto;
+}
+
+/* Triggers Section */
+.echodash-triggers {
+	background-color: #fff;
+	border: 1px solid #c3c4c7;
+	border-radius: 8px;
+	padding: 20px;
+}
+
+.echodash-triggers__title {
+	margin-top: 0;
+	margin-bottom: 20px;
+}
+
+/* Empty State */
+.echodash-triggers__empty-state {
+	text-align: center;
+	padding: 60px 20px;
+	color: #646970;
+}
+
+.echodash-triggers__empty-icon {
+	width: 48px;
+	height: 48px;
+	background-color: #ff6900;
+	border-radius: 8px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin: 0 auto 20px;
+}
+
+.echodash-triggers__empty-icon-dashicon {
+	font-size: 28px;
+	color: white;
+}
+
+.echodash-triggers__empty-title {
+	margin-bottom: 10px;
+}
+
+.echodash-triggers__empty-description {
+	margin-bottom: 20px;
+}
+
+/* Trigger List */
+.echodash-triggers__list {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+/* Trigger Item */
+.echodash-trigger-item {
+	display: flex;
+	align-items: center;
+	padding: 16px;
+	background-color: #f6f7f7;
+	border-radius: 4px;
+	transition: background-color 0.2s ease;
+}
+
+.echodash-trigger-item:hover {
+	background-color: #f0f0f1;
+}
+
+.echodash-trigger-item__handle {
+	color: #646970;
+	margin-right: 12px;
+	cursor: grab;
+}
+
+.echodash-trigger-item__handle:active {
+	cursor: grabbing;
+}
+
+.echodash-trigger-item__info {
+	flex: 1;
+}
+
+.echodash-trigger-item__type {
+	font-weight: bold;
+	margin-bottom: 4px;
+}
+
+.echodash-trigger-item__name {
+	color: #646970;
+	font-size: 14px;
+}
+
+.echodash-trigger-item__actions {
+	display: flex;
+	gap: 10px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+	.echodash-integration-header__content {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	.echodash-integration-header__add-trigger {
+		margin-left: 0;
+		margin-top: 16px;
+		width: 100%;
+	}
+
+	.echodash-trigger-item {
+		flex-wrap: wrap;
+	}
+
+	.echodash-trigger-item__actions {
+		width: 100%;
+		margin-top: 10px;
+		justify-content: flex-start;
+	}
+}
+/*!************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[2].use[2]!./assets/src/components/MergeTagSelector.css ***!
+  \************************************************************************************************************************************************************************************************/
+/**
+ * MergeTagSelector Component Styles
+ * Matches the mockup design for merge tag dropdown
+ */
+
+/* Dropdown Container */
+.echodash-merge-dropdown {
+	position: absolute;
+	background-color: #ffffff;
+	border: 1px solid #8c8f94;
+	border-radius: 3px;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+	z-index: 100001; /* Higher than WP admin modal overlays */
+	min-width: 250px;
+	max-width: 350px;
+	max-height: 280px;
+	overflow-y: auto;
+	overflow-x: hidden;
+	margin-top: 2px;
+}
+
+/* Group Container */
+.echodash-merge-dropdown__group {
+	background-color: #fff;
+}
+
+.echodash-merge-dropdown__group:not(:last-child) {
+	border-bottom: 1px solid #f0f0f1;
+}
+
+/* Group Header */
+.echodash-merge-dropdown__group-header {
+	padding: 10px 12px 6px;
+	background-color: #fff;
+	font-weight: 600;
+	font-size: 11px;
+	color: #1e1e1e;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	border-bottom: 1px solid #f0f0f1;
+}
+
+/* Option Item */
+.echodash-merge-dropdown__option {
+	padding: 8px 12px;
+	cursor: pointer;
+	background-color: #fff;
+	font-size: 13px;
+	transition: background-color 0.1s ease;
+	color: #1e1e1e;
+}
+
+.echodash-merge-dropdown__option:hover {
+	background-color: #f6f7f7;
+}
+
+.echodash-merge-dropdown__option:active {
+	background-color: #f0f0f1;
+}
+
+/* Merge tag in monospace font */
+.echodash-merge-dropdown__option-tag {
+	font-family: Consolas, Monaco, 'Courier New', monospace;
+	font-size: 13px;
+	font-weight: normal;
+	color: #2c3338;
+	margin-bottom: 3px;
+	display: block;
+}
+
+/* Description text */
+.echodash-merge-dropdown__option-placeholder {
+	color: #646970;
+	font-size: 12px;
+	line-height: 1.4;
+	display: block;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+}
+
+/* Preview text */
+.echodash-merge-dropdown__option-preview {
+	color: #8c8f94;
+	font-size: 11px;
+	margin-top: 3px;
+	display: block;
+	font-style: italic;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+}
+
+/* Empty State */
+.echodash-merge-dropdown__empty {
+	padding: 20px 12px;
+	color: #646970;
+	font-size: 13px;
+	text-align: center;
+	font-style: italic;
+}
+
+/* Scrollbar Styling for Webkit browsers */
+.echodash-merge-dropdown::-webkit-scrollbar {
+	width: 6px;
+}
+
+.echodash-merge-dropdown::-webkit-scrollbar-track {
+	background: #f6f7f7;
+}
+
+.echodash-merge-dropdown::-webkit-scrollbar-thumb {
+	background: #c3c4c7;
+	border-radius: 3px;
+}
+
+.echodash-merge-dropdown::-webkit-scrollbar-thumb:hover {
+	background: #8c8f94;
+}
+
+/* When dropdown is in modal context, it already handles positioning via inline styles */
+.echodash-merge-dropdown--in-modal {
+	/* Position is set inline as 'fixed' by the component */
+}
+/*!********************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[2].use[2]!./assets/src/components/TriggerModal.css ***!
+  \********************************************************************************************************************************************************************************************/
+/**
+ * TriggerModal Component Styles
+ * Uses WordPress design tokens and patterns
+ */
+
+/* Modal Overlay */
+.echodash-modal-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0, 0, 0, 0.7);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 1000;
+}
+
+/* Modal Container */
+.echodash-modal {
+	background-color: #fff;
+	border-radius: 8px;
+	width: 500px;
+	max-height: 90vh;
+	overflow: auto;
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Modal Header */
+.echodash-modal__header {
+	padding: 20px 24px;
+	border-bottom: 1px solid #ddd;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.echodash-modal__header-content {
+	display: flex;
+	align-items: center;
+}
+
+.echodash-modal__header-icon {
+	width: 32px;
+	height: 32px;
+	background-color: #ff6900;
+	border-radius: 6px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-right: 12px;
+}
+
+.echodash-modal__header-icon-dashicon {
+	font-size: 18px;
+	color: white;
+}
+
+.echodash-modal__header-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.echodash-modal__title {
+	margin: 0;
+	font-size: 18px;
+}
+
+.echodash-modal__subtitle {
+	margin: 0;
+	color: #646970;
+	font-size: 14px;
+}
+
+.echodash-modal__close {
+	background: none;
+	border: none;
+	cursor: pointer;
+	padding: 4px;
+	color: #646970;
+	transition: color 0.2s ease;
+}
+
+.echodash-modal__close:hover {
+	color: #135e96;
+}
+
+/* Modal Content */
+.echodash-modal__content {
+	padding: 24px;
+}
+
+/* Form Groups */
+.echodash-form-group {
+	margin-bottom: 20px;
+}
+
+.echodash-form-group__label {
+	display: block;
+	margin-bottom: 8px;
+	font-weight: bold;
+}
+
+.echodash-form-group__select,
+.echodash-form-group__input {
+	width: 100%;
+	padding: 8px;
+}
+
+/* Info Box */
+.echodash-info-box {
+	background-color: #e7f3ff;
+	padding: 12px;
+	border-radius: 4px;
+	margin-top: 8px;
+	display: flex;
+	align-items: flex-start;
+}
+
+.echodash-info-box__icon {
+	color: #0073aa;
+	margin-right: 8px;
+	margin-top: 2px;
+}
+
+.echodash-info-box__text {
+	font-size: 14px;
+}
+
+/* Payload Section */
+.echodash-payload {
+	margin-bottom: 20px;
+}
+
+.echodash-payload__title {
+	margin: 0 0 8px 0;
+	font-size: 16px;
+}
+
+.echodash-payload__description {
+	color: #646970;
+	font-size: 14px;
+	margin-bottom: 16px;
+}
+
+/* Event Name Field */
+.echodash-event-name {
+	margin-bottom: 16px;
+}
+
+.echodash-event-name__label {
+	display: block;
+	margin-bottom: 4px;
+	font-weight: bold;
+}
+
+.echodash-event-name__input {
+	width: 100%;
+	padding: 8px;
+}
+
+.echodash-merge-tag-button {
+	background: none;
+	border: none;
+	color: #8c8f94;
+	cursor: pointer;
+	font-size: 12px;
+	padding: 4px 8px;
+	margin-top: 4px;
+	transition: color 0.2s ease, background-color 0.2s ease;
+	border-radius: 3px;
+	font-family: Consolas, Monaco, 'Courier New', monospace;
+}
+
+.echodash-merge-tag-button:hover {
+	color: #2271b1;
+	background-color: #f0f0f1;
+}
+
+/* Key-Value Pairs */
+.echodash-key-value-pair {
+	display: flex;
+	gap: 8px;
+	margin-bottom: 8px;
+	align-items: flex-end;
+}
+
+.echodash-key-value-pair__field {
+	flex: 1;
+}
+
+.echodash-key-value-pair__label {
+	display: block;
+	font-size: 12px;
+	margin-bottom: 2px;
+}
+
+.echodash-key-value-pair__input {
+	width: 100%;
+	padding: 6px;
+}
+
+.echodash-key-value-pair__actions {
+	display: flex;
+	gap: 4px;
+	align-items: flex-end;
+	padding-bottom: 2px;
+}
+
+.echodash-key-value-pair__action-button {
+	background: none;
+	border: none;
+	color: #646970;
+	cursor: pointer;
+	padding: 4px;
+	transition: color 0.2s ease;
+}
+
+.echodash-key-value-pair__action-button:hover {
+	color: #0073aa;
+}
+
+.echodash-key-value-pair__merge-button {
+	background: none;
+	border: none;
+	color: #8c8f94;
+	cursor: pointer;
+	font-size: 12px;
+	align-self: flex-end;
+	padding: 4px 6px;
+	margin-bottom: 2px;
+	transition: color 0.2s ease, background-color 0.2s ease;
+	border-radius: 3px;
+	font-family: Consolas, Monaco, 'Courier New', monospace;
+}
+
+.echodash-key-value-pair__merge-button:hover {
+	color: #2271b1;
+	background-color: #f0f0f1;
+}
+
+/* Send Test Checkbox */
+.echodash-send-test {
+	margin-bottom: 20px;
+}
+
+.echodash-send-test__label {
+	display: flex;
+	align-items: center;
+	cursor: pointer;
+}
+
+.echodash-send-test__checkbox {
+	margin-right: 8px;
+}
+
+.echodash-send-test__icon {
+	margin-right: 6px;
+}
+
+/* Modal Footer */
+.echodash-modal__footer {
+	padding: 16px 24px;
+	border-top: 1px solid #ddd;
+	display: flex;
+	justify-content: flex-end;
+	gap: 10px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+	.echodash-modal {
+		width: 90%;
+		margin: 20px;
+	}
+}
+/*!********************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[2].use[2]!./assets/src/styles/main.css ***!
+  \********************************************************************************************************************************************************************************/
+/**
+ * EchoDash React Interface Styles
+ */
+
+.echodash-react-app {
+	padding: 20px;
+	max-width: 1200px;
+}
+
+.echodash-dashboard__header {
+	margin-bottom: 24px;
+}
+
+.echodash-title {
+	font-size: 24px;
+	font-weight: 600;
+	margin: 0 0 8px 0;
+}
+
+.echodash-subtitle {
+	color: #757575;
+	margin: 0;
+}
+
+.integration-name {
+	font-size: 16px;
+	font-weight: 600;
+}
+
+.trigger-count {
+	color: #757575;
+	font-size: 14px;
+}
+
+.status {
+	font-size: 14px;
+	font-weight: 500;
+}
+
+.status.active {
+	color: #46b450;
+}
+
+.status.inactive {
+	color: #d54e21;
+}
+
+.echodash-integration-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+	gap: 16px;
+	margin-top: 24px;
+}
+
+.echodash-integration-card {
+	transition: box-shadow 0.2s ease;
+}
+
+.echodash-integration-card:hover {
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.integration-icon img {
+	border-radius: 4px;
+}
+
+.echodash-loading {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 40px;
+}
+
+.echodash-notifications {
+	position: fixed;
+	top: 32px;
+	right: 20px;
+	z-index: 999999;
+	max-width: 400px;
+}

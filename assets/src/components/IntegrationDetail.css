@@ -1,0 +1,192 @@
+/**
+ * IntegrationDetail Component Styles
+ * Uses WordPress design tokens and patterns
+ */
+
+/* Breadcrumb Navigation */
+.echodash-breadcrumb {
+	margin-bottom: 20px;
+}
+
+.echodash-breadcrumb__link {
+	padding: 0;
+}
+
+.echodash-breadcrumb__separator {
+	margin: 0 8px;
+	color: #646970;
+}
+
+/* Integration Header */
+.echodash-integration-header {
+	background-color: #fff;
+	border: 1px solid #c3c4c7;
+	border-radius: 8px;
+	padding: 30px;
+	margin-bottom: 30px;
+}
+
+.echodash-integration-header__content {
+	display: flex;
+	align-items: center;
+	margin-bottom: 20px;
+}
+
+.echodash-integration-header__icon {
+	width: 48px;
+	height: 48px;
+	border-radius: 8px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-right: 16px;
+}
+
+.echodash-integration-header__icon--wordpress {
+	background-color: #2271b1;
+}
+
+.echodash-integration-header__icon--default {
+	background-color: #ff6900;
+}
+
+.echodash-integration-header__icon-dashicon {
+	font-size: 28px;
+	color: white;
+}
+
+.echodash-integration-header__info {
+	flex: 1;
+}
+
+.echodash-integration-header__title {
+	margin: 0;
+	font-size: 24px;
+}
+
+.echodash-integration-header__description {
+	margin: 0;
+	color: #646970;
+}
+
+.echodash-integration-header__add-trigger {
+	margin-left: auto;
+}
+
+/* Triggers Section */
+.echodash-triggers {
+	background-color: #fff;
+	border: 1px solid #c3c4c7;
+	border-radius: 8px;
+	padding: 20px;
+}
+
+.echodash-triggers__title {
+	margin-top: 0;
+	margin-bottom: 20px;
+}
+
+/* Empty State */
+.echodash-triggers__empty-state {
+	text-align: center;
+	padding: 60px 20px;
+	color: #646970;
+}
+
+.echodash-triggers__empty-icon {
+	width: 48px;
+	height: 48px;
+	background-color: #ff6900;
+	border-radius: 8px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin: 0 auto 20px;
+}
+
+.echodash-triggers__empty-icon-dashicon {
+	font-size: 28px;
+	color: white;
+}
+
+.echodash-triggers__empty-title {
+	margin-bottom: 10px;
+}
+
+.echodash-triggers__empty-description {
+	margin-bottom: 20px;
+}
+
+/* Trigger List */
+.echodash-triggers__list {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+/* Trigger Item */
+.echodash-trigger-item {
+	display: flex;
+	align-items: center;
+	padding: 16px;
+	background-color: #f6f7f7;
+	border-radius: 4px;
+	transition: background-color 0.2s ease;
+}
+
+.echodash-trigger-item:hover {
+	background-color: #f0f0f1;
+}
+
+.echodash-trigger-item__handle {
+	color: #646970;
+	margin-right: 12px;
+	cursor: grab;
+}
+
+.echodash-trigger-item__handle:active {
+	cursor: grabbing;
+}
+
+.echodash-trigger-item__info {
+	flex: 1;
+}
+
+.echodash-trigger-item__type {
+	font-weight: bold;
+	margin-bottom: 4px;
+}
+
+.echodash-trigger-item__name {
+	color: #646970;
+	font-size: 14px;
+}
+
+.echodash-trigger-item__actions {
+	display: flex;
+	gap: 10px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+	.echodash-integration-header__content {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	.echodash-integration-header__add-trigger {
+		margin-left: 0;
+		margin-top: 16px;
+		width: 100%;
+	}
+
+	.echodash-trigger-item {
+		flex-wrap: wrap;
+	}
+
+	.echodash-trigger-item__actions {
+		width: 100%;
+		margin-top: 10px;
+		justify-content: flex-start;
+	}
+}
