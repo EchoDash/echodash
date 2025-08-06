@@ -4,7 +4,7 @@
  * Displays list of integrations matching the mockup design
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import './IntegrationList.css';
 import { EchoDashLogo } from './EchoDashLogo';
 
@@ -32,6 +32,45 @@ export const IntegrationList: React.FC<IntegrationListProps> = ({
 	settings,
 	onIntegrationClick,
 }) => {
+	const [endpointUrl, setEndpointUrl] = useState(settings.endpoint || '');
+	const [isSaving, setIsSaving] = useState(false);
+
+	const handleEndpointChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setEndpointUrl(e.target.value);
+	};
+
+	const handleEndpointBlur = async () => {
+		if (endpointUrl !== settings.endpoint) {
+			setIsSaving(true);
+			try {
+				const response = await fetch(window.ecdReactData?.apiUrl + 'settings', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'X-WP-Nonce': window.ecdReactData?.nonce || '',
+					},
+					body: JSON.stringify({
+						endpoint: endpointUrl
+					}),
+				});
+
+				if (!response.ok) {
+					throw new Error('Failed to save endpoint');
+				}
+
+				// Update the settings object
+				settings.endpoint = endpointUrl;
+			} catch (error) {
+				console.error('Error saving endpoint:', error);
+				// Revert to original value on error
+				setEndpointUrl(settings.endpoint || '');
+				alert('Failed to save endpoint URL. Please try again.');
+			} finally {
+				setIsSaving(false);
+			}
+		}
+	};
+
 	return (
 		<>
 			{/* Header with logo */}
@@ -74,8 +113,12 @@ export const IntegrationList: React.FC<IntegrationListProps> = ({
 							id="endpoint-url"
 							className="regular-text echodash-welcome__input"
 							placeholder="https://example.com/"
-							value={settings.endpoint || ''}
+							value={endpointUrl}
+							onChange={handleEndpointChange}
+							onBlur={handleEndpointBlur}
+							disabled={isSaving}
 						/>
+						{isSaving && <span className="echodash-saving-indicator">Saving...</span>}
 					</div>
 				</div>
 

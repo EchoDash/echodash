@@ -4,7 +4,7 @@
  * Simple React app for EchoDash settings matching mockups
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { IntegrationList } from './components/IntegrationList';
 import { IntegrationDetail } from './components/IntegrationDetail';
 import { TriggerModal } from './components/TriggerModal';
@@ -21,6 +21,7 @@ declare global {
 				slug: string;
 				name: string;
 				icon: string;
+				iconBackgroundColor: string;
 				triggerCount: number;
 				enabled: boolean;
 				description?: string;
@@ -55,6 +56,39 @@ export const App: React.FC = () => {
 		i18n: {}
 	};
 
+	// Update URL when navigation changes
+	useEffect(() => {
+		if (currentView === 'list') {
+			window.history.pushState({}, '', window.location.pathname + window.location.search);
+		} else if (currentView === 'detail' && selectedIntegration) {
+			const url = new URL(window.location.href);
+			url.hash = `/integration/${selectedIntegration}`;
+			window.history.pushState({}, '', url.toString());
+		}
+	}, [currentView, selectedIntegration]);
+
+	// Handle browser back/forward buttons
+	useEffect(() => {
+		const handlePopState = () => {
+			const hash = window.location.hash;
+			if (hash.startsWith('#/integration/')) {
+				const slug = hash.replace('#/integration/', '');
+				setSelectedIntegration(slug);
+				setCurrentView('detail');
+			} else {
+				setCurrentView('list');
+				setSelectedIntegration(null);
+			}
+		};
+
+		window.addEventListener('popstate', handlePopState);
+		
+		// Check initial URL
+		handlePopState();
+
+		return () => window.removeEventListener('popstate', handlePopState);
+	}, []);
+
 	const handleIntegrationClick = (slug: string) => {
 		setSelectedIntegration(slug);
 		setCurrentView('detail');
@@ -70,8 +104,6 @@ export const App: React.FC = () => {
 	};
 
 	const handleSaveTrigger = async (triggerData: any) => {
-		console.log('Saving trigger:', triggerData);
-		
 		try {
 			const response = await fetch(`${data.apiUrl}integrations/${selectedIntegration}/triggers`, {
 				method: 'POST',
@@ -89,7 +121,6 @@ export const App: React.FC = () => {
 
 			if (response.ok) {
 				const result = await response.json();
-				console.log('Trigger saved successfully:', result);
 				
 				// Update local state with new trigger
 				if (selectedIntegration) {
