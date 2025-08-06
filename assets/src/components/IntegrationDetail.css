@@ -107,18 +107,6 @@
 }
 
 /* Trigger Item */
-.echodash-trigger-item {
-	display: flex;
-	align-items: center;
-	padding: 16px;
-	background-color: #f6f7f7;
-	border-radius: 4px;
-	transition: background-color 0.2s ease;
-}
-
-.echodash-trigger-item:hover {
-	background-color: #f0f0f1;
-}
 
 .echodash-trigger-item__handle {
 	color: #646970;

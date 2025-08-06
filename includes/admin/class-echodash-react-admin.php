@@ -109,6 +109,14 @@ class EchoDash_React_Admin {
 	 */
 	private function get_localized_data() {
 
+		$integrations_data = $this->get_integrations_data();
+
+		// Extract triggers data for easy access by React
+		$triggers_data = array();
+		foreach ( $integrations_data as $integration ) {
+			$triggers_data[ $integration['slug'] ] = $integration['triggers'];
+		}
+
 		$localized_data = array(
 			// API Configuration
 			'apiUrl'       => rest_url( 'echodash/v1/' ),
@@ -126,7 +134,10 @@ class EchoDash_React_Admin {
 			),
 
 			// Integrations Data
-			'integrations' => $this->get_integrations_data(),
+			'integrations' => $integrations_data,
+
+			// Triggers Data (for easy access by integration slug)
+			'triggers'     => $triggers_data,
 
 			// Settings and Configuration
 			'settings'     => $this->get_settings_data(),
@@ -331,11 +342,27 @@ class EchoDash_React_Admin {
 			$triggers            = array();
 			$available_triggers  = array();
 
-			// Count configured triggers
-			if ( ! empty( $settings[ $slug ] ) && is_array( $settings[ $slug ] ) ) {
-				$configured_triggers = count( $settings[ $slug ] );
+			// Load configured triggers from the correct settings path
+			$configured_trigger_data = array();
+			if ( isset( $settings['integrations'][ $slug ]['triggers'] ) && is_array( $settings['integrations'][ $slug ]['triggers'] ) ) {
+				$configured_trigger_data = $settings['integrations'][ $slug ]['triggers'];
+				$configured_triggers     = count( $configured_trigger_data );
 			}
 
+			// Convert configured triggers to React-compatible format
+			foreach ( $configured_trigger_data as $trigger_id => $trigger_data ) {
+				$triggers[] = array(
+					'id'          => $trigger_id,
+					'name'        => $trigger_data['name'] ?? $trigger_id,
+					'trigger'     => $trigger_data['trigger'] ?? $trigger_id,
+					'event_name'  => $trigger_data['event_name'] ?? $trigger_data['name'] ?? '',
+					'mappings'    => $trigger_data['mappings'] ?? array(),
+					'enabled'     => true, // Assume enabled if configured
+					'description' => '', // Will be populated from available triggers below
+				);
+			}
+
+			// Get available trigger definitions
 			foreach ( $integration->get_triggers() as $trigger_id => $trigger_config ) {
 				$available_triggers[] = array(
 					'id'           => $trigger_id,
@@ -344,6 +371,13 @@ class EchoDash_React_Admin {
 					'defaultEvent' => $integration->get_defaults( $trigger_id ),
 					'options'      => $integration->get_options( $trigger_id ),
 				);
+
+				// Add description to configured triggers if available
+				foreach ( $triggers as &$configured_trigger ) {
+					if ( $configured_trigger['trigger'] === $trigger_id && empty( $configured_trigger['description'] ) ) {
+						$configured_trigger['description'] = $trigger_config['description'] ?? '';
+					}
+				}
 			}
 
 			$integrations[] = array(

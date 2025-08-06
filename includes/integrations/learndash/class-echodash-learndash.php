@@ -26,6 +26,14 @@ class EchoDash_LearnDash extends EchoDash_Integration {
 	public $name = 'LearnDash';
 
 	/**
+	 * The icon background color for EchoDash's module tracking.
+	 *
+	 * @since 2.0.0
+	 * @var string $icon_background_color
+	 */
+	protected $icon_background_color = '#faf9f6';
+
+	/**
 	 * Get things started.
 	 *
 	 * @since 1.0.0

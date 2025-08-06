@@ -306,10 +306,32 @@ class EchoDash_REST_API extends WP_REST_Controller {
 		$integration = $echodash->integrations[ $slug ];
 		$triggers    = array();
 
-		if ( isset( $integration->triggers ) && is_array( $integration->triggers ) ) {
-			foreach ( $integration->triggers as $trigger_id => $trigger ) {
-				$triggers[] = $this->prepare_trigger_for_response( $trigger, $trigger_id );
-			}
+		// Get configured triggers from database settings
+		$settings            = get_option( 'echodash_options', array() );
+		$configured_triggers = array();
+		if ( isset( $settings['integrations'][ $slug ]['triggers'] ) && is_array( $settings['integrations'][ $slug ]['triggers'] ) ) {
+			$configured_triggers = $settings['integrations'][ $slug ]['triggers'];
+		}
+
+		// Convert configured triggers to API response format
+		foreach ( $configured_triggers as $trigger_id => $trigger_data ) {
+			// Get trigger definition for additional metadata
+			$available_triggers = $integration->get_triggers();
+			$trigger_definition = isset( $available_triggers[ $trigger_data['trigger'] ] ) ? $available_triggers[ $trigger_data['trigger'] ] : array();
+
+			$triggers[] = array(
+				'id'          => $trigger_id,
+				'name'        => $trigger_data['name'] ?? $trigger_id,
+				'trigger'     => $trigger_data['trigger'] ?? $trigger_id,
+				'event_name'  => $trigger_data['event_name'] ?? $trigger_data['name'] ?? '',
+				'mappings'    => $trigger_data['mappings'] ?? array(),
+				'enabled'     => true, // Assume enabled if configured
+				'description' => $trigger_definition['description'] ?? '',
+				'hasGlobal'   => $trigger_definition['has_global'] ?? true,
+				'hasSingle'   => $trigger_definition['has_single'] ?? false,
+				'optionTypes' => $trigger_definition['option_types'] ?? array(),
+				'postTypes'   => $trigger_definition['post_types'] ?? array(),
+			);
 		}
 
 		return rest_ensure_response(
@@ -487,6 +509,13 @@ class EchoDash_REST_API extends WP_REST_Controller {
 	 * Prepare integration data for response
 	 */
 	private function prepare_integration_for_response( $integration, $slug, $detailed = false ) {
+		// Get configured triggers count from database
+		$settings                 = get_option( 'echodash_options', array() );
+		$configured_trigger_count = 0;
+		if ( isset( $settings['integrations'][ $slug ]['triggers'] ) && is_array( $settings['integrations'][ $slug ]['triggers'] ) ) {
+			$configured_trigger_count = count( $settings['integrations'][ $slug ]['triggers'] );
+		}
+
 		$data = array(
 			'slug'         => $slug,
 			'name'         => $integration->name,
@@ -494,15 +523,37 @@ class EchoDash_REST_API extends WP_REST_Controller {
 			'description'  => isset( $integration->description ) ? $integration->description : '',
 			'isActive'     => $integration->is_active(),
 			'enabled'      => $integration->is_active(),
-			'triggerCount' => isset( $integration->triggers ) ? count( $integration->triggers ) : 0,
+			'triggerCount' => $configured_trigger_count,
 		);
 
 		if ( $detailed ) {
 			$data['triggers'] = array();
-			if ( isset( $integration->triggers ) && is_array( $integration->triggers ) ) {
-				foreach ( $integration->triggers as $trigger_id => $trigger ) {
-					$data['triggers'][] = $this->prepare_trigger_for_response( $trigger, $trigger_id );
-				}
+
+			// Get configured triggers from database settings
+			$configured_triggers = array();
+			if ( isset( $settings['integrations'][ $slug ]['triggers'] ) && is_array( $settings['integrations'][ $slug ]['triggers'] ) ) {
+				$configured_triggers = $settings['integrations'][ $slug ]['triggers'];
+			}
+
+			// Convert configured triggers to API response format
+			foreach ( $configured_triggers as $trigger_id => $trigger_data ) {
+				// Get trigger definition for additional metadata
+				$available_triggers = $integration->get_triggers();
+				$trigger_definition = isset( $available_triggers[ $trigger_data['trigger'] ] ) ? $available_triggers[ $trigger_data['trigger'] ] : array();
+
+				$data['triggers'][] = array(
+					'id'          => $trigger_id,
+					'name'        => $trigger_data['name'] ?? $trigger_id,
+					'trigger'     => $trigger_data['trigger'] ?? $trigger_id,
+					'event_name'  => $trigger_data['event_name'] ?? $trigger_data['name'] ?? '',
+					'mappings'    => $trigger_data['mappings'] ?? array(),
+					'enabled'     => true, // Assume enabled if configured
+					'description' => $trigger_definition['description'] ?? '',
+					'hasGlobal'   => $trigger_definition['has_global'] ?? true,
+					'hasSingle'   => $trigger_definition['has_single'] ?? false,
+					'optionTypes' => $trigger_definition['option_types'] ?? array(),
+					'postTypes'   => $trigger_definition['post_types'] ?? array(),
+				);
 			}
 
 			$data['settings']     = $this->get_integration_settings( $slug );

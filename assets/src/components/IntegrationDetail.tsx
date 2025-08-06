@@ -21,8 +21,14 @@ interface Integration {
 interface Trigger {
 	id: string;
 	name: string;
+	trigger?: string;
 	description?: string;
 	enabled?: boolean;
+	event_name?: string;
+	mappings?: Array<{
+		key: string;
+		value: string;
+	}>;
 }
 
 interface IntegrationDetailProps {
@@ -136,7 +142,7 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 						{triggers.map((trigger, index) => (
 							<div
 								key={trigger.id || index}
-								className="echodash-trigger-item"
+								className="echodash-trigger-item echodash-integration-item"
 							>
 								{/* Drag handle */}
 								<span 
@@ -145,8 +151,10 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 
 								{/* Trigger info */}
 								<div className="echodash-trigger-item__info">
-									<div className="echodash-trigger-item__type">Form Submitted</div>
-									<div className="echodash-trigger-item__name">{trigger.name}</div>
+									<div className="echodash-trigger-item__type">{trigger.name}</div>
+									<div className="echodash-trigger-item__name">
+										{trigger.description || trigger.trigger || 'Trigger'}
+									</div>
 								</div>
 
 								{/* Actions */}
