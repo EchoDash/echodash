@@ -26,12 +26,14 @@ interface IntegrationListProps {
 		connectUrl?: string;
 	};
 	onIntegrationClick: (slug: string) => void;
+	onAddTrigger: (slug: string) => void;
 }
 
 export const IntegrationList: React.FC<IntegrationListProps> = ({
 	integrations,
 	settings,
 	onIntegrationClick,
+	onAddTrigger,
 }) => {
 	const [endpointUrl, setEndpointUrl] = useState(settings.endpoint || '');
 	const [isSaving, setIsSaving] = useState(false);
@@ -190,7 +192,10 @@ export const IntegrationList: React.FC<IntegrationListProps> = ({
 								>
 									Manage
 								</button>
-								<button className="echodash-button">
+								<button 
+									className="echodash-button"
+									onClick={() => onAddTrigger(integration.slug)}
+								>
 									+ Add Trigger
 								</button>
 							</div>

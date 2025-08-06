@@ -132,6 +132,16 @@ export const App: React.FC = () => {
 		setShowTriggerModal(true);
 	};
 
+	const handleAddTriggerFromList = (slug: string) => {
+		setSelectedIntegration(slug);
+		setCurrentView('detail');
+		// Small delay to ensure the view has changed before opening modal
+		setTimeout(() => {
+			setEditingTrigger(null);
+			setShowTriggerModal(true);
+		}, 50);
+	};
+
 	const handleEditTrigger = (trigger: any) => {
 		setEditingTrigger(trigger);
 		setShowTriggerModal(true);
@@ -166,6 +176,13 @@ export const App: React.FC = () => {
 				if (selectedIntegration) {
 					const integrationTriggers = triggers[selectedIntegration] || [];
 					
+					// Get the description from the integration's available triggers
+					const selectedIntegrationData = integrations.find(i => i.slug === selectedIntegration);
+					const availableTrigger = selectedIntegrationData?.availableTriggers?.find(
+						t => t.id === triggerData.trigger
+					);
+					const triggerDescription = availableTrigger?.description || '';
+					
 					if (isEditing) {
 						// Update existing trigger
 						const updatedTriggers = integrationTriggers.map(t => 
@@ -177,6 +194,7 @@ export const App: React.FC = () => {
 									trigger: triggerData.trigger,
 									event_name: triggerData.name,
 									mappings: triggerData.mappings,
+									description: triggerDescription,
 									enabled: true
 								}
 								: t
@@ -193,6 +211,7 @@ export const App: React.FC = () => {
 							trigger: triggerData.trigger,
 							event_name: triggerData.name,
 							mappings: triggerData.mappings,
+							description: triggerDescription,
 							enabled: true
 						});
 						setTriggers({
@@ -236,6 +255,7 @@ export const App: React.FC = () => {
 					integrations={integrations}
 					settings={data.settings}
 					onIntegrationClick={handleIntegrationClick}
+					onAddTrigger={handleAddTriggerFromList}
 				/>
 			) : (
 				selectedIntegrationData && (
