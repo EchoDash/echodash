@@ -49,6 +49,7 @@ interface IntegrationDetailProps {
 	onBack: () => void;
 	onAddTrigger: () => void;
 	onEditTrigger: (trigger: Trigger) => void;
+	onDeleteTrigger: (trigger: Trigger) => void;
 }
 
 export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
@@ -57,6 +58,7 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 	onBack,
 	onAddTrigger,
 	onEditTrigger,
+	onDeleteTrigger,
 }) => {
 	return (
 		<>
@@ -179,7 +181,15 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 									>
 										Edit
 									</button>
-									<button className="echodash-button">
+									<button 
+										className="echodash-button"
+										onClick={() => {
+											if (window.confirm(`Are you sure you want to delete the "${trigger.name || 'Untitled'}" trigger? This action cannot be undone.`)) {
+												onDeleteTrigger(trigger);
+											}
+										}}
+										title="Delete trigger"
+									>
 										<span className="dashicons dashicons-trash"></span>
 									</button>
 								</div>

@@ -147,6 +147,50 @@ export const App: React.FC = () => {
 		setShowTriggerModal(true);
 	};
 
+	const handleDeleteTrigger = async (trigger: any) => {
+		try {
+			const url = `${data.apiUrl}integrations/${selectedIntegration}/triggers/${trigger.id}`;
+			
+			const response = await fetch(url, {
+				method: 'DELETE',
+				headers: {
+					'X-WP-Nonce': data.nonce,
+				},
+			});
+
+			if (response.ok) {
+				// Update local state - remove the deleted trigger
+				if (selectedIntegration) {
+					const integrationTriggers = triggers[selectedIntegration] || [];
+					const updatedTriggers = integrationTriggers.filter(t => t.id !== trigger.id);
+					
+					setTriggers({
+						...triggers,
+						[selectedIntegration]: updatedTriggers
+					});
+
+					// Update integration trigger count
+					setIntegrations(prev => prev.map(integration => {
+						if (integration.slug === selectedIntegration) {
+							return {
+								...integration,
+								triggerCount: Math.max(0, integration.triggerCount - 1),
+							};
+						}
+						return integration;
+					}));
+				}
+			} else {
+				const errorData = await response.json();
+				console.error('Failed to delete trigger:', errorData);
+				alert('Failed to delete trigger. Please try again.');
+			}
+		} catch (error) {
+			console.error('Error deleting trigger:', error);
+			alert('Error deleting trigger. Please check your connection and try again.');
+		}
+	};
+
 	const handleSaveTrigger = async (triggerData: any) => {
 		try {
 			const isEditing = editingTrigger !== null;
@@ -265,6 +309,7 @@ export const App: React.FC = () => {
 						onBack={handleBackToList}
 						onAddTrigger={handleAddTrigger}
 						onEditTrigger={handleEditTrigger}
+						onDeleteTrigger={handleDeleteTrigger}
 					/>
 				)
 			)}
