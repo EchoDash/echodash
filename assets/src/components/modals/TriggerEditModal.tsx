@@ -68,11 +68,9 @@ export const TriggerEditModal: React.FC<TriggerEditModalProps> = ({
 	useEffect(() => {
 		if (isOpen) {
 			const initialData = trigger ? {
-				name: trigger.name,
+				...trigger,
 				description: trigger.description || '',
-				enabled: trigger.enabled,
-				mappings: trigger.mappings || [],
-				...trigger
+				mappings: trigger.mappings || []
 			} : {
 				name: '',
 				description: '',
@@ -212,8 +210,8 @@ export const TriggerEditModal: React.FC<TriggerEditModalProps> = ({
 				{/* Loading indicator */}
 				{loading && (
 					<div className="modal-loading">
-						<Flex align="center" justify="center" gap="2">
-							<Spinner />
+						<Flex align="center" justify="center" gap={2}>
+							<Spinner style={{ margin: 0 }} />
 							<span>Loading trigger data...</span>
 						</Flex>
 					</div>
@@ -234,10 +232,8 @@ export const TriggerEditModal: React.FC<TriggerEditModalProps> = ({
 					/>
 				)}
 
-				{/* Custom actions */}
-									<div style={{ marginTop: '16px', marginBottom: '16px' }} />
-				
-				<Flex justify="flex-end" gap="3" className="modal-actions">
+				{/* Modal actions */}
+				<Flex justify="flex-end" gap={3} className="modal-actions" style={{ marginTop: '24px' }}>
 					<Button 
 						variant="tertiary" 
 						onClick={handleClose}
@@ -252,7 +248,7 @@ export const TriggerEditModal: React.FC<TriggerEditModalProps> = ({
 						disabled={saving || loading}
 						className="save-trigger-button"
 					>
-						{saving && <Spinner />}
+						{saving && <Spinner style={{ margin: 0, marginRight: '8px' }} />}
 						{saving ? 'Saving...' : (trigger ? 'Update Trigger' : 'Create Trigger')}
 					</Button>
 				</Flex>

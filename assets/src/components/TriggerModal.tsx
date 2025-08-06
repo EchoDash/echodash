@@ -4,7 +4,20 @@
  * Modal for adding/editing triggers matching the mockup design
  */
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { MergeTagSelector } from './MergeTagSelector';
+
+interface MergeTagOption {
+	meta: string;
+	preview: string | number;
+	placeholder: string;
+}
+
+interface MergeTagGroup {
+	name: string;
+	type: string;
+	options: MergeTagOption[];
+}
 
 interface Integration {
 	slug: string;
@@ -14,6 +27,7 @@ interface Integration {
 		name: string;
 		description?: string;
 		defaultEvent?: any;
+		options?: MergeTagGroup[];
 	}>;
 }
 
@@ -35,26 +49,65 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 	onSave,
 	integration,
 }) => {
-	const [selectedTrigger, setSelectedTrigger] = useState('');
-	const [eventName, setEventName] = useState('');
-	const [keyValuePairs, setKeyValuePairs] = useState<KeyValuePair[]>([
-		{ key: 'user_name', value: '{user_name}' },
-		{ key: 'user_id', value: '{user_id}' },
-		{ key: '', value: '' }
-	]);
-	const [sendTest, setSendTest] = useState(false);
-
-	if (!isOpen) return null;
-
 	const availableTriggers = integration.availableTriggers || [
 		{ id: 'form_submitted', name: 'Form Submitted', description: 'Triggered each time a form is submitted.' }
 	];
+
+	// Auto-select first trigger and initialize state based on it
+	const firstTrigger = availableTriggers[0];
+	const [selectedTrigger, setSelectedTrigger] = useState(firstTrigger?.id || '');
+	const [eventName, setEventName] = useState(firstTrigger?.defaultEvent?.name || firstTrigger?.name || '');
+	
+	// Initialize key-value pairs from defaultEvent.mappings or use fallback
+	const getInitialKeyValuePairs = () => {
+		if (firstTrigger?.defaultEvent?.mappings && typeof firstTrigger.defaultEvent.mappings === 'object') {
+			// Convert mappings object to key-value pairs
+			const pairs = Object.entries(firstTrigger.defaultEvent.mappings).map(([key, value]) => ({
+				key,
+				value: String(value)
+			}));
+			// Add empty row at the end
+			pairs.push({ key: '', value: '' });
+			return pairs;
+		}
+		// Fallback to default pairs
+		return [
+			{ key: 'user_name', value: '{user_name}' },
+			{ key: 'user_id', value: '{user_id}' },
+			{ key: '', value: '' }
+		];
+	};
+
+	const [keyValuePairs, setKeyValuePairs] = useState<KeyValuePair[]>(getInitialKeyValuePairs());
+	const [sendTest, setSendTest] = useState(false);
+	const [openDropdownIndex, setOpenDropdownIndex] = useState<{type: 'name' | 'value', index: number} | null>(null);
+	
+	// Refs for merge tag buttons
+	const nameButtonRef = useRef<HTMLButtonElement>(null);
+	const valueButtonRefs = useRef<Array<HTMLButtonElement | null>>([]);
+
+	// Initialize refs array when keyValuePairs change
+	useEffect(() => {
+		valueButtonRefs.current = valueButtonRefs.current.slice(0, keyValuePairs.length);
+	}, [keyValuePairs.length]);
+
+	if (!isOpen) return null;
 
 	const handleTriggerChange = (triggerId: string) => {
 		setSelectedTrigger(triggerId);
 		const trigger = availableTriggers.find(t => t.id === triggerId);
 		if (trigger) {
-			setEventName(trigger.name);
+			setEventName(trigger.defaultEvent?.name || trigger.name);
+			
+			// Update key-value pairs based on the selected trigger's defaultEvent.mappings
+			if (trigger.defaultEvent?.mappings && typeof trigger.defaultEvent.mappings === 'object') {
+				const pairs = Object.entries(trigger.defaultEvent.mappings).map(([key, value]) => ({
+					key,
+					value: String(value)
+				}));
+				pairs.push({ key: '', value: '' });
+				setKeyValuePairs(pairs);
+			}
 		}
 	};
 
@@ -73,6 +126,22 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 			const newPairs = keyValuePairs.filter((_, i) => i !== index);
 			setKeyValuePairs(newPairs);
 		}
+	};
+
+	const handleMergeTagSelect = (mergeTag: string) => {
+		if (openDropdownIndex?.type === 'name') {
+			setEventName(prev => prev + mergeTag);
+		} else if (openDropdownIndex?.type === 'value') {
+			const index = openDropdownIndex.index;
+			updateKeyValuePair(index, 'value', keyValuePairs[index].value + mergeTag);
+		}
+		setOpenDropdownIndex(null);
+	};
+
+	// Get current trigger options for merge tag selector
+	const getCurrentTriggerOptions = () => {
+		const trigger = availableTriggers.find(t => t.id === selectedTrigger);
+		return trigger?.options || [];
 	};
 
 	const handleSave = () => {
@@ -161,7 +230,6 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 							onChange={(e) => handleTriggerChange(e.target.value)}
 							style={{ width: '100%', padding: '8px' }}
 						>
-							<option value="">Select a trigger type...</option>
 							{availableTriggers.map(trigger => (
 								<option key={trigger.id} value={trigger.id}>
 									{trigger.name}
@@ -182,7 +250,7 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 									style={{ color: '#0073aa', marginRight: '8px', marginTop: '2px' }}
 								></span>
 								<span style={{ fontSize: '14px' }}>
-									Triggered each time a form is submitted.
+									{availableTriggers.find(t => t.id === selectedTrigger)?.description || 'No description available.'}
 								</span>
 							</div>
 						)}
@@ -208,7 +276,9 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 								style={{ width: '100%', padding: '8px' }}
 							/>
 							<button 
+								ref={nameButtonRef}
 								type="button"
+								onClick={() => setOpenDropdownIndex({ type: 'name', index: -1 })}
 								style={{
 									background: 'none',
 									border: 'none',
@@ -283,7 +353,13 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 									)}
 								</div>
 								<button 
+									ref={(el) => {
+										if (valueButtonRefs.current) {
+											valueButtonRefs.current[index] = el;
+										}
+									}}
 									type="button"
+									onClick={() => setOpenDropdownIndex({ type: 'value', index })}
 									style={{
 										background: 'none',
 										border: 'none',
@@ -314,6 +390,21 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 						</label>
 					</div>
 				</div>
+
+				{/* Merge Tag Selector */}
+				{openDropdownIndex && (
+					<MergeTagSelector
+						options={getCurrentTriggerOptions()}
+						onSelect={handleMergeTagSelect}
+						isOpen={true}
+						onClose={() => setOpenDropdownIndex(null)}
+						buttonRef={
+							openDropdownIndex.type === 'name' 
+								? nameButtonRef 
+								: { current: valueButtonRefs.current[openDropdownIndex.index] }
+						}
+					/>
+				)}
 
 				{/* Footer */}
 				<div style={{

@@ -70,12 +70,30 @@ module.exports = {
 		extensions: ['.js', '.jsx', '.ts', '.tsx'],
 	},
 	
-	// Simplified optimization for WordPress compatibility
+	// Enhanced optimization with vendor chunk splitting
 	optimization: {
 		...defaultConfig.optimization,
-		// Disable code splitting for now to prevent execution order issues
-		splitChunks: false,
-		// Disable runtime chunk to keep everything in one file
+		// Enable code splitting for better caching
+		splitChunks: {
+			chunks: 'all',
+			cacheGroups: {
+				// WordPress-specific packages
+				wordpress: {
+					test: /[\\/]node_modules[\\/]@wordpress[\\/]/,
+					name: 'wordpress',
+					chunks: 'all',
+					priority: 20,
+				},
+				// Third-party vendor packages
+				vendors: {
+					test: /[\\/]node_modules[\\/](?!@wordpress[\\/])/,
+					name: 'vendors',
+					chunks: 'all',
+					priority: 10,
+				},
+			},
+		},
+		// Keep runtime chunk disabled for WordPress compatibility
 		runtimeChunk: false,
 		// Keep tree shaking but be conservative with side effects
 		usedExports: true,
@@ -184,7 +202,7 @@ module.exports = {
 	externals: {
 		...defaultConfig.externals,
 		// Additional WordPress externals that might be loaded globally
-		jquery: 'jQuery',
+		//jquery: 'jQuery',
 	},
 
 	// Target environment

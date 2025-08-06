@@ -49,23 +49,8 @@ class EchoDash_React_Admin {
 			return;
 		}
 
-		// Performance monitoring start
-		$start_time = microtime( true );
-
-		// Check for asset file
-		$asset_file_path = ECHODASH_DIR_PATH . 'assets/dist/index.asset.php';
-		if ( ! file_exists( $asset_file_path ) ) {
-			$this->handle_missing_assets();
-			return;
-		}
-
-		$asset_file = include $asset_file_path;
-
-		// Validate asset file structure
-		if ( ! is_array( $asset_file ) || ! isset( $asset_file['dependencies'], $asset_file['version'] ) ) {
-			$this->handle_invalid_assets();
-			return;
-		}
+		// Load asset file
+		$asset_file = include ECHODASH_DIR_PATH . 'assets/dist/index.asset.php';
 
 		// Enqueue vendor chunks first (if they exist)
 		$this->enqueue_vendor_chunks( $asset_file );
@@ -95,15 +80,6 @@ class EchoDash_React_Admin {
 		// Localize script data with caching
 		$localized_data = $this->get_localized_data();
 		wp_localize_script( 'echodash-react', 'ecdReactData', $localized_data );
-
-		// Performance monitoring end
-		$load_time                                 = ( microtime( true ) - $start_time ) * 1000;
-		$this->performance_data['asset_load_time'] = $load_time;
-
-		// Log performance if debug mode
-		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-			error_log( sprintf( 'EchoDash React assets loaded in %.2fms', $load_time ) );
-		}
 	}
 
 	/**
@@ -377,22 +353,6 @@ class EchoDash_React_Admin {
 	}
 
 	/**
-	 * Handle invalid asset structure
-	 */
-	private function handle_invalid_assets() {
-		if ( current_user_can( 'manage_options' ) ) {
-			add_action(
-				'admin_notices',
-				function () {
-					echo '<div class="notice notice-error"><p>';
-					echo esc_html__( 'EchoDash React asset file is invalid. Please rebuild the assets.', 'echodash' );
-					echo '</p></div>';
-				}
-			);
-		}
-	}
-
-	/**
 	 * Get integrations data with full trigger information
 	 */
 	private function get_integrations_data() {
@@ -407,8 +367,8 @@ class EchoDash_React_Admin {
 
 		foreach ( $echodash->integrations as $slug => $integration ) {
 			$configured_triggers = 0;
-			$triggers           = array();
-			$available_triggers = array();
+			$triggers            = array();
+			$available_triggers  = array();
 
 			// Count configured triggers
 			if ( ! empty( $settings[ $slug ] ) && is_array( $settings[ $slug ] ) ) {
@@ -425,7 +385,8 @@ class EchoDash_React_Admin {
 								'id'           => $trigger_id,
 								'name'         => $trigger_config['name'] ?? $trigger_id,
 								'description'  => $trigger_config['description'] ?? '',
-								'defaultEvent' => array(),
+								'defaultEvent' => $integration->get_defaults( $trigger_id ),
+								'options'      => $integration->get_options( $trigger_id ),
 							);
 						}
 					}
@@ -436,7 +397,8 @@ class EchoDash_React_Admin {
 							'id'           => 'default_trigger',
 							'name'         => 'Default Trigger',
 							'description'  => 'Default trigger for ' . $integration->name,
-							'defaultEvent' => array(),
+							'defaultEvent' => $integration->get_defaults( 'default_trigger' ),
+							'options'      => $integration->get_options( 'default_trigger' ),
 						),
 					);
 				}
@@ -491,7 +453,6 @@ class EchoDash_React_Admin {
 
 		return $descriptions[ $slug ] ?? __( 'Track events and user interactions', 'echodash' );
 	}
-
 }
 
 // Initialize React admin if in admin area
