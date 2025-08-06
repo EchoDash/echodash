@@ -27,6 +27,14 @@ class EchoDash_Gravity_Forms extends EchoDash_Integration {
 	public $name = 'Gravity Forms';
 
 	/**
+	 * The background color for the integration icon.
+	 *
+	 * @since 2.0.0
+	 * @var string $icon_background_color
+	 */
+	protected $icon_background_color = '#4c90b5';
+
+	/**
 	 * Get things started.
 	 *
 	 * @since 1.0.0

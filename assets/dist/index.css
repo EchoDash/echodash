@@ -6,31 +6,10 @@
  * Uses WordPress design tokens and patterns
  */
 
-/* Header Styles */
-.echodash-header {
-	display: flex;
-	align-items: center;
-	margin-bottom: 20px;
-}
 
-.echodash-header__logo {
-	font-size: 36px;
-	margin-right: 10px;
-}
-
-.echodash-header__title {
-	margin: 0;
-}
-
-.echodash-header__docs-link {
-	margin-left: auto;
-}
 
 /* Welcome Section */
 .echodash-welcome {
-	background-color: #fff;
-	border: 1px solid #c3c4c7;
-	border-radius: 8px;
 	padding: 30px;
 	margin-bottom: 30px;
 	display: flex;
@@ -106,12 +85,6 @@
 }
 
 /* Integrations Section */
-.echodash-integrations {
-	background-color: #fff;
-	border: 1px solid #c3c4c7;
-	border-radius: 8px;
-	padding: 20px;
-}
 
 .echodash-integrations__title {
 	margin-top: 0;
@@ -129,37 +102,14 @@
 	display: flex;
 	align-items: center;
 	padding: 16px;
-	background-color: #f6f7f7;
 	border-radius: 4px;
 	margin-bottom: 8px;
-	transition: background-color 0.2s ease;
+	transition: border-color 0.2s ease;
+	border: 1px solid #E3E6EF
 }
 
 .echodash-integration-item:hover {
-	background-color: #f0f0f1;
-}
-
-.echodash-integration-item__icon {
-	width: 40px;
-	height: 40px;
-	border-radius: 8px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	margin-right: 16px;
-}
-
-.echodash-integration-item__icon--wordpress {
-	background-color: #2271b1;
-}
-
-.echodash-integration-item__icon--default {
-	background-color: #ff6900;
-}
-
-.echodash-integration-item__icon-dashicon {
-	font-size: 24px;
-	color: white;
+	border-color: #b4b7c1;
 }
 
 .echodash-integration-item__info {
@@ -227,17 +177,13 @@
 
 /* Integration Header */
 .echodash-integration-header {
-	background-color: #fff;
-	border: 1px solid #c3c4c7;
-	border-radius: 8px;
-	padding: 30px;
+	padding: 12px 18px;
 	margin-bottom: 30px;
 }
 
 .echodash-integration-header__content {
 	display: flex;
 	align-items: center;
-	margin-bottom: 20px;
 }
 
 .echodash-integration-header__icon {
@@ -250,24 +196,26 @@
 	margin-right: 16px;
 }
 
-.echodash-integration-header__icon--wordpress {
-	background-color: #2271b1;
-}
-
-.echodash-integration-header__icon--default {
-	background-color: #ff6900;
-}
+/* Default icon background - will be overridden by inline styles */
 
 .echodash-integration-header__icon-dashicon {
 	font-size: 28px;
 	color: white;
 }
 
+.echodash-integration-header__icon-image {
+	width: 32px;
+	height: 32px;
+	-o-object-fit: contain;
+	   object-fit: contain;
+}
+
 .echodash-integration-header__info {
 	flex: 1;
 }
 
-.echodash-integration-header__title {
+.echodash-integration-header__content h1.echodash-integration-header__title {
+	padding: 0;
 	margin: 0;
 	font-size: 24px;
 }
@@ -282,12 +230,6 @@
 }
 
 /* Triggers Section */
-.echodash-triggers {
-	background-color: #fff;
-	border: 1px solid #c3c4c7;
-	border-radius: 8px;
-	padding: 20px;
-}
 
 .echodash-triggers__title {
 	margin-top: 0;
@@ -301,20 +243,11 @@
 	color: #646970;
 }
 
-.echodash-triggers__empty-icon {
-	width: 48px;
-	height: 48px;
-	background-color: #ff6900;
-	border-radius: 8px;
+.echodash-triggers__empty-icon.echodash-integration-item__icon {
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	margin: 0 auto 20px;
-}
-
-.echodash-triggers__empty-icon-dashicon {
-	font-size: 28px;
-	color: white;
 }
 
 .echodash-triggers__empty-title {
@@ -800,6 +733,88 @@
 		width: 90%;
 		margin: 20px;
 	}
+}
+/*!**********************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[2].use[2]!./assets/src/styles/shared.css ***!
+  \**********************************************************************************************************************************************************************************/
+/**
+ * Shared EchoDash Component Styles
+ * Common styles used across multiple components
+ */
+
+/* Global Button Styles */
+.echodash-button {
+	background: transparent;
+	border: 1px solid #D0D5DD;
+	color: #202E41;
+	text-decoration: none;
+	padding: 12px 20px;
+	border-radius: 6px;
+	font-size: 14px;
+	font-weight: 500;
+	transition: all 0.4s ease;
+}
+
+.echodash-button:hover {
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+.echodash-button-primary {
+	background-color: #202E41;
+	color: #fff;
+	border-color: #202E41;
+}
+
+/* Icon Styles */
+
+.echodash-integration-item__icon {
+    width: 48px;
+    height: 48px;
+    overflow: hidden;
+    border-radius: 8px;
+    border: 1px solid #202E4133;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 16px;
+    background-color: #ffffff;
+}
+
+.echodash-integration-item__icon-image {
+    width: 32px;
+    height: 32px;
+    -o-object-fit: contain;
+       object-fit: contain;
+}
+
+/* Header Styles */
+.echodash-header {
+	display: flex;
+	align-items: center;
+	padding: 24px 4px;
+}
+
+.echodash-header__logo {
+	font-size: 36px;
+	margin-right: 10px;
+}
+
+.echodash-header__title {
+	margin: 0;
+}
+
+.echodash-header__docs-link {
+	margin-left: auto;
+}
+
+/* Common Card/Panel Styles */
+.echodash-card {
+	background-color: #fff;
+	border: 1px solid #c3c4c7;
+	border-radius: 8px;
+	box-shadow: 0px 0px 48px 0px #0000001A;
+    padding: 20px;
 }
 /*!********************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[2].use[2]!./assets/src/styles/main.css ***!

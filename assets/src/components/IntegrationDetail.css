@@ -19,17 +19,13 @@
 
 /* Integration Header */
 .echodash-integration-header {
-	background-color: #fff;
-	border: 1px solid #c3c4c7;
-	border-radius: 8px;
-	padding: 30px;
+	padding: 12px 18px;
 	margin-bottom: 30px;
 }
 
 .echodash-integration-header__content {
 	display: flex;
 	align-items: center;
-	margin-bottom: 20px;
 }
 
 .echodash-integration-header__icon {
@@ -42,24 +38,25 @@
 	margin-right: 16px;
 }
 
-.echodash-integration-header__icon--wordpress {
-	background-color: #2271b1;
-}
-
-.echodash-integration-header__icon--default {
-	background-color: #ff6900;
-}
+/* Default icon background - will be overridden by inline styles */
 
 .echodash-integration-header__icon-dashicon {
 	font-size: 28px;
 	color: white;
 }
 
+.echodash-integration-header__icon-image {
+	width: 32px;
+	height: 32px;
+	object-fit: contain;
+}
+
 .echodash-integration-header__info {
 	flex: 1;
 }
 
-.echodash-integration-header__title {
+.echodash-integration-header__content h1.echodash-integration-header__title {
+	padding: 0;
 	margin: 0;
 	font-size: 24px;
 }
@@ -74,12 +71,6 @@
 }
 
 /* Triggers Section */
-.echodash-triggers {
-	background-color: #fff;
-	border: 1px solid #c3c4c7;
-	border-radius: 8px;
-	padding: 20px;
-}
 
 .echodash-triggers__title {
 	margin-top: 0;
@@ -93,20 +84,11 @@
 	color: #646970;
 }
 
-.echodash-triggers__empty-icon {
-	width: 48px;
-	height: 48px;
-	background-color: #ff6900;
-	border-radius: 8px;
+.echodash-triggers__empty-icon.echodash-integration-item__icon {
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	margin: 0 auto 20px;
-}
-
-.echodash-triggers__empty-icon-dashicon {
-	font-size: 28px;
-	color: white;
 }
 
 .echodash-triggers__empty-title {

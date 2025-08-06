@@ -379,3 +379,14 @@ When working on EchoDash:
 - **Input Validation**: Comprehensive sanitization and validation
 - **Rate Limiting**: WordPress built-in rate limiting for REST API
 - **Error Handling**: No sensitive information in error responses
+
+## Integration Best Practices
+
+### Code Structure and Naming
+- **Integration Naming Conventions**:
+  - You should not hardcode integration names into stylesheets, scripts, or templates
+  - Each integration must have its own class (e.g., `EchoDash_Gravity_Forms`)
+  - Integration-specific code belongs in the respective integration class
+  - Logo background colors should:
+    - Have a default property set in `EchoDash_Integration` base class
+    - Be overridable in the child integration class

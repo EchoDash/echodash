@@ -1,0 +1,78 @@
+/**
+ * Shared EchoDash Component Styles
+ * Common styles used across multiple components
+ */
+
+/* Global Button Styles */
+.echodash-button {
+	background: transparent;
+	border: 1px solid #D0D5DD;
+	color: #202E41;
+	text-decoration: none;
+	padding: 12px 20px;
+	border-radius: 6px;
+	font-size: 14px;
+	font-weight: 500;
+	transition: all 0.4s ease;
+}
+
+.echodash-button:hover {
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+.echodash-button-primary {
+	background-color: #202E41;
+	color: #fff;
+	border-color: #202E41;
+}
+
+/* Icon Styles */
+
+.echodash-integration-item__icon {
+    width: 48px;
+    height: 48px;
+    overflow: hidden;
+    border-radius: 8px;
+    border: 1px solid #202E4133;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 16px;
+    background-color: #ffffff;
+}
+
+.echodash-integration-item__icon-image {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+}
+
+/* Header Styles */
+.echodash-header {
+	display: flex;
+	align-items: center;
+	padding: 24px 4px;
+}
+
+.echodash-header__logo {
+	font-size: 36px;
+	margin-right: 10px;
+}
+
+.echodash-header__title {
+	margin: 0;
+}
+
+.echodash-header__docs-link {
+	margin-left: auto;
+}
+
+/* Common Card/Panel Styles */
+.echodash-card {
+	background-color: #fff;
+	border: 1px solid #c3c4c7;
+	border-radius: 8px;
+	box-shadow: 0px 0px 48px 0px #0000001A;
+    padding: 20px;
+}

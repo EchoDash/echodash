@@ -12,6 +12,7 @@ interface Integration {
 	slug: string;
 	name: string;
 	icon: string;
+	iconBackgroundColor: string;
 	triggerCount: number;
 	enabled: boolean;
 	description?: string;
@@ -53,7 +54,7 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 					href="https://docs.echodash.com" 
 					target="_blank" 
 					rel="noopener noreferrer"
-					className="button button-link echodash-header__docs-link"
+					className="echodash-button echodash-header__docs-link"
 				>
 					Documentation →
 				</a>
@@ -63,7 +64,7 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 			<div className="echodash-breadcrumb">
 				<button 
 					onClick={onBack}
-					className="button button-link echodash-breadcrumb__link"
+					className="button-link echodash-breadcrumb__link"
 				>
 					Integrations
 				</button>
@@ -72,13 +73,18 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 			</div>
 
 			{/* Integration header */}
-			<div className="echodash-integration-header">
+			<div className="echodash-card echodash-integration-header">
 				<div className="echodash-integration-header__content">
 					{/* Icon */}
-					<div className={`echodash-integration-header__icon ${integration.slug === 'wordpress' ? 'echodash-integration-header__icon--wordpress' : 'echodash-integration-header__icon--default'}`}>
-						<span 
-							className={`dashicons dashicons-${integration.icon} echodash-integration-header__icon-dashicon`} 
-						></span>
+					<div 
+						className="echodash-integration-header__icon echodash-integration-item__icon"
+						style={{ backgroundColor: integration.iconBackgroundColor }}
+					>
+					<img 
+						src={integration.icon}
+						alt={`${integration.name} logo`}
+						className="echodash-integration-header__icon-image echodash-integration-item__icon-image"
+					/>
 					</div>
 
 					<div className="echodash-integration-header__info">
@@ -89,7 +95,7 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 					</div>
 
 					<button 
-						className="button button-primary echodash-integration-header__add-trigger"
+						className="echodash-button echodash-integration-header__add-trigger"
 						onClick={onAddTrigger}
 					>
 						+ Add Trigger
@@ -98,15 +104,20 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 			</div>
 
 			{/* Triggers section */}
-			<div className="echodash-triggers">
+			<div className="echodash-card echodash-triggers">
 				<h2 className="echodash-triggers__title">Triggers</h2>
 				
 				{triggers.length === 0 ? (
 					<div className="echodash-triggers__empty-state">
-						<div className="echodash-triggers__empty-icon">
-							<span 
-								className={`dashicons dashicons-${integration.icon} echodash-triggers__empty-icon-dashicon`} 
-							></span>
+						<div 
+							className="echodash-triggers__empty-icon echodash-integration-item__icon"
+							style={{ backgroundColor: integration.iconBackgroundColor }}
+						>
+						<img 
+							src={integration.icon}
+							alt={`${integration.name} logo`}
+							className="echodash-triggers__empty-icon-image echodash-integration-item__icon-image"
+						/>
 						</div>
 						<h3 className="echodash-triggers__empty-title">Add your first {integration.name} trigger</h3>
 						<p className="echodash-triggers__empty-description">
@@ -114,7 +125,7 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 							Feugiat feugiat risus cursus tempor tortor.
 						</p>
 						<button 
-							className="button button-primary"
+							className="echodash-button echodash-button-primary"
 							onClick={onAddTrigger}
 						>
 							+ Add Trigger
@@ -140,9 +151,9 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 
 								{/* Actions */}
 								<div className="echodash-trigger-item__actions">
-									<button className="button button-secondary">Send Test</button>
-									<button className="button button-secondary">Edit</button>
-									<button className="button button-link-delete">
+									<button className="echodash-button">Send Test</button>
+									<button className="echodash-button">Edit</button>
+									<button className="echodash-button">
 										<span className="dashicons dashicons-trash"></span>
 									</button>
 								</div>

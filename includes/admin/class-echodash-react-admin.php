@@ -108,13 +108,6 @@ class EchoDash_React_Admin {
 	 * Get localized data for React app with caching
 	 */
 	private function get_localized_data() {
-		// Use transient caching for expensive operations
-		$cache_key   = 'ecd_react_data_' . get_current_user_id();
-		$cached_data = get_transient( $cache_key );
-
-		if ( false !== $cached_data && ! ( defined( 'WP_DEBUG' ) && WP_DEBUG ) ) {
-			return $cached_data;
-		}
 
 		$localized_data = array(
 			// API Configuration
@@ -165,10 +158,6 @@ class EchoDash_React_Admin {
 				'searchPlaceholder' => __( 'Search...', 'echodash' ),
 			),
 		);
-
-		// Cache for 5 minutes (shorter in debug mode)
-		$cache_duration = ( defined( 'WP_DEBUG' ) && WP_DEBUG ) ? MINUTE_IN_SECONDS : 5 * MINUTE_IN_SECONDS;
-		set_transient( $cache_key, $localized_data, $cache_duration );
 
 		return $localized_data;
 	}
@@ -368,83 +357,29 @@ class EchoDash_React_Admin {
 				$configured_triggers = count( $settings[ $slug ] );
 			}
 
-			// Get available triggers safely
-			if ( method_exists( $integration, 'get_triggers' ) ) {
-				try {
-					$integration_triggers = $integration->get_triggers();
-					if ( is_array( $integration_triggers ) ) {
-						foreach ( $integration_triggers as $trigger_id => $trigger_config ) {
-							$available_triggers[] = array(
-								'id'           => $trigger_id,
-								'name'         => $trigger_config['name'] ?? $trigger_id,
-								'description'  => $trigger_config['description'] ?? '',
-								'defaultEvent' => $integration->get_defaults( $trigger_id ),
-								'options'      => $integration->get_options( $trigger_id ),
-							);
-						}
-					}
-				} catch ( Exception $e ) {
-					// Fallback if method fails
-					$available_triggers = array(
-						array(
-							'id'           => 'default_trigger',
-							'name'         => 'Default Trigger',
-							'description'  => 'Default trigger for ' . $integration->name,
-							'defaultEvent' => $integration->get_defaults( 'default_trigger' ),
-							'options'      => $integration->get_options( 'default_trigger' ),
-						),
-					);
-				}
+			foreach ( $integration->get_triggers() as $trigger_id => $trigger_config ) {
+				$available_triggers[] = array(
+					'id'           => $trigger_id,
+					'name'         => $trigger_config['name'] ?? $trigger_id,
+					'description'  => $trigger_config['description'] ?? '',
+					'defaultEvent' => $integration->get_defaults( $trigger_id ),
+					'options'      => $integration->get_options( $trigger_id ),
+				);
 			}
 
 			$integrations[] = array(
-				'slug'              => $slug,
-				'name'              => $integration->name,
-				'icon'              => $this->get_integration_icon( $slug ),
-				'triggerCount'      => $configured_triggers,
-				'enabled'           => $configured_triggers > 0,
-				'triggers'          => $triggers,
-				'isActive'          => true, // All loaded integrations are active
-				'description'       => $this->get_integration_description( $slug ),
-				'availableTriggers' => $available_triggers,
+				'slug'                => $slug,
+				'name'                => $integration->name,
+				'icon'                => $integration->get_icon(),
+				'iconBackgroundColor' => $integration->get_icon_background_color(),
+				'triggerCount'        => $configured_triggers,
+				'enabled'             => $configured_triggers > 0,
+				'triggers'            => $triggers,
+				'availableTriggers'   => $available_triggers,
 			);
 		}
 
 		return $integrations;
-	}
-
-	/**
-	 * Get integration icon
-	 */
-	private function get_integration_icon( $slug ) {
-		$icons = array(
-			'woocommerce'          => 'store',
-			'learndash'            => 'welcome-learn-more',
-			'gravity-forms'        => 'feedback',
-			'contact-form-7'       => 'email-alt',
-			'ninja-forms'          => 'forms',
-			'memberpress'          => 'groups',
-			'restrict-content-pro' => 'lock',
-		);
-
-		return $icons[ $slug ] ?? 'admin-plugins';
-	}
-
-	/**
-	 * Get integration description
-	 */
-	private function get_integration_description( $slug ) {
-		$descriptions = array(
-			'woocommerce'          => __( 'Track WooCommerce store events and customer actions', 'echodash' ),
-			'learndash'            => __( 'Monitor course progress and student engagement', 'echodash' ),
-			'gravity-forms'        => __( 'Capture form submissions and user interactions', 'echodash' ),
-			'contact-form-7'       => __( 'Track contact form submissions', 'echodash' ),
-			'ninja-forms'          => __( 'Monitor form completions and user data', 'echodash' ),
-			'memberpress'          => __( 'Track membership events and subscription changes', 'echodash' ),
-			'restrict-content-pro' => __( 'Monitor subscription and access events', 'echodash' ),
-		);
-
-		return $descriptions[ $slug ] ?? __( 'Track events and user interactions', 'echodash' );
 	}
 }
 

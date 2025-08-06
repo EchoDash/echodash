@@ -27,6 +27,14 @@ class EchoDash_Woo_Subscriptions extends EchoDash_Integration {
 	public $name = 'WooCommerce Subscriptions';
 
 	/**
+	 * The background color for the integration icon.
+	 *
+	 * @since 2.0.0
+	 * @var string $icon_background_color
+	 */
+	protected $icon_background_color = '#873EFF';
+
+	/**
 	 * Get things started.
 	 *
 	 * @since 1.2.0

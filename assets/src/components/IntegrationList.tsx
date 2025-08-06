@@ -12,6 +12,7 @@ interface Integration {
 	slug: string;
 	name: string;
 	icon: string;
+	iconBackgroundColor: string;
 	triggerCount: number;
 	enabled: boolean;
 	description?: string;
@@ -47,14 +48,14 @@ export const IntegrationList: React.FC<IntegrationListProps> = ({
 					href="https://docs.echodash.com" 
 					target="_blank" 
 					rel="noopener noreferrer"
-					className="button button-link echodash-header__docs-link"
+					className="echodash-button echodash-header__docs-link"
 				>
 					Documentation →
 				</a>
 			</div>
 
 			{/* Welcome Section */}
-			<div className="echodash-welcome">
+			<div className="echodash-card echodash-welcome">
 				<div className="echodash-welcome__content">
 					<h2 className="echodash-welcome__title">Welcome to EchoDash</h2>
 					<p className="echodash-welcome__description">
@@ -87,7 +88,7 @@ export const IntegrationList: React.FC<IntegrationListProps> = ({
 			</div>
 
 			{/* Integrations Section */}
-			<div className="echodash-integrations">
+			<div className="echodash-card echodash-integrations">
 				<h2 className="echodash-integrations__title">Integrations</h2>
 				
 				<div className="echodash-integrations__list">
@@ -97,10 +98,15 @@ export const IntegrationList: React.FC<IntegrationListProps> = ({
 							className="echodash-integration-item"
 						>
 							{/* Icon */}
-							<div className={`echodash-integration-item__icon ${integration.slug === 'wordpress' ? 'echodash-integration-item__icon--wordpress' : 'echodash-integration-item__icon--default'}`}>
-								<span 
-									className={`dashicons dashicons-${integration.icon} echodash-integration-item__icon-dashicon`} 
-								></span>
+							<div 
+								className="echodash-integration-item__icon"
+								style={{ backgroundColor: integration.iconBackgroundColor }}
+							>
+							<img 
+								src={integration.icon}
+								alt={`${integration.name} logo`}
+								className="echodash-integration-item__icon-image"
+							/>
 							</div>
 
 							{/* Name and trigger count */}
@@ -116,12 +122,12 @@ export const IntegrationList: React.FC<IntegrationListProps> = ({
 							{/* Actions */}
 							<div className="echodash-integration-item__actions">
 								<button 
-									className="button button-secondary"
+									className="echodash-button"
 									onClick={() => onIntegrationClick(integration.slug)}
 								>
 									Manage
 								</button>
-								<button className="button button-primary">
+								<button className="echodash-button">
 									+ Add Trigger
 								</button>
 							</div>
