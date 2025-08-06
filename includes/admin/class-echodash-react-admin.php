@@ -170,29 +170,8 @@ class EchoDash_React_Admin {
 			'endpoint'    => get_option( 'echodash_endpoint', '' ),
 			'options'     => get_option( 'echodash_options', array() ),
 			'isConnected' => ! empty( get_option( 'echodash_endpoint', '' ) ),
+			'connectUrl'  => echodash()->admin->get_connect_url(),
 		);
-	}
-
-	/**
-	 * Get bundle size information
-	 */
-	private function get_bundle_size() {
-		$js_file  = ECHODASH_DIR_PATH . 'assets/dist/index.js';
-		$css_file = ECHODASH_DIR_PATH . 'assets/dist/index.css';
-
-		$sizes = array(
-			'js'  => file_exists( $js_file ) ? filesize( $js_file ) : 0,
-			'css' => file_exists( $css_file ) ? filesize( $css_file ) : 0,
-		);
-
-		$sizes['total']     = $sizes['js'] + $sizes['css'];
-		$sizes['formatted'] = array(
-			'js'    => size_format( $sizes['js'] ),
-			'css'   => size_format( $sizes['css'] ),
-			'total' => size_format( $sizes['total'] ),
-		);
-
-		return $sizes;
 	}
 
 	/**

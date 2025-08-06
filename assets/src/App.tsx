@@ -16,6 +16,7 @@ declare global {
 			settings: {
 				endpoint?: string;
 				isConnected?: boolean;
+				connectUrl?: string;
 			};
 			integrations: Array<{
 				slug: string;
@@ -87,6 +88,20 @@ export const App: React.FC = () => {
 		handlePopState();
 
 		return () => window.removeEventListener('popstate', handlePopState);
+	}, []);
+
+	// Handle EchoDash callback on page load
+	useEffect(() => {
+		const urlParams = new URLSearchParams(window.location.search);
+		const endpointUrl = urlParams.get('endpoint_url');
+		const wpnonce = urlParams.get('wpnonce');
+
+		// If we have callback parameters, the user just returned from EchoDash
+		if (endpointUrl && wpnonce) {
+			// The backend should have already processed this via save_echodash_callback()
+			// Just need to refresh the page data or reload to show the new state
+			window.location.reload();
+		}
 	}, []);
 
 	const handleIntegrationClick = (slug: string) => {

@@ -4,7 +4,8 @@
  */
 
 /* Global Button Styles */
-.echodash-button {
+a.echodash-button,
+button.echodash-button {
 	background: transparent;
 	border: 1px solid #D0D5DD;
 	color: #202E41;
@@ -16,12 +17,14 @@
 	transition: all 0.4s ease;
 }
 
-.echodash-button:hover {
+a.echodash-button:hover,
+button.echodash-button:hover {
 	text-decoration: underline;
 	cursor: pointer;
 }
 
-.echodash-button-primary {
+a.echodash-button-primary,
+button.echodash-button-primary {
 	background-color: #202E41;
 	color: #fff;
 	border-color: #202E41;

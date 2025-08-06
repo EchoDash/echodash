@@ -23,6 +23,7 @@ interface IntegrationListProps {
 	settings: {
 		endpoint?: string;
 		isConnected?: boolean;
+		connectUrl?: string;
 	};
 	onIntegrationClick: (slug: string) => void;
 }
@@ -100,26 +101,45 @@ export const IntegrationList: React.FC<IntegrationListProps> = ({
 					<p className="echodash-welcome__description">
 						EchoDash is a service for tracking real-time events on your WordPress site. It's free and easy to use.
 					</p>
-					<p className="echodash-welcome__instructions">
-						To get started, <a href="#" className="echodash-welcome__instructions-link">create an endpoint in your EchoDash account</a>, and copy the URL into the field below.
-					</p>
-					
-					<div className="echodash-welcome__field-group">
-						<label htmlFor="endpoint-url" className="echodash-welcome__label">
-							URL
-						</label>
-						<input 
-							type="text" 
-							id="endpoint-url"
-							className="regular-text echodash-welcome__input"
-							placeholder="https://example.com/"
-							value={endpointUrl}
-							onChange={handleEndpointChange}
-							onBlur={handleEndpointBlur}
-							disabled={isSaving}
-						/>
-						{isSaving && <span className="echodash-saving-indicator">Saving...</span>}
-					</div>
+					{!settings.isConnected ? (
+						<>
+							<p className="echodash-welcome__instructions">
+								To get started, create an endpoint in your EchoDash account by clicking the button below.
+							</p>
+							
+							<div className="echodash-welcome__connect-action">
+								<a 
+									href={settings.connectUrl || '#'} 
+									className="echodash-button echodash-button-primary echodash-connect-button"
+								>
+									Connect to EchoDash &rarr;
+								</a>
+							</div>
+						</>
+					) : (
+						<>
+							<p className="echodash-welcome__instructions">
+								Your endpoint URL is configured below. You can update it anytime if needed.
+							</p>
+							
+							<div className="echodash-welcome__field-group">
+								<label htmlFor="endpoint-url" className="echodash-welcome__label">
+									URL
+								</label>
+								<input 
+									type="text" 
+									id="endpoint-url"
+									className="regular-text echodash-welcome__input"
+									placeholder="https://example.com/"
+									value={endpointUrl}
+									onChange={handleEndpointChange}
+									onBlur={handleEndpointBlur}
+									disabled={isSaving}
+								/>
+								{isSaving && <span className="echodash-saving-indicator">Saving...</span>}
+							</div>
+						</>
+					)}
 				</div>
 
 				{/* Video placeholder */}

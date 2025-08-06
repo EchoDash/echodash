@@ -30,6 +30,10 @@
 	margin-bottom: 8px;
 }
 
+.echodash-welcome__connect-action {
+	margin: 30px 0;
+}
+
 .echodash-welcome__instructions-link {
 	color: #2271b1;
 }
