@@ -4,7 +4,7 @@
  * Shows individual integration with triggers matching mockup
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import './IntegrationDetail.css';
 import { EchoDashLogo } from './EchoDashLogo';
 
@@ -50,6 +50,7 @@ interface IntegrationDetailProps {
 	onAddTrigger: () => void;
 	onEditTrigger: (trigger: Trigger) => void;
 	onDeleteTrigger: (trigger: Trigger) => void;
+	onSendTest: (trigger: Trigger) => void;
 }
 
 export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
@@ -59,7 +60,26 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 	onAddTrigger,
 	onEditTrigger,
 	onDeleteTrigger,
+	onSendTest,
 }) => {
+	const [sendingTest, setSendingTest] = useState<string | null>(null);
+	const [sentTest, setSentTest] = useState<string | null>(null);
+
+	const handleSendTest = async (trigger: Trigger) => {
+		setSendingTest(trigger.id);
+		setSentTest(null); // Clear any previous sent state
+		try {
+			await onSendTest(trigger);
+			// Show "Sent!" state for 3 seconds
+			setSentTest(trigger.id);
+			setTimeout(() => setSentTest(null), 3000);
+		} catch (error) {
+			// onSendTest handles error display, just clear loading state
+		} finally {
+			setSendingTest(null);
+		}
+	};
+
 	return (
 		<>
 			{/* Header with logo */}
@@ -174,7 +194,28 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 
 								{/* Actions */}
 								<div className="echodash-trigger-item__actions">
-									<button className="echodash-button">Send Test</button>
+									<button 
+										className="echodash-button"
+										onClick={() => handleSendTest(trigger)}
+										disabled={sendingTest === trigger.id}
+									>
+										{sendingTest === trigger.id ? (
+											<>
+												<span className="dashicons dashicons-bell ecd-ring"></span>
+												Sending...
+											</>
+										) : sentTest === trigger.id ? (
+											<>
+												<span className="dashicons dashicons-bell"></span>
+												Sent!
+											</>
+										) : (
+											<>
+												<span className="dashicons dashicons-bell"></span>
+												Send Test
+											</>
+										)}
+									</button>
 									<button 
 										className="echodash-button"
 										onClick={() => onEditTrigger(trigger)}

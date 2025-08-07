@@ -147,6 +147,66 @@ export const App: React.FC = () => {
 		setShowTriggerModal(true);
 	};
 
+	const handleSendTest = async (trigger: any) => {
+		try {
+			// First, generate a preview to process merge tags with real test data
+			const eventConfig = {
+				name: trigger.name || trigger.event_name,
+				mappings: trigger.mappings || []
+			};
+
+			const previewResponse = await fetch(`${data.apiUrl}preview`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'X-WP-Nonce': data.nonce,
+				},
+				body: JSON.stringify({
+					eventConfig: eventConfig,
+					integrationSlug: selectedIntegration,
+					triggerId: trigger.trigger
+				}),
+			});
+
+			if (!previewResponse.ok) {
+				throw new Error('Failed to generate event preview');
+			}
+
+			const previewData = await previewResponse.json();
+
+			// Now send the test event with processed data
+			const eventData = {
+				name: previewData.eventName,
+				properties: previewData.processedData
+			};
+
+			const testResponse = await fetch(`${data.apiUrl}test-event`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'X-WP-Nonce': data.nonce,
+				},
+				body: JSON.stringify({
+					eventData: eventData,
+					integrationSlug: selectedIntegration,
+					trigger: trigger.trigger
+				}),
+			});
+
+			if (testResponse.ok) {
+				// Success handled by UI state in IntegrationDetail component
+				return;
+			} else {
+				const errorData = await testResponse.json();
+				console.error('Failed to send test event:', errorData);
+				alert('Failed to send test event. Please try again.');
+			}
+		} catch (error) {
+			console.error('Error sending test event:', error);
+			alert('Error sending test event. Please check your connection and try again.');
+		}
+	};
+
 	const handleDeleteTrigger = async (trigger: any) => {
 		try {
 			const url = `${data.apiUrl}integrations/${selectedIntegration}/triggers/${trigger.id}`;
@@ -310,6 +370,7 @@ export const App: React.FC = () => {
 						onAddTrigger={handleAddTrigger}
 						onEditTrigger={handleEditTrigger}
 						onDeleteTrigger={handleDeleteTrigger}
+						onSendTest={handleSendTest}
 					/>
 				)
 			)}

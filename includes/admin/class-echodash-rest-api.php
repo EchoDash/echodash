@@ -16,7 +16,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 class EchoDash_REST_API extends WP_REST_Controller {
 
 	/**
-	 * Constructor
+	 * Constructor.
+	 *
+	 * @since 2.0.0
 	 */
 	public function __construct() {
 		$this->namespace = 'echodash/v1';
@@ -25,6 +27,8 @@ class EchoDash_REST_API extends WP_REST_Controller {
 
 	/**
 	 * Register the routes for the objects of the controller.
+	 *
+	 * @since 2.0.0
 	 */
 	public function register_routes() {
 		// Settings endpoints
@@ -170,9 +174,19 @@ class EchoDash_REST_API extends WP_REST_Controller {
 					'callback'            => array( $this, 'send_test_event' ),
 					'permission_callback' => array( $this, 'test_event_permissions_check' ),
 					'args'                => array(
-						'eventData' => array(
+						'eventData'       => array(
 							'description' => __( 'Event data to send', 'echodash' ),
 							'type'        => 'object',
+							'required'    => true,
+						),
+						'integrationSlug' => array(
+							'description' => __( 'Integration slug for source context', 'echodash' ),
+							'type'        => 'string',
+							'required'    => true,
+						),
+						'trigger'         => array(
+							'description' => __( 'Trigger key for context', 'echodash' ),
+							'type'        => 'string',
 							'required'    => true,
 						),
 					),
@@ -182,7 +196,12 @@ class EchoDash_REST_API extends WP_REST_Controller {
 	}
 
 	/**
-	 * Get all settings
+	 * Get all settings.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 * @return WP_REST_Response The response object.
 	 */
 	public function get_settings( $request ) {
 		$settings = get_option( 'echodash_options', array() );
@@ -201,6 +220,11 @@ class EchoDash_REST_API extends WP_REST_Controller {
 
 	/**
 	 * Update settings
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 * @return WP_REST_Response The response object.
 	 */
 	public function update_settings( $request ) {
 		$params = $request->get_json_params();
@@ -221,7 +245,12 @@ class EchoDash_REST_API extends WP_REST_Controller {
 	}
 
 	/**
-	 * Get all integrations
+	 * Get all integrations.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 * @return WP_REST_Response The response object.
 	 */
 	public function get_integrations( $request ) {
 		$echodash          = echodash();
@@ -244,7 +273,12 @@ class EchoDash_REST_API extends WP_REST_Controller {
 	}
 
 	/**
-	 * Get single integration
+	 * Get single integration.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 * @return WP_REST_Response The response object.
 	 */
 	public function get_integration( $request ) {
 		$slug     = $request->get_param( 'slug' );
@@ -261,7 +295,12 @@ class EchoDash_REST_API extends WP_REST_Controller {
 	}
 
 	/**
-	 * Update integration settings
+	 * Update integration settings.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 * @return WP_REST_Response The response object.
 	 */
 	public function update_integration( $request ) {
 		$slug   = $request->get_param( 'slug' );
@@ -293,7 +332,12 @@ class EchoDash_REST_API extends WP_REST_Controller {
 	}
 
 	/**
-	 * Get triggers for an integration
+	 * Get triggers for an integration.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 * @return WP_REST_Response The response object.
 	 */
 	public function get_triggers( $request ) {
 		$slug     = $request->get_param( 'slug' );
@@ -303,8 +347,8 @@ class EchoDash_REST_API extends WP_REST_Controller {
 			return new WP_Error( 'integration_not_found', __( 'Integration not found', 'echodash' ), array( 'status' => 404 ) );
 		}
 
-		$integration = $echodash->integrations[ $slug ];
-		$triggers    = array();
+		$integration          = $echodash->integrations[ $slug ];
+		$triggers             = array();
 		$single_item_triggers = array();
 
 		// Get configured triggers from database settings
@@ -342,7 +386,7 @@ class EchoDash_REST_API extends WP_REST_Controller {
 			if ( isset( $trigger_config['has_single'] ) && $trigger_config['has_single'] ) {
 				// Get single events for this trigger
 				$single_events = $integration->get_single_events( $trigger_key );
-				
+
 				if ( ! empty( $single_events ) ) {
 					// Group single events by trigger type
 					$grouped_events = array();
@@ -350,7 +394,7 @@ class EchoDash_REST_API extends WP_REST_Controller {
 						// Get post title and edit URL
 						$post_title = isset( $event['post_title'] ) ? $event['post_title'] : get_the_title( $event['post_id'] );
 						$edit_url   = isset( $event['edit_url'] ) ? $event['edit_url'] : get_edit_post_link( $event['post_id'] ) . '#echodash';
-						
+
 						$grouped_events[] = array(
 							'post_id'    => $event['post_id'],
 							'post_title' => $post_title,
@@ -359,7 +403,7 @@ class EchoDash_REST_API extends WP_REST_Controller {
 							'mappings'   => $event['value'] ?? array(),
 						);
 					}
-					
+
 					if ( ! empty( $grouped_events ) ) {
 						$single_item_triggers[] = array(
 							'trigger'     => $trigger_key,
@@ -382,7 +426,12 @@ class EchoDash_REST_API extends WP_REST_Controller {
 	}
 
 	/**
-	 * Create a new trigger
+	 * Create a new trigger.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 * @return WP_REST_Response The response object.
 	 */
 	public function create_trigger( $request ) {
 		$slug   = $request->get_param( 'slug' );
@@ -427,7 +476,12 @@ class EchoDash_REST_API extends WP_REST_Controller {
 	}
 
 	/**
-	 * Update a trigger
+	 * Update a trigger.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 * @return WP_REST_Response The response object.
 	 */
 	public function update_trigger( $request ) {
 		$slug       = $request->get_param( 'slug' );
@@ -462,7 +516,12 @@ class EchoDash_REST_API extends WP_REST_Controller {
 	}
 
 	/**
-	 * Delete a trigger
+	 * Delete a trigger.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 * @return WP_REST_Response The response object.
 	 */
 	public function delete_trigger( $request ) {
 		$slug       = $request->get_param( 'slug' );
@@ -490,13 +549,19 @@ class EchoDash_REST_API extends WP_REST_Controller {
 	}
 
 	/**
-	 * Generate event preview
+	 * Generate event preview.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 * @return WP_REST_Response The response object.
 	 */
 	public function generate_preview( $request ) {
 		$params           = $request->get_json_params();
 		$event_config     = $params['eventConfig'];
-		$integration_slug = $params['integrationSlug'];
-		$test_data        = isset( $params['testData'] ) ? $params['testData'] : $this->get_default_test_data();
+		$integration_slug = isset( $params['integrationSlug'] ) ? $params['integrationSlug'] : null;
+		$trigger_id       = isset( $params['triggerId'] ) ? $params['triggerId'] : null;
+		$test_data        = isset( $params['testData'] ) ? $params['testData'] : $this->get_integration_test_data( $integration_slug, $trigger_id );
 
 		// Process merge tags
 		$processed_data = array();
@@ -517,20 +582,33 @@ class EchoDash_REST_API extends WP_REST_Controller {
 	}
 
 	/**
-	 * Send test event
+	 * Send test event.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 * @return WP_REST_Response|WP_Error The response object or error object.
 	 */
 	public function send_test_event( $request ) {
-		$params     = $request->get_json_params();
-		$event_data = $params['eventData'];
 
-		// Get EchoDash instance
-		$echodash = echodash();
-		if ( ! $echodash || ! isset( $echodash->public ) ) {
-			return new WP_Error( 'echodash_not_initialized', __( 'EchoDash is not properly initialized', 'echodash' ), array( 'status' => 500 ) );
+		$params           = $request->get_json_params();
+		$event_data       = $params['eventData'];
+		$integration_slug = $params['integrationSlug'];
+		$trigger          = $params['trigger'];
+
+		// Get EchoDash instance and validate integration
+		if ( ! echodash() || ! echodash()->integration( $integration_slug ) ) {
+			return new WP_Error( 'integration_not_found', __( 'Integration not found', 'echodash' ), array( 'status' => 404 ) );
 		}
 
-		// Track test event
-		$result = $echodash->public->track_event( $event_data['name'], $event_data['properties'], true );
+		$integration = echodash()->integration( $integration_slug );
+
+		// Get source and trigger names (following legacy implementation pattern)
+		$source_name  = $integration->name;
+		$trigger_name = $integration->get_trigger_name( $trigger );
+
+		// Track test event with proper parameters matching echodash_track_event signature
+		$result = echodash_track_event( $event_data['name'], $event_data['properties'], $source_name, $trigger_name );
 
 		if ( $result ) {
 			return rest_ensure_response(
@@ -545,7 +623,14 @@ class EchoDash_REST_API extends WP_REST_Controller {
 	}
 
 	/**
-	 * Prepare integration data for response
+	 * Prepare integration data for response.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param EchoDash_Integration $integration The integration object.
+	 * @param string               $slug        The integration slug.
+	 * @param bool                 $detailed    Whether to include detailed data.
+	 * @return array The integration data.
 	 */
 	private function prepare_integration_for_response( $integration, $slug, $detailed = false ) {
 		// Get configured triggers count from database
@@ -557,12 +642,12 @@ class EchoDash_REST_API extends WP_REST_Controller {
 
 		// Get available trigger definitions ONCE (we always need this to calculate accurate trigger count)
 		$available_triggers = $integration->get_triggers();
-		$single_item_count = 0;
-		
+		$single_item_count  = 0;
+
 		// Add count of single-item events
 		foreach ( $available_triggers as $trigger_key => $trigger_config ) {
 			if ( isset( $trigger_config['has_single'] ) && $trigger_config['has_single'] ) {
-				$single_events = $integration->get_single_events( $trigger_key );
+				$single_events      = $integration->get_single_events( $trigger_key );
 				$single_item_count += count( $single_events );
 			}
 		}
@@ -619,23 +704,12 @@ class EchoDash_REST_API extends WP_REST_Controller {
 	}
 
 	/**
-	 * Prepare trigger data for response
-	 */
-	private function prepare_trigger_for_response( $trigger, $trigger_id ) {
-		return array(
-			'id'           => $trigger_id,
-			'name'         => isset( $trigger['name'] ) ? $trigger['name'] : '',
-			'description'  => isset( $trigger['description'] ) ? $trigger['description'] : '',
-			'hasGlobal'    => isset( $trigger['has_global'] ) ? $trigger['has_global'] : true,
-			'hasSingle'    => isset( $trigger['has_single'] ) ? $trigger['has_single'] : false,
-			'optionTypes'  => isset( $trigger['option_types'] ) ? $trigger['option_types'] : array(),
-			'defaultEvent' => isset( $trigger['default_event'] ) ? $trigger['default_event'] : array(),
-			'postTypes'    => isset( $trigger['post_types'] ) ? $trigger['post_types'] : array(),
-		);
-	}
-
-	/**
-	 * Get integration icon
+	 * Get integration icon.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param string $slug The integration slug.
+	 * @return string The integration icon.
 	 */
 	private function get_integration_icon( $slug ) {
 		$icons = array(
@@ -650,7 +724,12 @@ class EchoDash_REST_API extends WP_REST_Controller {
 	}
 
 	/**
-	 * Get integration settings
+	 * Get integration settings.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param string $slug The integration slug.
+	 * @return array The integration settings.
 	 */
 	private function get_integration_settings( $slug ) {
 		$settings = get_option( 'echodash_options', array() );
@@ -658,7 +737,13 @@ class EchoDash_REST_API extends WP_REST_Controller {
 	}
 
 	/**
-	 * Process merge tag
+	 * Process merge tag.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param string $template The template.
+	 * @param array  $test_data The test data.
+	 * @return string The processed merge tag.
 	 */
 	private function process_merge_tag( $template, $test_data ) {
 		if ( ! is_string( $template ) ) {
@@ -684,9 +769,62 @@ class EchoDash_REST_API extends WP_REST_Controller {
 	}
 
 	/**
-	 * Get default test data
+	 * Get integration-specific test data based on the integration's preview definitions.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param string $integration_slug The integration slug.
+	 * @param string $trigger_id       The trigger ID.
+	 * @return array The integration-specific test data.
 	 */
-	private function get_default_test_data() {
+	private function get_integration_test_data( $integration_slug = null, $trigger_id = null ) {
+		// If no integration specified, return basic fallback data
+		if ( ! $integration_slug ) {
+			return $this->get_fallback_test_data();
+		}
+
+		// Get the integration instance
+		if ( ! echodash() || ! echodash()->integration( $integration_slug ) ) {
+			return $this->get_fallback_test_data();
+		}
+
+		$integration = echodash()->integration( $integration_slug );
+
+		// Get the trigger's option types and build test data from preview values.
+		$options   = $integration->get_options( $trigger_id );
+		$test_data = array();
+
+		if ( ! empty( $options ) ) {
+			foreach ( $options as $option_type => $option_data ) {
+				if ( isset( $option_data['options'] ) && is_array( $option_data['options'] ) ) {
+					$test_data[ $option_type ] = array();
+
+					// Extract preview values from each option.
+					foreach ( $option_data['options'] as $option ) {
+						if ( isset( $option['meta'] ) && isset( $option['preview'] ) ) {
+							$test_data[ $option_type ][ $option['meta'] ] = $option['preview'];
+						}
+					}
+				}
+			}
+		}
+
+		// If no test data was generated, use fallback.
+		if ( empty( $test_data ) ) {
+			return $this->get_fallback_test_data();
+		}
+
+		return $test_data;
+	}
+
+	/**
+	 * Get fallback test data for when integration-specific data is not available.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @return array The fallback test data.
+	 */
+	private function get_fallback_test_data() {
 		$current_user = wp_get_current_user();
 
 		return array(
@@ -714,7 +852,11 @@ class EchoDash_REST_API extends WP_REST_Controller {
 	}
 
 	/**
-	 * Get user capabilities
+	 * Get user capabilities.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @return array The user capabilities.
 	 */
 	private function get_user_capabilities() {
 		$user = wp_get_current_user();
@@ -726,7 +868,12 @@ class EchoDash_REST_API extends WP_REST_Controller {
 	}
 
 	/**
-	 * Sanitize settings data
+	 * Sanitize settings data.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param array $settings The settings.
+	 * @return array The sanitized settings.
 	 */
 	private function sanitize_settings( $settings ) {
 		$sanitized = array();
@@ -743,14 +890,24 @@ class EchoDash_REST_API extends WP_REST_Controller {
 	}
 
 	/**
-	 * Sanitize integration settings
+	 * Sanitize integration settings.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param array $settings The settings.
+	 * @return array The sanitized settings.
 	 */
 	private function sanitize_integration_settings( $settings ) {
 		return $this->sanitize_settings( $settings );
 	}
 
 	/**
-	 * Sanitize trigger data
+	 * Sanitize trigger data.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param array $data The trigger data.
+	 * @return array The sanitized trigger data.
 	 */
 	private function sanitize_trigger_data( $data ) {
 		$sanitized = array(
@@ -773,7 +930,11 @@ class EchoDash_REST_API extends WP_REST_Controller {
 	}
 
 	/**
-	 * Get endpoint args for integration update
+	 * Get endpoint args for integration update.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @return array The endpoint args.
 	 */
 	private function get_integration_update_args() {
 		return array(
@@ -791,7 +952,11 @@ class EchoDash_REST_API extends WP_REST_Controller {
 	}
 
 	/**
-	 * Get endpoint args for trigger creation
+	 * Get endpoint args for trigger creation.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @return array The endpoint args.
 	 */
 	private function get_trigger_create_args() {
 		return array(
@@ -814,7 +979,11 @@ class EchoDash_REST_API extends WP_REST_Controller {
 	}
 
 	/**
-	 * Get endpoint args for trigger update
+	 * Get endpoint args for trigger update.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @return array The endpoint args.
 	 */
 	private function get_trigger_update_args() {
 		return array(
@@ -832,84 +1001,141 @@ class EchoDash_REST_API extends WP_REST_Controller {
 	}
 
 	/**
-	 * Check if a given request has access to get settings
+	 * Check if a given request has access to get settings.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 * @return bool Whether the user has access.
 	 */
 	public function get_settings_permissions_check( $request ) {
 		return current_user_can( 'manage_options' );
 	}
 
 	/**
-	 * Check if a given request has access to update settings
+	 * Check if a given request has access to update settings.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 * @return bool Whether the user has access.
 	 */
 	public function update_settings_permissions_check( $request ) {
 		return current_user_can( 'manage_options' );
 	}
 
 	/**
-	 * Check if a given request has access to get integrations
+	 * Check if a given request has access to get integrations.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 * @return bool Whether the user has access.
 	 */
 	public function get_integrations_permissions_check( $request ) {
 		return current_user_can( 'manage_options' );
 	}
 
 	/**
-	 * Check if a given request has access to get a single integration
+	 * Check if a given request has access to get a single integration.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 * @return bool Whether the user has access.
 	 */
 	public function get_integration_permissions_check( $request ) {
 		return current_user_can( 'manage_options' );
 	}
 
 	/**
-	 * Check if a given request has access to update an integration
+	 * Check if a given request has access to update an integration.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 * @return bool Whether the user has access.
 	 */
 	public function update_integration_permissions_check( $request ) {
 		return current_user_can( 'manage_options' );
 	}
 
 	/**
-	 * Check if a given request has access to get triggers
+	 * Check if a given request has access to get triggers.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 * @return bool Whether the user has access.
 	 */
 	public function get_triggers_permissions_check( $request ) {
 		return current_user_can( 'manage_options' );
 	}
 
 	/**
-	 * Check if a given request has access to create triggers
+	 * Check if a given request has access to create triggers.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 * @return bool Whether the user has access.
 	 */
 	public function create_trigger_permissions_check( $request ) {
 		return current_user_can( 'manage_options' );
 	}
 
 	/**
-	 * Check if a given request has access to update triggers
+	 * Check if a given request has access to update triggers.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 * @return bool Whether the user has access.
 	 */
 	public function update_trigger_permissions_check( $request ) {
 		return current_user_can( 'manage_options' );
 	}
 
 	/**
-	 * Check if a given request has access to delete triggers
+	 * Check if a given request has access to delete triggers.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 * @return bool Whether the user has access.
 	 */
 	public function delete_trigger_permissions_check( $request ) {
 		return current_user_can( 'manage_options' );
 	}
 
 	/**
-	 * Check if a given request has access to generate preview
+	 * Check if a given request has access to generate preview.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 * @return bool Whether the user has access.
 	 */
 	public function preview_permissions_check( $request ) {
 		return current_user_can( 'manage_options' );
 	}
 
 	/**
-	 * Check if a given request has access to send test events
+	 * Check if a given request has access to send test events.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param WP_REST_Request $request The request object.
+	 * @return bool Whether the user has access.
 	 */
 	public function test_event_permissions_check( $request ) {
 		return current_user_can( 'manage_options' );
 	}
 }
 
-// Initialize the REST API
+/**
+ * Initialize the REST API.
+ */
 add_action(
 	'rest_api_init',
 	function () {
