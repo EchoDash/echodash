@@ -16,7 +16,7 @@ class EchoDash_AffiliateWP extends EchoDash_Integration {
 	 * @var string $slug
 	 */
 
-	public $slug = 'affiliate-wp';
+	public $slug = 'affiliatewp';
 
 	/**
 	 * The plugin name for EchoDash's module tracking.
@@ -24,7 +24,15 @@ class EchoDash_AffiliateWP extends EchoDash_Integration {
 	 * @since 1.6.0
 	 * @var string $name
 	 */
-	public $name = 'Affiliate WP';
+	public $name = 'AffiliateWP';
+
+	/**
+	 * The icon background color for EchoDash's module tracking.
+	 *
+	 * @since 2.0.0
+	 * @var string $icon_background_color
+	 */
+	protected $icon_background_color = '#e54e44';
 
 	/**
 	 * Get things started.

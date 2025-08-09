@@ -30,6 +30,22 @@ abstract class EchoDash_Integration {
 	public $name;
 
 	/**
+	 * The icon for the integration.
+	 *
+	 * @since 2.0.0
+	 * @var string $icon
+	 */
+	protected $icon;
+
+	/**
+	 * The background color for the integration icon.
+	 *
+	 * @since 2.0.0
+	 * @var string $icon_background_color
+	 */
+	protected $icon_background_color = '#ffffff';
+
+	/**
 	 * Stores the triggers for the integration.
 	 *
 	 * @since 1.0.0
@@ -51,6 +67,11 @@ abstract class EchoDash_Integration {
 	 * @since 1.0.0
 	 */
 	public function __construct() {
+
+		// Set default icon if not already set by child class
+		if ( empty( $this->icon ) ) {
+			$this->icon = $this->slug . '-icon.png';
+		}
 
 		echodash()->integrations->{ $this->slug } = $this;
 
@@ -95,6 +116,33 @@ abstract class EchoDash_Integration {
 	 */
 	public function event_objects( $objects, $trigger ) {
 		return $objects;
+	}
+
+	/**
+	 * Get the icon for the integration.
+	 *
+	 * @since 2.0.0
+	 * @return string The icon.
+	 */
+	public function get_icon() {
+
+		if ( file_exists( ECHODASH_DIR_PATH . 'includes/integrations/' . $this->slug . '/' . $this->icon ) ) {
+			$icon_url = ECHODASH_DIR_URL . 'includes/integrations/' . $this->slug . '/' . $this->icon;
+		} else {
+			$icon_url = ECHODASH_DIR_URL . 'assets/images/echodash-logo.png';
+		}
+
+		return apply_filters( 'echodash_integration_icon', $icon_url, $this->slug );
+	}
+
+	/**
+	 * Get the background color for the integration icon.
+	 *
+	 * @since 2.0.0
+	 * @return string The background color.
+	 */
+	public function get_icon_background_color() {
+		return apply_filters( 'echodash_integration_icon_background_color', $this->icon_background_color, $this->slug );
 	}
 
 	/**

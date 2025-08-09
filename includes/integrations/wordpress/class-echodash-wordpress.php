@@ -15,7 +15,7 @@ class EchoDash_WordPress extends EchoDash_Integration {
 	 * @var string $slug
 	 */
 	// phpcs:ignore WordPress.WP.CapitalPDangit.Misspelled
-	public $slug = 'wordpress';
+	public $slug = 'WordPress';
 
 	/**
 	 * The plugin name for EchoDash's module tracking.

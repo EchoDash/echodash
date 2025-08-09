@@ -119,7 +119,7 @@ Yes, developers can use our API to track custom events. Documentation is availab
 == Screenshots ==
 
 1. The EchoDash dashboard with real-time event stream and analytics.
-2. Main settings page with Gravity Forms event configuration.
+2. Main settings page with available plugin integrations.
 3. Send events based on WooCommerce orders, product purchases, and order status changes.
 4. Track learner progress in real time with LearnDash and LifterLMS.
 5. Connect unlimited sources. Anything that can send a webhook can appear on your EchoDash activity feed.
@@ -127,7 +127,10 @@ Yes, developers can use our API to track custom events. Documentation is availab
 
 == Changelog ==
 
-= 1.2.1
+= 2.0.0 - August 9, 2025 =
+* New React-based admin UI
+* Added AffiliateWP integration
+
 * Fixed PHP warning when users logged in with an invalid username
 
 = 1.2.0 - June 11, 2025 =

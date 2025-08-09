@@ -1,0 +1,130 @@
+/**
+ * MergeTagSelector Component Styles
+ * Matches the mockup design for merge tag dropdown
+ */
+
+/* Dropdown Container */
+.echodash-merge-dropdown {
+	position: absolute;
+	background: #fff;
+	border: 1px solid #d9dae6;
+	border-radius: 3px;
+	box-shadow: 0 3px 5px rgb(0 0 0 / 13%);
+	z-index: 100001; /* Higher than WP admin modal overlays */
+	min-width: 250px;
+	max-width: 350px;
+	max-height: 20rem;
+	overflow-y: auto;
+	overflow-x: hidden;
+	margin-top: 2px;
+}
+
+/* Group Container */
+.echodash-merge-dropdown__group {
+	background-color: #fff;
+	padding: 0px;
+}
+
+.echodash-merge-dropdown__group:not(:last-child) {
+	border-bottom: 1px solid #ecedf8;
+}
+
+/* Group Header */
+.echodash-merge-dropdown__group-header {
+	border-bottom: 1px solid #ecedf8;
+	color: #242748;
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.1875rem;
+	padding: 0.75rem 1.1875rem 1.0625rem;
+	margin: 0;
+	background-color: #fff;
+	font-weight: 700;
+}
+
+/* Option Item */
+.echodash-merge-dropdown__option {
+	border-bottom: 1px solid #ecedf8;
+	color: #242748;
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.1875rem;
+	padding: 0.75rem 1.1875rem 1.0625rem;
+	margin: 0;
+	cursor: pointer;
+	background-color: #fff;
+	transition: background-color 0.1s ease;
+}
+
+.echodash-merge-dropdown__option:hover {
+	background: #f6f9fc;
+}
+
+.echodash-merge-dropdown__option:active {
+	background: #f6f9fc;
+}
+
+/* Merge tag in monospace font */
+.echodash-merge-dropdown__option-tag {
+	font-family: Consolas, Monaco, 'Courier New', monospace;
+	font-size: 13px;
+	font-weight: normal;
+	color: #2c3338;
+	margin-bottom: 3px;
+	display: block;
+}
+
+/* Description text */
+.echodash-merge-dropdown__option-placeholder {
+	color: #646970;
+	font-size: 12px;
+	line-height: 1.4;
+	display: block;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+}
+
+/* Preview text */
+.echodash-merge-dropdown__option-preview {
+	color: #8c8f94;
+	font-size: 11px;
+	margin-top: 3px;
+	display: block;
+	font-style: italic;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+}
+
+/* Empty State */
+.echodash-merge-dropdown__empty {
+	border-bottom: 1px solid #ecedf8;
+	color: #242748;
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.1875rem;
+	padding: 0.75rem 1.1875rem 1.0625rem;
+	margin: 0;
+	text-align: center;
+	font-style: italic;
+}
+
+/* Scrollbar Styling for Webkit browsers */
+.echodash-merge-dropdown::-webkit-scrollbar {
+	width: 6px;
+}
+
+.echodash-merge-dropdown::-webkit-scrollbar-track {
+	background: #f6f7f7;
+}
+
+.echodash-merge-dropdown::-webkit-scrollbar-thumb {
+	background: #c3c4c7;
+	border-radius: 3px;
+}
+
+.echodash-merge-dropdown::-webkit-scrollbar-thumb:hover {
+	background: #8c8f94;
+}
+
+/* When dropdown is in modal context, it already handles positioning via inline styles */
+.echodash-merge-dropdown--in-modal {
+	/* Position is set inline as 'fixed' by the component */
+}

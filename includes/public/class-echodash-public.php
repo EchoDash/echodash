@@ -46,6 +46,8 @@ class EchoDash_Public {
 		do_action( 'echodash_track_event', $event );
 
 		$this->add_to_queue( $event );
+
+		return true;
 	}
 
 	/**

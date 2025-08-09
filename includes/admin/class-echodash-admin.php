@@ -117,9 +117,9 @@ class EchoDash_Admin {
 		$args = array(
 			'a'            => 'plugin_install',
 			'source'       => __( 'WordPress', 'echodash' ),
-			'site_name'    => sanitize_text_field( get_bloginfo( 'name' ) ),
+			'site_name'    => __( 'WordPress', 'echodash' ) . ' - ' . sanitize_text_field( get_bloginfo( 'name' ) ),
 			'redirect_uri' => esc_url( admin_url( 'options-general.php?page=echodash' ) ),
-			'wpnonce'      => wp_create_nonce( 'echodash_connect' ),
+			'state'        => wp_create_nonce( 'echodash_connect' ),
 		);
 
 		// Local testing.
@@ -140,11 +140,11 @@ class EchoDash_Admin {
 	 * @since 0.0.3
 	 */
 	public function save_echodash_callback() {
-		if ( ! isset( $_GET['endpoint_url'] ) || ! isset( $_GET['wpnonce'] ) ) {
+		if ( ! isset( $_GET['endpoint_url'] ) || ! isset( $_GET['state'] ) ) {
 			return;
 		}
 
-		if ( ! wp_verify_nonce( wp_unslash( sanitize_key( $_GET['wpnonce'] ) ), 'echodash_connect' ) ) {
+		if ( ! wp_verify_nonce( wp_unslash( sanitize_key( $_GET['state'] ) ), 'echodash_connect' ) ) {
 			return;
 		}
 
@@ -216,7 +216,18 @@ class EchoDash_Admin {
 	 * @return void
 	 */
 	public function submenu_callback() {
-		include_once ECHODASH_DIR_PATH . 'includes/admin/option-page.php';
+		?>
+
+		<div class="wrap">
+			<div id="echodash-react-app">
+				<!-- React app will be mounted here -->
+				<div id="echodash-loading" class="ecd-loading">
+					<p><?php esc_html_e( 'Loading EchoDash...', 'echodash' ); ?></p>
+				</div>
+			</div>
+		</div>
+
+		<?php
 	}
 
 	/**
@@ -233,34 +244,6 @@ class EchoDash_Admin {
 
 		wp_register_script( 'echodash-admin', ECHODASH_DIR_URL . 'assets/echodash-admin.js', array( 'jquery', 'jquery-ui-sortable', 'select4' ), ECHODASH_VERSION, true );
 		wp_register_style( 'echodash-admin', ECHODASH_DIR_URL . 'assets/echodash-admin.css', array(), ECHODASH_VERSION );
-
-		if ( 'settings_page_echodash' === get_current_screen()->id ) {
-
-			$this->localize_data['triggers'] = array();
-
-			// Add i18n data early
-			$this->localize_data['i18n'] = array(
-				'confirmReset'   => __( 'Are you sure you want to reset all settings to defaults? This cannot be undone.', 'echodash' ),
-				'resetError'     => __( 'There was an error resetting to defaults. Please try again.', 'echodash' ),
-				'emptyEventName' => __( 'Event Name is required', 'echodash' ),
-			);
-
-			// Load the various integration options for the main settings page.
-
-			foreach ( echodash()->integrations as $slug => $integration ) {
-
-				$this->localize_data['triggers'][ $slug ] = array();
-
-				foreach ( $integration->get_triggers() as $trigger => $trigger_data ) {
-
-					$this->localize_data['triggers'][ $slug ][ $trigger ] = array(
-						'options'       => $integration->get_options( $trigger ),
-						'default_event' => $integration->get_defaults( $trigger ),
-					);
-
-				}
-			}
-		}
 
 		// Integrations set $this->localize_data based on the fields specific to the integration.
 		// We only want to enqueue the scripts and styles if the current page has settings on it.

@@ -1,0 +1,80 @@
+/**
+ * EchoDash React Interface Styles
+ */
+
+.echodash-react-app {
+	padding: 20px;
+	max-width: 1200px;
+}
+
+.echodash-dashboard__header {
+	margin-bottom: 24px;
+}
+
+.echodash-title {
+	font-size: 24px;
+	font-weight: 600;
+	margin: 0 0 8px 0;
+}
+
+.echodash-subtitle {
+	color: #757575;
+	margin: 0;
+}
+
+.integration-name {
+	font-size: 16px;
+	font-weight: 600;
+}
+
+.trigger-count {
+	color: #757575;
+	font-size: 14px;
+}
+
+.status {
+	font-size: 14px;
+	font-weight: 500;
+}
+
+.status.active {
+	color: #46b450;
+}
+
+.status.inactive {
+	color: #d54e21;
+}
+
+.echodash-integration-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+	gap: 16px;
+	margin-top: 24px;
+}
+
+.echodash-integration-card {
+	transition: box-shadow 0.2s ease;
+}
+
+.echodash-integration-card:hover {
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.integration-icon img {
+	border-radius: 4px;
+}
+
+.echodash-loading {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 40px;
+}
+
+.echodash-notifications {
+	position: fixed;
+	top: 32px;
+	right: 20px;
+	z-index: 999999;
+	max-width: 400px;
+}

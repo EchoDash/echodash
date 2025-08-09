@@ -29,6 +29,14 @@ class EchoDash_WooCommerce extends EchoDash_Integration {
 	public $name = 'WooCommerce';
 
 	/**
+	 * The background color for the integration icon.
+	 *
+	 * @since 2.0.0
+	 * @var string $icon_background_color
+	 */
+	protected $icon_background_color = '#873EFF';
+
+	/**
 	 * Get things started.
 	 *
 	 * @since 1.0.0

@@ -1,0 +1,240 @@
+/**
+ * IntegrationDetail Component Styles
+ * Uses WordPress design tokens and patterns
+ */
+
+/* Breadcrumb Navigation */
+.echodash-breadcrumb {
+	margin-bottom: 20px;
+}
+
+.echodash-breadcrumb__link {
+	padding: 0;
+}
+
+.echodash-breadcrumb__separator {
+	margin: 0 8px;
+	color: #646970;
+}
+
+/* Integration Header */
+.echodash-integration-header {
+	padding: 12px 18px;
+	margin-bottom: 30px;
+}
+
+.echodash-integration-header__content {
+	display: flex;
+	align-items: center;
+}
+
+.echodash-integration-header__icon {
+	width: 48px;
+	height: 48px;
+	border-radius: 8px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-right: 16px;
+}
+
+/* Default icon background - will be overridden by inline styles */
+
+.echodash-integration-header__icon-dashicon {
+	font-size: 28px;
+	color: white;
+}
+
+.echodash-integration-header__icon-image {
+	width: 32px;
+	height: 32px;
+	object-fit: contain;
+}
+
+.echodash-integration-header__info {
+	flex: 1;
+}
+
+.echodash-integration-header__content h1.echodash-integration-header__title {
+	padding: 0;
+	margin: 0;
+	font-size: 24px;
+}
+
+.echodash-integration-header__description {
+	margin: 0;
+	color: #646970;
+}
+
+.echodash-integration-header__add-trigger {
+	margin-left: auto;
+}
+
+/* Triggers Section */
+
+.echodash-triggers__title {
+	margin-top: 0;
+	margin-bottom: 20px;
+}
+
+/* Empty State */
+.echodash-triggers__empty-state {
+	text-align: center;
+	padding: 60px 20px;
+	color: #646970;
+}
+
+.echodash-triggers__empty-icon.echodash-integration-item__icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin: 0 auto 20px;
+}
+
+.echodash-triggers__empty-title {
+	margin-bottom: 10px;
+}
+
+.echodash-triggers__empty-description {
+	margin-bottom: 20px;
+}
+
+/* Trigger List */
+.echodash-triggers__list {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+/* Trigger Item */
+
+.echodash-trigger-item__handle {
+	color: #646970;
+	margin-right: 12px;
+	cursor: grab;
+}
+
+.echodash-trigger-item__handle:active {
+	cursor: grabbing;
+}
+
+.echodash-trigger-item__info {
+	flex: 1;
+}
+
+.echodash-trigger-item__type {
+	font-weight: bold;
+	margin-bottom: 4px;
+}
+
+.echodash-trigger-item__name {
+	color: #646970;
+	font-size: 14px;
+}
+
+.echodash-trigger-item__actions {
+	display: flex;
+	gap: 10px;
+}
+
+/* Single-Item Triggers Section */
+.echodash-single-triggers {
+	margin-top: 30px;
+}
+
+.echodash-single-triggers__description {
+	margin: 0 0 20px 0;
+	color: #646970;
+	font-style: italic;
+}
+
+.echodash-single-trigger-group {
+	margin-bottom: 30px;
+}
+
+.echodash-single-trigger-group:last-child {
+	margin-bottom: 0;
+}
+
+.echodash-single-trigger-group__title {
+	margin: 0 0 8px 0;
+	font-size: 18px;
+	font-weight: 600;
+	color: #1d2327;
+}
+
+.echodash-single-trigger-group__description {
+	margin: 0 0 16px 0;
+	color: #646970;
+	font-size: 14px;
+}
+
+.echodash-single-triggers__list {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	border-left: 3px solid #f0f0f1;
+	padding-left: 16px;
+}
+
+.echodash-single-trigger-item__info {
+	flex: 1;
+}
+
+.echodash-single-trigger-item__title {
+	font-weight: 500;
+	color: #1d2327;
+	margin-bottom: 4px;
+}
+
+.echodash-single-trigger-item__post {
+	font-size: 13px;
+	color: #646970;
+}
+
+.echodash-single-trigger-item__post strong {
+	color: #1d2327;
+}
+
+.echodash-single-trigger-item__actions {
+	margin-left: 16px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+	.echodash-integration-header__content {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	.echodash-integration-header__add-trigger {
+		margin-left: 0;
+		margin-top: 16px;
+		width: 100%;
+	}
+
+	.echodash-trigger-item {
+		flex-wrap: wrap;
+	}
+
+	.echodash-trigger-item__actions {
+		width: 100%;
+		margin-top: 10px;
+		justify-content: flex-start;
+	}
+
+	.echodash-single-trigger-item {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	.echodash-single-trigger-item__actions {
+		margin-left: 0;
+		margin-top: 12px;
+		width: 100%;
+	}
+
+	.echodash-single-triggers__list {
+		padding-left: 12px;
+	}
+}
