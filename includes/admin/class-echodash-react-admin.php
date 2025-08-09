@@ -432,6 +432,14 @@ class EchoDash_React_Admin {
 			);
 		}
 
+		// Sort integrations alphabetically by name
+		usort(
+			$integrations,
+			function ( $a, $b ) {
+				return strcasecmp( $a['name'], $b['name'] );
+			}
+		);
+
 		return $integrations;
 	}
 }

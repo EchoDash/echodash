@@ -596,11 +596,6 @@ class EchoDash_REST_API extends WP_REST_Controller {
 		$integration_slug = $params['integrationSlug'];
 		$trigger          = $params['trigger'];
 
-		error_log( print_r( 'SEND test!', true ) );
-		error_log( print_r( $event_data, true ) );
-		error_log( print_r( $integration_slug, true ) );
-		error_log( print_r( $trigger, true ) );
-
 		// Get EchoDash instance and validate integration
 		if ( ! echodash() || ! echodash()->integration( $integration_slug ) ) {
 			return new WP_Error( 'integration_not_found', __( 'Integration not found', 'echodash' ), array( 'status' => 404 ) );
@@ -608,18 +603,33 @@ class EchoDash_REST_API extends WP_REST_Controller {
 
 		$integration = echodash()->integration( $integration_slug );
 
+		// Get test data for processing merge tags
+		$test_data = $this->get_integration_test_data( $integration_slug, $trigger );
+
+		error_log( print_r( 'got test data', true ) );
+		error_log( print_r( $test_data, true ) );
+
+		// Process merge tags in event properties
+		$processed_properties = array();
+		if ( isset( $event_data['properties'] ) && is_array( $event_data['properties'] ) ) {
+			foreach ( $event_data['properties'] as $key => $value ) {
+				$processed_properties[ $key ] = $this->process_merge_tag( $value, $test_data );
+			}
+		}
+
 		// Get source and trigger names (following legacy implementation pattern)
 		$source_name  = $integration->name;
 		$trigger_name = $integration->get_trigger_name( $trigger );
 
-		// Track test event with proper parameters matching echodash_track_event signature
-		$result = echodash_track_event( $event_data['name'], $event_data['properties'], $source_name, $trigger_name );
+		// Track test event with processed parameters
+		$result = echodash_track_event( $event_data['name'], $processed_properties, $source_name, $trigger_name );
 
 		if ( $result ) {
 			return rest_ensure_response(
 				array(
-					'success' => true,
-					'message' => __( 'Test event sent successfully', 'echodash' ),
+					'success'        => true,
+					'message'        => __( 'Test event sent successfully', 'echodash' ),
+					'processed_data' => $processed_properties, // Include processed data for debugging
 				)
 			);
 		} else {
@@ -663,9 +673,6 @@ class EchoDash_REST_API extends WP_REST_Controller {
 			'slug'         => $slug,
 			'name'         => $integration->name,
 			'icon'         => $this->get_integration_icon( $slug ),
-			'description'  => isset( $integration->description ) ? $integration->description : '',
-			'isActive'     => $integration->is_active(),
-			'enabled'      => $integration->is_active(),
 			'triggerCount' => $total_trigger_count,
 		);
 
@@ -698,11 +705,7 @@ class EchoDash_REST_API extends WP_REST_Controller {
 				);
 			}
 
-			$data['settings']     = $this->get_integration_settings( $slug );
-			$data['capabilities'] = array(
-				'hasGlobalSettings' => true,
-				'hasSingleSettings' => isset( $integration->has_single ) ? $integration->has_single : false,
-			);
+			$data['settings'] = $this->get_integration_settings( $slug );
 		}
 
 		return $data;
@@ -800,8 +803,9 @@ class EchoDash_REST_API extends WP_REST_Controller {
 		$test_data = array();
 
 		if ( ! empty( $options ) ) {
-			foreach ( $options as $option_type => $option_data ) {
-				if ( isset( $option_data['options'] ) && is_array( $option_data['options'] ) ) {
+			foreach ( $options as $option_data ) {
+				if ( isset( $option_data['type'] ) && isset( $option_data['options'] ) && is_array( $option_data['options'] ) ) {
+					$option_type               = $option_data['type'];
 					$test_data[ $option_type ] = array();
 
 					// Extract preview values from each option.

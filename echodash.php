@@ -264,7 +264,7 @@ final class EchoDash {
 			'presto-player'           => 'PrestoPlayer\Core',
 			'abandoned-cart'          => 'WP_Fusion_Abandoned_Cart',
 			'gravity-forms'           => 'GFForms',
-			'affiliatewp'             => 'AffWP',
+			'affiliatewp'             => 'Affiliate_WP',
 			'bbpress'                 => 'bbPress',
 			'buddypress'              => 'BuddyPress',
 			'edd'                     => 'Easy_Digital_Downloads',

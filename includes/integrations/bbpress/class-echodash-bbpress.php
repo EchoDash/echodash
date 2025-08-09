@@ -27,6 +27,14 @@ class EchoDash_BbPress extends EchoDash_Integration {
 	public $name = 'bbPress';
 
 	/**
+	 * The icon background color for EchoDash's module tracking.
+	 *
+	 * @since 2.0.0
+	 * @var string $icon_background_color
+	 */
+	protected $icon_background_color = '#8fc970';
+
+	/**
 	 * Get things started.
 	 *
 	 * @since 1.2.0
