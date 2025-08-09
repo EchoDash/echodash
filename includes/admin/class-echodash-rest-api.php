@@ -596,6 +596,11 @@ class EchoDash_REST_API extends WP_REST_Controller {
 		$integration_slug = $params['integrationSlug'];
 		$trigger          = $params['trigger'];
 
+		error_log( print_r( 'SEND test!', true ) );
+		error_log( print_r( $event_data, true ) );
+		error_log( print_r( $integration_slug, true ) );
+		error_log( print_r( $trigger, true ) );
+
 		// Get EchoDash instance and validate integration
 		if ( ! echodash() || ! echodash()->integration( $integration_slug ) ) {
 			return new WP_Error( 'integration_not_found', __( 'Integration not found', 'echodash' ), array( 'status' => 404 ) );

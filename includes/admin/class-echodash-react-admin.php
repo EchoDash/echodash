@@ -99,7 +99,7 @@ class EchoDash_React_Admin {
 				ECHODASH_DIR_URL . 'assets/dist/wordpress.js',
 				array( 'wp-element', 'wp-components', 'wp-api-fetch' ),
 				$asset_file['version'],
-				true
+				truet
 			);
 		}
 	}
@@ -271,11 +271,6 @@ class EchoDash_React_Admin {
 			$tag = str_replace( ' src', ' defer src', $tag );
 		}
 
-		// Don't defer the main React script - let it load normally after dependencies
-		// if ( 'echodash-react' === $handle ) {
-		// $tag = str_replace( ' src', ' defer src', $tag );
-		// }
-
 		return $tag;
 	}
 
@@ -338,11 +333,11 @@ class EchoDash_React_Admin {
 		$settings = get_option( 'echodash_options', array() );
 
 		foreach ( $echodash->integrations as $slug => $integration ) {
-			$configured_triggers = 0;
-			$triggers            = array();
-			$available_triggers  = array();
+			$configured_triggers  = 0;
+			$triggers             = array();
+			$available_triggers   = array();
 			$single_item_triggers = array();
-			$single_item_count   = 0;
+			$single_item_count    = 0;
 
 			// Load configured triggers from the correct settings path
 			$configured_trigger_data = array();
@@ -370,18 +365,18 @@ class EchoDash_React_Admin {
 				if ( isset( $trigger_config['has_single'] ) && $trigger_config['has_single'] ) {
 					// Get single events for this trigger
 					$single_events = $integration->get_single_events( $trigger_key );
-					
+
 					if ( ! empty( $single_events ) ) {
 						// Count single events for the total
 						$single_item_count += count( $single_events );
-						
+
 						// Group single events by trigger type
 						$grouped_events = array();
 						foreach ( $single_events as $event ) {
 							// Get post title and edit URL
 							$post_title = isset( $event['post_title'] ) ? $event['post_title'] : get_the_title( $event['post_id'] );
 							$edit_url   = isset( $event['edit_url'] ) ? $event['edit_url'] : get_edit_post_link( $event['post_id'] ) . '#echodash';
-							
+
 							$grouped_events[] = array(
 								'post_id'    => $event['post_id'],
 								'post_title' => $post_title,
@@ -390,7 +385,7 @@ class EchoDash_React_Admin {
 								'mappings'   => $event['value'] ?? array(),
 							);
 						}
-						
+
 						if ( ! empty( $grouped_events ) ) {
 							$single_item_triggers[] = array(
 								'trigger'     => $trigger_key,
@@ -425,15 +420,15 @@ class EchoDash_React_Admin {
 			}
 
 			$integrations[] = array(
-				'slug'                 => $slug,
-				'name'                 => $integration->name,
-				'icon'                 => $integration->get_icon(),
-				'iconBackgroundColor'  => $integration->get_icon_background_color(),
-				'triggerCount'         => $total_trigger_count,
-				'enabled'              => $total_trigger_count > 0,
-				'triggers'             => $triggers,
-				'availableTriggers'    => $available_triggers,
-				'singleItemTriggers'   => $single_item_triggers,
+				'slug'                => $slug,
+				'name'                => $integration->name,
+				'icon'                => $integration->get_icon(),
+				'iconBackgroundColor' => $integration->get_icon_background_color(),
+				'triggerCount'        => $total_trigger_count,
+				'enabled'             => $total_trigger_count > 0,
+				'triggers'            => $triggers,
+				'availableTriggers'   => $available_triggers,
+				'singleItemTriggers'  => $single_item_triggers,
 			);
 		}
 

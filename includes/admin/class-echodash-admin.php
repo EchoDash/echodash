@@ -117,9 +117,9 @@ class EchoDash_Admin {
 		$args = array(
 			'a'            => 'plugin_install',
 			'source'       => __( 'WordPress', 'echodash' ),
-			'site_name'    => sanitize_text_field( get_bloginfo( 'name' ) ),
+			'site_name'    => __( 'WordPress', 'echodash' ) . ' - ' . sanitize_text_field( get_bloginfo( 'name' ) ),
 			'redirect_uri' => esc_url( admin_url( 'options-general.php?page=echodash' ) ),
-			'wpnonce'      => wp_create_nonce( 'echodash_connect' ),
+			'state'        => wp_create_nonce( 'echodash_connect' ),
 		);
 
 		// Local testing.
@@ -140,11 +140,11 @@ class EchoDash_Admin {
 	 * @since 0.0.3
 	 */
 	public function save_echodash_callback() {
-		if ( ! isset( $_GET['endpoint_url'] ) || ! isset( $_GET['wpnonce'] ) ) {
+		if ( ! isset( $_GET['endpoint_url'] ) || ! isset( $_GET['state'] ) ) {
 			return;
 		}
 
-		if ( ! wp_verify_nonce( wp_unslash( sanitize_key( $_GET['wpnonce'] ) ), 'echodash_connect' ) ) {
+		if ( ! wp_verify_nonce( wp_unslash( sanitize_key( $_GET['state'] ) ), 'echodash_connect' ) ) {
 			return;
 		}
 

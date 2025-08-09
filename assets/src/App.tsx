@@ -383,6 +383,7 @@ export const App: React.FC = () => {
 						setEditingTrigger(null);
 					}}
 					onSave={handleSaveTrigger}
+					onSendTest={handleSendTest}
 					integration={selectedIntegrationData}
 					editingTrigger={editingTrigger}
 				/>

@@ -142,9 +142,6 @@ abstract class EchoDash_Integration {
 	 * @return string The background color.
 	 */
 	public function get_icon_background_color() {
-
-		error_log( print_r( 'get background color for integration ' . $this->slug . ' is ' . $this->icon_background_color, true ) );
-
 		return apply_filters( 'echodash_integration_icon_background_color', $this->icon_background_color, $this->slug );
 	}
 

@@ -36,6 +36,7 @@ interface TriggerModalProps {
 	isOpen: boolean;
 	onClose: () => void;
 	onSave: (data: any) => void;
+	onSendTest?: (data: any) => void;
 	integration: Integration;
 	editingTrigger?: any;
 }
@@ -49,6 +50,7 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 	isOpen,
 	onClose,
 	onSave,
+	onSendTest,
 	integration,
 	editingTrigger,
 }) => {
@@ -109,6 +111,8 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 	const [eventName, setEventName] = useState(getInitialEventName());
 	const [keyValuePairs, setKeyValuePairs] = useState<KeyValuePair[]>(getInitialKeyValuePairs());
 	const [openDropdownIndex, setOpenDropdownIndex] = useState<{type: 'name' | 'value', index: number} | null>(null);
+	const [sendingTest, setSendingTest] = useState(false);
+	const [sentTest, setSentTest] = useState(false);
 	
 	// Refs for merge tag buttons
 	const nameButtonRef = useRef<HTMLButtonElement>(null);
@@ -158,7 +162,7 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 
 	const handleMergeTagSelect = (mergeTag: string) => {
 		if (openDropdownIndex?.type === 'name') {
-			setEventName(prev => prev + mergeTag);
+			setEventName((prev: string) => prev + mergeTag);
 		} else if (openDropdownIndex?.type === 'value') {
 			const index = openDropdownIndex.index;
 			updateKeyValuePair(index, 'value', keyValuePairs[index].value + mergeTag);
@@ -181,16 +185,49 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 		onSave(data);
 	};
 
+	const handleSendTest = async () => {
+		if (!onSendTest) return;
+		
+		setSendingTest(true);
+		setSentTest(false); // Clear any previous sent state
+		try {
+			const data = {
+				trigger: selectedTrigger,
+				name: eventName,
+				mappings: keyValuePairs.filter(pair => pair.key && pair.value),
+			};
+			await onSendTest(data);
+			// Show "Sent!" state for 3 seconds
+			setSentTest(true);
+			setTimeout(() => setSentTest(false), 3000);
+		} catch (error) {
+			// onSendTest handles error display, just clear loading state
+		} finally {
+			setSendingTest(false);
+		}
+	};
+
 	return (
 		<div className="echodash-modal-overlay">
 			<div className="echodash-modal">
 				{/* Header */}
 				<div className="echodash-modal__header">
 					<div className="echodash-modal__header-content">
-						<div className="echodash-modal__header-icon">
-							<span 
-								className={`dashicons dashicons-${integration.slug === 'gravity-forms' ? 'feedback' : 'admin-plugins'} echodash-modal__header-icon-dashicon`} 
-							></span>
+						<div 
+							className="echodash-modal__header-icon echodash-integration-item__icon"
+							style={{ backgroundColor: (integration as any).iconBackgroundColor || '#ff6900' }}
+						>
+							{(integration as any).icon ? (
+								<img 
+									src={(integration as any).icon}
+									alt={`${integration.name} logo`}
+									className="echodash-modal__header-icon-image"
+								/>
+							) : (
+								<span 
+									className={`dashicons dashicons-${integration.slug === 'gravity-forms' ? 'feedback' : 'admin-plugins'} echodash-modal__header-icon-dashicon`} 
+								></span>
+							)}
 						</div>
 						<div className="echodash-modal__header-text">
 							<h2 className="echodash-modal__title">
@@ -231,7 +268,7 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 						{selectedTrigger && (
 							<div className="echodash-info-box">
 								<span 
-									className="dashicons dashicons-info echodash-info-box__icon" 
+									className="dashicons dashicons-info-outline echodash-info-box__icon" 
 								></span>
 								<span className="echodash-info-box__text">
 									{availableTriggers.find(t => t.id === selectedTrigger)?.description || 'No description available.'}
@@ -240,59 +277,62 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 						)}
 					</div>
 
+					<hr />
+
 					{/* Payload */}
 					<div className="echodash-payload">
 						<h3 className="echodash-payload__title">Payload</h3>
-						<p className="echodash-payload__description">
-							Configure the data to send when this trigger fires.
-						</p>
 
 						{/* Event Name */}
 						<div className="echodash-event-name">
-							<label className="echodash-event-name__label">
-								Name:
-							</label>
-							<input 
-								type="text"
-								value={eventName}
-								onChange={(e) => setEventName(e.target.value)}
-								placeholder="Contact Form Submitted"
-								className="echodash-event-name__input"
-							/>
-							<button 
-								ref={nameButtonRef}
-								type="button"
-								onClick={() => setOpenDropdownIndex({ type: 'name', index: -1 })}
-								className="echodash-merge-tag-button"
-							>
-								{'{...}'}
-							</button>
+							<div className="echodash-input-wrapper echodash-input-wrapper--name">
+								<input 
+									type="text"
+									value={eventName}
+									onChange={(e) => setEventName(e.target.value)}
+									className="echodash-event-name__input"
+								/>
+								<button 
+									ref={nameButtonRef}
+									type="button"
+									onClick={() => setOpenDropdownIndex({ type: 'name', index: -1 })}
+									className="echodash-merge-tag-button echodash-merge-tag-button--inline"
+								></button>
+							</div>
 						</div>
 
 						{/* Key-Value Pairs */}
 						{keyValuePairs.map((pair, index) => (
 							<div key={index} className="echodash-key-value-pair">
-								<div className="echodash-key-value-pair__field">
-									<label className="echodash-key-value-pair__label">
-										Key:
-									</label>
-									<input 
-										type="text"
-										value={pair.key}
-										onChange={(e) => updateKeyValuePair(index, 'key', e.target.value)}
-										className="echodash-key-value-pair__input"
-									/>
+								<div className="echodash-key-value-pair__field echodash-key-value-pair__field--key">
+									<div className="echodash-input-wrapper echodash-input-wrapper--key">
+										<input 
+											type="text"
+											value={pair.key}
+											onChange={(e) => updateKeyValuePair(index, 'key', e.target.value)}
+											className="echodash-key-value-pair__input"
+										/>
+									</div>
 								</div>
-								<div className="echodash-key-value-pair__field">
-									<label className="echodash-key-value-pair__label">
-										Value:
-									</label>
-									<input 
-										type="text"
-										value={pair.value}
-										onChange={(e) => updateKeyValuePair(index, 'value', e.target.value)}
-										className="echodash-key-value-pair__input"
-									/>
+								<div className="echodash-key-value-pair__field echodash-key-value-pair__field--value">
+									<div className="echodash-input-wrapper echodash-input-wrapper--value">
+										<input 
+											type="text"
+											value={pair.value}
+											onChange={(e) => updateKeyValuePair(index, 'value', e.target.value)}
+											className="echodash-key-value-pair__input"
+										/>
+										<button 
+											ref={(el) => {
+												if (valueButtonRefs.current) {
+													valueButtonRefs.current[index] = el;
+												}
+											}}
+											type="button"
+											onClick={() => setOpenDropdownIndex({ type: 'value', index })}
+											className="echodash-merge-tag-button echodash-merge-tag-button--inline"
+										></button>
+									</div>
 								</div>
 								<div className="echodash-key-value-pair__actions">
 									<button 
@@ -300,7 +340,7 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 										onClick={addKeyValuePair}
 										className="echodash-key-value-pair__action-button"
 									>
-										<span className="dashicons dashicons-plus-alt"></span>
+										<span className="dashicons dashicons-plus-alt2"></span>
 									</button>
 									{keyValuePairs.length > 1 && (
 										<button 
@@ -312,18 +352,6 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 										</button>
 									)}
 								</div>
-								<button 
-									ref={(el) => {
-										if (valueButtonRefs.current) {
-											valueButtonRefs.current[index] = el;
-										}
-									}}
-									type="button"
-									onClick={() => setOpenDropdownIndex({ type: 'value', index })}
-									className="echodash-key-value-pair__merge-button"
-								>
-									{'{...}'}
-								</button>
 							</div>
 						))}
 					</div>
@@ -347,18 +375,43 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 				{/* Footer */}
 				<div className="echodash-modal__footer">
 					<button 
-						onClick={onClose}
-						className="button button-secondary"
+						type="button"
+						className="echodash-button echodash-send-test-button"
+						onClick={handleSendTest}
+						disabled={sendingTest || !onSendTest || !selectedTrigger}
 					>
-						Cancel
+						{sendingTest ? (
+							<>
+								<span className="dashicons dashicons-bell ecd-ring"></span>
+								Sending...
+							</>
+						) : sentTest ? (
+							<>
+								<span className="dashicons dashicons-bell"></span>
+								Sent!
+							</>
+						) : (
+							<>
+								<span className="dashicons dashicons-bell"></span>
+								Send Test
+							</>
+						)}
 					</button>
-					<button 
-						onClick={handleSave}
-						className="button button-primary"
-						disabled={!selectedTrigger}
-					>
-						{editingTrigger ? 'Update Trigger' : 'Add Trigger'}
-					</button>
+					<div className="echodash-modal__footer-actions">
+						<button 
+							onClick={onClose}
+							className="echodash-button"
+						>
+							Cancel
+						</button>
+						<button 
+							onClick={handleSave}
+							className="echodash-button echodash-button-primary"
+							disabled={!selectedTrigger}
+						>
+							{editingTrigger ? 'Update Trigger' : 'Add Trigger'}
+						</button>
+					</div>
 				</div>
 			</div>
 		</div>
