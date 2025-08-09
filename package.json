@@ -32,7 +32,9 @@
     "test:visual:update": "playwright test --config=tests/visual/playwright.config.ts --update-snapshots",
     "test:visual:ui": "playwright test --config=tests/visual/playwright.config.ts --ui",
     "test:all": "npm run test:unit && npm run test:integration && npm run test:e2e",
-    "test:ci": "jest --ci --coverage --reporters=default --reporters=jest-junit"
+    "test:ci": "jest --ci --coverage --reporters=default --reporters=jest-junit",
+    "makepot": "wp i18n make-pot . languages/echodash.pot --exclude=node_modules,vendor,tests,assets/dist",
+    "makejson": "wp i18n make-json languages --no-purge"
   },
   "keywords": [
     "wordpress",

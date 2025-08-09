@@ -115,6 +115,7 @@ final class EchoDash {
 			if ( ! is_wp_error( self::$instance->check_install() ) ) {
 
 				self::$instance->includes();
+				self::$instance->load_textdomain();
 
 				// Initialize classes
 				self::$instance->public = new EchoDash_Public();
@@ -194,6 +195,16 @@ final class EchoDash {
 		}
 	}
 
+
+	/**
+	 * Load plugin text domain for translations.
+	 *
+	 * @access private
+	 * @since  1.0.0
+	 */
+	private function load_textdomain() {
+		load_plugin_textdomain( 'echodash', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+	}
 
 	/**
 	 * Setup plugin constants.

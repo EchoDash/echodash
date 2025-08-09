@@ -5,6 +5,7 @@
  */
 
 import React, { useState } from 'react';
+import { __, _n } from '@wordpress/i18n';
 import './IntegrationDetail.css';
 import { EchoDashLogo } from './EchoDashLogo';
 
@@ -98,7 +99,7 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 					rel="noopener noreferrer"
 					className="echodash-button echodash-header__docs-link"
 				>
-					Documentation →
+					{__('Documentation', 'echodash')} →
 				</a>
 			</div>
 
@@ -108,7 +109,7 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 					onClick={onBack}
 					className="button-link echodash-breadcrumb__link"
 				>
-					Integrations
+					{__('Integrations', 'echodash')}
 				</button>
 				<span className="echodash-breadcrumb__separator">/</span>
 				<span>{integration.name}</span>
@@ -132,7 +133,7 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 					<div className="echodash-integration-header__info">
 						<h1 className="echodash-integration-header__title">{integration.name}</h1>
 						<p className="echodash-integration-header__description">
-							{integration.description || 'Configure triggers for this integration'}
+							{integration.description || __('Configure triggers for this integration', 'echodash')}
 						</p>
 					</div>
 
@@ -140,14 +141,14 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 						className="echodash-button echodash-integration-header__add-trigger"
 						onClick={onAddTrigger}
 					>
-						+ Add Trigger
+						+ {__('Add Trigger', 'echodash')}
 					</button>
 				</div>
 			</div>
 
 			{/* Triggers section */}
 			<div className="echodash-card echodash-triggers">
-				<h2 className="echodash-triggers__title">Global Triggers</h2>
+				<h2 className="echodash-triggers__title">{__('Global Triggers', 'echodash')}</h2>
 				
 				{triggers.length === 0 ? (
 					<div className="echodash-triggers__empty-state">
@@ -161,7 +162,7 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 							className="echodash-triggers__empty-icon-image echodash-integration-item__icon-image"
 						/>
 						</div>
-						<h3 className="echodash-triggers__empty-title">Add your first {integration.name} trigger</h3>
+						<h3 className="echodash-triggers__empty-title">{__('Add your first %s trigger', 'echodash').replace('%s', integration.name)}</h3>
 						<p className="echodash-triggers__empty-description">
 							Global triggers fire for all events of the selected type across your site.
 						</p>
@@ -169,7 +170,7 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 							className="echodash-button echodash-button-primary"
 							onClick={onAddTrigger}
 						>
-							+ Add Trigger
+							+ {__('Add Trigger', 'echodash')}
 						</button>
 					</div>
 				) : (

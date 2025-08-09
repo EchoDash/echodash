@@ -5,6 +5,7 @@
  */
 
 import React, { useState } from 'react';
+import { __ } from '@wordpress/i18n';
 import './IntegrationList.css';
 import { EchoDashLogo } from './EchoDashLogo';
 
@@ -67,7 +68,7 @@ export const IntegrationList: React.FC<IntegrationListProps> = ({
 				console.error('Error saving endpoint:', error);
 				// Revert to original value on error
 				setEndpointUrl(settings.endpoint || '');
-				alert('Failed to save endpoint URL. Please try again.');
+				alert(__('Failed to save endpoint URL. Please try again.', 'echodash'));
 			} finally {
 				setIsSaving(false);
 			}
@@ -99,14 +100,14 @@ export const IntegrationList: React.FC<IntegrationListProps> = ({
 			{/* Welcome Section */}
 			<div className="echodash-card echodash-welcome">
 				<div className="echodash-welcome__content">
-					<h2 className="echodash-welcome__title">Welcome to EchoDash</h2>
+					<h2 className="echodash-welcome__title">{__('Welcome to EchoDash', 'echodash')}</h2>
 					<p className="echodash-welcome__description">
-						EchoDash is a service for tracking real-time events on your WordPress site. It's free and easy to use.
+						{__('EchoDash is a service for tracking real-time events on your WordPress site. It\'s free and easy to use.', 'echodash')}
 					</p>
 					{!settings.isConnected ? (
 						<>
 							<p className="echodash-welcome__instructions">
-								To get started, create an endpoint in your EchoDash account by clicking the button below.
+								{__('To get started, create an endpoint in your EchoDash account by clicking the button below.', 'echodash')}
 							</p>
 							
 							<div className="echodash-welcome__connect-action">
@@ -114,19 +115,19 @@ export const IntegrationList: React.FC<IntegrationListProps> = ({
 									href={settings.connectUrl || '#'} 
 									className="echodash-button echodash-button-primary echodash-connect-button"
 								>
-									Connect to EchoDash &rarr;
+									{__('Connect to EchoDash', 'echodash')} &rarr;
 								</a>
 							</div>
 						</>
 					) : (
 						<>
 							<p className="echodash-welcome__instructions">
-								Your endpoint URL is configured below. You can update it anytime if needed.
+								{__('Your endpoint URL is configured below. You can update it anytime if needed.', 'echodash')}
 							</p>
 							
 							<div className="echodash-welcome__field-group">
 								<label htmlFor="endpoint-url" className="echodash-welcome__label">
-									URL
+									{__('URL', 'echodash')}
 								</label>
 								<input 
 									type="text" 
@@ -138,7 +139,7 @@ export const IntegrationList: React.FC<IntegrationListProps> = ({
 									onBlur={handleEndpointBlur}
 									disabled={isSaving}
 								/>
-								{isSaving && <span className="echodash-saving-indicator">Saving...</span>}
+								{isSaving && <span className="echodash-saving-indicator">{__('Saving...', 'echodash')}</span>}
 							</div>
 						</>
 					)}
@@ -154,7 +155,7 @@ export const IntegrationList: React.FC<IntegrationListProps> = ({
 
 			{/* Integrations Section */}
 			<div className="echodash-card echodash-integrations">
-				<h2 className="echodash-integrations__title">Integrations</h2>
+				<h2 className="echodash-integrations__title">{__('Integrations', 'echodash')}</h2>
 				
 				<div className="echodash-integrations__list">
 					{integrations.map((integration) => (
@@ -180,7 +181,7 @@ export const IntegrationList: React.FC<IntegrationListProps> = ({
 									{integration.name}
 								</h3>
 								<span className="echodash-integration-item__trigger-count">
-									{integration.triggerCount} {integration.triggerCount === 1 ? 'Trigger' : 'Triggers'}
+									{integration.triggerCount} {integration.triggerCount === 1 ? __('Trigger', 'echodash') : __('Triggers', 'echodash')}
 								</span>
 							</div>
 
@@ -190,13 +191,13 @@ export const IntegrationList: React.FC<IntegrationListProps> = ({
 									className="echodash-button"
 									onClick={() => onIntegrationClick(integration.slug)}
 								>
-									Manage
+									{__('Manage', 'echodash')}
 								</button>
 								<button 
 									className="echodash-button"
 									onClick={() => onAddTrigger(integration.slug)}
 								>
-									+ Add Trigger
+									+ {__('Add Trigger', 'echodash')}
 								</button>
 							</div>
 						</div>

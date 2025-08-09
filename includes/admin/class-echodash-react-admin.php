@@ -59,6 +59,9 @@ class EchoDash_React_Admin {
 
 		// Script attributes are already handled by add_script_attributes method in constructor
 
+		// Set script translations for React app
+		wp_set_script_translations( 'echodash-react', 'echodash', ECHODASH_DIR_PATH . 'languages' );
+
 		// Enqueue React styles with media optimization
 		wp_enqueue_style(
 			'echodash-react',
