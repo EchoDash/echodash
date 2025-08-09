@@ -24,9 +24,6 @@ class EchoDash_React_Admin {
 		// Core hooks
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_react_assets' ) );
 
-		// Performance and monitoring hooks
-		add_action( 'wp_ajax_ecd_log_client_event', array( $this, 'handle_client_logging' ) );
-
 		// Asset optimization hooks
 		add_filter( 'script_loader_tag', array( $this, 'add_script_attributes' ), 10, 3 );
 		// Temporarily disabled preload to debug script execution issue
@@ -249,23 +246,6 @@ class EchoDash_React_Admin {
 	}
 
 	/**
-	 * Handle client-side logging
-	 */
-	public function handle_client_logging() {
-		check_ajax_referer( 'wp_rest', 'nonce' );
-
-		$level   = sanitize_text_field( $_POST['level'] ?? 'info' );
-		$message = sanitize_text_field( $_POST['message'] ?? '' );
-		$context = sanitize_text_field( $_POST['context'] ?? 'react-app' );
-
-		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-			error_log( sprintf( '[EchoDash React] [%s] %s (Context: %s)', strtoupper( $level ), $message, $context ) );
-		}
-
-		wp_send_json_success();
-	}
-
-	/**
 	 * Add script attributes for performance optimization
 	 */
 	public function add_script_attributes( $tag, $handle, $src ) {
@@ -277,50 +257,6 @@ class EchoDash_React_Admin {
 		return $tag;
 	}
 
-	/**
-	 * Preload critical assets
-	 */
-	public function preload_critical_assets() {
-
-		$asset_file_path = ECHODASH_DIR_PATH . 'assets/dist/index.asset.php';
-		if ( ! file_exists( $asset_file_path ) ) {
-			return;
-		}
-
-		$asset_file = include $asset_file_path;
-
-		// Preload main JS file
-		echo '<link rel="preload" href="' . esc_url( ECHODASH_DIR_URL . 'assets/dist/index.js' ) . '" as="script">' . "\n";
-
-		// Preload main CSS file
-		echo '<link rel="preload" href="' . esc_url( ECHODASH_DIR_URL . 'assets/dist/index.css' ) . '" as="style">' . "\n";
-
-		// Preload vendor chunks if they exist
-		if ( file_exists( ECHODASH_DIR_PATH . 'assets/dist/vendors.js' ) ) {
-			echo '<link rel="preload" href="' . esc_url( ECHODASH_DIR_URL . 'assets/dist/vendors.js' ) . '" as="script">' . "\n";
-		}
-	}
-
-	/**
-	 * Handle missing assets gracefully
-	 */
-	private function handle_missing_assets() {
-		if ( current_user_can( 'manage_options' ) ) {
-			add_action(
-				'admin_notices',
-				function () {
-					echo '<div class="notice notice-error"><p>';
-					echo esc_html__( 'EchoDash React assets are missing. Please run "npm run build" to generate them.', 'echodash' );
-					echo '</p></div>';
-				}
-			);
-		}
-
-		// Log error for debugging
-		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-			error_log( 'EchoDash: React asset file missing at ' . ECHODASH_DIR_PATH . 'assets/dist/index.asset.php' );
-		}
-	}
 
 	/**
 	 * Get integrations data with full trigger information

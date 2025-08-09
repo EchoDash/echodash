@@ -606,9 +606,6 @@ class EchoDash_REST_API extends WP_REST_Controller {
 		// Get test data for processing merge tags
 		$test_data = $this->get_integration_test_data( $integration_slug, $trigger );
 
-		error_log( print_r( 'got test data', true ) );
-		error_log( print_r( $test_data, true ) );
-
 		// Process merge tags in event properties
 		$processed_properties = array();
 		if ( isset( $event_data['properties'] ) && is_array( $event_data['properties'] ) ) {
