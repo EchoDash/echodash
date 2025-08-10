@@ -31,7 +31,7 @@ jobs:
                   coverage: none
 
             - name: Cache Composer dependencies
-              uses: actions/cache@v3
+              uses: actions/cache@v4
               with:
                   path: vendor
                   key: ${{ runner.os }}-composer-${{ matrix.php-version }}-${{ hashFiles('**/composer.lock') }}
@@ -134,7 +134,7 @@ jobs:
               run: npm run build
 
             - name: Cache Composer dependencies
-              uses: actions/cache@v3
+              uses: actions/cache@v4
               with:
                   path: vendor
                   key: ${{ runner.os }}-composer-${{ matrix.php-version }}-${{ hashFiles('**/composer.lock') }}
@@ -180,7 +180,7 @@ jobs:
                   extensions: dom, curl, libxml, mbstring, zip
 
             - name: Cache Composer dependencies
-              uses: actions/cache@v3
+              uses: actions/cache@v4
               with:
                   path: vendor
                   key: ${{ runner.os }}-composer-security-${{ hashFiles('**/composer.lock') }}
@@ -260,7 +260,7 @@ jobs:
               run: npm run plugin-zip
 
             - name: Upload build artifacts
-              uses: actions/upload-artifact@v3
+              uses: actions/upload-artifact@v4
               with:
                   name: plugin-build-${{ github.sha }}
                   path: |
