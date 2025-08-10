@@ -6,6 +6,8 @@
 /bin
 /node_modules
 /vendor
+/tests
+/assets/tests
 .DS_Store
 
 .distignore

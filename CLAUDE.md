@@ -4,146 +4,249 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-EchoDash is a WordPress plugin that tracks user events and interactions across WordPress sites. It acts as a bridge between WordPress plugins and the EchoDash analytics platform, providing real-time event tracking with support for 20+ WordPress plugins including WooCommerce, LearnDash, Gravity Forms, and more.
+EchoDash is a production-ready WordPress plugin that tracks user events and interactions across WordPress sites. It serves as a bridge between WordPress plugins and the EchoDash analytics platform, providing real-time event tracking with support for 20+ WordPress plugins including WooCommerce, LearnDash, Gravity Forms, and more.
 
-## React Conversion Progress
+## Architecture Status: **Production-Ready Dual System**
 
-EchoDash is currently undergoing a **major architectural transformation** from a traditional jQuery-based WordPress admin interface to a modern React-based system. This conversion represents a significant modernization effort.
+EchoDash operates with a **sophisticated dual architecture** that combines modern React technology with traditional WordPress plugin functionality:
 
-### Conversion Status: **Phase 6+ Complete**
-- ✅ **React Foundation**: Complete React app setup with TypeScript
-- ✅ **Build System**: Advanced webpack configuration with code splitting and performance optimization  
-- ✅ **Component Architecture**: Well-structured React components with modern patterns
-- ✅ **REST API**: Comprehensive WordPress REST API for React-backend communication
-- ✅ **Testing Infrastructure**: Jest, Playwright, and visual testing setup
-- ✅ **Performance Optimization**: Bundle analysis, compression, and caching strategies
-- 🔄 **Progressive Migration**: Legacy jQuery system coexists with React system
-- 📋 **Future**: Complete migration of all admin interfaces to React
+### React Application (Primary Interface) ✅ **Production Ready**
+- **Modern TypeScript React**: Professional React 18 application with strict TypeScript configuration
+- **Advanced Build System**: Webpack with code splitting, compression, and bundle analysis
+- **Performance Optimized**: Bundle size monitoring (500KB limits), asset optimization, caching strategies
+- **Professional Testing**: Jest + Playwright with comprehensive coverage and visual regression testing
+- **Code Quality**: ESLint + Prettier + Stylelint with WordPress standards compliance
+
+### WordPress Plugin Backend ✅ **Production Ready**
+- **Robust PHP Architecture**: Traditional WordPress plugin with comprehensive integration system
+- **REST API**: Complete WordPress REST API for React-backend communication
+- **Quality Assurance**: PHPStan level 5, PHPCS with WordPress standards, PHPUnit testing
+- **Legacy Support**: jQuery admin interface coexists for compatibility
 
 ## Core Architecture
 
-The plugin now operates with a **dual architecture** supporting both legacy and modern systems:
+### Modern React Frontend (Primary Interface)
+**Location**: `assets/src/` - Professional TypeScript React application
 
-### Modern React Architecture (Primary)
-- **React App**: `assets/src/` - TypeScript React application with modern component structure
-- **REST API**: `includes/admin/class-echodash-rest-api.php` - Comprehensive API for React-backend communication
-- **React Integration**: `includes/admin/class-echodash-react-admin.php` - WordPress-React bridge with performance optimization
-- **Build System**: `webpack.config.js` - Advanced webpack with code splitting, compression, and bundle analysis
-- **Component Structure**:
-  - `assets/src/components/` - Reusable UI components
-  - `assets/src/hooks/` - Custom React hooks for data fetching and state management
-  - `assets/src/services/` - API services and utilities
-  - `assets/src/types/` - TypeScript type definitions
+**Build System**: `webpack.config.js`
+- Advanced webpack configuration with code splitting and performance optimization
+- Vendor chunk separation (`wordpress`, `vendors`) for optimal caching
+- Gzip compression and bundle analysis for production
+- Development server with hot module replacement
+- Performance budgets and asset optimization
 
-### Legacy PHP Architecture (Coexisting)
-- **Main entry point**: `echodash.php` - Singleton pattern with integration management
-- **Base classes**: All integrations extend `EchoDash_Integration` abstract class
-- **Integration system**: Each plugin integration has its own class in `includes/integrations/`
-- **Legacy Admin**: `includes/admin/class-echodash-admin.php` - Traditional PHP admin interface
-- **Public API**: Event tracking handled through `EchoDash_Public` class
-- **jQuery Interface**: `assets/echodash-admin.js` - Legacy JavaScript for backward compatibility
+**Component Architecture**:
+- `assets/src/components/` - Professional React components with TypeScript
+- `assets/src/hooks/` - Custom React hooks for data fetching and state management  
+- `assets/src/services/` - API services and utilities
+- `assets/src/types/` - Comprehensive TypeScript type definitions
 
-### Key Components
+**Key Features**:
+- Modern React patterns (hooks, functional components, context)
+- WordPress component library integration
+- Real-time event tracking and testing
+- Dynamic form generation based on integration capabilities
+- Professional error handling and user feedback
 
-**Integration Base Class** (`includes/integrations/class-echodash-integration.php`):
-- Abstract class that all plugin integrations extend
-- Handles trigger setup, event tracking, and data mapping
-- Provides meta box functionality for post-specific events
-- Manages global vs. single event configurations
+### WordPress Plugin Backend (API & Integration Engine)
+**Main Entry**: `echodash.php` - Singleton pattern with integration management
 
-**Event System**:
-- **Triggers**: Specific actions that can fire events (e.g., "order_completed")
-- **Events**: What gets sent to EchoDash (event name + data mappings)
-- **Objects**: Data sources for events (user, order, course, etc.)
-- **Mappings**: Transform WordPress data into EchoDash event properties
-
-**Settings Architecture**:
-- Global settings stored in `echodash_options` option
-- Post-specific settings stored in `echodash_settings` post meta
-- Hierarchical: post-specific overrides global settings
+**Core Components**:
+- **Integration System**: `includes/integrations/` - Each plugin integration extends `EchoDash_Integration`
+- **REST API**: `includes/admin/class-echodash-rest-api.php` - Comprehensive API for React frontend
+- **React Bridge**: `includes/admin/class-echodash-react-admin.php` - WordPress-React integration layer
+- **Event Tracking**: `includes/public/class-echodash-public.php` - Public event tracking system
+- **Legacy Admin**: `includes/admin/class-echodash-admin.php` - Traditional PHP admin interface (coexisting)
 
 ## Development Commands
 
-### Modern React Development
+### React Development (Primary)
 ```bash
-# Start React development server with hot reloading
-npm run start
-# or
+# Development server with hot reloading
 npm run dev
+# or
+npm run start
 
-# Build React application for production
+# Production build with optimization
 npm run build
 
-# Build with bundle analysis
+# Build with bundle size analysis
 npm run build:analyze
 
-# Run all tests (unit, integration, visual)
-npm run test:all
-
-# Run specific test suites
-npm run test:unit          # Jest unit tests
-npm run test:integration   # Integration tests  
-npm run test:visual        # Playwright visual tests
-npm run test:e2e           # End-to-end tests
-
-# Visual testing with Playwright
-npm run test:visual:ui     # Interactive visual testing
-npm run test:visual:update # Update visual baselines
-
-# Code quality for React
-npm run lint              # ESLint + Stylelint
-npm run lint:js           # JavaScript/TypeScript linting
-npm run lint:css          # CSS/SCSS linting
-npm run format            # Prettier formatting
+# Development workflow
+npm run dev           # Start development server
+npm run build        # Production build
+npm run build:analyze # Build with bundle analysis report
 ```
 
-### Traditional PHP Quality Assurance  
+### Testing Framework (Comprehensive)
 ```bash
-# Run PHPUnit tests
+# Complete testing suite
+npm run test:all      # Run all test types
+
+# Specific test types
+npm run test         # Basic Jest unit tests  
+npm run test:unit    # Unit tests only
+npm run test:integration # Integration tests
+npm run test:performance # Performance tests
+npm run test:e2e     # End-to-end tests
+npm run test:visual  # Playwright visual regression tests
+
+# Test utilities
+npm run test:watch   # Watch mode for development
+npm run test:coverage # Generate coverage reports
+npm run test:ci      # CI-optimized test run
+npm run test:visual:ui    # Interactive visual test runner
+npm run test:visual:update # Update visual baselines
+```
+
+### Code Quality (Professional Standards)
+```bash
+# Comprehensive linting
+npm run lint         # ESLint + Stylelint
+npm run lint:js      # JavaScript/TypeScript linting
+npm run lint:css     # CSS/SCSS linting
+npm run format       # Prettier code formatting
+
+# WordPress tools
+npm run makepot      # Generate translation files
+npm run makejson     # Generate JSON translations
+npm run plugin-zip   # Create plugin distribution package
+```
+
+### PHP Quality Assurance (Backend)
+```bash
+# PHPUnit testing
 composer test
 
-# Static analysis with PHPStan (level 5)
+# Static analysis (PHPStan level 5)
 composer phpstan
 
-# Code style checking with PHPCS (WordPress standards)
+# WordPress coding standards
 composer phpcs
 
-# Fix coding standard issues automatically
+# Auto-fix coding standards issues
+composer phpcbf
+# or
 ./vendor/bin/phpcbf --standard=phpcs.xml
 ```
 
-### Code Standards
+## Code Quality Standards
 
-**React/TypeScript Standards**:
-- TypeScript strict mode enabled
-- ESLint with React and WordPress configurations  
-- Prettier for code formatting
-- Modern React patterns (hooks, functional components)
-- WordPress component library integration
+### React/TypeScript Standards
+- **TypeScript Strict Mode**: Complete type safety with strict configuration
+- **ESLint Configuration**: React + WordPress + Accessibility rules
+- **Code Formatting**: Prettier with WordPress-compatible settings (tabs, 80 width)
+- **Component Standards**: Functional components, hooks, proper prop typing
+- **Performance**: Bundle size monitoring, code splitting, lazy loading
 
-**PHP Standards**:
-- WordPress Coding Standards with custom configurations
-- PHPStan level 5 analysis
-- Custom sanitization function `echodash_clean` registered
-- Text domain: `echodash`
-- Namespace prefixes: `ecd`, `EchoDash`
+### PHP Standards  
+- **WordPress Coding Standards**: PHPCS with custom EchoDash configuration
+- **Static Analysis**: PHPStan level 5 with WordPress stubs
+- **Security**: Custom sanitization function `echodash_clean` registered
+- **Naming**: Prefixes `ecd`, `EchoDash` for global functions and classes
+- **Text Domain**: `echodash` for all translation strings
 
-**Performance Standards**:
-- Bundle size limits: 500KB per chunk
-- Core Web Vitals optimization
-- Asset compression and caching
-- Code splitting for optimal loading
+### Performance Standards
+- **Bundle Limits**: 500KB per chunk with automated warnings
+- **Core Web Vitals**: Optimized loading and rendering performance
+- **Asset Optimization**: Image optimization, font loading strategies, compression
+- **Caching**: Transient caching for API responses and expensive operations
 
-## Creating New Integrations
+## Testing Strategy
 
-### Basic Integration Template
+### React Testing (Jest + Testing Library)
+**Configuration**: `jest.config.js` - Multi-project setup with comprehensive coverage
+
+**Test Types**:
+- **Unit Tests**: `assets/src/**/*.test.{js,jsx,ts,tsx}` - Component and utility testing
+- **Integration Tests**: `assets/tests/integration/` - API and data flow testing  
+- **Performance Tests**: `assets/tests/performance/` - Performance metrics and benchmarks
+
+**Coverage Requirements**:
+- **Global Thresholds**: 80% branches, functions, lines, statements
+- **Critical Files**: Higher thresholds for validation and core utilities
+- **Reporting**: HTML, LCOV, JSON reports with CI integration
+
+**Features**:
+- **WordPress Mocks**: Comprehensive WordPress environment mocking
+- **Visual Testing**: Screenshot-based UI testing with Playwright
+- **Watch Mode**: Development-friendly test watching
+- **CI Integration**: Optimized for continuous integration
+
+### End-to-End Testing (Playwright)
+**Configuration**: Advanced Playwright setup for cross-browser testing
+
+**Capabilities**:
+- **Multi-Browser**: Chrome, Firefox, Safari, Edge testing
+- **Visual Regression**: Automated screenshot comparison
+- **Performance Monitoring**: Core Web Vitals and load time testing
+- **User Simulation**: Real user interaction patterns and workflows
+
+### PHP Testing (PHPUnit)
+- **Unit Tests**: Traditional PHP unit testing for core functionality
+- **WordPress Integration**: WordPress test environment setup
+- **Static Analysis**: PHPStan with WordPress and WooCommerce stubs
+
+## API Architecture
+
+### REST API Integration
+**Base URL**: `/wp-json/echodash/v1/`
+
+**Key Endpoints**:
+- **Settings**: `GET/POST /settings` - Global plugin configuration
+- **Integrations**: `GET /integrations` - Available plugin integrations
+- **Integration Management**: `GET/PUT /integrations/{slug}` - Individual integration settings
+- **Trigger Management**: `GET/POST/PUT/DELETE /integrations/{slug}/triggers/` - Event trigger configuration
+- **Event Testing**: `POST /test-event` - Send test events to EchoDash
+- **Event Preview**: `POST /preview` - Generate event previews with merge tags
+
+**Security**:
+- **Authentication**: WordPress nonces and capability checks
+- **Validation**: Comprehensive input sanitization and validation
+- **Error Handling**: Structured error responses with proper HTTP status codes
+- **Rate Limiting**: WordPress built-in REST API rate limiting
+
+### Data Flow
+1. **React Configuration** → API calls with WordPress nonces
+2. **REST API Validation** → Permission and data validation
+3. **WordPress Storage** → Options and database persistence
+4. **Event Processing** → Integration classes process configured events
+5. **EchoDash Service** → Analytics platform event delivery
+
+## Performance Optimization
+
+### React Application Performance
+- **Code Splitting**: Vendor chunks (`wordpress`, `vendors`) for optimal caching
+- **Bundle Analysis**: Regular monitoring with `webpack-bundle-analyzer`
+- **Asset Optimization**: Image optimization, font preloading, compression
+- **Lazy Loading**: Component-level code splitting
+- **Performance Budgets**: 500KB chunk limits with automated warnings
+
+### Backend Performance
+- **Transient Caching**: REST API responses and expensive operations cached
+- **Non-blocking Requests**: Event tracking via asynchronous HTTP requests  
+- **Conditional Loading**: Integration classes loaded only when dependencies exist
+- **Database Optimization**: Efficient queries and proper indexing
+
+### Build Optimization
+- **Webpack Cache**: Filesystem caching for faster rebuilds
+- **Compression**: Gzip compression for production assets
+- **Source Maps**: Optimized source maps for debugging
+- **Tree Shaking**: Dead code elimination for smaller bundles
+
+## Integration Development
+
+### Creating New Integrations
+**Base Class**: All integrations extend `EchoDash_Integration`
+
 ```php
 class EchoDash_Your_Integration extends EchoDash_Integration {
     public $slug = 'your-integration';
     public $name = 'Your Integration Name';
 
     public function init() {
-        // Add hooks for the plugin you're integrating
+        // WordPress hooks for the target plugin
         add_action('your_plugin_action', array($this, 'handle_event'));
     }
 
@@ -152,8 +255,8 @@ class EchoDash_Your_Integration extends EchoDash_Integration {
             'trigger_name' => array(
                 'name' => __('Human Readable Name', 'echodash'),
                 'description' => __('When this happens...', 'echodash'),
-                'has_global' => true,  // Global settings
-                'has_single' => true,  // Per-post settings
+                'has_global' => true,
+                'has_single' => true,
                 'post_types' => array('post', 'product'),
                 'option_types' => array('user', 'your_data_type'),
                 'default_event' => array(
@@ -173,220 +276,106 @@ class EchoDash_Your_Integration extends EchoDash_Integration {
 }
 ```
 
-### Integration Activation
-Integrations are automatically loaded if their dependency is detected:
+**Integration Activation**:
 - Add to `$integrations` array in `echodash.php:255`
 - Format: `'slug' => 'Dependency_Class_Or_Function'`
-- File must be in `includes/integrations/slug/class-echodash-slug.php`
+- File location: `includes/integrations/slug/class-echodash-slug.php`
 
-## REST API Integration
+### Required Methods
+- `init()` - WordPress hook registration
+- `setup_triggers()` - Define available triggers and data mappings
+- `get_{type}_options()` - Available fields for data type
+- `get_{type}_vars($id)` - Actual data for object ID
 
-The React frontend communicates with WordPress through a comprehensive REST API:
+## Development Best Practices
 
-### API Structure
-- **Base URL**: `/wp-json/echodash/v1/`
-- **Authentication**: WordPress nonces and capability checks
-- **Endpoints**:
-  - `GET/POST /settings` - Global plugin settings
-  - `GET /integrations` - List all available integrations
-  - `GET/PUT /integrations/{slug}` - Individual integration management
-  - `GET/POST /integrations/{slug}/triggers` - Trigger management
-  - `PUT/DELETE /integrations/{slug}/triggers/{trigger_id}` - Individual triggers
-  - `POST /preview` - Generate event previews with merge tags
-  - `POST /test-event` - Send test events to EchoDash
+### React Development (Primary Focus)
+- **React First**: New admin features built in React with TypeScript
+- **Component Patterns**: Use existing component patterns and WordPress design system
+- **State Management**: React hooks and context for state management
+- **Error Handling**: Comprehensive error boundaries and user feedback
+- **Accessibility**: WCAG 2.1 AA compliance with jsx-a11y eslint rules
 
-### Data Flow
-1. **React Component** → API call via `fetch()` with WordPress nonces
-2. **REST API Controller** → Validates permissions and sanitizes data
-3. **WordPress Options/Database** → Stores configuration
-4. **Integration Classes** → Process events using stored configuration
-5. **EchoDash Service** → Sends events to analytics platform
+### PHP Development (Backend/Integrations)
+- **Integration Classes**: All new integrations extend `EchoDash_Integration`
+- **WordPress Standards**: Follow WordPress coding standards and security practices
+- **API First**: All data changes work through the REST API
+- **Backward Compatibility**: Maintain compatibility with existing integrations
 
-### API Features
-- **Caching**: Transient caching for expensive operations
-- **Validation**: Comprehensive input sanitization and validation
-- **Error Handling**: Structured error responses with proper HTTP status codes
-- **Performance**: Optimized queries and data structures
+### Performance Guidelines
+- **Bundle Monitoring**: Regular bundle size analysis and optimization
+- **API Optimization**: Efficient data structures and caching strategies
+- **Database Queries**: Optimize WordPress database interactions
+- **Asset Loading**: Optimize JavaScript and CSS loading strategies
 
-## Important Patterns
+### Testing Requirements
+- **Unit Testing**: Minimum 80% code coverage for new React components
+- **Integration Testing**: API endpoints thoroughly tested
+- **E2E Testing**: Critical user workflows covered by Playwright tests
+- **Visual Testing**: UI changes validated with visual regression tests
 
-### Modern Event Tracking Flow (React)
-1. **User Configuration** → React UI updates settings via REST API
-2. **Settings Storage** → WordPress options and database
-3. **Event Trigger** → WordPress action fires integration method
-4. **Event Processing** → Integration uses stored React-configured settings
-5. **Data Collection** → Merge tags processed with actual data
-6. **Event Dispatch** → Sent to EchoDash via `echodash()->public->track_event()`
-
-### Legacy Event Tracking Flow (PHP)
-1. WordPress action fires → Integration method called
-2. Integration calls `$this->track_event($trigger, $objects)`
-3. System gets configured events for trigger
-4. Data is collected using `get_{type}_vars` methods
-5. Merge tags like `{user:email}` are replaced with actual values
-6. Events sent to EchoDash via `echodash()->public->track_event()`
-
-### Data Mapping System
-- **Objects**: Identify what data is available (user ID, post ID, etc.)
-- **Option Types**: Define available fields for each object type
-- **Merge Tags**: `{object_type:field_name}` format for dynamic data
-- **Previews**: Show example data in admin interface
-
-### Admin Interface
-
-**React Interface (Modern)**:
-- Responsive React components with WordPress design system
-- Real-time event preview and testing
-- Dynamic form generation based on integration capabilities
-- Inline validation and error handling
-- State management through React hooks and context
-- TypeScript for type safety and developer experience
-
-**Legacy Interface (Coexisting)**:
-- Meta boxes added to relevant post types automatically
-- jQuery handles dynamic event configuration
-- Settings saved as serialized arrays in post meta
-- Global settings managed through WordPress options
-
-## Testing Strategy
-
-### Modern React Testing
-```bash
-# Unit Testing with Jest
-npm run test:unit           # Run all unit tests
-npm run test:coverage       # Generate coverage report
-npm run test:watch          # Watch mode for development
-
-# Integration Testing
-npm run test:integration    # API and component integration
-
-# Visual Regression Testing with Playwright
-npm run test:visual         # Run visual tests
-npm run test:visual:ui      # Interactive visual testing
-npm run test:visual:update  # Update visual baselines
-
-# End-to-End Testing
-npm run test:e2e           # Full user workflow testing
-```
-
-**Testing Structure**:
-- **Unit Tests**: `assets/src/**/__tests__/` - Component and utility testing
-- **Integration Tests**: `assets/tests/integration/` - API and data flow testing
-- **Visual Tests**: `tests/visual/` - Screenshot-based UI testing
-- **Mocks**: `assets/tests/__mocks__/` - WordPress and external service mocks
-
-### Legacy PHP Testing
-- **PHPUnit**: Traditional unit tests for PHP classes
-- **Manual Testing**: Browser-based integration testing
-- **Static Analysis**: PHPStan for code quality
-
-### Manual Testing Workflow
-
-**React Interface Testing**:
-1. Start development server: `npm run dev`
-2. Navigate to EchoDash settings page
-3. Use React interface for configuration
-4. Test API endpoints via browser network tab
-5. Verify data persistence in WordPress admin
-
-**Integration Testing**:
-1. Create test integration class extending `EchoDash_Integration`
-2. Add dependency check to main plugin file
-3. Activate integration by ensuring dependency is available
-4. Configure events via React interface (preferred) or legacy interface
-5. Trigger the WordPress action that should fire events
-6. Check EchoDash dashboard for received events
-
-### Required Methods for New Integrations
-- `init()` - Add WordPress hooks
-- `setup_triggers()` - Define available triggers
-- `get_{type}_options()` - Define available fields for data type
-- `get_{type}_vars($id)` - Get actual data for object ID
-
-## Performance Considerations
-
-### React Application Performance
-- **Bundle Splitting**: Vendor chunks and WordPress chunks separated for optimal caching
-- **Code Splitting**: Dynamic imports for large components
-- **Asset Optimization**: Gzip compression, image optimization, font loading strategies
-- **Bundle Analysis**: Regular bundle size monitoring with webpack-bundle-analyzer
-- **Performance Budgets**: 500KB limits per chunk with automated warnings
-- **Caching**: Transient caching for API responses and expensive operations
-- **Lazy Loading**: Components loaded on demand to reduce initial bundle size
-
-### Legacy System Performance
-- Events are sent via non-blocking HTTP requests
-- Data collection only happens when events are configured
-- Integration classes only loaded when their dependencies exist
-- Meta boxes only added to relevant post types
-- Settings cached appropriately through WordPress options API
-
-### Modern Optimizations
-- **API Caching**: REST API responses cached with transients
-- **Asset Preloading**: Critical assets preloaded for faster initial rendering
-- **Progressive Enhancement**: Core functionality works without JavaScript
-- **Memory Management**: Proper cleanup of event listeners and React components
-
-## Migration Strategy & Dual System Approach
-
-### Current State: **Progressive Enhancement**
-The plugin currently operates with both systems active, allowing for:
-
-- **Graceful Fallback**: Legacy jQuery interface as backup
-- **Feature Parity**: Both systems can manage the same data
-- **User Choice**: Administrators can use either interface
-- **Risk Mitigation**: Critical functionality preserved during migration
-
-### Migration Phases
-1. ✅ **Phase 1-6**: React foundation, API, and core components completed
-2. 🔄 **Current Phase**: Dual system operation and refinement
-3. 📋 **Future Phases**: Complete migration of remaining interfaces
-4. 📋 **Final Phase**: Legacy system removal after thorough testing
-
-### Development Guidelines
-- **React First**: New features should be built in React when possible
-- **API Consistency**: All data changes must work through the REST API
-- **Backward Compatibility**: Legacy PHP integrations must continue working
-- **Progressive Enhancement**: Ensure functionality without JavaScript
-
-### For Claude Code Agents
-When working on EchoDash:
-- **Prefer React**: For new admin features, use React components and TypeScript
-- **Maintain PHP**: Keep integration classes and core event tracking in PHP
-- **Use REST API**: All React-PHP communication goes through the REST API
-- **Test Both Systems**: Ensure changes work with both legacy and modern interfaces
-- **Follow Patterns**: Use existing component patterns and API structures
-
-## Security Notes
+## Security Considerations
 
 ### React Application Security
-- **Input Validation**: All form inputs validated client-side and server-side
-- **XSS Prevention**: React's built-in XSS protection plus input sanitization
+- **XSS Prevention**: React's built-in protection plus input sanitization
 - **CSRF Protection**: WordPress nonces on all API requests
-- **Capability Checks**: User permissions verified on all endpoints
-- **Data Sanitization**: All API inputs sanitized before database storage
+- **Input Validation**: Client-side validation with server-side verification
+- **Error Handling**: No sensitive information in error responses
 
-### Legacy System Security
-- All user input sanitized with `echodash_clean()` function
-- Nonce verification on all admin form submissions
-- Capability checks for admin functionality
-- No direct file access - all files check `ABSPATH`
-- Validated against WordPress and security coding standards
+### PHP Security
+- **Input Sanitization**: Custom `echodash_clean()` function for all user input
+- **Capability Checks**: `manage_options` capability required for admin functions
+- **Nonce Verification**: WordPress nonces on all form submissions
+- **SQL Injection Prevention**: Prepared statements and WordPress database methods
 
 ### API Security
 - **Authentication**: WordPress REST API authentication with nonces
-- **Authorization**: Capability checks (`manage_options`) on all endpoints
-- **Input Validation**: Comprehensive sanitization and validation
-- **Rate Limiting**: WordPress built-in rate limiting for REST API
-- **Error Handling**: No sensitive information in error responses
+- **Authorization**: Proper capability checks on all endpoints
+- **Rate Limiting**: WordPress built-in API rate limiting
+- **Data Validation**: Comprehensive validation and sanitization
 
-## Integration Best Practices
+## Migration & Compatibility
 
-### Code Structure and Naming
-- **Integration Naming Conventions**:
-  - You should not hardcode integration names into stylesheets, scripts, or templates
-  - Each integration must have its own class (e.g., `EchoDash_Gravity_Forms`)
-  - Integration-specific code belongs in the respective integration class
-  - Logo background colors should:
-    - Have a default property set in `EchoDash_Integration` base class
-    - Be overridable in the child integration class
+### Dual System Architecture
+The plugin currently supports both modern React and legacy jQuery interfaces:
+
+**React Interface** (Primary):
+- Modern TypeScript React application
+- REST API communication
+- Real-time event testing and preview
+- Performance optimized
+
+**Legacy Interface** (Coexisting):
+- Traditional jQuery admin interface  
+- Direct PHP form processing
+- Backward compatibility
+- Fallback functionality
+
+### Development Strategy
+- **React First**: New features developed in React when possible
+- **API Consistency**: All data operations work through REST API
+- **Legacy Support**: Maintain existing PHP integration functionality
+- **Progressive Enhancement**: Ensure core functionality works without JavaScript
+
+## Important Notes
+
+### For Claude Code Development
+- **Prefer React**: Use React components and TypeScript for new admin features
+- **Maintain PHP**: Keep integration classes and event tracking in PHP
+- **Use REST API**: All React-PHP communication through comprehensive REST API
+- **Test Both Systems**: Ensure changes work with both React and legacy interfaces
+- **Follow Patterns**: Use established component patterns and API structures
+
+### Code Organization
+- **React Components**: Organized by feature with comprehensive TypeScript typing
+- **Integration Classes**: Each plugin integration in separate class file
+- **API Endpoints**: RESTful design with proper HTTP methods and status codes
+- **Testing**: Comprehensive test coverage across all layers of the application
+
+### Performance Monitoring
+- **Bundle Analysis**: Regular monitoring with automated size warnings
+- **Performance Budgets**: Enforced limits with build-time warnings
+- **Core Web Vitals**: Production performance monitoring
+- **Database Performance**: Query optimization and caching strategies
+
+This documentation reflects the current production-ready state of EchoDash with its sophisticated React-based architecture, comprehensive testing framework, and professional development practices.

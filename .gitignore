@@ -52,3 +52,4 @@ composer.lock
 vendor/*
 node_modules
 /coverage
+/test-reports

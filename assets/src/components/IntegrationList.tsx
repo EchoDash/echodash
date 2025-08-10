@@ -90,17 +90,17 @@ export const IntegrationList: React.FC<IntegrationListProps> = ({
 			{/* Header with logo */}
 			<div className="echodash-header">
 				<a
-					href="https://echodash.com"
+					href="https://echodash.com/?utm_source=echodash-plugin&utm_medium=plugin&utm_campaign=echodash-plugin"
 					target="_blank"
-					rel="noopener noreferrer"
+					rel="noopener"
 					className="echodash-header__logo-link"
 				>
 					<EchoDashLogo className="echodash-header__logo" />
 				</a>
 				<a
-					href="https://echodash.com/docs/echodash-plugin"
+					href="https://echodash.com/docs/echodash-plugin/?utm_source=echodash-plugin&utm_medium=plugin&utm_campaign=echodash-plugin"
 					target="_blank"
-					rel="noopener noreferrer"
+					rel="noopener"
 					className="echodash-button echodash-header__docs-link"
 				>
 					{__('Documentation', 'echodash')} →
@@ -147,19 +147,13 @@ export const IntegrationList: React.FC<IntegrationListProps> = ({
 								)}
 							</p>
 
-							<div className="echodash-welcome__field-group">
-								<label
-									htmlFor="endpoint-url"
-									className="echodash-welcome__label"
-								>
-									{__('URL', 'echodash')}
-								</label>
+							<div className="echodash-welcome__field-group echodash-input-wrapper echodash-input-wrapper--endpoint-url">
 								<input
 									type="text"
 									id="endpoint-url"
-									className="regular-text echodash-welcome__input"
+									className="echodash-input-base echodash-welcome__input"
 									placeholder={__(
-										'https://example.com/',
+										'https://echodash.com/endpoints/xyz/receive',
 										'echodash'
 									)}
 									value={endpointUrl}
@@ -173,6 +167,16 @@ export const IntegrationList: React.FC<IntegrationListProps> = ({
 									</span>
 								)}
 							</div>
+
+							<a
+								href="https://echodash.com/events/?utm_source=echodash-plugin&utm_medium=plugin&utm_campaign=echodash-plugin"
+								target="_blank"
+								rel="noopener"
+								className="echodash-button echodash-button-primary"
+							>
+								{__('View events', 'echodash')} →
+							</a>
+
 						</>
 					)}
 				</div>

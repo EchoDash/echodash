@@ -11,7 +11,7 @@ module.exports = {
 
 	// Setup files
 	setupFilesAfterEnv: [
-		// '<rootDir>/assets/tests/setup.ts', // TODO: Create test setup files when needed
+		'<rootDir>/assets/tests/setup.ts',
 	],
 
 	// File extensions
@@ -144,7 +144,7 @@ module.exports = {
 				outputDirectory: './test-reports',
 				outputName: 'junit.xml',
 				ancestorSeparator: ' › ',
-				uniqueOutputName: 'false',
+				uniqueOutputName: false,
 				suiteNameTemplate: '{filepath}',
 				classNameTemplate: '{classname}',
 				titleTemplate: '{title}',
@@ -161,6 +161,35 @@ module.exports = {
 			displayName: 'Unit Tests',
 			testMatch: ['<rootDir>/assets/src/**/*.test.{js,jsx,ts,tsx}'],
 			testEnvironment: 'jsdom',
+			setupFilesAfterEnv: ['<rootDir>/assets/tests/setup.ts'],
+			transform: {
+				'^.+\\.(ts|tsx)$': [
+					'ts-jest',
+					{
+						tsconfig: {
+							jsx: 'react-jsx',
+							esModuleInterop: true,
+							allowSyntheticDefaultImports: true,
+						},
+					},
+				],
+				'^.+\\.(js|jsx)$': [
+					'babel-jest',
+					{
+						presets: [
+							'@babel/preset-env',
+							['@babel/preset-react', { runtime: 'automatic' }],
+						],
+					},
+				],
+			},
+			moduleNameMapper: {
+				'\\.(css|less|scss|sass)$': 'identity-obj-proxy',
+				'\\.(jpg|jpeg|png|gif|svg)$': '<rootDir>/assets/tests/__mocks__/fileMock.js',
+				'^@/(.*)$': '<rootDir>/assets/src/$1',
+				'^@tests/(.*)$': '<rootDir>/assets/tests/$1',
+				'^@wordpress/(.*)$': '<rootDir>/assets/tests/__mocks__/wordpress/$1.js',
+			},
 		},
 		{
 			displayName: 'Integration Tests',
@@ -168,6 +197,35 @@ module.exports = {
 				'<rootDir>/assets/tests/integration/**/*.test.{js,jsx,ts,tsx}',
 			],
 			testEnvironment: 'jsdom',
+			setupFilesAfterEnv: ['<rootDir>/assets/tests/setup.ts'],
+			transform: {
+				'^.+\\.(ts|tsx)$': [
+					'ts-jest',
+					{
+						tsconfig: {
+							jsx: 'react-jsx',
+							esModuleInterop: true,
+							allowSyntheticDefaultImports: true,
+						},
+					},
+				],
+				'^.+\\.(js|jsx)$': [
+					'babel-jest',
+					{
+						presets: [
+							'@babel/preset-env',
+							['@babel/preset-react', { runtime: 'automatic' }],
+						],
+					},
+				],
+			},
+			moduleNameMapper: {
+				'\\.(css|less|scss|sass)$': 'identity-obj-proxy',
+				'\\.(jpg|jpeg|png|gif|svg)$': '<rootDir>/assets/tests/__mocks__/fileMock.js',
+				'^@/(.*)$': '<rootDir>/assets/src/$1',
+				'^@tests/(.*)$': '<rootDir>/assets/tests/$1',
+				'^@wordpress/(.*)$': '<rootDir>/assets/tests/__mocks__/wordpress/$1.js',
+			},
 		},
 		{
 			displayName: 'Performance Tests',
@@ -175,6 +233,35 @@ module.exports = {
 				'<rootDir>/assets/tests/performance/**/*.test.{js,jsx,ts,tsx}',
 			],
 			testEnvironment: 'jsdom',
+			setupFilesAfterEnv: ['<rootDir>/assets/tests/setup.ts'],
+			transform: {
+				'^.+\\.(ts|tsx)$': [
+					'ts-jest',
+					{
+						tsconfig: {
+							jsx: 'react-jsx',
+							esModuleInterop: true,
+							allowSyntheticDefaultImports: true,
+						},
+					},
+				],
+				'^.+\\.(js|jsx)$': [
+					'babel-jest',
+					{
+						presets: [
+							'@babel/preset-env',
+							['@babel/preset-react', { runtime: 'automatic' }],
+						],
+					},
+				],
+			},
+			moduleNameMapper: {
+				'\\.(css|less|scss|sass)$': 'identity-obj-proxy',
+				'\\.(jpg|jpeg|png|gif|svg)$': '<rootDir>/assets/tests/__mocks__/fileMock.js',
+				'^@/(.*)$': '<rootDir>/assets/src/$1',
+				'^@tests/(.*)$': '<rootDir>/assets/tests/$1',
+				'^@wordpress/(.*)$': '<rootDir>/assets/tests/__mocks__/wordpress/$1.js',
+			},
 			// timeout: 30000, // TODO: Use testTimeout in project config when supported
 		},
 	],

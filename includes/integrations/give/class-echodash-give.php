@@ -37,10 +37,8 @@ class EchoDash_Give extends EchoDash_Integration {
 	 * @since 1.6.0
 	 */
 	public function init() {
-
 		add_action( 'give_insert_payment', array( $this, 'new_donation' ) );
 	}
-
 
 	/**
 	 * Gets the triggers for the integration.

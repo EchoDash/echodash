@@ -199,13 +199,6 @@
 	font-weight: 600;
 }
 
-/* Input Wrapper - Flexbox container for input + button */
-.echodash-input-wrapper {
-	position: relative;
-	display: flex;
-	align-items: center;
-}
-
 /* Persistent labels using :before pseudo-elements */
 .echodash-input-wrapper--name::before {
 	content: "Name:";

@@ -47,6 +47,36 @@
 	font-weight: 600;
 }
 
+.echodash-welcome input[type="text"] {
+	width: 100%;
+	max-width: 100%;
+	padding: 6px var(--ecd-spacing-md);
+	border-color: var(--ecd-color-border-light);
+	border-radius: var(--ecd-radius-lg);
+	font-size: var(--ecd-font-size-base);
+	transition: border-color 0.2s ease;
+	background-color: var(--ecd-color-background);
+	color: var(--ecd-color-text);
+	padding-left: 45px;
+}
+
+.echodash-welcome .echodash-input-wrapper.echodash-input-wrapper--endpoint-url::before {
+	content: "URL:";
+	position: absolute;
+	left: var(--ecd-spacing-md);
+	top: 50%;
+	transform: translateY(-50%);
+	color: var(--ecd-color-text-light);
+	font-size: var(--ecd-font-size-base);
+	font-weight: 400;
+	pointer-events: none;
+	z-index: 5;
+}
+
+.echodash-welcome .echodash-button-primary {
+	margin-top: var(--ecd-spacing-xl);
+}
+
 .echodash-welcome__input {
 	width: 100%;
 }
