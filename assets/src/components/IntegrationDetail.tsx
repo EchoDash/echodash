@@ -18,6 +18,7 @@ interface IntegrationDetailProps {
 	onEditTrigger: (trigger: Trigger) => void;
 	onDeleteTrigger: (trigger: Trigger) => void;
 	onSendTest: (trigger: Trigger) => void;
+	deletingTrigger?: string | null;
 }
 
 export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
@@ -28,6 +29,7 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 	onEditTrigger,
 	onDeleteTrigger,
 	onSendTest,
+	deletingTrigger,
 }) => {
 	const [sendingTest, setSendingTest] = useState<string | null>(null);
 	const [sentTest, setSentTest] = useState<string | null>(null);
@@ -164,7 +166,7 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 									<button 
 										className="echodash-button"
 										onClick={() => handleSendTest(trigger)}
-										disabled={sendingTest === trigger.id}
+										disabled={sendingTest === trigger.id || deletingTrigger === trigger.id}
 									>
 										{sendingTest === trigger.id ? (
 											<>
@@ -186,6 +188,7 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 									<button 
 										className="echodash-button"
 										onClick={() => onEditTrigger(trigger)}
+										disabled={deletingTrigger === trigger.id}
 									>
 										Edit
 									</button>
@@ -197,8 +200,13 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 											}
 										}}
 										title="Delete trigger"
+										disabled={deletingTrigger === trigger.id}
 									>
-										<span className="dashicons dashicons-trash"></span>
+										{deletingTrigger === trigger.id ? (
+											<span className="dashicons dashicons-update-alt ecd-spinner"></span>
+										) : (
+											<span className="dashicons dashicons-trash"></span>
+										)}
 									</button>
 								</div>
 							</div>

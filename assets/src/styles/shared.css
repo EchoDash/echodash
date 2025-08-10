@@ -136,6 +136,39 @@ button.echodash-button-primary:hover {
 	text-decoration: underline;
 }
 
+/* Disabled button styles */
+a.echodash-button:disabled,
+button.echodash-button:disabled {
+	background-color: var(--ecd-color-background-light);
+	color: var(--ecd-color-text-lighter);
+	border-color: var(--ecd-color-border-lighter);
+	cursor: not-allowed;
+	opacity: 0.6;
+}
+
+a.echodash-button:disabled:hover,
+button.echodash-button:disabled:hover {
+	background-color: var(--ecd-color-background-light);
+	color: var(--ecd-color-text-lighter);
+	border-color: var(--ecd-color-border-lighter);
+	text-decoration: none;
+}
+
+a.echodash-button-primary:disabled,
+button.echodash-button-primary:disabled {
+	background-color: var(--ecd-color-text-lighter);
+	color: var(--ecd-color-background);
+	border-color: var(--ecd-color-text-lighter);
+}
+
+a.echodash-button-primary:disabled:hover,
+button.echodash-button-primary:disabled:hover {
+	background-color: var(--ecd-color-text-lighter);
+	color: var(--ecd-color-background);
+	border-color: var(--ecd-color-text-lighter);
+	text-decoration: none;
+}
+
 /* Icon Styles */
 .echodash-integration-item__icon {
 	width: var(--ecd-icon-xl);
@@ -200,11 +233,32 @@ button.echodash-button-primary:hover {
 	border-color: #b4b7c1;
 }
 
+/* Loading animations */
+@keyframes spin {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+.ecd-spinner {
+	animation: spin 1s linear infinite;
+}
+
+/* Prevent text decoration on spinner icons in buttons */
+a.echodash-button .ecd-spinner,
+button.echodash-button .ecd-spinner {
+	text-decoration: none !important;
+}
+
 /* Ringing bell */
 
 .ecd-ring{
     -webkit-animation: ecd-ring 4s .0s ease-in-out;
     -webkit-transform-origin: 50% 4px;
+	transform-origin: 50% 4px;
     -moz-animation: ecd-ring 4s .0s ease-in-out;
     -moz-transform-origin: 50% 4px;
     animation: ecd-ring 4s .0s ease-in-out;

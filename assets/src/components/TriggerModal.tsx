@@ -17,6 +17,7 @@ interface TriggerModalProps {
 	onSendTest?: (data: any) => void;
 	integration: Integration;
 	editingTrigger?: any;
+	savingTrigger?: boolean;
 }
 
 export const TriggerModal: React.FC<TriggerModalProps> = ({
@@ -26,6 +27,7 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 	onSendTest,
 	integration,
 	editingTrigger,
+	savingTrigger = false,
 }) => {
 	const availableTriggers = integration.availableTriggers || [
 		{ id: 'form_submitted', name: 'Form Submitted', description: 'Triggered each time a form is submitted.' }
@@ -232,7 +234,7 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 							value={selectedTrigger}
 							onChange={(e) => handleTriggerChange(e.target.value)}
 							className="echodash-form-group__select"
-							disabled={!!editingTrigger}
+							disabled={!!editingTrigger || savingTrigger}
 						>
 							{availableTriggers.map(trigger => (
 								<option key={trigger.id} value={trigger.id}>
@@ -266,12 +268,14 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 									value={eventName}
 									onChange={(e) => setEventName(e.target.value)}
 									className="echodash-event-name__input"
+									disabled={savingTrigger}
 								/>
 								<button 
 									ref={nameButtonRef}
 									type="button"
 									onClick={() => setOpenDropdownIndex({ type: 'name', index: -1 })}
 									className="echodash-merge-tag-button echodash-merge-tag-button--inline"
+									disabled={savingTrigger}
 								></button>
 							</div>
 						</div>
@@ -286,6 +290,7 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 											value={pair.key}
 											onChange={(e) => updateKeyValuePair(index, 'key', e.target.value)}
 											className="echodash-key-value-pair__input"
+											disabled={savingTrigger}
 										/>
 									</div>
 								</div>
@@ -296,6 +301,7 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 											value={pair.value}
 											onChange={(e) => updateKeyValuePair(index, 'value', e.target.value)}
 											className="echodash-key-value-pair__input"
+											disabled={savingTrigger}
 										/>
 										<button 
 											ref={(el) => {
@@ -306,6 +312,7 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 											type="button"
 											onClick={() => setOpenDropdownIndex({ type: 'value', index })}
 											className="echodash-merge-tag-button echodash-merge-tag-button--inline"
+											disabled={savingTrigger}
 										></button>
 									</div>
 								</div>
@@ -314,6 +321,7 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 										type="button"
 										onClick={addKeyValuePair}
 										className="echodash-key-value-pair__action-button"
+										disabled={savingTrigger}
 									>
 										<span className="dashicons dashicons-plus-alt2"></span>
 									</button>
@@ -322,6 +330,7 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 											type="button"
 											onClick={() => removeKeyValuePair(index)}
 											className="echodash-key-value-pair__action-button"
+											disabled={savingTrigger}
 										>
 											<span className="dashicons dashicons-minus"></span>
 										</button>
@@ -353,7 +362,7 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 						type="button"
 						className="echodash-button echodash-send-test-button"
 						onClick={handleSendTest}
-						disabled={sendingTest || !onSendTest || !selectedTrigger}
+						disabled={sendingTest || !onSendTest || !selectedTrigger || savingTrigger}
 					>
 						{sendingTest ? (
 							<>
@@ -373,19 +382,27 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 						)}
 					</button>
 					<div className="echodash-modal__footer-actions">
-						<button 
-							onClick={onClose}
-							className="echodash-button"
-						>
-							Cancel
-						</button>
-						<button 
-							onClick={handleSave}
-							className="echodash-button echodash-button-primary"
-							disabled={!selectedTrigger}
-						>
-							{editingTrigger ? 'Update Trigger' : 'Add Trigger'}
-						</button>
+											<button 
+						onClick={onClose}
+						className="echodash-button"
+						disabled={savingTrigger}
+					>
+						Cancel
+					</button>
+					<button 
+						onClick={handleSave}
+						className="echodash-button echodash-button-primary"
+						disabled={!selectedTrigger || savingTrigger}
+					>
+						{savingTrigger ? (
+							<>
+								<span className="dashicons dashicons-update-alt ecd-spinner"></span>
+								Saving...
+							</>
+						) : (
+							editingTrigger ? 'Update Trigger' : 'Add Trigger'
+						)}
+					</button>
 					</div>
 				</div>
 			</div>

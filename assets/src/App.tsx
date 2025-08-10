@@ -39,6 +39,8 @@ export const App: React.FC = () => {
 	const [editingTrigger, setEditingTrigger] = useState<any | null>(null);
 	const [userTriggers, setUserTriggers] = useState(window.ecdReactData?.userTriggers || {});
 	const [integrations, setIntegrations] = useState(window.ecdReactData?.integrations || []);
+	const [savingTrigger, setSavingTrigger] = useState(false);
+	const [deletingTrigger, setDeletingTrigger] = useState<string | null>(null);
 
 	const data = window.ecdReactData || {
 		settings: {},
@@ -187,6 +189,7 @@ export const App: React.FC = () => {
 	};
 
 	const handleDeleteTrigger = async (trigger: any) => {
+		setDeletingTrigger(trigger.id);
 		try {
 			const url = `${data.apiUrl}integrations/${selectedIntegration}/triggers/${trigger.id}`;
 			
@@ -230,10 +233,13 @@ export const App: React.FC = () => {
 		} catch (error) {
 			console.error('Error deleting trigger:', error);
 			alert('Error deleting trigger. Please check your connection and try again.');
+		} finally {
+			setDeletingTrigger(null);
 		}
 	};
 
 	const handleSaveTrigger = async (triggerData: any) => {
+		setSavingTrigger(true);
 		try {
 			const isEditing = editingTrigger !== null;
 			const url = isEditing
@@ -336,6 +342,8 @@ export const App: React.FC = () => {
 		} catch (error) {
 			console.error('Error saving trigger:', error);
 			alert('Error saving trigger. Please check your connection and try again.');
+		} finally {
+			setSavingTrigger(false);
 		}
 	};
 
@@ -363,6 +371,7 @@ export const App: React.FC = () => {
 						onEditTrigger={handleEditTrigger}
 						onDeleteTrigger={handleDeleteTrigger}
 						onSendTest={handleSendTest}
+						deletingTrigger={deletingTrigger}
 					/>
 				)
 			)}
@@ -378,6 +387,7 @@ export const App: React.FC = () => {
 					onSendTest={handleSendTest}
 					integration={selectedIntegrationData}
 					editingTrigger={editingTrigger}
+					savingTrigger={savingTrigger}
 				/>
 			)}
 		</div>
