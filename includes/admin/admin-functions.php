@@ -48,12 +48,9 @@ function echodash_render_event_tracking_fields( $args = array() ) {
 		$field_id = sanitize_html_class( $args['meta_name'] ) . '-' . $args['field_id'];
 	}
 
-	$in_option_page = echodash_in_option_page();
-
-	$field_name           = esc_attr( $args['meta_name'] ) . ( ! is_null( $args['field_id'] ) ? '[' . esc_attr( $args['field_id'] ) . ']' : '' );
-	$single_trigger_class = ( ! $in_option_page ? ' single-trigger' : '' );
+	$field_name = esc_attr( $args['meta_name'] ) . ( ! is_null( $args['field_id'] ) ? '[' . esc_attr( $args['field_id'] ) . ']' : '' );
 	echo '
-		<span class="echodash' . esc_attr( $single_trigger_class ) . '" data-trigger="' . esc_attr( $args['trigger'] ) . '" data-integration="' . esc_attr( $args['integration'] ) . '">
+		<span class="echodash single-trigger" data-trigger="' . esc_attr( $args['trigger'] ) . '" data-integration="' . esc_attr( $args['integration'] ) . '">
 			<span class="echodash-input-container">
 				<label for="' . esc_attr( $args['field_id'] ) . '" data-placeholder="Name:"></label>
 				<input value="' . esc_attr( $args['setting']['name'] ) . '" name="' . esc_attr( $field_name ) . '[name]" id="' . esc_attr( $args['field_id'] ) . '" class="ecd-name" type="text">
@@ -84,11 +81,9 @@ function echodash_get_event_tracking_value_field( $args, $field_name, $field_id 
 
 	$value = ( isset( $args['setting']['value'] ) ? $args['setting']['value'] : '' );
 
-	$in_option_page = echodash_in_option_page();
-
 	$output .= '
 		<span class="ecd-multi-key">
-			<span data-repeater-list="' . ( $in_option_page ? 'value' : esc_attr( $field_name . '[value]' ) ) . '">';
+			<span data-repeater-list="' . esc_attr( $field_name . '[value]' ) . '">';
 	foreach ( $value as $val ) {
 		$output .= '
 						<span class="nr-item" data-repeater-item>
@@ -153,15 +148,4 @@ function echodash_logo_svg( $width = 24 ) {
 	</svg>';
 
 	return $content;
-}
-
-/**
- * Check if we are in the option page.
- *
- * @since  1.0.0
- * @return bool
- */
-function echodash_in_option_page() {
-	$screen = get_current_screen();
-	return $screen && $screen->id === 'settings_page_echodash';
 }

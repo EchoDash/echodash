@@ -287,6 +287,14 @@ class EchoDash_User extends EchoDash_Integration {
 			$user_meta['referer'] = sanitize_url( sanitize_text_field( wp_unslash( $_SERVER['HTTP_REFERER'] ) ) );
 		}
 
+		// Clean it up.
+		$user_meta = array_filter(
+			$user_meta,
+			function ( $value ) {
+				return '' !== $value && null !== $value;
+			}
+		);
+
 		return array(
 			'user' => $user_meta,
 		);

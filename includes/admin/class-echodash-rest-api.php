@@ -37,11 +37,6 @@ class EchoDash_REST_API extends WP_REST_Controller {
 			'/' . $this->rest_base,
 			array(
 				array(
-					'methods'             => WP_REST_Server::READABLE,
-					'callback'            => array( $this, 'get_settings' ),
-					'permission_callback' => array( $this, 'get_settings_permissions_check' ),
-				),
-				array(
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'update_settings' ),
 					'permission_callback' => array( $this, 'update_settings_permissions_check' ),
@@ -50,24 +45,7 @@ class EchoDash_REST_API extends WP_REST_Controller {
 			)
 		);
 
-		// Note: Integration list data is provided via wp_localize_script in EchoDash_React_Admin
-		// No need for separate REST endpoint since React app gets this data on page load
-
-				// Integration settings endpoint (for updating integration-specific settings)
-		register_rest_route(
-			$this->namespace,
-			'/integrations/(?P<slug>[a-z0-9-]+)',
-			array(
-				array(
-					'methods'             => WP_REST_Server::EDITABLE,
-					'callback'            => array( $this, 'update_integration' ),
-					'permission_callback' => array( $this, 'update_integration_permissions_check' ),
-					'args'                => $this->get_integration_update_args(),
-				),
-			)
-		);
-
-				// Triggers endpoints (CREATE only - data provided via wp_localize_script)
+		// Triggers endpoints (CREATE only - data provided via wp_localize_script)
 		register_rest_route(
 			$this->namespace,
 			'/integrations/(?P<slug>[a-z0-9-]+)/triggers',
@@ -162,29 +140,6 @@ class EchoDash_REST_API extends WP_REST_Controller {
 	}
 
 	/**
-	 * Get all settings.
-	 *
-	 * @since 2.0.0
-	 *
-	 * @param WP_REST_Request $request The request object.
-	 * @return WP_REST_Response The response object.
-	 */
-	public function get_settings( $request ) {
-		$settings = get_option( 'echodash_options', array() );
-		$endpoint = get_option( 'echodash_endpoint', '' );
-
-		$response = array(
-			'endpoint'     => $endpoint,
-			'settings'     => $settings,
-			'debug_mode'   => defined( 'WP_DEBUG' ) && WP_DEBUG,
-			'version'      => ECHODASH_VERSION,
-			'capabilities' => $this->get_user_capabilities(),
-		);
-
-		return rest_ensure_response( $response );
-	}
-
-	/**
 	 * Update settings
 	 *
 	 * @since 2.0.0
@@ -194,6 +149,9 @@ class EchoDash_REST_API extends WP_REST_Controller {
 	 */
 	public function update_settings( $request ) {
 		$params = $request->get_json_params();
+
+		error_log( print_r( 'update settings', true ) );
+		error_log( print_r( $params, true ) );
 
 		// Validate and sanitize input
 		if ( isset( $params['endpoint'] ) ) {
@@ -207,55 +165,13 @@ class EchoDash_REST_API extends WP_REST_Controller {
 		}
 
 		// Return updated settings
-		return $this->get_settings( $request );
-	}
-
-	// Removed get_integrations() - data provided via wp_localize_script in EchoDash_React_Admin
-
-	// Removed get_integration() - data provided via wp_localize_script in EchoDash_React_Admin
-
-	/**
-	 * Update integration settings.
-	 *
-	 * @since 2.0.0
-	 *
-	 * @param WP_REST_Request $request The request object.
-	 * @return WP_REST_Response The response object.
-	 */
-	public function update_integration( $request ) {
-		$slug   = $request->get_param( 'slug' );
-		$params = $request->get_json_params();
-
-		// Get current settings
-		$settings = get_option( 'echodash_options', array() );
-
-		// Update integration-specific settings
-		if ( ! isset( $settings['integrations'] ) ) {
-			$settings['integrations'] = array();
-		}
-
-		if ( ! isset( $settings['integrations'][ $slug ] ) ) {
-			$settings['integrations'][ $slug ] = array();
-		}
-
-		// Merge new settings
-		$settings['integrations'][ $slug ] = array_merge(
-			$settings['integrations'][ $slug ],
-			$this->sanitize_integration_settings( $params )
-		);
-
-		// Save settings
-		update_option( 'echodash_options', $settings );
-
-		// Return success response
 		return rest_ensure_response(
 			array(
-				'message' => __( 'Integration updated successfully', 'echodash' ),
+				'message' => __( 'Settings updated successfully', 'echodash' ),
 			)
 		);
 	}
 
-	// Removed get_triggers() - data provided via wp_localize_script in EchoDash_React_Admin
 
 	/**
 	 * Create a new trigger.
@@ -320,6 +236,11 @@ class EchoDash_REST_API extends WP_REST_Controller {
 		$trigger_id = $request->get_param( 'trigger_id' );
 		$params     = $request->get_json_params();
 
+		error_log( print_r( 'update trigger', true ) );
+		error_log( print_r( $params, true ) );
+		error_log( print_r( 'slug : ' . $slug, true ) );
+		error_log( print_r( 'trigger_id : ' . $trigger_id, true ) );
+
 		// Get current settings
 		$settings = get_option( 'echodash_options', array() );
 
@@ -336,6 +257,9 @@ class EchoDash_REST_API extends WP_REST_Controller {
 
 		// Save settings
 		update_option( 'echodash_options', $settings );
+
+		error_log( print_r( 'new settings', true ) );
+		error_log( print_r( $settings, true ) );
 
 		// Return updated trigger
 		return rest_ensure_response(
@@ -381,7 +305,7 @@ class EchoDash_REST_API extends WP_REST_Controller {
 	}
 
 	/**
-	 * Generate event preview.
+	 * Generate event preview using integration's built-in methods.
 	 *
 	 * @since 2.0.0
 	 *
@@ -393,22 +317,34 @@ class EchoDash_REST_API extends WP_REST_Controller {
 		$event_config     = $params['eventConfig'];
 		$integration_slug = isset( $params['integrationSlug'] ) ? $params['integrationSlug'] : null;
 		$trigger_id       = isset( $params['triggerId'] ) ? $params['triggerId'] : null;
-		$test_data        = isset( $params['testData'] ) ? $params['testData'] : $this->get_integration_test_data( $integration_slug, $trigger_id );
 
-		// Process merge tags
-		$processed_data = array();
-		foreach ( $event_config['mappings'] as $mapping ) {
-			$key                    = $mapping['key'];
-			$value                  = $this->process_merge_tag( $mapping['value'], $test_data );
-			$processed_data[ $key ] = $value;
+		// Get integration instance
+		if ( ! $integration_slug || ! echodash() || ! echodash()->integration( $integration_slug ) ) {
+			return new WP_Error( 'integration_not_found', __( 'Integration not found', 'echodash' ), array( 'status' => 404 ) );
 		}
+
+		$integration = echodash()->integration( $integration_slug );
+
+		// Get preview data directly from integration's options system
+		$options         = $integration->get_options( $trigger_id );
+		$test_event_data = $this->extract_preview_data_from_options( $options );
+
+		error_log( print_r( 'test event data', true ) );
+		error_log( print_r( $test_event_data, true ) );
+
+		// Use integration's replace_tags method for processing
+		$event_values   = wp_list_pluck( $event_config['mappings'], 'value', 'key' );
+		$processed_data = $integration->replace_tags( $event_values, $test_event_data );
+
+		error_log( print_r( 'processed data', true ) );
+		error_log( print_r( $processed_data, true ) );
 
 		return rest_ensure_response(
 			array(
 				'eventName'     => $event_config['name'],
 				'processedData' => $processed_data,
 				'rawData'       => $event_config,
-				'testData'      => $test_data,
+				'testData'      => $test_event_data,
 			)
 		);
 	}
@@ -456,139 +392,31 @@ class EchoDash_REST_API extends WP_REST_Controller {
 	}
 
 	/**
-	 * Process merge tag.
+	 * Extract preview data from integration options structure.
+	 * Converts the options array into the format expected by replace_tags().
 	 *
 	 * @since 2.0.0
 	 *
-	 * @param string $template The template.
-	 * @param array  $test_data The test data.
-	 * @return string The processed merge tag.
+	 * @param array $options The options array from integration->get_options().
+	 * @return array The preview data organized by object type.
 	 */
-	private function process_merge_tag( $template, $test_data ) {
-		if ( ! is_string( $template ) ) {
-			return $template;
-		}
+	private function extract_preview_data_from_options( $options ) {
+		$preview_data = array();
 
-		return preg_replace_callback(
-			'/\{([^}]+)\}/',
-			function ( $matches ) use ( $test_data ) {
-				$parts = explode( ':', $matches[1] );
-				if ( count( $parts ) === 2 ) {
-					$object_type = $parts[0];
-					$field_name  = $parts[1];
+		foreach ( $options as $option_group ) {
+			if ( isset( $option_group['type'] ) && isset( $option_group['options'] ) ) {
+				$object_type                  = $option_group['type'];
+				$preview_data[ $object_type ] = array();
 
-					if ( isset( $test_data[ $object_type ][ $field_name ] ) ) {
-						return $test_data[ $object_type ][ $field_name ];
-					}
-				}
-				return $matches[0];
-			},
-			$template
-		);
-	}
-
-	/**
-	 * Get integration-specific test data based on the integration's preview definitions.
-	 * Used only by the preview endpoint - test event data is already processed.
-	 *
-	 * @since 2.0.0
-	 *
-	 * @param string $integration_slug The integration slug.
-	 * @param string $trigger_id       The trigger ID.
-	 * @return array The integration-specific test data.
-	 */
-	private function get_integration_test_data( $integration_slug = null, $trigger_id = null ) {
-		// If no integration specified, return basic fallback data
-		if ( ! $integration_slug ) {
-			return $this->get_fallback_test_data();
-		}
-
-		error_log( print_r( 'GET TEST DATA', true ) );
-
-		// Get the integration instance
-		if ( ! echodash() || ! echodash()->integration( $integration_slug ) ) {
-			return $this->get_fallback_test_data();
-		}
-
-		$integration = echodash()->integration( $integration_slug );
-
-		// Get the trigger's option types and build test data from preview values.
-		$options   = $integration->get_options( $trigger_id );
-		$test_data = array();
-
-		if ( ! empty( $options ) ) {
-			foreach ( $options as $option_data ) {
-				if ( isset( $option_data['type'] ) && isset( $option_data['options'] ) && is_array( $option_data['options'] ) ) {
-					$option_type               = $option_data['type'];
-					$test_data[ $option_type ] = array();
-
-					// Extract preview values from each option.
-					foreach ( $option_data['options'] as $option ) {
-						if ( isset( $option['meta'] ) && isset( $option['preview'] ) ) {
-							$test_data[ $option_type ][ $option['meta'] ] = $option['preview'];
-						}
+				foreach ( $option_group['options'] as $option ) {
+					if ( isset( $option['meta'] ) && isset( $option['preview'] ) ) {
+						$preview_data[ $object_type ][ $option['meta'] ] = $option['preview'];
 					}
 				}
 			}
 		}
 
-		// If no test data was generated, use fallback.
-		if ( empty( $test_data ) ) {
-			return $this->get_fallback_test_data();
-		}
-
-		return $test_data;
-	}
-
-	/**
-	 * Get fallback test data for when integration-specific data is not available.
-	 * Used only by the preview endpoint.
-	 *
-	 * @since 2.0.0
-	 *
-	 * @return array The fallback test data.
-	 */
-	private function get_fallback_test_data() {
-		$current_user = wp_get_current_user();
-
-		return array(
-			'user'    => array(
-				'user_email'   => $current_user->user_email,
-				'display_name' => $current_user->display_name,
-				'first_name'   => $current_user->first_name,
-				'last_name'    => $current_user->last_name,
-				'ID'           => $current_user->ID,
-			),
-			'post'    => array(
-				'post_title'   => 'Sample Post Title',
-				'post_content' => 'Sample post content',
-				'post_excerpt' => 'Sample excerpt',
-				'ID'           => 1,
-				'post_url'     => home_url( '/sample-post/' ),
-			),
-			'product' => array(
-				'name'  => 'Sample Product',
-				'price' => '29.99',
-				'sku'   => 'SAMPLE-001',
-				'id'    => 1,
-			),
-		);
-	}
-
-	/**
-	 * Get user capabilities.
-	 *
-	 * @since 2.0.0
-	 *
-	 * @return array The user capabilities.
-	 */
-	private function get_user_capabilities() {
-		$user = wp_get_current_user();
-		return array(
-			'can_manage_options' => current_user_can( 'manage_options' ),
-			'can_edit_posts'     => current_user_can( 'edit_posts' ),
-			'is_admin'           => is_admin(),
-		);
+		return $preview_data;
 	}
 
 	/**
@@ -613,17 +441,6 @@ class EchoDash_REST_API extends WP_REST_Controller {
 		return $sanitized;
 	}
 
-	/**
-	 * Sanitize integration settings.
-	 *
-	 * @since 2.0.0
-	 *
-	 * @param array $settings The settings.
-	 * @return array The sanitized settings.
-	 */
-	private function sanitize_integration_settings( $settings ) {
-		return $this->sanitize_settings( $settings );
-	}
 
 	/**
 	 * Sanitize trigger data.
@@ -651,28 +468,6 @@ class EchoDash_REST_API extends WP_REST_Controller {
 		}
 
 		return $sanitized;
-	}
-
-	/**
-	 * Get endpoint args for integration update.
-	 *
-	 * @since 2.0.0
-	 *
-	 * @return array The endpoint args.
-	 */
-	private function get_integration_update_args() {
-		return array(
-			'enabled'  => array(
-				'description' => __( 'Whether the integration is enabled', 'echodash' ),
-				'type'        => 'boolean',
-				'required'    => false,
-			),
-			'settings' => array(
-				'description' => __( 'Integration-specific settings', 'echodash' ),
-				'type'        => 'object',
-				'required'    => false,
-			),
-		);
 	}
 
 	/**
@@ -725,18 +520,6 @@ class EchoDash_REST_API extends WP_REST_Controller {
 	}
 
 	/**
-	 * Check if a given request has access to get settings.
-	 *
-	 * @since 2.0.0
-	 *
-	 * @param WP_REST_Request $request The request object.
-	 * @return bool Whether the user has access.
-	 */
-	public function get_settings_permissions_check( $request ) {
-		return current_user_can( 'manage_options' );
-	}
-
-	/**
 	 * Check if a given request has access to update settings.
 	 *
 	 * @since 2.0.0
@@ -747,24 +530,6 @@ class EchoDash_REST_API extends WP_REST_Controller {
 	public function update_settings_permissions_check( $request ) {
 		return current_user_can( 'manage_options' );
 	}
-
-	// Removed get_integrations_permissions_check() - endpoint removed
-
-	// Removed get_integration_permissions_check() - GET endpoint removed
-
-	/**
-	 * Check if a given request has access to update an integration.
-	 *
-	 * @since 2.0.0
-	 *
-	 * @param WP_REST_Request $request The request object.
-	 * @return bool Whether the user has access.
-	 */
-	public function update_integration_permissions_check( $request ) {
-		return current_user_can( 'manage_options' );
-	}
-
-	// Removed get_triggers_permissions_check() - GET endpoint removed
 
 	/**
 	 * Check if a given request has access to create triggers.

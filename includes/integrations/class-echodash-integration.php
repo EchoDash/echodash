@@ -238,16 +238,31 @@ abstract class EchoDash_Integration {
 	 */
 	public function track_event( $trigger, $objects = array(), $args = array() ) {
 
+		error_log( print_r( 'track event for trigger ' . $trigger, true ) );
+		error_log( print_r( 'objects', true ) );
+		error_log( print_r( $objects, true ) );
+		error_log( print_r( 'args', true ) );
+		error_log( print_r( $args, true ) );
+
 		$objects = apply_filters( 'echodash_event_objects', $objects, $trigger );
 
 		// Get object ID if applicable
 		$object_id = $this->get_object_id_for_trigger( $trigger, $objects );
 
+		error_log( print_r( 'object id', true ) );
+		error_log( print_r( $object_id, true ) );
+
 		// Get events configured for this trigger
 		$events = $this->get_events( $trigger, $object_id );
 
-		// Get merge variables
+		error_log( print_r( 'events', true ) );
+		error_log( print_r( $events, true ) );
+
+		// Get merge variables from this and any other relevant integrations.
 		$event_data = apply_filters( 'echodash_event_data', array(), $objects );
+
+		error_log( print_r( 'event data', true ) );
+		error_log( print_r( $event_data, true ) );
 
 		// Merge in any custom arguments passed from the trigger
 		foreach ( $args as $object_type => $values ) {
@@ -258,6 +273,9 @@ abstract class EchoDash_Integration {
 			}
 		}
 
+		error_log( print_r( 'event data after args', true ) );
+		error_log( print_r( $event_data, true ) );
+
 		// Process each event
 		foreach ( $events as $event ) {
 
@@ -266,6 +284,9 @@ abstract class EchoDash_Integration {
 
 			// Replace merge tags in event data
 			$event['value'] = $this->replace_tags( $event['value'], $event_data );
+
+			error_log( print_r( 'track event', true ) );
+			error_log( print_r( $event, true ) );
 
 			// Track via public class
 			echodash()->public->track_event(
@@ -281,11 +302,16 @@ abstract class EchoDash_Integration {
 	 * Helper for replacing the placeholders with values.
 	 *
 	 * @since  1.0.0
-	 * @param array $event_values The event values.
-	 * @param array $event_data   The event data.
-	 * @return array The filtered event values.
+	 * @param array $event_values Array of key-value pairs where values may contain placeholders like {user:first_name}.
+	 * @param array $event_data   Multi-dimensional array where keys are object types (e.g. 'user', 'order')
+	 *                            and values are arrays of object properties (e.g. 'first_name' => 'John').
+	 * @return array The filtered event values with placeholders replaced by actual values.
 	 */
 	public function replace_tags( $event_values, $event_data ) {
+
+		error_log( print_r( 'replace tags', true ) );
+		error_log( print_r( $event_values, true ) );
+		error_log( print_r( $event_data, true ) );
 
 		foreach ( $event_values as $key => $event_value ) {
 
@@ -428,9 +454,14 @@ abstract class EchoDash_Integration {
 	public function get_global_events( $trigger ) {
 		$events = array();
 
+		error_log( print_r( 'get global events for trigger ' . $trigger, true ) );
+
 		if ( $this->triggers[ $trigger ]['has_global'] ) {
 			// Global settings.
 			$settings = get_option( 'echodash_options', array() );
+
+			error_log( print_r( 'settings', true ) );
+			error_log( print_r( $settings, true ) );
 
 			if ( ! empty( $settings[ $this->slug ] ) ) {
 				foreach ( $settings[ $this->slug ] as $event ) {
