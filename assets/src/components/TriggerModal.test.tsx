@@ -6,19 +6,29 @@
  */
 
 import React from 'react';
-import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
+import {
+	render,
+	screen,
+	fireEvent,
+	waitFor,
+	within,
+} from '@testing-library/react';
 import { TriggerModal } from './TriggerModal';
 import type { Integration, Trigger } from '../types';
 
 // Mock the MergeTagSelector component
 jest.mock('./MergeTagSelector', () => ({
-	MergeTagSelector: ({ isOpen, onSelect, onClose, options }: any) => {
+	MergeTagSelector: ({ isOpen, onSelect, onClose }: any) => {
 		if (!isOpen) return null;
-		
+
 		return (
 			<div data-testid="merge-tag-selector">
-				<button onClick={() => onSelect('{user:email}')}>Select User Email</button>
-				<button onClick={() => onSelect('{order:id}')}>Select Order ID</button>
+				<button onClick={() => onSelect('{user:email}')}>
+					Select User Email
+				</button>
+				<button onClick={() => onSelect('{order:id}')}>
+					Select Order ID
+				</button>
 				<button onClick={onClose}>Close Selector</button>
 			</div>
 		);
@@ -128,8 +138,10 @@ describe('TriggerModal Component', () => {
 	describe('Rendering', () => {
 		it('does not render when isOpen is false', () => {
 			render(<TriggerModal {...defaultProps} isOpen={false} />);
-			
-			expect(screen.queryByTestId('trigger-modal')).not.toBeInTheDocument();
+
+			expect(
+				screen.queryByTestId('trigger-modal')
+			).not.toBeInTheDocument();
 		});
 
 		it('renders modal header with integration info', () => {
@@ -137,18 +149,31 @@ describe('TriggerModal Component', () => {
 
 			// Check modal title in header
 			const modal = screen.getByRole('dialog');
-			expect(within(modal).getByRole('heading', { name: /add trigger/i })).toBeInTheDocument();
-			expect(screen.getByText('Create a trigger for WooCommerce')).toBeInTheDocument();
+			expect(
+				within(modal).getByRole('heading', { name: /add trigger/i })
+			).toBeInTheDocument();
+			expect(
+				screen.getByText('Create a trigger for WooCommerce')
+			).toBeInTheDocument();
 			expect(screen.getByAltText('WooCommerce logo')).toBeInTheDocument();
 		});
 
 		it('renders modal header for editing trigger', () => {
-			render(<TriggerModal {...defaultProps} editingTrigger={mockEditingTrigger} />);
+			render(
+				<TriggerModal
+					{...defaultProps}
+					editingTrigger={mockEditingTrigger}
+				/>
+			);
 
 			// Check modal title changes to "Edit Trigger" in header
 			const modal = screen.getByRole('dialog');
-			expect(within(modal).getByRole('heading', { name: /edit trigger/i })).toBeInTheDocument();
-			expect(screen.getByText('Edit trigger for WooCommerce')).toBeInTheDocument();
+			expect(
+				within(modal).getByRole('heading', { name: /edit trigger/i })
+			).toBeInTheDocument();
+			expect(
+				screen.getByText('Edit trigger for WooCommerce')
+			).toBeInTheDocument();
 		});
 
 		it('renders trigger selector with available options', () => {
@@ -156,7 +181,7 @@ describe('TriggerModal Component', () => {
 
 			const triggerSelect = screen.getByRole('combobox');
 			expect(triggerSelect).toBeInTheDocument();
-			
+
 			// Should have both trigger options
 			expect(screen.getByText('Order Completed')).toBeInTheDocument();
 			expect(screen.getByText('User Registered')).toBeInTheDocument();
@@ -165,7 +190,9 @@ describe('TriggerModal Component', () => {
 		it('renders event name input with default value', () => {
 			render(<TriggerModal {...defaultProps} />);
 
-			const eventNameInput = document.querySelector('.echodash-event-name__input') as HTMLInputElement;
+			const eventNameInput = document.querySelector(
+				'.echodash-event-name__input'
+			) as HTMLInputElement;
 			expect(eventNameInput).toBeInTheDocument();
 			expect(eventNameInput.value).toBe('Order Completed');
 		});
@@ -175,23 +202,40 @@ describe('TriggerModal Component', () => {
 
 			expect(screen.getByDisplayValue('order_id')).toBeInTheDocument();
 			expect(screen.getByDisplayValue('{order:id}')).toBeInTheDocument();
-			expect(screen.getByDisplayValue('customer_email')).toBeInTheDocument();
-			expect(screen.getByDisplayValue('{user:user_email}')).toBeInTheDocument();
+			expect(
+				screen.getByDisplayValue('customer_email')
+			).toBeInTheDocument();
+			expect(
+				screen.getByDisplayValue('{user:user_email}')
+			).toBeInTheDocument();
 		});
 
 		it('renders with editing trigger data', () => {
-			render(<TriggerModal {...defaultProps} editingTrigger={mockEditingTrigger} />);
+			render(
+				<TriggerModal
+					{...defaultProps}
+					editingTrigger={mockEditingTrigger}
+				/>
+			);
 
-			expect(screen.getByDisplayValue('Existing Order Completed')).toBeInTheDocument();
+			expect(
+				screen.getByDisplayValue('Existing Order Completed')
+			).toBeInTheDocument();
 			expect(screen.getByDisplayValue('order_id')).toBeInTheDocument();
-			expect(screen.getByDisplayValue('custom_field')).toBeInTheDocument();
-			expect(screen.getByDisplayValue('custom_value')).toBeInTheDocument();
+			expect(
+				screen.getByDisplayValue('custom_field')
+			).toBeInTheDocument();
+			expect(
+				screen.getByDisplayValue('custom_value')
+			).toBeInTheDocument();
 		});
 
 		it('renders trigger description info box', () => {
 			render(<TriggerModal {...defaultProps} />);
 
-			expect(screen.getByText('Triggered when an order is completed')).toBeInTheDocument();
+			expect(
+				screen.getByText('Triggered when an order is completed')
+			).toBeInTheDocument();
 		});
 
 		it('handles integration without icon', () => {
@@ -200,10 +244,17 @@ describe('TriggerModal Component', () => {
 				icon: undefined,
 			};
 
-			render(<TriggerModal {...defaultProps} integration={integrationWithoutIcon} />);
+			render(
+				<TriggerModal
+					{...defaultProps}
+					integration={integrationWithoutIcon}
+				/>
+			);
 
 			// Should render dashicon fallback
-			const dashicon = document.querySelector('.echodash-modal__header-icon-dashicon');
+			const dashicon = document.querySelector(
+				'.echodash-modal__header-icon-dashicon'
+			);
 			expect(dashicon).toBeInTheDocument();
 		});
 	});
@@ -213,18 +264,28 @@ describe('TriggerModal Component', () => {
 			render(<TriggerModal {...defaultProps} />);
 
 			const triggerSelect = screen.getByRole('combobox');
-			fireEvent.change(triggerSelect, { target: { value: 'user_registered' } });
+			fireEvent.change(triggerSelect, {
+				target: { value: 'user_registered' },
+			});
 
-			expect(screen.getByDisplayValue('User Registration')).toBeInTheDocument();
+			expect(
+				screen.getByDisplayValue('User Registration')
+			).toBeInTheDocument();
 		});
 
 		it('updates event name input', () => {
 			render(<TriggerModal {...defaultProps} />);
 
-			const eventNameInput = document.querySelector('.echodash-event-name__input') as HTMLInputElement;
-			fireEvent.change(eventNameInput, { target: { value: 'Custom Event Name' } });
+			const eventNameInput = document.querySelector(
+				'.echodash-event-name__input'
+			) as HTMLInputElement;
+			fireEvent.change(eventNameInput, {
+				target: { value: 'Custom Event Name' },
+			});
 
-			expect(screen.getByDisplayValue('Custom Event Name')).toBeInTheDocument();
+			expect(
+				screen.getByDisplayValue('Custom Event Name')
+			).toBeInTheDocument();
 		});
 
 		it('updates key-value pair inputs', () => {
@@ -234,7 +295,9 @@ describe('TriggerModal Component', () => {
 			const valueInputs = screen.getAllByDisplayValue('{order:id}');
 
 			fireEvent.change(keyInputs[0], { target: { value: 'new_key' } });
-			fireEvent.change(valueInputs[0], { target: { value: 'new_value' } });
+			fireEvent.change(valueInputs[0], {
+				target: { value: 'new_value' },
+			});
 
 			expect(screen.getByDisplayValue('new_key')).toBeInTheDocument();
 			expect(screen.getByDisplayValue('new_value')).toBeInTheDocument();
@@ -245,10 +308,10 @@ describe('TriggerModal Component', () => {
 
 			const initialPairs = screen.getAllByRole('textbox');
 			// Find plus button by CSS class since it uses dashicons
-			const plusButton = screen.getAllByRole('button').find(btn => 
-				btn.querySelector('.dashicons-plus-alt2')
-			);
-			
+			const plusButton = screen
+				.getAllByRole('button')
+				.find(btn => btn.querySelector('.dashicons-plus-alt2'));
+
 			fireEvent.click(plusButton);
 
 			const newPairs = screen.getAllByRole('textbox');
@@ -260,10 +323,10 @@ describe('TriggerModal Component', () => {
 
 			const initialPairs = screen.getAllByRole('textbox');
 			// Find minus button by CSS class since it uses dashicons
-			const minusButton = screen.getAllByRole('button').find(btn => 
-				btn.querySelector('.dashicons-minus')
-			);
-			
+			const minusButton = screen
+				.getAllByRole('button')
+				.find(btn => btn.querySelector('.dashicons-minus'));
+
 			fireEvent.click(minusButton!);
 
 			const newPairs = screen.getAllByRole('textbox');
@@ -287,18 +350,25 @@ describe('TriggerModal Component', () => {
 				],
 			};
 
-			render(<TriggerModal {...defaultProps} integration={singlePairIntegration} />);
+			render(
+				<TriggerModal
+					{...defaultProps}
+					integration={singlePairIntegration}
+				/>
+			);
 
 			// Should show minus buttons because there are 2 pairs total (1 real + 1 empty)
 			const minusButtons = document.querySelectorAll('.dashicons-minus');
-			expect(minusButtons.length).toBeGreaterThan(0); 
+			expect(minusButtons.length).toBeGreaterThan(0);
 		});
 
 		it('disables form elements when savingTrigger is true', () => {
 			render(<TriggerModal {...defaultProps} savingTrigger={true} />);
 
 			const triggerSelect = screen.getByRole('combobox');
-			const eventNameInput = document.querySelector('.echodash-event-name__input') as HTMLInputElement;
+			const eventNameInput = document.querySelector(
+				'.echodash-event-name__input'
+			) as HTMLInputElement;
 			const saveButton = screen.getByText('Saving...');
 
 			expect(triggerSelect).toBeDisabled();
@@ -307,7 +377,12 @@ describe('TriggerModal Component', () => {
 		});
 
 		it('disables trigger selector when editing existing trigger', () => {
-			render(<TriggerModal {...defaultProps} editingTrigger={mockEditingTrigger} />);
+			render(
+				<TriggerModal
+					{...defaultProps}
+					editingTrigger={mockEditingTrigger}
+				/>
+			);
 
 			const triggerSelect = screen.getByRole('combobox');
 			expect(triggerSelect).toBeDisabled();
@@ -318,56 +393,82 @@ describe('TriggerModal Component', () => {
 		it('opens merge tag selector for event name', () => {
 			render(<TriggerModal {...defaultProps} />);
 
-			const mergeTagButton = document.querySelector('.echodash-merge-tag-button--inline');
+			const mergeTagButton = document.querySelector(
+				'.echodash-merge-tag-button--inline'
+			);
 			fireEvent.click(mergeTagButton!);
 
-			expect(screen.getByTestId('merge-tag-selector')).toBeInTheDocument();
+			expect(
+				screen.getByTestId('merge-tag-selector')
+			).toBeInTheDocument();
 		});
 
 		it('selects merge tag for event name', () => {
 			render(<TriggerModal {...defaultProps} />);
 
-			const mergeTagButton = document.querySelector('.echodash-merge-tag-button--inline');
+			const mergeTagButton = document.querySelector(
+				'.echodash-merge-tag-button--inline'
+			);
 			fireEvent.click(mergeTagButton!);
 
 			fireEvent.click(screen.getByText('Select User Email'));
 
-			expect(screen.getByDisplayValue('Order Completed{user:email}')).toBeInTheDocument();
-			expect(screen.queryByTestId('merge-tag-selector')).not.toBeInTheDocument();
+			expect(
+				screen.getByDisplayValue('Order Completed{user:email}')
+			).toBeInTheDocument();
+			expect(
+				screen.queryByTestId('merge-tag-selector')
+			).not.toBeInTheDocument();
 		});
 
 		it('opens merge tag selector for value field', () => {
 			render(<TriggerModal {...defaultProps} />);
 
-			const valueButtons = document.querySelectorAll('.echodash-input-wrapper--value .echodash-merge-tag-button--inline');
+			const valueButtons = document.querySelectorAll(
+				'.echodash-input-wrapper--value .echodash-merge-tag-button--inline'
+			);
 			fireEvent.click(valueButtons[0]);
 
-			expect(screen.getByTestId('merge-tag-selector')).toBeInTheDocument();
+			expect(
+				screen.getByTestId('merge-tag-selector')
+			).toBeInTheDocument();
 		});
 
 		it('selects merge tag for value field', () => {
 			render(<TriggerModal {...defaultProps} />);
 
-			const valueButtons = document.querySelectorAll('.echodash-input-wrapper--value .echodash-merge-tag-button--inline');
+			const valueButtons = document.querySelectorAll(
+				'.echodash-input-wrapper--value .echodash-merge-tag-button--inline'
+			);
 			fireEvent.click(valueButtons[0]);
 
 			fireEvent.click(screen.getByText('Select Order ID'));
 
-			expect(screen.getByDisplayValue('{order:id}{order:id}')).toBeInTheDocument();
-			expect(screen.queryByTestId('merge-tag-selector')).not.toBeInTheDocument();
+			expect(
+				screen.getByDisplayValue('{order:id}{order:id}')
+			).toBeInTheDocument();
+			expect(
+				screen.queryByTestId('merge-tag-selector')
+			).not.toBeInTheDocument();
 		});
 
 		it('closes merge tag selector when close button is clicked', () => {
 			render(<TriggerModal {...defaultProps} />);
 
-			const mergeTagButton = document.querySelector('.echodash-merge-tag-button--inline');
+			const mergeTagButton = document.querySelector(
+				'.echodash-merge-tag-button--inline'
+			);
 			fireEvent.click(mergeTagButton!);
 
-			expect(screen.getByTestId('merge-tag-selector')).toBeInTheDocument();
+			expect(
+				screen.getByTestId('merge-tag-selector')
+			).toBeInTheDocument();
 
 			fireEvent.click(screen.getByText('Close Selector'));
 
-			expect(screen.queryByTestId('merge-tag-selector')).not.toBeInTheDocument();
+			expect(
+				screen.queryByTestId('merge-tag-selector')
+			).not.toBeInTheDocument();
 		});
 	});
 
@@ -377,7 +478,8 @@ describe('TriggerModal Component', () => {
 
 			// Find save button in modal footer
 			const modal = screen.getByRole('dialog');
-			const saveButton = within(modal).getAllByRole('button', { name: /add trigger/i })
+			const saveButton = within(modal)
+				.getAllByRole('button', { name: /add trigger/i })
 				.find(btn => btn.classList.contains('echodash-button-primary'));
 			fireEvent.click(saveButton);
 
@@ -395,14 +497,15 @@ describe('TriggerModal Component', () => {
 			render(<TriggerModal {...defaultProps} />);
 
 			// Add some empty pairs
-			const plusButton = screen.getAllByRole('button').find(btn => 
-				btn.querySelector('.dashicons-plus-alt2')
-			);
+			const plusButton = screen
+				.getAllByRole('button')
+				.find(btn => btn.querySelector('.dashicons-plus-alt2'));
 			fireEvent.click(plusButton);
 
 			// Find save button in modal footer
 			const modal = screen.getByRole('dialog');
-			const saveButton = within(modal).getAllByRole('button', { name: /add trigger/i })
+			const saveButton = within(modal)
+				.getAllByRole('button', { name: /add trigger/i })
 				.find(btn => btn.classList.contains('echodash-button-primary'));
 			fireEvent.click(saveButton);
 
@@ -424,7 +527,12 @@ describe('TriggerModal Component', () => {
 		});
 
 		it('shows correct button text for editing', () => {
-			render(<TriggerModal {...defaultProps} editingTrigger={mockEditingTrigger} />);
+			render(
+				<TriggerModal
+					{...defaultProps}
+					editingTrigger={mockEditingTrigger}
+				/>
+			);
 
 			expect(screen.getByText('Update Trigger')).toBeInTheDocument();
 		});
@@ -436,11 +544,17 @@ describe('TriggerModal Component', () => {
 				availableTriggers: [],
 			};
 
-			render(<TriggerModal {...defaultProps} integration={emptyIntegration} />);
+			render(
+				<TriggerModal
+					{...defaultProps}
+					integration={emptyIntegration}
+				/>
+			);
 
 			// Find save button in modal footer
 			const modal = screen.getByRole('dialog');
-			const saveButton = within(modal).getAllByRole('button', { name: /add trigger/i })
+			const saveButton = within(modal)
+				.getAllByRole('button', { name: /add trigger/i })
 				.find(btn => btn.classList.contains('echodash-button-primary'));
 			expect(saveButton).not.toBeDisabled(); // Should not be disabled due to fallback trigger
 		});
@@ -470,7 +584,9 @@ describe('TriggerModal Component', () => {
 			});
 			const mockOnSendTest = jest.fn().mockReturnValue(slowPromise);
 
-			render(<TriggerModal {...defaultProps} onSendTest={mockOnSendTest} />);
+			render(
+				<TriggerModal {...defaultProps} onSendTest={mockOnSendTest} />
+			);
 
 			const sendTestButton = screen.getByText('Send Test');
 			fireEvent.click(sendTestButton);
@@ -497,9 +613,13 @@ describe('TriggerModal Component', () => {
 		});
 
 		it('handles test error gracefully', async () => {
-			const mockOnSendTest = jest.fn().mockRejectedValue(new Error('Network error'));
+			const mockOnSendTest = jest
+				.fn()
+				.mockRejectedValue(new Error('Network error'));
 
-			render(<TriggerModal {...defaultProps} onSendTest={mockOnSendTest} />);
+			render(
+				<TriggerModal {...defaultProps} onSendTest={mockOnSendTest} />
+			);
 
 			const sendTestButton = screen.getByText('Send Test');
 			fireEvent.click(sendTestButton);
@@ -530,7 +650,9 @@ describe('TriggerModal Component', () => {
 		it('calls onClose when close button is clicked', () => {
 			render(<TriggerModal {...defaultProps} />);
 
-			const closeButton = document.querySelector('.echodash-modal__close');
+			const closeButton = document.querySelector(
+				'.echodash-modal__close'
+			);
 			fireEvent.click(closeButton!);
 
 			expect(defaultProps.onClose).toHaveBeenCalled();
@@ -560,7 +682,12 @@ describe('TriggerModal Component', () => {
 				availableTriggers: [],
 			};
 
-			render(<TriggerModal {...defaultProps} integration={integrationWithoutTriggers} />);
+			render(
+				<TriggerModal
+					{...defaultProps}
+					integration={integrationWithoutTriggers}
+				/>
+			);
 
 			// Should render with fallback trigger
 			expect(screen.getByText('Form Submitted')).toBeInTheDocument();
@@ -579,12 +706,18 @@ describe('TriggerModal Component', () => {
 				],
 			};
 
-			render(<TriggerModal {...defaultProps} integration={integrationWithoutDefaults} />);
+			render(
+				<TriggerModal
+					{...defaultProps}
+					integration={integrationWithoutDefaults}
+				/>
+			);
 
 			// Should show Custom Trigger in both selector and event name input
-			const customTriggerElements = screen.getAllByDisplayValue('Custom Trigger');
+			const customTriggerElements =
+				screen.getAllByDisplayValue('Custom Trigger');
 			expect(customTriggerElements).toHaveLength(2); // select option and text input
-			
+
 			// Should show fallback key-value pairs
 			expect(screen.getByDisplayValue('user_name')).toBeInTheDocument();
 			expect(screen.getByDisplayValue('{user_name}')).toBeInTheDocument();
@@ -596,7 +729,12 @@ describe('TriggerModal Component', () => {
 				mappings: undefined,
 			};
 
-			render(<TriggerModal {...defaultProps} editingTrigger={triggerWithoutMappings} />);
+			render(
+				<TriggerModal
+					{...defaultProps}
+					editingTrigger={triggerWithoutMappings}
+				/>
+			);
 
 			// Should render with fallback mappings
 			expect(screen.getByDisplayValue('user_name')).toBeInTheDocument();
@@ -611,7 +749,12 @@ describe('TriggerModal Component', () => {
 				icon: undefined,
 			};
 
-			render(<TriggerModal {...defaultProps} integration={gravityFormsIntegration} />);
+			render(
+				<TriggerModal
+					{...defaultProps}
+					integration={gravityFormsIntegration}
+				/>
+			);
 
 			const dashicon = document.querySelector('.dashicons-feedback');
 			expect(dashicon).toBeInTheDocument();
@@ -624,7 +767,12 @@ describe('TriggerModal Component', () => {
 				icon: undefined,
 			};
 
-			render(<TriggerModal {...defaultProps} integration={integrationWithoutIcon} />);
+			render(
+				<TriggerModal
+					{...defaultProps}
+					integration={integrationWithoutIcon}
+				/>
+			);
 
 			const dashicon = document.querySelector('.dashicons-admin-plugins');
 			expect(dashicon).toBeInTheDocument();

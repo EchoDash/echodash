@@ -111,7 +111,7 @@ describe('MergeTagSelector Component', () => {
 
 	beforeEach(() => {
 		jest.clearAllMocks();
-		
+
 		// Mock default button position
 		mockGetBoundingClientRect.mockReturnValue({
 			bottom: 100,
@@ -138,14 +138,16 @@ describe('MergeTagSelector Component', () => {
 	describe('Rendering', () => {
 		it('does not render when isOpen is false', () => {
 			render(<TestWrapper {...defaultProps} isOpen={false} />);
-			
+
 			expect(screen.queryByRole('listbox')).not.toBeInTheDocument();
 		});
 
 		it('renders dropdown with search input when open', () => {
 			render(<TestWrapper {...defaultProps} />);
 
-			expect(screen.getByPlaceholderText('Search merge tags...')).toBeInTheDocument();
+			expect(
+				screen.getByPlaceholderText('Search merge tags...')
+			).toBeInTheDocument();
 			expect(screen.getByRole('listbox')).toBeInTheDocument();
 		});
 
@@ -160,7 +162,9 @@ describe('MergeTagSelector Component', () => {
 			// Options
 			expect(screen.getByText('{user:user_email}')).toBeInTheDocument();
 			expect(screen.getByText('User Email')).toBeInTheDocument();
-			expect(screen.getByText('Preview: test@example.com')).toBeInTheDocument();
+			expect(
+				screen.getByText('Preview: test@example.com')
+			).toBeInTheDocument();
 
 			expect(screen.getByText('{order:id}')).toBeInTheDocument();
 			expect(screen.getByText('Order ID')).toBeInTheDocument();
@@ -172,16 +176,23 @@ describe('MergeTagSelector Component', () => {
 		it('focuses search input when opened', async () => {
 			render(<TestWrapper {...defaultProps} />);
 
-			await waitFor(() => {
-				const searchInput = screen.getByPlaceholderText('Search merge tags...');
-				expect(searchInput).toHaveFocus();
-			}, { timeout: 200 });
+			await waitFor(
+				() => {
+					const searchInput = screen.getByPlaceholderText(
+						'Search merge tags...'
+					);
+					expect(searchInput).toHaveFocus();
+				},
+				{ timeout: 200 }
+			);
 		});
 
 		it('renders empty state when no options available', () => {
 			render(<TestWrapper {...defaultProps} options={[]} />);
 
-			expect(screen.getByText('No merge tags available')).toBeInTheDocument();
+			expect(
+				screen.getByText('No merge tags available')
+			).toBeInTheDocument();
 		});
 	});
 
@@ -189,7 +200,9 @@ describe('MergeTagSelector Component', () => {
 		it('filters options based on search term', () => {
 			render(<TestWrapper {...defaultProps} />);
 
-			const searchInput = screen.getByPlaceholderText('Search merge tags...');
+			const searchInput = screen.getByPlaceholderText(
+				'Search merge tags...'
+			);
 			fireEvent.change(searchInput, { target: { value: 'email' } });
 
 			// Should show user email option
@@ -198,23 +211,31 @@ describe('MergeTagSelector Component', () => {
 
 			// Should not show other options
 			expect(screen.queryByText('{order:id}')).not.toBeInTheDocument();
-			expect(screen.queryByText('{product:name}')).not.toBeInTheDocument();
+			expect(
+				screen.queryByText('{product:name}')
+			).not.toBeInTheDocument();
 		});
 
 		it('filters based on placeholder text', () => {
 			render(<TestWrapper {...defaultProps} />);
 
-			const searchInput = screen.getByPlaceholderText('Search merge tags...');
+			const searchInput = screen.getByPlaceholderText(
+				'Search merge tags...'
+			);
 			fireEvent.change(searchInput, { target: { value: 'Order Total' } });
 
 			expect(screen.getByText('{order:total}')).toBeInTheDocument();
-			expect(screen.queryByText('{user:user_email}')).not.toBeInTheDocument();
+			expect(
+				screen.queryByText('{user:user_email}')
+			).not.toBeInTheDocument();
 		});
 
 		it('filters based on preview text', () => {
 			render(<TestWrapper {...defaultProps} />);
 
-			const searchInput = screen.getByPlaceholderText('Search merge tags...');
+			const searchInput = screen.getByPlaceholderText(
+				'Search merge tags...'
+			);
 			fireEvent.change(searchInput, { target: { value: 'John Doe' } });
 
 			expect(screen.getByText('{user:display_name}')).toBeInTheDocument();
@@ -224,16 +245,22 @@ describe('MergeTagSelector Component', () => {
 		it('shows no results message when search has no matches', () => {
 			render(<TestWrapper {...defaultProps} />);
 
-			const searchInput = screen.getByPlaceholderText('Search merge tags...');
+			const searchInput = screen.getByPlaceholderText(
+				'Search merge tags...'
+			);
 			fireEvent.change(searchInput, { target: { value: 'nonexistent' } });
 
-			expect(screen.getByText('No matching merge tags found')).toBeInTheDocument();
+			expect(
+				screen.getByText('No matching merge tags found')
+			).toBeInTheDocument();
 		});
 
 		it('is case insensitive', () => {
 			render(<TestWrapper {...defaultProps} />);
 
-			const searchInput = screen.getByPlaceholderText('Search merge tags...');
+			const searchInput = screen.getByPlaceholderText(
+				'Search merge tags...'
+			);
 			fireEvent.change(searchInput, { target: { value: 'EMAIL' } });
 
 			expect(screen.getByText('{user:user_email}')).toBeInTheDocument();
@@ -242,30 +269,36 @@ describe('MergeTagSelector Component', () => {
 		it('resets search when dropdown closes and reopens', () => {
 			const { rerender } = render(<TestWrapper {...defaultProps} />);
 
-			const searchInput = screen.getByPlaceholderText('Search merge tags...');
+			const searchInput = screen.getByPlaceholderText(
+				'Search merge tags...'
+			);
 			fireEvent.change(searchInput, { target: { value: 'email' } });
 
 			expect(searchInput).toHaveValue('email');
 
 			// Close dropdown
 			rerender(<TestWrapper {...defaultProps} isOpen={false} />);
-			
+
 			// Reopen dropdown
 			rerender(<TestWrapper {...defaultProps} isOpen={true} />);
 
-			const newSearchInput = screen.getByPlaceholderText('Search merge tags...');
+			const newSearchInput = screen.getByPlaceholderText(
+				'Search merge tags...'
+			);
 			expect(newSearchInput).toHaveValue('');
 		});
 
 		it('removes empty groups after filtering', () => {
 			render(<TestWrapper {...defaultProps} />);
 
-			const searchInput = screen.getByPlaceholderText('Search merge tags...');
+			const searchInput = screen.getByPlaceholderText(
+				'Search merge tags...'
+			);
 			fireEvent.change(searchInput, { target: { value: 'user' } });
 
 			// User group should be visible
 			expect(screen.getByText('User')).toBeInTheDocument();
-			
+
 			// Order and Product groups should not be visible (no matching options)
 			expect(screen.queryByText('Order')).not.toBeInTheDocument();
 			expect(screen.queryByText('Product')).not.toBeInTheDocument();
@@ -279,7 +312,9 @@ describe('MergeTagSelector Component', () => {
 			const userEmailOption = screen.getByText('{user:user_email}');
 			fireEvent.click(userEmailOption);
 
-			expect(defaultProps.onSelect).toHaveBeenCalledWith('{user:user_email}');
+			expect(defaultProps.onSelect).toHaveBeenCalledWith(
+				'{user:user_email}'
+			);
 		});
 
 		it('closes dropdown after selecting option', () => {
@@ -297,7 +332,9 @@ describe('MergeTagSelector Component', () => {
 			const userEmailOption = screen.getByText('{user:user_email}');
 			fireEvent.keyDown(userEmailOption, { key: 'Enter' });
 
-			expect(defaultProps.onSelect).toHaveBeenCalledWith('{user:user_email}');
+			expect(defaultProps.onSelect).toHaveBeenCalledWith(
+				'{user:user_email}'
+			);
 		});
 
 		it('handles option selection via space key', () => {
@@ -306,7 +343,9 @@ describe('MergeTagSelector Component', () => {
 			const userEmailOption = screen.getByText('{user:user_email}');
 			fireEvent.keyDown(userEmailOption, { key: ' ' });
 
-			expect(defaultProps.onSelect).toHaveBeenCalledWith('{user:user_email}');
+			expect(defaultProps.onSelect).toHaveBeenCalledWith(
+				'{user:user_email}'
+			);
 		});
 	});
 
@@ -318,44 +357,66 @@ describe('MergeTagSelector Component', () => {
 			fireEvent.keyDown(listbox, { key: 'ArrowDown' });
 
 			// First option should be focused
-			const firstOption = screen.getByText('{user:user_email}').closest('.echodash-merge-dropdown__option');
-			expect(firstOption).toHaveClass('echodash-merge-dropdown__option--focused');
+			const firstOption = screen
+				.getByText('{user:user_email}')
+				.closest('.echodash-merge-dropdown__option');
+			expect(firstOption).toHaveClass(
+				'echodash-merge-dropdown__option--focused'
+			);
 		});
 
 		it('navigates between options with arrow keys', () => {
 			render(<TestWrapper {...defaultProps} />);
 
 			const listbox = screen.getByRole('listbox');
-			
+
 			// Navigate to first option
 			fireEvent.keyDown(listbox, { key: 'ArrowDown' });
-			expect(screen.getByText('{user:user_email}').closest('.echodash-merge-dropdown__option')).toHaveClass('echodash-merge-dropdown__option--focused');
+			expect(
+				screen
+					.getByText('{user:user_email}')
+					.closest('.echodash-merge-dropdown__option')
+			).toHaveClass('echodash-merge-dropdown__option--focused');
 
 			// Navigate to second option
 			fireEvent.keyDown(listbox, { key: 'ArrowDown' });
-			expect(screen.getByText('{user:user_id}').closest('.echodash-merge-dropdown__option')).toHaveClass('echodash-merge-dropdown__option--focused');
+			expect(
+				screen
+					.getByText('{user:user_id}')
+					.closest('.echodash-merge-dropdown__option')
+			).toHaveClass('echodash-merge-dropdown__option--focused');
 
 			// Navigate back up
 			fireEvent.keyDown(listbox, { key: 'ArrowUp' });
-			expect(screen.getByText('{user:user_email}').closest('.echodash-merge-dropdown__option')).toHaveClass('echodash-merge-dropdown__option--focused');
+			expect(
+				screen
+					.getByText('{user:user_email}')
+					.closest('.echodash-merge-dropdown__option')
+			).toHaveClass('echodash-merge-dropdown__option--focused');
 		});
 
 		it('selects focused option with Enter key', () => {
 			render(<TestWrapper {...defaultProps} />);
 
-			const searchInput = screen.getByPlaceholderText('Search merge tags...');
+			const searchInput = screen.getByPlaceholderText(
+				'Search merge tags...'
+			);
 			fireEvent.keyDown(searchInput, { key: 'ArrowDown' });
 
 			const listbox = screen.getByRole('listbox');
 			fireEvent.keyDown(listbox, { key: 'Enter' });
 
-			expect(defaultProps.onSelect).toHaveBeenCalledWith('{user:user_email}');
+			expect(defaultProps.onSelect).toHaveBeenCalledWith(
+				'{user:user_email}'
+			);
 		});
 
 		it('closes dropdown with Escape key', () => {
 			render(<TestWrapper {...defaultProps} />);
 
-			const searchInput = screen.getByPlaceholderText('Search merge tags...');
+			const searchInput = screen.getByPlaceholderText(
+				'Search merge tags...'
+			);
 			fireEvent.keyDown(searchInput, { key: 'Escape' });
 
 			expect(defaultProps.onClose).toHaveBeenCalled();
@@ -364,11 +425,13 @@ describe('MergeTagSelector Component', () => {
 		it('prevents dropdown close when typing in search input', () => {
 			render(<TestWrapper {...defaultProps} />);
 
-			const searchInput = screen.getByPlaceholderText('Search merge tags...');
-			
+			const searchInput = screen.getByPlaceholderText(
+				'Search merge tags...'
+			);
+
 			// Typing a character should not close the dropdown
 			fireEvent.keyDown(searchInput, { key: 'a' });
-			
+
 			// Verify dropdown is still open by checking if search input is still visible
 			expect(searchInput).toBeInTheDocument();
 			expect(defaultProps.onClose).not.toHaveBeenCalled();
@@ -377,7 +440,9 @@ describe('MergeTagSelector Component', () => {
 		it('navigates back to search input with ArrowUp from first option', () => {
 			render(<TestWrapper {...defaultProps} />);
 
-			const searchInput = screen.getByPlaceholderText('Search merge tags...');
+			const searchInput = screen.getByPlaceholderText(
+				'Search merge tags...'
+			);
 			fireEvent.keyDown(searchInput, { key: 'ArrowDown' });
 
 			const listbox = screen.getByRole('listbox');
@@ -454,7 +519,11 @@ describe('MergeTagSelector Component', () => {
 			fireEvent.keyDown(listbox, { key: 'ArrowDown' });
 
 			// Just verify navigation works - auto-scroll is complex to test without full DOM
-			expect(screen.getByText('{user:user_email}').closest('.echodash-merge-dropdown__option')).toHaveClass('echodash-merge-dropdown__option--focused');
+			expect(
+				screen
+					.getByText('{user:user_email}')
+					.closest('.echodash-merge-dropdown__option')
+			).toHaveClass('echodash-merge-dropdown__option--focused');
 		});
 	});
 
@@ -466,7 +535,10 @@ describe('MergeTagSelector Component', () => {
 			expect(listbox).toBeInTheDocument();
 
 			const dropdown = document.querySelector('.echodash-merge-dropdown');
-			const options = dropdown?.querySelectorAll('.echodash-merge-dropdown__option') || [];
+			const options =
+				dropdown?.querySelectorAll(
+					'.echodash-merge-dropdown__option'
+				) || [];
 			options.forEach(option => {
 				expect(option).toHaveAttribute('aria-label');
 			});
@@ -477,7 +549,9 @@ describe('MergeTagSelector Component', () => {
 
 			// Search input should be focused initially
 			await waitFor(() => {
-				const searchInput = screen.getByPlaceholderText('Search merge tags...');
+				const searchInput = screen.getByPlaceholderText(
+					'Search merge tags...'
+				);
 				expect(searchInput).toHaveFocus();
 			});
 		});
@@ -488,11 +562,16 @@ describe('MergeTagSelector Component', () => {
 			const listbox = screen.getByRole('listbox');
 			fireEvent.keyDown(listbox, { key: 'ArrowDown' });
 
-			const focusedOption = screen.getByText('{user:user_email}').closest('.echodash-merge-dropdown__option');
+			const focusedOption = screen
+				.getByText('{user:user_email}')
+				.closest('.echodash-merge-dropdown__option');
 			expect(focusedOption).toHaveAttribute('tabIndex', '0');
 
 			const dropdown = document.querySelector('.echodash-merge-dropdown');
-			const allOptions = dropdown?.querySelectorAll('.echodash-merge-dropdown__option') || [];
+			const allOptions =
+				dropdown?.querySelectorAll(
+					'.echodash-merge-dropdown__option'
+				) || [];
 			const unfocusedOptions = Array.from(allOptions).filter(
 				option => option !== focusedOption
 			);
@@ -506,10 +585,14 @@ describe('MergeTagSelector Component', () => {
 		it('handles empty search results gracefully', () => {
 			render(<TestWrapper {...defaultProps} />);
 
-			const searchInput = screen.getByPlaceholderText('Search merge tags...');
+			const searchInput = screen.getByPlaceholderText(
+				'Search merge tags...'
+			);
 			fireEvent.change(searchInput, { target: { value: 'nonexistent' } });
 
-			expect(screen.getByText('No matching merge tags found')).toBeInTheDocument();
+			expect(
+				screen.getByText('No matching merge tags found')
+			).toBeInTheDocument();
 		});
 
 		it('handles options with missing preview values', () => {
@@ -527,7 +610,12 @@ describe('MergeTagSelector Component', () => {
 				},
 			];
 
-			render(<TestWrapper {...defaultProps} options={optionsWithMissingPreview} />);
+			render(
+				<TestWrapper
+					{...defaultProps}
+					options={optionsWithMissingPreview}
+				/>
+			);
 
 			expect(screen.getByText('Preview: undefined')).toBeInTheDocument();
 		});
@@ -535,17 +623,23 @@ describe('MergeTagSelector Component', () => {
 		it('handles keyboard navigation with no options', () => {
 			render(<TestWrapper {...defaultProps} options={[]} />);
 
-			const searchInput = screen.getByPlaceholderText('Search merge tags...');
+			const searchInput = screen.getByPlaceholderText(
+				'Search merge tags...'
+			);
 			fireEvent.keyDown(searchInput, { key: 'ArrowDown' });
 
 			// Should not crash
-			expect(screen.getByText('No merge tags available')).toBeInTheDocument();
+			expect(
+				screen.getByText('No merge tags available')
+			).toBeInTheDocument();
 		});
 
 		it('handles rapid keyboard navigation', () => {
 			render(<TestWrapper {...defaultProps} />);
 
-			const searchInput = screen.getByPlaceholderText('Search merge tags...');
+			const searchInput = screen.getByPlaceholderText(
+				'Search merge tags...'
+			);
 			const listbox = screen.getByRole('listbox');
 
 			// Navigate down quickly
@@ -555,7 +649,11 @@ describe('MergeTagSelector Component', () => {
 			fireEvent.keyDown(listbox, { key: 'ArrowDown' });
 
 			// Should handle rapid navigation gracefully
-			expect(document.querySelector('.echodash-merge-dropdown__option--focused')).toBeInTheDocument();
+			expect(
+				document.querySelector(
+					'.echodash-merge-dropdown__option--focused'
+				)
+			).toBeInTheDocument();
 		});
 	});
 });

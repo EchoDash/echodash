@@ -9,18 +9,13 @@ import '@testing-library/jest-dom';
 
 // Mock WordPress i18n functions
 const mockI18n = {
-	__: (text: string, domain?: string) => text,
-	_x: (text: string, context: string, domain?: string) => text,
-	_n: (single: string, plural: string, number: number, domain?: string) =>
+	__: (text: string) => text,
+	_x: (text: string) => text,
+	_n: (single: string, plural: string, number: number) =>
 		number === 1 ? single : plural,
-	_nx: (
-		single: string,
-		plural: string,
-		number: number,
-		context: string,
-		domain?: string
-	) => (number === 1 ? single : plural),
-	sprintf: (format: string, ...args: any[]) => {
+	_nx: (single: string, plural: string, number: number) =>
+		number === 1 ? single : plural,
+	sprintf: (format: string, ...args: (string | number)[]) => {
 		let i = 0;
 		return format.replace(/%s/g, () => args[i++] || '');
 	},
@@ -30,15 +25,16 @@ const mockI18n = {
 Object.defineProperty(window, 'wp', {
 	value: {
 		i18n: mockI18n,
-		apiFetch: jest.fn().mockImplementation((options) => {
+		apiFetch: jest.fn().mockImplementation(options => {
 			// Handle different API endpoints based on options
 			const { path, method = 'GET', data } = options;
-			
+
 			// Mock responses for different endpoints
 			if (path === '/echodash/v1/settings') {
 				if (method === 'GET') {
 					return Promise.resolve({
-						endpoint: 'https://test.echodash.com/webhook/test-endpoint',
+						endpoint:
+							'https://test.echodash.com/webhook/test-endpoint',
 						isConnected: true,
 						connectUrl: 'https://echodash.com/connect',
 					});
@@ -50,7 +46,7 @@ Object.defineProperty(window, 'wp', {
 					});
 				}
 			}
-			
+
 			if (path === '/echodash/v1/integrations') {
 				return Promise.resolve([
 					{
@@ -67,7 +63,7 @@ Object.defineProperty(window, 'wp', {
 					},
 				]);
 			}
-			
+
 			if (path && path.includes('/echodash/v1/integrations/')) {
 				const slug = path.split('/').pop();
 				return Promise.resolve({
@@ -77,14 +73,14 @@ Object.defineProperty(window, 'wp', {
 					triggers: [],
 				});
 			}
-			
+
 			if (path === '/echodash/v1/test-event') {
 				return Promise.resolve({
 					success: true,
 					message: 'Test event sent successfully',
 				});
 			}
-			
+
 			if (path === '/echodash/v1/preview') {
 				return Promise.resolve({
 					success: true,
@@ -97,7 +93,7 @@ Object.defineProperty(window, 'wp', {
 					},
 				});
 			}
-			
+
 			// Default response for unknown endpoints
 			return Promise.resolve({
 				success: true,
@@ -273,7 +269,10 @@ Object.defineProperty(window, 'ecdReactData', {
 						enabled: true,
 						mappings: [
 							{ key: 'order_id', value: '{order:id}' },
-							{ key: 'customer_email', value: '{user:user_email}' },
+							{
+								key: 'customer_email',
+								value: '{user:user_email}',
+							},
 							{ key: 'order_total', value: '{order:total}' },
 						],
 					},
@@ -302,7 +301,9 @@ Object.defineProperty(window, 'ecdReactData', {
 global.fetch = jest.fn();
 
 // Mock console methods to reduce noise in tests
+// eslint-disable-next-line no-console
 console.error = jest.fn();
+// eslint-disable-next-line no-console
 console.warn = jest.fn();
 
 // Mock ResizeObserver
@@ -357,23 +358,31 @@ Object.defineProperty(window, 'history', {
 // Clear all mocks before each test
 beforeEach(() => {
 	jest.clearAllMocks();
-	
+
 	// Reset fetch mock
 	(fetch as jest.MockedFunction<typeof fetch>).mockClear();
-	
+
 	// Reset wp.apiFetch mock
 	if (window.wp && window.wp.apiFetch) {
-		(window.wp.apiFetch as jest.MockedFunction<any>).mockClear();
+		(
+			window.wp.apiFetch as jest.MockedFunction<typeof window.wp.apiFetch>
+		).mockClear();
 	}
-	
+
 	// Reset window methods
-	(window.confirm as jest.MockedFunction<typeof window.confirm>).mockReturnValue(true);
+	(
+		window.confirm as jest.MockedFunction<typeof window.confirm>
+	).mockReturnValue(true);
 	(window.alert as jest.MockedFunction<typeof window.alert>).mockClear();
-	(window.history.pushState as jest.MockedFunction<typeof window.history.pushState>).mockClear();
-	
+	(
+		window.history.pushState as jest.MockedFunction<
+			typeof window.history.pushState
+		>
+	).mockClear();
+
 	// Mock RAF for animations if not present
 	if (!window.requestAnimationFrame) {
-		window.requestAnimationFrame = jest.fn((cb) => setTimeout(cb, 16));
+		window.requestAnimationFrame = jest.fn(cb => setTimeout(cb, 16));
 	}
 	if (!window.cancelAnimationFrame) {
 		window.cancelAnimationFrame = jest.fn();
@@ -381,7 +390,7 @@ beforeEach(() => {
 });
 
 // Global test utilities
-export const mockFetchResponse = (data: any, status = 200, ok = true) => {
+export const mockFetchResponse = (data: any, status = 200, ok = true): void => {
 	(fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce({
 		ok,
 		status,
@@ -390,10 +399,12 @@ export const mockFetchResponse = (data: any, status = 200, ok = true) => {
 	} as Response);
 };
 
-export const mockFetchError = (message = 'Network error') => {
-	(fetch as jest.MockedFunction<typeof fetch>).mockRejectedValueOnce(new Error(message));
+export const mockFetchError = (message = 'Network error'): void => {
+	(fetch as jest.MockedFunction<typeof fetch>).mockRejectedValueOnce(
+		new Error(message)
+	);
 };
 
 // Helper to wait for async operations
-export const waitFor = (ms: number = 0) => 
+export const waitFor = (ms: number = 0): Promise<void> =>
 	new Promise(resolve => setTimeout(resolve, ms));

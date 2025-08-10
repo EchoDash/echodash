@@ -7,3 +7,4 @@ node_modules/
 
 # Ignore test reports
 test-reports/
+coverage/

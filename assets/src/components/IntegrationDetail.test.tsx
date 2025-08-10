@@ -106,7 +106,9 @@ describe('IntegrationDetail Component', () => {
 
 			expect(screen.getByTestId('echodash-logo')).toBeInTheDocument();
 			expect(screen.getByText(/Documentation/)).toBeInTheDocument();
-			expect(screen.getByText(/Documentation/).closest('a')).toHaveAttribute(
+			expect(
+				screen.getByText(/Documentation/).closest('a')
+			).toHaveAttribute(
 				'href',
 				'https://echodash.com/docs/echodash-plugin/?utm_source=echodash-plugin&utm_medium=plugin&utm_campaign=echodash-plugin'
 			);
@@ -116,7 +118,9 @@ describe('IntegrationDetail Component', () => {
 			render(<IntegrationDetail {...mockProps} />);
 
 			expect(screen.getByText('Integrations')).toBeInTheDocument();
-			expect(screen.getAllByText('WooCommerce').length).toBeGreaterThan(0);
+			expect(screen.getAllByText('WooCommerce').length).toBeGreaterThan(
+				0
+			);
 			expect(screen.getByText('/')).toBeInTheDocument();
 		});
 
@@ -125,13 +129,22 @@ describe('IntegrationDetail Component', () => {
 
 			const integrationIcon = screen.getByAltText('WooCommerce logo');
 			expect(integrationIcon).toBeInTheDocument();
-			expect(integrationIcon).toHaveAttribute('src', '/path/to/woocommerce-icon.png');
-			expect(integrationIcon.closest('.echodash-integration-header__icon')).toHaveStyle({
+			expect(integrationIcon).toHaveAttribute(
+				'src',
+				'/path/to/woocommerce-icon.png'
+			);
+			expect(
+				integrationIcon.closest('.echodash-integration-header__icon')
+			).toHaveStyle({
 				backgroundColor: '#96588a',
 			});
 
-			expect(screen.getAllByText('WooCommerce').length).toBeGreaterThan(0);
-			expect(screen.getByText('Track WooCommerce events and customer data')).toBeInTheDocument();
+			expect(screen.getAllByText('WooCommerce').length).toBeGreaterThan(
+				0
+			);
+			expect(
+				screen.getByText('Track WooCommerce events and customer data')
+			).toBeInTheDocument();
 		});
 
 		it('renders integration header with fallback description', () => {
@@ -141,10 +154,15 @@ describe('IntegrationDetail Component', () => {
 			};
 
 			render(
-				<IntegrationDetail {...mockProps} integration={integrationWithoutDescription} />
+				<IntegrationDetail
+					{...mockProps}
+					integration={integrationWithoutDescription}
+				/>
 			);
 
-			expect(screen.getByText('Configure triggers for this integration')).toBeInTheDocument();
+			expect(
+				screen.getByText('Configure triggers for this integration')
+			).toBeInTheDocument();
 		});
 
 		it('renders global triggers section', () => {
@@ -152,7 +170,9 @@ describe('IntegrationDetail Component', () => {
 
 			expect(screen.getByText('Global Triggers')).toBeInTheDocument();
 			expect(screen.getByText('Order Completed')).toBeInTheDocument();
-			expect(screen.getByText('Customer Registration')).toBeInTheDocument();
+			expect(
+				screen.getByText('Customer Registration')
+			).toBeInTheDocument();
 		});
 	});
 
@@ -160,7 +180,9 @@ describe('IntegrationDetail Component', () => {
 		it('renders empty state when no triggers exist', () => {
 			render(<IntegrationDetail {...mockProps} triggers={[]} />);
 
-			expect(screen.getByText('Add your first WooCommerce trigger')).toBeInTheDocument();
+			expect(
+				screen.getByText('Add your first WooCommerce trigger')
+			).toBeInTheDocument();
 			expect(
 				screen.getByText(
 					'Global triggers fire for all events of the selected type across your site.'
@@ -187,11 +209,17 @@ describe('IntegrationDetail Component', () => {
 
 			// First trigger
 			expect(screen.getByText('Order Completed')).toBeInTheDocument();
-			expect(screen.getByText('Triggered when an order is completed')).toBeInTheDocument();
+			expect(
+				screen.getByText('Triggered when an order is completed')
+			).toBeInTheDocument();
 
 			// Second trigger
-			expect(screen.getByText('Customer Registration')).toBeInTheDocument();
-			expect(screen.getByText('Triggered when a new customer registers')).toBeInTheDocument();
+			expect(
+				screen.getByText('Customer Registration')
+			).toBeInTheDocument();
+			expect(
+				screen.getByText('Triggered when a new customer registers')
+			).toBeInTheDocument();
 		});
 
 		it('renders trigger items with fallback description', () => {
@@ -202,7 +230,12 @@ describe('IntegrationDetail Component', () => {
 				},
 			];
 
-			render(<IntegrationDetail {...mockProps} triggers={triggersWithoutDescription} />);
+			render(
+				<IntegrationDetail
+					{...mockProps}
+					triggers={triggersWithoutDescription}
+				/>
+			);
 
 			// Should show trigger name as fallback
 			expect(screen.getByText('order_completed')).toBeInTheDocument();
@@ -211,7 +244,9 @@ describe('IntegrationDetail Component', () => {
 		it('renders drag handles for trigger reordering', () => {
 			render(<IntegrationDetail {...mockProps} />);
 
-			const dragHandles = document.querySelectorAll('.echodash-trigger-item__handle');
+			const dragHandles = document.querySelectorAll(
+				'.echodash-trigger-item__handle'
+			);
 			expect(dragHandles).toHaveLength(2);
 		});
 	});
@@ -223,11 +258,15 @@ describe('IntegrationDetail Component', () => {
 			const editButtons = screen.getAllByText('Edit');
 			fireEvent.click(editButtons[0]);
 
-			expect(mockProps.onEditTrigger).toHaveBeenCalledWith(mockTriggers[0]);
+			expect(mockProps.onEditTrigger).toHaveBeenCalledWith(
+				mockTriggers[0]
+			);
 		});
 
 		it('shows confirmation dialog and calls onDeleteTrigger when delete is confirmed', () => {
-			const mockConfirm = jest.spyOn(window, 'confirm').mockReturnValue(true);
+			const mockConfirm = jest
+				.spyOn(window, 'confirm')
+				.mockReturnValue(true);
 
 			render(<IntegrationDetail {...mockProps} />);
 
@@ -237,11 +276,15 @@ describe('IntegrationDetail Component', () => {
 			expect(mockConfirm).toHaveBeenCalledWith(
 				'Are you sure you want to delete the "Order Completed" trigger? This action cannot be undone.'
 			);
-			expect(mockProps.onDeleteTrigger).toHaveBeenCalledWith(mockTriggers[0]);
+			expect(mockProps.onDeleteTrigger).toHaveBeenCalledWith(
+				mockTriggers[0]
+			);
 		});
 
 		it('does not call onDeleteTrigger when delete is cancelled', () => {
-			const mockConfirm = jest.spyOn(window, 'confirm').mockReturnValue(false);
+			const mockConfirm = jest
+				.spyOn(window, 'confirm')
+				.mockReturnValue(false);
 
 			render(<IntegrationDetail {...mockProps} />);
 
@@ -253,10 +296,19 @@ describe('IntegrationDetail Component', () => {
 		});
 
 		it('handles delete confirmation with fallback trigger name', () => {
-			const mockConfirm = jest.spyOn(window, 'confirm').mockReturnValue(true);
-			const triggerWithoutName = [{ ...mockTriggers[0], name: undefined }];
+			const mockConfirm = jest
+				.spyOn(window, 'confirm')
+				.mockReturnValue(true);
+			const triggerWithoutName = [
+				{ ...mockTriggers[0], name: undefined },
+			];
 
-			render(<IntegrationDetail {...mockProps} triggers={triggerWithoutName} />);
+			render(
+				<IntegrationDetail
+					{...mockProps}
+					triggers={triggerWithoutName}
+				/>
+			);
 
 			const deleteButton = screen.getByTitle('Delete trigger');
 			fireEvent.click(deleteButton);
@@ -285,7 +337,9 @@ describe('IntegrationDetail Component', () => {
 			});
 			const mockOnSendTest = jest.fn().mockReturnValue(slowPromise);
 
-			render(<IntegrationDetail {...mockProps} onSendTest={mockOnSendTest} />);
+			render(
+				<IntegrationDetail {...mockProps} onSendTest={mockOnSendTest} />
+			);
 
 			const sendTestButton = screen.getAllByText('Send Test')[0];
 			fireEvent.click(sendTestButton);
@@ -316,9 +370,13 @@ describe('IntegrationDetail Component', () => {
 		});
 
 		it('handles test event error gracefully', async () => {
-			const mockOnSendTest = jest.fn().mockRejectedValue(new Error('Network error'));
+			const mockOnSendTest = jest
+				.fn()
+				.mockRejectedValue(new Error('Network error'));
 
-			render(<IntegrationDetail {...mockProps} onSendTest={mockOnSendTest} />);
+			render(
+				<IntegrationDetail {...mockProps} onSendTest={mockOnSendTest} />
+			);
 
 			const sendTestButton = screen.getAllByText('Send Test')[0];
 			fireEvent.click(sendTestButton);
@@ -347,7 +405,7 @@ describe('IntegrationDetail Component', () => {
 
 			const deleteButton = screen.getAllByTitle('Delete trigger')[0];
 			const spinner = deleteButton.querySelector('.ecd-spinner');
-			
+
 			expect(spinner).toBeInTheDocument();
 		});
 	});
@@ -368,8 +426,12 @@ describe('IntegrationDetail Component', () => {
 		it('renders single-item trigger items with correct information', () => {
 			render(<IntegrationDetail {...mockProps} />);
 
-			expect(screen.getByText('Premium Course Purchased')).toBeInTheDocument();
-			expect(screen.getByText('Starter Kit Purchased')).toBeInTheDocument();
+			expect(
+				screen.getByText('Premium Course Purchased')
+			).toBeInTheDocument();
+			expect(
+				screen.getByText('Starter Kit Purchased')
+			).toBeInTheDocument();
 			expect(screen.getByText('Premium Course')).toBeInTheDocument();
 			expect(screen.getByText('Starter Kit')).toBeInTheDocument();
 		});
@@ -383,8 +445,14 @@ describe('IntegrationDetail Component', () => {
 				'href',
 				'/wp-admin/post.php?post=123&action=edit'
 			);
-			expect(editItemLinks[0].closest('a')).toHaveAttribute('target', '_blank');
-			expect(editItemLinks[0].closest('a')).toHaveAttribute('rel', 'noopener noreferrer');
+			expect(editItemLinks[0].closest('a')).toHaveAttribute(
+				'target',
+				'_blank'
+			);
+			expect(editItemLinks[0].closest('a')).toHaveAttribute(
+				'rel',
+				'noopener noreferrer'
+			);
 		});
 
 		it('handles single-item triggers with fallback event names', () => {
@@ -395,7 +463,8 @@ describe('IntegrationDetail Component', () => {
 						...mockIntegration.singleItemTriggers![0],
 						items: [
 							{
-								...mockIntegration.singleItemTriggers![0].items[0],
+								...mockIntegration.singleItemTriggers![0]
+									.items[0],
 								event_name: '',
 							},
 						],
@@ -403,7 +472,12 @@ describe('IntegrationDetail Component', () => {
 				],
 			};
 
-			render(<IntegrationDetail {...mockProps} integration={integrationWithFallbacks} />);
+			render(
+				<IntegrationDetail
+					{...mockProps}
+					integration={integrationWithFallbacks}
+				/>
+			);
 
 			expect(screen.getByText('Untitled Event')).toBeInTheDocument();
 		});
@@ -415,10 +489,15 @@ describe('IntegrationDetail Component', () => {
 			};
 
 			render(
-				<IntegrationDetail {...mockProps} integration={integrationWithoutSingleItems} />
+				<IntegrationDetail
+					{...mockProps}
+					integration={integrationWithoutSingleItems}
+				/>
 			);
 
-			expect(screen.queryByText('Single-Item Events')).not.toBeInTheDocument();
+			expect(
+				screen.queryByText('Single-Item Events')
+			).not.toBeInTheDocument();
 		});
 
 		it('does not render single-item triggers section when array is empty', () => {
@@ -428,10 +507,15 @@ describe('IntegrationDetail Component', () => {
 			};
 
 			render(
-				<IntegrationDetail {...mockProps} integration={integrationWithEmptySingleItems} />
+				<IntegrationDetail
+					{...mockProps}
+					integration={integrationWithEmptySingleItems}
+				/>
 			);
 
-			expect(screen.queryByText('Single-Item Events')).not.toBeInTheDocument();
+			expect(
+				screen.queryByText('Single-Item Events')
+			).not.toBeInTheDocument();
 		});
 	});
 
@@ -461,13 +545,19 @@ describe('IntegrationDetail Component', () => {
 
 			// Logo link
 			const logoLink = screen.getByTestId('echodash-logo').closest('a');
-			expect(logoLink).toHaveAttribute('href', 'https://echodash.com/?utm_source=echodash-plugin&utm_medium=plugin&utm_campaign=echodash-plugin');
+			expect(logoLink).toHaveAttribute(
+				'href',
+				'https://echodash.com/?utm_source=echodash-plugin&utm_medium=plugin&utm_campaign=echodash-plugin'
+			);
 			expect(logoLink).toHaveAttribute('target', '_blank');
 			expect(logoLink).toHaveAttribute('rel', 'noopener');
 
 			// Documentation link
 			const docsLink = screen.getByText(/Documentation/).closest('a');
-			expect(docsLink).toHaveAttribute('href', 'https://echodash.com/docs/echodash-plugin/?utm_source=echodash-plugin&utm_medium=plugin&utm_campaign=echodash-plugin');
+			expect(docsLink).toHaveAttribute(
+				'href',
+				'https://echodash.com/docs/echodash-plugin/?utm_source=echodash-plugin&utm_medium=plugin&utm_campaign=echodash-plugin'
+			);
 			expect(docsLink).toHaveAttribute('target', '_blank');
 			expect(docsLink).toHaveAttribute('rel', 'noopener');
 		});
@@ -482,7 +572,12 @@ describe('IntegrationDetail Component', () => {
 				},
 			];
 
-			render(<IntegrationDetail {...mockProps} triggers={triggersWithoutIds} />);
+			render(
+				<IntegrationDetail
+					{...mockProps}
+					triggers={triggersWithoutIds}
+				/>
+			);
 
 			expect(screen.getByText('Order Completed')).toBeInTheDocument();
 		});
@@ -495,7 +590,12 @@ describe('IntegrationDetail Component', () => {
 				},
 			];
 
-			render(<IntegrationDetail {...mockProps} triggers={triggersWithEmptyMappings} />);
+			render(
+				<IntegrationDetail
+					{...mockProps}
+					triggers={triggersWithEmptyMappings}
+				/>
+			);
 
 			expect(screen.getByText('Order Completed')).toBeInTheDocument();
 		});
@@ -506,10 +606,17 @@ describe('IntegrationDetail Component', () => {
 				icon: '',
 			};
 
-			render(<IntegrationDetail {...mockProps} integration={integrationWithoutIcon} />);
+			render(
+				<IntegrationDetail
+					{...mockProps}
+					integration={integrationWithoutIcon}
+				/>
+			);
 
 			// Should still render without breaking
-			expect(screen.getAllByText('WooCommerce').length).toBeGreaterThan(0);
+			expect(screen.getAllByText('WooCommerce').length).toBeGreaterThan(
+				0
+			);
 		});
 	});
 });

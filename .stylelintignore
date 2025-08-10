@@ -5,6 +5,6 @@ assets/dist/
 vendor/
 node_modules/
 
-# Ignore test reports and screenshots
-tests/visual/reports/
-tests/visual/screenshots/
+# Ignore test reports
+test-reports/
+coverage/

@@ -10,9 +10,7 @@ module.exports = {
 	testEnvironment: 'jsdom',
 
 	// Setup files
-	setupFilesAfterEnv: [
-		'<rootDir>/assets/tests/setup.ts',
-	],
+	setupFilesAfterEnv: ['<rootDir>/assets/tests/setup.ts'],
 
 	// File extensions
 	moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'json'],
@@ -185,10 +183,12 @@ module.exports = {
 			},
 			moduleNameMapper: {
 				'\\.(css|less|scss|sass)$': 'identity-obj-proxy',
-				'\\.(jpg|jpeg|png|gif|svg)$': '<rootDir>/assets/tests/__mocks__/fileMock.js',
+				'\\.(jpg|jpeg|png|gif|svg)$':
+					'<rootDir>/assets/tests/__mocks__/fileMock.js',
 				'^@/(.*)$': '<rootDir>/assets/src/$1',
 				'^@tests/(.*)$': '<rootDir>/assets/tests/$1',
-				'^@wordpress/(.*)$': '<rootDir>/assets/tests/__mocks__/wordpress/$1.js',
+				'^@wordpress/(.*)$':
+					'<rootDir>/assets/tests/__mocks__/wordpress/$1.js',
 			},
 		},
 		{
@@ -221,10 +221,12 @@ module.exports = {
 			},
 			moduleNameMapper: {
 				'\\.(css|less|scss|sass)$': 'identity-obj-proxy',
-				'\\.(jpg|jpeg|png|gif|svg)$': '<rootDir>/assets/tests/__mocks__/fileMock.js',
+				'\\.(jpg|jpeg|png|gif|svg)$':
+					'<rootDir>/assets/tests/__mocks__/fileMock.js',
 				'^@/(.*)$': '<rootDir>/assets/src/$1',
 				'^@tests/(.*)$': '<rootDir>/assets/tests/$1',
-				'^@wordpress/(.*)$': '<rootDir>/assets/tests/__mocks__/wordpress/$1.js',
+				'^@wordpress/(.*)$':
+					'<rootDir>/assets/tests/__mocks__/wordpress/$1.js',
 			},
 		},
 		{
@@ -257,10 +259,12 @@ module.exports = {
 			},
 			moduleNameMapper: {
 				'\\.(css|less|scss|sass)$': 'identity-obj-proxy',
-				'\\.(jpg|jpeg|png|gif|svg)$': '<rootDir>/assets/tests/__mocks__/fileMock.js',
+				'\\.(jpg|jpeg|png|gif|svg)$':
+					'<rootDir>/assets/tests/__mocks__/fileMock.js',
 				'^@/(.*)$': '<rootDir>/assets/src/$1',
 				'^@tests/(.*)$': '<rootDir>/assets/tests/$1',
-				'^@wordpress/(.*)$': '<rootDir>/assets/tests/__mocks__/wordpress/$1.js',
+				'^@wordpress/(.*)$':
+					'<rootDir>/assets/tests/__mocks__/wordpress/$1.js',
 			},
 			// timeout: 30000, // TODO: Use testTimeout in project config when supported
 		},

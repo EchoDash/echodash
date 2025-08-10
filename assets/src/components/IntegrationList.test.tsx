@@ -83,7 +83,9 @@ describe('IntegrationList Component', () => {
 
 			expect(screen.getByTestId('echodash-logo')).toBeInTheDocument();
 			expect(screen.getByText(/Documentation/)).toBeInTheDocument();
-			expect(screen.getByText(/Documentation/).closest('a')).toHaveAttribute(
+			expect(
+				screen.getByText(/Documentation/).closest('a')
+			).toHaveAttribute(
 				'href',
 				'https://echodash.com/docs/echodash-plugin/?utm_source=echodash-plugin&utm_medium=plugin&utm_campaign=echodash-plugin'
 			);
@@ -134,10 +136,10 @@ describe('IntegrationList Component', () => {
 
 			// WooCommerce should show "3 Triggers"
 			expect(screen.getByText('3 Triggers')).toBeInTheDocument();
-			
+
 			// Gravity Forms should show "0 Triggers"
 			expect(screen.getByText('0 Triggers')).toBeInTheDocument();
-			
+
 			// LearnDash should show "1 Trigger"
 			expect(screen.getByText('1 Trigger')).toBeInTheDocument();
 		});
@@ -153,14 +155,24 @@ describe('IntegrationList Component', () => {
 			);
 
 			const wooIcon = screen.getByAltText('WooCommerce logo');
-			expect(wooIcon).toHaveAttribute('src', '/path/to/woocommerce-icon.png');
-			expect(wooIcon.closest('.echodash-integration-item__icon')).toHaveStyle({
+			expect(wooIcon).toHaveAttribute(
+				'src',
+				'/path/to/woocommerce-icon.png'
+			);
+			expect(
+				wooIcon.closest('.echodash-integration-item__icon')
+			).toHaveStyle({
 				backgroundColor: '#96588a',
 			});
 
 			const gravityIcon = screen.getByAltText('Gravity Forms logo');
-			expect(gravityIcon).toHaveAttribute('src', '/path/to/gravity-forms-icon.png');
-			expect(gravityIcon.closest('.echodash-integration-item__icon')).toHaveStyle({
+			expect(gravityIcon).toHaveAttribute(
+				'src',
+				'/path/to/gravity-forms-icon.png'
+			);
+			expect(
+				gravityIcon.closest('.echodash-integration-item__icon')
+			).toHaveStyle({
 				backgroundColor: '#ff6900',
 			});
 		});
@@ -182,7 +194,7 @@ describe('IntegrationList Component', () => {
 					'To get started, create an endpoint in your EchoDash account by clicking the button below.'
 				)
 			).toBeInTheDocument();
-			
+
 			const connectButton = screen.getByText(/Connect to EchoDash/);
 			expect(connectButton).toBeInTheDocument();
 			expect(connectButton.closest('a')).toHaveAttribute(
@@ -206,7 +218,7 @@ describe('IntegrationList Component', () => {
 					'Your endpoint URL is configured below. You can update it anytime if needed.'
 				)
 			).toBeInTheDocument();
-			
+
 			const endpointInput = screen.getByDisplayValue(
 				'https://test.echodash.com/webhook/test-endpoint'
 			);
@@ -218,7 +230,7 @@ describe('IntegrationList Component', () => {
 	describe('Endpoint Management', () => {
 		it('saves endpoint when input loses focus with changed value', async () => {
 			mockFetchResponse({});
-			
+
 			render(
 				<IntegrationList
 					integrations={mockIntegrations}
@@ -284,9 +296,12 @@ describe('IntegrationList Component', () => {
 			const savePromise = new Promise(resolve => {
 				resolvePromise = resolve;
 			});
-			
+
 			(fetch as jest.MockedFunction<typeof fetch>).mockReturnValue(
-				savePromise.then(() => ({ ok: true, json: async () => ({}) })) as any
+				savePromise.then(() => ({
+					ok: true,
+					json: async () => ({}),
+				})) as any
 			);
 
 			render(
@@ -452,7 +467,9 @@ describe('IntegrationList Component', () => {
 			expect(mockOnIntegrationClick).toHaveBeenCalledWith('woocommerce');
 
 			fireEvent.click(manageButtons[1]); // Gravity Forms
-			expect(mockOnIntegrationClick).toHaveBeenCalledWith('gravity-forms');
+			expect(mockOnIntegrationClick).toHaveBeenCalledWith(
+				'gravity-forms'
+			);
 
 			fireEvent.click(manageButtons[2]); // LearnDash
 			expect(mockOnIntegrationClick).toHaveBeenCalledWith('learndash');
@@ -482,13 +499,19 @@ describe('IntegrationList Component', () => {
 
 			// Logo link
 			const logoLink = screen.getByTestId('echodash-logo').closest('a');
-			expect(logoLink).toHaveAttribute('href', 'https://echodash.com/?utm_source=echodash-plugin&utm_medium=plugin&utm_campaign=echodash-plugin');
+			expect(logoLink).toHaveAttribute(
+				'href',
+				'https://echodash.com/?utm_source=echodash-plugin&utm_medium=plugin&utm_campaign=echodash-plugin'
+			);
 			expect(logoLink).toHaveAttribute('target', '_blank');
 			expect(logoLink).toHaveAttribute('rel', 'noopener');
 
 			// Documentation link
 			const docsLink = screen.getByText(/Documentation/).closest('a');
-			expect(docsLink).toHaveAttribute('href', 'https://echodash.com/docs/echodash-plugin/?utm_source=echodash-plugin&utm_medium=plugin&utm_campaign=echodash-plugin');
+			expect(docsLink).toHaveAttribute(
+				'href',
+				'https://echodash.com/docs/echodash-plugin/?utm_source=echodash-plugin&utm_medium=plugin&utm_campaign=echodash-plugin'
+			);
 			expect(docsLink).toHaveAttribute('target', '_blank');
 			expect(docsLink).toHaveAttribute('rel', 'noopener');
 		});
@@ -505,10 +528,14 @@ describe('IntegrationList Component', () => {
 				/>
 			);
 
-			const videoPlaceholder = document.querySelector('.echodash-video-placeholder');
+			const videoPlaceholder = document.querySelector(
+				'.echodash-video-placeholder'
+			);
 			expect(videoPlaceholder).toBeInTheDocument();
-			
-			const playButton = document.querySelector('.echodash-video-placeholder__play-button');
+
+			const playButton = document.querySelector(
+				'.echodash-video-placeholder__play-button'
+			);
 			expect(playButton).toBeInTheDocument();
 		});
 	});
@@ -527,7 +554,7 @@ describe('IntegrationList Component', () => {
 			// Should still render header and welcome sections
 			expect(screen.getByText('Welcome to EchoDash')).toBeInTheDocument();
 			expect(screen.getByText('Integrations')).toBeInTheDocument();
-			
+
 			// But no integration items should be present
 			expect(screen.queryByText('WooCommerce')).not.toBeInTheDocument();
 		});

@@ -43,13 +43,17 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 	editingTrigger,
 	savingTrigger = false,
 }) => {
-	const availableTriggers = (integration.availableTriggers && integration.availableTriggers.length > 0) ? integration.availableTriggers : [
-		{
-			id: 'form_submitted',
-			name: 'Form Submitted',
-			description: 'Triggered each time a form is submitted.',
-		},
-	];
+	const availableTriggers =
+		integration.availableTriggers &&
+		integration.availableTriggers.length > 0
+			? integration.availableTriggers
+			: [
+					{
+						id: 'form_submitted',
+						name: 'Form Submitted',
+						description: 'Triggered each time a form is submitted.',
+					},
+			  ];
 
 	// Initialize state based on whether we're editing or creating
 	const getInitialTrigger = (): string => {
@@ -238,7 +242,12 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 
 	return (
 		<div className="echodash-modal-overlay">
-			<div className="echodash-modal" role="dialog" aria-modal="true" tabIndex={-1}>
+			<div
+				className="echodash-modal"
+				role="dialog"
+				aria-modal="true"
+				tabIndex={-1}
+			>
 				{/* Header */}
 				<div className="echodash-modal__header">
 					<div className="echodash-modal__header-content">

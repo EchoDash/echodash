@@ -3,10 +3,10 @@
 const mockApiFetch = jest.fn();
 
 // Default implementation returns a resolved promise
-mockApiFetch.mockImplementation((options) => {
+mockApiFetch.mockImplementation(options => {
 	// Handle different API endpoints based on options
 	const { path, method = 'GET', data } = options;
-	
+
 	// Mock responses for different endpoints
 	if (path === '/echodash/v1/settings') {
 		if (method === 'GET') {
@@ -23,7 +23,7 @@ mockApiFetch.mockImplementation((options) => {
 			});
 		}
 	}
-	
+
 	if (path === '/echodash/v1/integrations') {
 		return Promise.resolve([
 			{
@@ -40,7 +40,7 @@ mockApiFetch.mockImplementation((options) => {
 			},
 		]);
 	}
-	
+
 	if (path && path.includes('/echodash/v1/integrations/')) {
 		const slug = path.split('/').pop();
 		return Promise.resolve({
@@ -50,14 +50,14 @@ mockApiFetch.mockImplementation((options) => {
 			triggers: [],
 		});
 	}
-	
+
 	if (path === '/echodash/v1/test-event') {
 		return Promise.resolve({
 			success: true,
 			message: 'Test event sent successfully',
 		});
 	}
-	
+
 	if (path === '/echodash/v1/preview') {
 		return Promise.resolve({
 			success: true,
@@ -70,7 +70,7 @@ mockApiFetch.mockImplementation((options) => {
 			},
 		});
 	}
-	
+
 	// Default response for unknown endpoints
 	return Promise.resolve({
 		success: true,
@@ -81,8 +81,14 @@ mockApiFetch.mockImplementation((options) => {
 // Add utility methods that wp.apiFetch has
 mockApiFetch.use = jest.fn();
 mockApiFetch.setFetchHandler = jest.fn();
-mockApiFetch.createNonceMiddleware = jest.fn(() => (options, next) => next(options));
-mockApiFetch.createPreloadingMiddleware = jest.fn(() => (options, next) => next(options));
-mockApiFetch.createRootURLMiddleware = jest.fn(() => (options, next) => next(options));
+mockApiFetch.createNonceMiddleware = jest.fn(
+	() => (options, next) => next(options)
+);
+mockApiFetch.createPreloadingMiddleware = jest.fn(
+	() => (options, next) => next(options)
+);
+mockApiFetch.createRootURLMiddleware = jest.fn(
+	() => (options, next) => next(options)
+);
 
 export default mockApiFetch;

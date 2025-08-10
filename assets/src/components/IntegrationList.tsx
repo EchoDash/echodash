@@ -176,7 +176,6 @@ export const IntegrationList: React.FC<IntegrationListProps> = ({
 							>
 								{__('View events', 'echodash')} →
 							</a>
-
 						</>
 					)}
 				</div>

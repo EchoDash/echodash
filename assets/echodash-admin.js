@@ -1,5 +1,5 @@
 jQuery(function ($) {
-	var EchoDash = {
+	const EchoDash = {
 		init: function () {
 			this.optionPageRepeater();
 			this.multiKeyRepeater();
@@ -72,8 +72,8 @@ jQuery(function ($) {
 				'<span class="dashicons dashicons-bell ecd-ring"></span>Send Test'
 			);
 
-			let trigger = $(this).parents('span.echodash');
-			let data = {};
+			const trigger = $(this).parents('span.echodash');
+			const data = {};
 			data.integration = trigger.attr('data-integration');
 			data.trigger = trigger.attr('data-trigger');
 			data.event_name = trigger.find('.ecd-preview .event-name').text();
@@ -81,8 +81,8 @@ jQuery(function ($) {
 
 			if (trigger.find('.ecd-multi-key').length > 0) {
 				$.each(trigger.find('.ecd-values tr'), function (index, item) {
-					var key = $(item).find('td:first').text().slice(0, -1); // Remove trailing colon
-					var value = $('<div/>')
+					const key = $(item).find('td:first').text().slice(0, -1); // Remove trailing colon
+					const value = $('<div/>')
 						.html($(item).find('td:last').html())
 						.text(); // Decode HTML entities
 
@@ -92,7 +92,7 @@ jQuery(function ($) {
 						$(value)
 							.find('li')
 							.each(function () {
-								let [fieldKey, fieldValue] = $(this)
+								const [fieldKey, fieldValue] = $(this)
 									.text()
 									.split(':')
 									.map(s => s.trim());
@@ -129,6 +129,7 @@ jQuery(function ($) {
 					}
 				},
 				error: function (error) {
+					// eslint-disable-next-line no-console
 					console.log(error);
 				},
 			});
@@ -138,10 +139,10 @@ jQuery(function ($) {
 		 * Handle trigger selection change
 		 */
 		handleTriggerChange: function () {
-			var $select = $(this);
-			var $row = $select.closest('tr');
-			var integration = $select.data('integration');
-			var trigger = $select.val();
+			const $select = $(this);
+			const $row = $select.closest('tr');
+			const integration = $select.data('integration');
+			const trigger = $select.val();
 
 			// Clean up select4
 			EchoDash.cleanupSelect4($select, $row);
@@ -150,8 +151,8 @@ jQuery(function ($) {
 			EchoDash.updateTriggerMetadata($select, $row, trigger);
 
 			// Toggle event fields visibility
-			var $eventFields = $row.find('.echodash .echodash-fields');
-			var $placeholder = $row.find('.echodash .ecd-placeholder');
+			const $eventFields = $row.find('.echodash .echodash-fields');
+			const $placeholder = $row.find('.echodash .ecd-placeholder');
 
 			if (trigger) {
 				$eventFields.addClass('visible');
@@ -188,7 +189,7 @@ jQuery(function ($) {
 		 * Apply default event configuration if available
 		 */
 		applyDefaultEventConfig: function ($row, integration, trigger) {
-			var defaultEvent =
+			const defaultEvent =
 				ecdEventData.triggers[integration][trigger].default_event;
 			if (!defaultEvent) return;
 
@@ -207,7 +208,7 @@ jQuery(function ($) {
 		 */
 		resetMappings: function ($row) {
 			$row.find('.ecd-multi-key .nr-item:not(:first)').remove();
-			var $firstRow = $row.find('.ecd-multi-key .nr-item:first');
+			const $firstRow = $row.find('.ecd-multi-key .nr-item:first');
 			$firstRow.find('input.ecd-key, input.ecd-value').val('');
 			return $firstRow;
 		},
@@ -216,8 +217,8 @@ jQuery(function ($) {
 		 * Apply the default mappings to the form
 		 */
 		applyDefaultMappings: function ($row, mappings) {
-			var $firstRow = $row.find('.ecd-multi-key .nr-item:first');
-			var isFirst = true;
+			const $firstRow = $row.find('.ecd-multi-key .nr-item:first');
+			let isFirst = true;
 
 			Object.entries(mappings).forEach(([key, value]) => {
 				if (isFirst) {
@@ -238,7 +239,7 @@ jQuery(function ($) {
 		 */
 		addNewMapping: function ($row, key, value) {
 			$row.find('.ecd-multi-key [data-repeater-create]').click();
-			var $newRow = $row.find('.ecd-multi-key .nr-item:last');
+			const $newRow = $row.find('.ecd-multi-key .nr-item:last');
 			$newRow.find('input.ecd-key').val(key).trigger('change');
 			$newRow.find('input.ecd-value').val(value).trigger('change');
 		},
@@ -305,7 +306,7 @@ jQuery(function ($) {
 		 * @param {integer} limit
 		 */
 		limitCharachters: function (limit) {
-			var title_limit_notice =
+			const title_limit_notice =
 				ecdEventData.crms_notices.title_limit.replace('{limit}', limit);
 
 			// Limit title.
@@ -327,7 +328,7 @@ jQuery(function ($) {
 			});
 
 			$(document).on('input', '.echodash .ecd-name', function () {
-				var this_field = $(this);
+				const this_field = $(this);
 
 				if (this_field.val().length > limit) {
 					this_field
@@ -385,17 +386,18 @@ jQuery(function ($) {
 						$(this).find('select.trigger').val('');
 
 						// fixing the issue of the labels
-						var params = [this];
+						const params = [this];
 						$(this)
 							.find('label[for]')
 							.each(function (index, element) {
-								var currentRepeater = params[0];
-								var originalFieldId = $(element).attr('for');
-								var newField = $(currentRepeater).find(
+								const currentRepeater = params[0];
+								const originalFieldId = $(element).attr('for');
+								const newField = $(currentRepeater).find(
 									"select[id='" + originalFieldId + "']"
 								);
 								if ($(newField).length > 0) {
-									var newFieldName = $(newField).attr('name');
+									const newFieldName =
+										$(newField).attr('name');
 									$(newField).attr('id', newFieldName);
 									$(currentRepeater)
 										.find(
@@ -437,7 +439,7 @@ jQuery(function ($) {
 					ready: function (setIndexes) {
 						$('.ecd-repeater .table_body').on(
 							'sortupdate',
-							function (event, ui) {
+							function () {
 								setIndexes();
 							}
 						);
@@ -458,14 +460,16 @@ jQuery(function ($) {
 		 */
 		convertShortcode: function (input) {
 			// Build up the text values and replacements.
-			var input = $(input);
-			var trigger = input.closest('.echodash').attr('data-trigger');
-			var integration = input
+			const inputElement = $(input);
+			const trigger = inputElement
+				.closest('.echodash')
+				.attr('data-trigger');
+			const integration = inputElement
 				.closest('.echodash')
 				.attr('data-integration');
 
-			var previews = [];
-			var meta = {};
+			const previews = [];
+			let meta = {};
 
 			// Get all available options and meta data
 			ecdEventData.triggers[integration][trigger].options.forEach(
@@ -484,11 +488,11 @@ jQuery(function ($) {
 				}
 			);
 
-			var text_value = input.val();
+			let text_value = input.val();
 
 			// Convert shortcodes
 			if (text_value.includes('{') && text_value.includes('}')) {
-				var matches = text_value
+				const matches = text_value
 					.split('{')
 					.filter(function (v) {
 						return v.indexOf('}') > -1;
@@ -498,7 +502,7 @@ jQuery(function ($) {
 					});
 
 				matches.forEach(function (match) {
-					let new_match = '{' + match + '}';
+					const new_match = '{' + match + '}';
 					let found = false;
 
 					// First check predefined previews
@@ -526,7 +530,7 @@ jQuery(function ($) {
 
 					// If not found in previews, check meta data (currently just with user fields)
 					if (!found) {
-						let metaKey = match.split(':')[1];
+						const metaKey = match.split(':')[1];
 						if (meta[metaKey]) {
 							text_value = text_value.replace(
 								new_match,
@@ -546,25 +550,25 @@ jQuery(function ($) {
 		 * @param {boolean} remove
 		 */
 		updateMultiKeyTable: function (input, remove = false) {
-			var main_parent = $(input).closest('.echodash');
-			var table = main_parent.find('table');
-			var tbody = $('<tbody></tbody>');
+			const main_parent = $(input).closest('.echodash');
+			const table = main_parent.find('table');
+			const tbody = $('<tbody></tbody>');
 
 			$('.nr-item', main_parent).each(function (index) {
 				if (remove == true && $(input).index() === index) {
 					return true;
 				}
 
-				var key = $(this).find('.ecd-key').val();
-				var value = EchoDash.convertShortcode(
+				let key = $(this).find('.ecd-key').val();
+				const value = EchoDash.convertShortcode(
 					$(this).find('.ecd-value')
 				);
 
 				key = key ? key + ':' : '';
 
-				var row = $('<tr>');
-				var keyCell = $('<td>').text(key);
-				var valueCell = $('<td>').html(value);
+				const row = $('<tr>');
+				const keyCell = $('<td>').text(key);
+				const valueCell = $('<td>').html(value);
 				row.append(keyCell).append(valueCell);
 				tbody.append(row);
 			});
@@ -579,9 +583,9 @@ jQuery(function ($) {
 			if (!$(this).val()) {
 				return;
 			}
-			var input = $(this);
-			var text_value = EchoDash.convertShortcode(input);
-			var is_multi_key =
+			const input = $(this);
+			let text_value = EchoDash.convertShortcode(input);
+			const is_multi_key =
 				input.parents('.echodash').find('.ecd-multi-key').length > 0;
 
 			if (text_value != '') {
@@ -635,33 +639,35 @@ jQuery(function ($) {
 		 */
 		selectorShortcodes: function (e) {
 			e.preventDefault();
-			var in_nested_repeater = false;
+			let in_nested_repeater = false;
 			if ($(this).parents('.nr-item').length > 0) {
 				in_nested_repeater = true;
 			}
 
-			var inputContainer = $(this).closest(
+			const inputContainer = $(this).closest(
 				'span.echodash-input-container'
 			);
-			var select = inputContainer.next('select.select4-event-tracking');
+			const select = inputContainer.next('select.select4-event-tracking');
 
 			if (!select.data('select4')) {
-				var trigger = $(this).closest('.echodash').attr('data-trigger');
-				var integration = $(this)
+				const trigger = $(this)
+					.closest('.echodash')
+					.attr('data-trigger');
+				const integration = $(this)
 					.closest('.echodash')
 					.attr('data-integration');
 
-				var data = [];
+				const data = [];
 
 				ecdEventData.triggers[integration][trigger].options.forEach(
 					function (element) {
-						var group = {
+						const group = {
 							text: element.name,
 							children: [''], // for some reason the first item isn't selectable so we'll just add an empty array key here.
 						};
 
 						element.options.forEach(function (option) {
-							var text =
+							const text =
 								'{' + element.type + ':' + option.meta + '}';
 
 							group.children.push({
@@ -696,13 +702,13 @@ jQuery(function ($) {
 							// Handle optgroup children
 							if (data.children) {
 								// Clone the data object to avoid modifying original
-								var match = $.extend(true, {}, data);
+								const match = $.extend(true, {}, data);
 
 								// Check children for matches
 								match.children = [];
 
-								for (var c = 0; c < data.children.length; c++) {
-									var child = data.children[c];
+								for (let c = 0; c < data.children.length; c++) {
+									const child = data.children[c];
 									// Add null check for child.text
 									if (
 										child &&
@@ -728,26 +734,27 @@ jQuery(function ($) {
 						},
 					})
 					.on('select4:select', function (event) {
-						let value = event.params.data.text;
-						let text_field =
+						const value = event.params.data.text;
+						const text_field =
 							inputContainer.find('input[type=text]');
-						let text_value = text_field.val();
-						let cursorPos = text_field.prop('selectionStart');
+						const text_value = text_field.val();
+						const cursorPos = text_field.prop('selectionStart');
+						let textBefore, textAfter;
 
 						if (
 							cursorPos > 0 ||
 							(cursorPos == 0 && text_value.length == 0)
 						) {
 							// If it's empty or we're inserting at the cursor.
-							var textBefore = text_value.substring(0, cursorPos);
-							var textAfter = text_value.substring(
+							textBefore = text_value.substring(0, cursorPos);
+							textAfter = text_value.substring(
 								cursorPos,
 								text_value.length
 							);
 						} else {
 							// If we're appending to the end.
-							var textBefore = text_value;
-							var textAfter = '';
+							textBefore = text_value;
+							textAfter = '';
 						}
 
 						text_field.val(
@@ -772,9 +779,9 @@ jQuery(function ($) {
 		 */
 		initializeExistingTriggers: function () {
 			$('.ecd-repeater select.trigger').each(function () {
-				var $select = $(this);
+				const $select = $(this);
 				if ($select.val()) {
-					var $row = $select.closest('tr');
+					const $row = $select.closest('tr');
 					$row.find('.echodash .echodash-fields').addClass('visible');
 					$row.find('.echodash .ecd-placeholder').hide();
 				}
@@ -788,7 +795,7 @@ jQuery(function ($) {
 				return;
 			}
 
-			var $button = $(this);
+			const $button = $(this);
 			$button.prop('disabled', true);
 
 			$.ajax({
@@ -815,8 +822,8 @@ jQuery(function ($) {
 		},
 
 		validateForm: function () {
-			var isValid = true;
-			var firstError = null;
+			let isValid = true;
+			let firstError = null;
 
 			// Reset previous errors
 			$('.ecd-name').removeClass('ecd-error');
@@ -824,7 +831,7 @@ jQuery(function ($) {
 
 			// Check each visible event name field
 			$('.echodash:visible .ecd-name').each(function () {
-				var $input = $(this);
+				const $input = $(this);
 				if (!$input.val().trim()) {
 					isValid = false;
 					$input.addClass('ecd-error');
