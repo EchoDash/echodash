@@ -1,14 +1,21 @@
-name: Claude Code Review
+
+name: Claude Code Review - EchoDash Plugin
 
 on:
   pull_request:
     types: [opened, synchronize]
-    # Optional: Only run on specific file changes
-    # paths:
-    #   - "src/**/*.ts"
-    #   - "src/**/*.tsx"
-    #   - "src/**/*.js"
-    #   - "src/**/*.jsx"
+    branches: [master, main]
+    # Run on plugin-specific file changes
+    paths:
+      - "assets/src/**/*.ts"
+      - "assets/src/**/*.tsx" 
+      - "assets/src/**/*.js"
+      - "assets/src/**/*.jsx"
+      - "includes/**/*.php"
+      - "*.php"
+      - "assets/tests/**/*"
+      - "composer.json"
+      - "package.json"
 
 jobs:
   claude-review:
@@ -40,19 +47,45 @@ jobs:
           # Optional: Specify model (defaults to Claude Sonnet 4, uncomment for Claude Opus 4)
           # model: "claude-opus-4-20250514"
           
-          # Direct prompt for automated review (no @claude mention needed)
+          # EchoDash-specific review prompt
           direct_prompt: |
-            Please review this pull request and provide feedback on:
-            - Code quality and best practices
-            - Potential bugs or issues
-            - Performance considerations
-            - Security concerns
-            - Test coverage
+            Please review this EchoDash WordPress plugin pull request focusing on:
             
-            Be constructive and helpful in your feedback.
+            **WordPress Plugin Standards:**
+            - WordPress coding standards (PHPCS/WPCS compliance)
+            - Proper use of WordPress APIs and hooks
+            - Security: Input sanitization, nonce verification, capability checks
+            - Plugin architecture and WordPress best practices
+            
+            **React/TypeScript Frontend:**
+            - TypeScript type safety and proper interface usage
+            - React component performance and best practices
+            - WordPress component library integration (@wordpress/components)
+            - Accessibility (WCAG 2.1 AA compliance)
+            - Bundle size impact and optimization
+            
+            **API Integration:**
+            - REST API endpoint security and validation
+            - Error handling and user feedback
+            - WordPress nonce implementation
+            - Data sanitization with `echodash_clean()` function
+            
+            **Testing:**
+            - Jest unit test coverage (80% branch coverage requirement)
+            - Playwright E2E test scenarios
+            - Test quality and edge case coverage
+            - PHPUnit test coverage for PHP components
+            
+            **Performance & Architecture:**
+            - Database query optimization
+            - Transient caching implementation
+            - Event tracking efficiency
+            - Integration with 20+ WordPress plugins
+            
+            Be constructive and provide specific WordPress/plugin development guidance.
 
-          # Optional: Use sticky comments to make Claude reuse the same comment on subsequent pushes to the same PR
-          # use_sticky_comment: true
+          # Use sticky comments for consistent feedback on PR updates
+          use_sticky_comment: true
           
           # Optional: Customize review based on file types
           # direct_prompt: |
@@ -68,8 +101,8 @@ jobs:
           #   'Welcome! Please review this PR from a first-time contributor. Be encouraging and provide detailed explanations for any suggestions.' ||
           #   'Please provide a thorough code review focusing on our coding standards and best practices.' }}
           
-          # Optional: Add specific tools for running tests or linting
-          # allowed_tools: "Bash(npm run test),Bash(npm run lint),Bash(npm run typecheck)"
+          # EchoDash-specific tools for code analysis
+          allowed_tools: "Bash(npm run test:unit),Bash(npm run lint),Bash(composer phpcs),Bash(composer phpstan),Bash(npm run build),Read,Grep"
           
           # Optional: Skip review for certain conditions
           # if: |

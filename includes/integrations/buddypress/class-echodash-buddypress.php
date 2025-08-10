@@ -1,4 +1,9 @@
 <?php
+/**
+ * BuddyPress integration.
+ *
+ * @package EchoDash
+ */
 
 defined( 'ABSPATH' ) || exit;
 
@@ -27,6 +32,14 @@ class EchoDash_BuddyPress extends EchoDash_Integration {
 	public $name = 'BuddyPress';
 
 	/**
+	 * The icon background color for EchoDash's module tracking.
+	 *
+	 * @since 2.0.0
+	 * @var string $icon_background_color
+	 */
+	protected $icon_background_color = '#F6EFE8';
+
+	/**
 	 * Get things started.
 	 *
 	 * @since 1.2.0
@@ -46,6 +59,14 @@ class EchoDash_BuddyPress extends EchoDash_Integration {
 		add_action( 'groups_join_group', array( $this, 'join_group' ), 10, 2 );
 		add_action( 'groups_leave_group', array( $this, 'leave_group' ), 10, 2 );
 		add_action( 'groups_remove_member', array( $this, 'leave_group' ), 10, 2 );
+
+		// Is it BuddyPress or BuddyBoss?
+		if ( function_exists( 'bp_rest_namespace' ) && 'buddyboss' === bp_rest_namespace() ) {
+			$this->name = 'BuddyBoss';
+			$this->icon = 'buddyboss-icon.png';
+		} else {
+			$this->name = 'BuddyPress';
+		}
 	}
 
 	/**
@@ -127,6 +148,11 @@ class EchoDash_BuddyPress extends EchoDash_Integration {
 
 	/**
 	 * User completed his profile.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @param array $progress_details The progress details.
+	 * @return array The progress details.
 	 */
 	public function profile_completed( $progress_details ) {
 		if ( 100 === (int) $progress_details['completion_percentage'] ) {
@@ -147,6 +173,12 @@ class EchoDash_BuddyPress extends EchoDash_Integration {
 
 	/**
 	 * User updated his profile photo.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @param int    $user_id      The user ID.
+	 * @param string $avatar_type The avatar type.
+	 * @param array  $avatar_data The avatar data.
 	 */
 	public function profile_photo_updated( $user_id, $avatar_type, $avatar_data ) {
 		$this->track_event(
@@ -159,6 +191,12 @@ class EchoDash_BuddyPress extends EchoDash_Integration {
 
 	/**
 	 * User updates his cover photo.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @param int    $user_id   The user ID.
+	 * @param string $name      The name.
+	 * @param string $cover_url The cover URL.
 	 */
 	public function cover_photo_updated( $user_id, $name, $cover_url ) {
 		$this->track_event(
@@ -171,6 +209,11 @@ class EchoDash_BuddyPress extends EchoDash_Integration {
 
 	/**
 	 * User has left a group.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @param int $group_id The group ID.
+	 * @param int $user_id  The user ID.
 	 */
 	public function leave_group( $group_id, $user_id ) {
 		$this->track_event(
@@ -184,6 +227,11 @@ class EchoDash_BuddyPress extends EchoDash_Integration {
 
 	/**
 	 * User has joined a group.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @param int $group_id The group ID.
+	 * @param int $user_id  The user ID.
 	 */
 	public function join_group( $group_id, $user_id ) {
 		$this->track_event(
@@ -220,7 +268,7 @@ class EchoDash_BuddyPress extends EchoDash_Integration {
 	 * @param BP_Groups_Group $group  The group.
 	 */
 	public function meta_box_callback( $group ) {
-		// Add nonce field
+		// Add nonce field.
 		wp_nonce_field( 'echodash_save_groups', 'echodash_groups_nonce' );
 
 		echo '<table class="form-table echodash"><tbody>';
@@ -263,19 +311,19 @@ class EchoDash_BuddyPress extends EchoDash_Integration {
 	 * @param integer $post_id The post id.
 	 */
 	public function save_groups_data( $post_id ) {
-		// Verify nonce
+		// Verify nonce.
 		if ( ! isset( $_POST['echodash_groups_nonce'] ) || ! wp_verify_nonce( sanitize_key( $_POST['echodash_groups_nonce'] ), 'echodash_save_groups' ) ) {
 			return;
 		}
 
-		// Verify user can edit groups
+		// Verify user can edit groups.
 		if ( ! current_user_can( 'bp_moderate' ) ) {
 			return;
 		}
 
 		$data = ! empty( $_POST['echodash_settings'] ) ? echodash_clean( wp_unslash( $_POST['echodash_settings'] ) ) : array();
 
-		// Update or delete the group meta
+		// Update or delete the group meta.
 		if ( ! empty( $data ) ) {
 			groups_update_groupmeta( $post_id, 'echodash_settings', $data );
 		} else {
@@ -383,18 +431,17 @@ class EchoDash_BuddyPress extends EchoDash_Integration {
 		global $wpdb;
 		$bp = buddypress();
 
-		$table_name     = $bp->groups->table_name_groupmeta;
 		$cache_key      = 'echodash_group_meta';
 		$cached_results = wp_cache_get( $cache_key, 'echodash' );
 
 		if ( false === $cached_results ) {
 			$results = $wpdb->get_results(
 				$wpdb->prepare(
-					"SELECT group_id, meta_value FROM {$table_name} WHERE meta_key = %s",
+					"SELECT group_id, meta_value FROM `{$wpdb->prefix}bp_groups_groupmeta` WHERE meta_key = %s",
 					'echodash_settings'
 				)
 			);
-			wp_cache_set( $cache_key, $results, 'echodash', 3600 ); // Cache for 1 hour
+			wp_cache_set( $cache_key, $results, 'echodash', 3600 ); // Cache for 1 hour.
 		} else {
 			$results = $cached_results;
 		}
@@ -404,10 +451,10 @@ class EchoDash_BuddyPress extends EchoDash_Integration {
 				$settings = maybe_unserialize( $result->meta_value );
 
 				if ( ! empty( $settings[ $trigger ] ) ) {
-					// Build up events array
+					// Build up events array.
 					$event = array(
 						'trigger'    => $trigger,
-						'post_id'    => $result->group_id, // We'll use post_id for consistency
+						'post_id'    => $result->group_id, // We'll use post_id for consistency.
 						'edit_url'   => bp_get_admin_url( 'admin.php?page=bp-groups&gid=' . $result->group_id . '&action=edit' ),
 						'post_title' => bp_get_group_name( groups_get_group( $result->group_id ) ),
 					);

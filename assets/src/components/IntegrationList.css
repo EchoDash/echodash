@@ -1,0 +1,209 @@
+/**
+ * IntegrationList Component Styles
+ * Uses WordPress design tokens and patterns
+ */
+
+
+/* Welcome Section */
+.echodash-welcome {
+	padding: var(--ecd-spacing-3xl);
+	margin-bottom: var(--ecd-spacing-3xl);
+	display: flex;
+	gap: var(--ecd-spacing-3xl);
+}
+
+.echodash-welcome__content {
+	flex: 1;
+}
+
+.echodash-welcome__title {
+	margin-top: 0;
+}
+
+.echodash-welcome__description {
+	color: var(--ecd-color-text-light);
+	margin-bottom: var(--ecd-spacing-xl);
+}
+
+.echodash-welcome__instructions {
+	margin-bottom: var(--ecd-spacing-sm);
+}
+
+.echodash-welcome__connect-action {
+	margin: var(--ecd-spacing-3xl) 0;
+}
+
+.echodash-welcome__instructions-link {
+	color: var(--ecd-color-focus);
+}
+
+.echodash-welcome__field-group {
+	margin-top: var(--ecd-spacing-xl);
+}
+
+.echodash-welcome__label {
+	display: block;
+	margin-bottom: var(--ecd-spacing-sm);
+	font-weight: 600;
+}
+
+.echodash-welcome input[type="text"] {
+	width: 100%;
+	max-width: 100%;
+	padding: 6px var(--ecd-spacing-md);
+	border-color: var(--ecd-color-border-light);
+	border-radius: var(--ecd-radius-lg);
+	font-size: var(--ecd-font-size-base);
+	transition: border-color 0.2s ease;
+	background-color: var(--ecd-color-background);
+	color: var(--ecd-color-text);
+	padding-left: 45px;
+}
+
+.echodash-welcome__field-group .echodash-saving-indicator {
+	position: absolute;
+	right: var(--ecd-spacing-md);
+	top: 50%;
+	transform: translateY(-50%);
+	opacity: 0.75;
+}
+
+.echodash-welcome .echodash-input-wrapper.echodash-input-wrapper--endpoint-url::before {
+	content: "URL:";
+	position: absolute;
+	left: var(--ecd-spacing-md);
+	top: 50%;
+	transform: translateY(-50%);
+	color: var(--ecd-color-text-light);
+	font-size: var(--ecd-font-size-base);
+	font-weight: 400;
+	pointer-events: none;
+	z-index: 5;
+}
+
+.echodash-welcome .echodash-button-primary {
+	margin-top: var(--ecd-spacing-xl);
+}
+
+.echodash-welcome__input {
+	width: 100%;
+}
+
+/* Video Placeholder */
+.echodash-video-placeholder {
+	width: 400px;
+	height: 225px;
+	background-color: #f0f0f1;
+	border-radius: var(--ecd-radius-lg);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	position: relative;
+}
+
+.echodash-video-placeholder__play-button {
+	width: 60px;
+	height: 60px;
+	background-color: rgba(255, 255, 255, 0.9);
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	transition: transform 0.2s ease;
+}
+
+.echodash-video-placeholder__play-button:focus-visible {
+	outline: 2px solid var(--wp-admin-theme-color, #2271b1);
+	outline-offset: 2px;
+}
+
+.echodash-video-placeholder__play-button:hover {
+	transform: scale(1.1);
+}
+
+.echodash-video-placeholder__play-icon {
+	font-size: 30px;
+	margin-left: -2px;
+	margin-top: -8px;
+}
+
+/* Integrations Section */
+
+.echodash-integrations__title {
+	margin-top: 0;
+	margin-bottom: var(--ecd-spacing-xl);
+}
+
+.echodash-integrations__list {
+	display: flex;
+	flex-direction: column;
+	gap: 1px;
+}
+
+/* Integration Item */
+
+.echodash-integration-item__info {
+	flex: 1;
+}
+
+.echodash-integration-item__name {
+	margin: 0;
+	font-size: var(--ecd-font-size-lg);
+	font-weight: 400;
+}
+
+.echodash-integration-item__trigger-count {
+	color: var(--ecd-color-text-light);
+	font-size: var(--ecd-font-size-base);
+}
+
+.echodash-integration-item__actions {
+	display: flex;
+	gap: 10px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+
+	.echodash-header {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: var(--ecd-spacing-md);
+	}
+
+	.echodash-header__docs-link {
+		margin-left: 0;
+	}
+
+	.echodash-welcome {
+		flex-direction: column;
+	}
+
+	.echodash-video-placeholder {
+		width: 100%;
+		max-width: 400px;
+		margin: 0 auto;
+	}
+
+	.echodash-integration-item {
+		flex-wrap: wrap;
+		padding: var(--ecd-spacing-md);
+	}
+
+	.echodash-integration-item__info {
+		flex: 1;
+		min-width: 0;
+	}
+
+	.echodash-integration-item__actions {
+		width: 100%;
+		margin-top: var(--ecd-spacing-md);
+		flex-direction: column;
+	}
+
+	.echodash-integration-item__actions .echodash-button {
+		width: 100%;
+		text-align: center;
+	}
+}

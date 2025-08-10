@@ -1,4 +1,9 @@
 <?php
+/**
+ * Admin functionality for EchoDash.
+ *
+ * @package EchoDash
+ */
 
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
@@ -28,12 +33,9 @@ class EchoDash_Admin {
 	public function __construct() {
 
 		add_action( 'admin_footer', array( $this, 'admin_scripts' ) );
-		add_action( 'admin_menu', array( $this, 'add_settings_submenu' ), 11 );
 		add_action( 'admin_init', array( $this, 'save_echodash_callback' ) );
-		add_action( 'admin_init', array( $this, 'save_settings' ) );
 
 		add_action( 'wp_ajax_echodash_send_test', array( $this, 'send_event_test' ) );
-		add_action( 'wp_ajax_echodash_reset_to_defaults', array( $this, 'reset_to_defaults' ) );
 	}
 
 	/**
@@ -117,9 +119,9 @@ class EchoDash_Admin {
 		$args = array(
 			'a'            => 'plugin_install',
 			'source'       => __( 'WordPress', 'echodash' ),
-			'site_name'    => sanitize_text_field( get_bloginfo( 'name' ) ),
+			'site_name'    => __( 'WordPress', 'echodash' ) . ' - ' . sanitize_text_field( get_bloginfo( 'name' ) ),
 			'redirect_uri' => esc_url( admin_url( 'options-general.php?page=echodash' ) ),
-			'wpnonce'      => wp_create_nonce( 'echodash_connect' ),
+			'state'        => wp_create_nonce( 'echodash_connect' ),
 		);
 
 		// Local testing.
@@ -140,11 +142,11 @@ class EchoDash_Admin {
 	 * @since 0.0.3
 	 */
 	public function save_echodash_callback() {
-		if ( ! isset( $_GET['endpoint_url'] ) || ! isset( $_GET['wpnonce'] ) ) {
+		if ( ! isset( $_GET['endpoint_url'] ) || ! isset( $_GET['state'] ) ) {
 			return;
 		}
 
-		if ( ! wp_verify_nonce( wp_unslash( sanitize_key( $_GET['wpnonce'] ) ), 'echodash_connect' ) ) {
+		if ( ! wp_verify_nonce( sanitize_key( wp_unslash( $_GET['state'] ) ), 'echodash_connect' ) ) {
 			return;
 		}
 
@@ -159,108 +161,19 @@ class EchoDash_Admin {
 	}
 
 	/**
-	 * Saves the global settings.
-	 *
-	 * @since 1.0.0
-	 */
-	public function save_settings() {
-		if ( ! isset( $_POST['echodash_options'] ) || ! isset( $_POST['echodash_options_nonce'] ) ) {
-			return;
-		}
-
-		if ( ! check_admin_referer( 'echodash_options', 'echodash_options_nonce' ) ) {
-			return;
-		}
-
-		$data = echodash_clean( wp_unslash( $_POST['echodash_options'] ) );
-
-		if ( ! empty( $data ) ) {
-			update_option( 'echodash_options', $data, false );
-		} else {
-			delete_option( 'echodash_options' );
-		}
-
-		if ( ! empty( $data['endpoint'] ) ) {
-			update_option( 'echodash_endpoint', esc_url_raw( $data['endpoint'] ), true );
-		} else {
-			delete_option( 'echodash_endpoint' );
-		}
-
-		add_action(
-			'admin_notices',
-			function () {
-				echo '<div id="message" class="updated fade"><p><strong>' . esc_html__( 'Settings saved.', 'echodash' ) . '</strong></p></div>';
-			}
-		);
-	}
-
-	/**
-	 * Add event tracking submenu page under settings.
-	 *
-	 * @return void
-	 */
-	public function add_settings_submenu() {
-		add_submenu_page(
-			'options-general.php',
-			__( 'EchoDash', 'echodash' ),
-			__( 'EchoDash', 'echodash' ),
-			'manage_options',
-			'echodash',
-			array( $this, 'submenu_callback' )
-		);
-	}
-
-	/**
-	 * Submenu callback.
-	 *
-	 * @return void
-	 */
-	public function submenu_callback() {
-		include_once ECHODASH_DIR_PATH . 'includes/admin/option-page.php';
-	}
-
-	/**
 	 * Register scripts and styles.
 	 *
 	 * @since 1.0.0
 	 */
 	public function admin_scripts() {
 
-		wp_register_style( 'select4', ECHODASH_DIR_URL . 'assets/select4/select4.min.css', array(), '4.0.13' );
-		wp_register_script( 'select4', ECHODASH_DIR_URL . 'assets/select4/select4.min.js', array( 'jquery' ), '4.0.13', true );
+		wp_register_style( 'select4', ECHODASH_DIR_URL . 'assets/dist/select4.min.css', array(), '4.0.13' );
+		wp_register_script( 'select4', ECHODASH_DIR_URL . 'assets/dist/select4.min.js', array( 'jquery' ), '4.0.13', true );
 
-		wp_register_script( 'echodash-jquery-repeater', ECHODASH_DIR_URL . 'assets/jquery-repeater/jquery.repeater.min.js', array( 'jquery' ), '1.2.2', true );
+		wp_register_script( 'echodash-jquery-repeater', ECHODASH_DIR_URL . 'assets/dist/jquery.repeater.min.js', array( 'jquery' ), '1.2.2', true );
 
 		wp_register_script( 'echodash-admin', ECHODASH_DIR_URL . 'assets/echodash-admin.js', array( 'jquery', 'jquery-ui-sortable', 'select4' ), ECHODASH_VERSION, true );
 		wp_register_style( 'echodash-admin', ECHODASH_DIR_URL . 'assets/echodash-admin.css', array(), ECHODASH_VERSION );
-
-		if ( 'settings_page_echodash' === get_current_screen()->id ) {
-
-			$this->localize_data['triggers'] = array();
-
-			// Add i18n data early
-			$this->localize_data['i18n'] = array(
-				'confirmReset'   => __( 'Are you sure you want to reset all settings to defaults? This cannot be undone.', 'echodash' ),
-				'resetError'     => __( 'There was an error resetting to defaults. Please try again.', 'echodash' ),
-				'emptyEventName' => __( 'Event Name is required', 'echodash' ),
-			);
-
-			// Load the various integration options for the main settings page.
-
-			foreach ( echodash()->integrations as $slug => $integration ) {
-
-				$this->localize_data['triggers'][ $slug ] = array();
-
-				foreach ( $integration->get_triggers() as $trigger => $trigger_data ) {
-
-					$this->localize_data['triggers'][ $slug ][ $trigger ] = array(
-						'options'       => $integration->get_options( $trigger ),
-						'default_event' => $integration->get_defaults( $trigger ),
-					);
-
-				}
-			}
-		}
 
 		// Integrations set $this->localize_data based on the fields specific to the integration.
 		// We only want to enqueue the scripts and styles if the current page has settings on it.
@@ -290,7 +203,7 @@ class EchoDash_Admin {
 		$modified = false;
 
 		foreach ( echodash()->integrations as $integration ) {
-			// Skip if this integration already has settings
+			// Skip if this integration already has settings.
 			if ( ! empty( $settings[ $integration->slug ] ) ) {
 				continue;
 			}
@@ -329,27 +242,5 @@ class EchoDash_Admin {
 		if ( $modified ) {
 			update_option( 'echodash_options', $settings, false );
 		}
-	}
-
-	/**
-	 * Reset all integration settings to defaults while preserving the endpoint URL.
-	 *
-	 * @since 1.0.0
-	 */
-	public function reset_to_defaults() {
-		check_ajax_referer( 'echodash_ajax_nonce', '_ajax_nonce' );
-
-		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( 'insufficient_permissions' );
-		}
-
-		// Delete existing settings to force initialize_default_settings to recreate them
-		delete_option( 'echodash_options' );
-		delete_option( 'echodash_endpoint' );
-
-		// Initialize defaults
-		$this->initialize_default_settings();
-
-		wp_send_json_success();
 	}
 }

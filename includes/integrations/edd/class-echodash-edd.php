@@ -1,6 +1,12 @@
 <?php
+/**
+ * Easy Digital Downloads integration for EchoDash.
+ *
+ * @package EchoDash
+ */
 
 defined( 'ABSPATH' ) || exit;
+
 /**
  * Easy Digital Downloads integration.
  *
@@ -24,6 +30,14 @@ class EchoDash_EDD extends EchoDash_Integration {
 	 * @var string $name
 	 */
 	public $name = 'Easy Digital Downloads';
+
+	/**
+	 * The icon background color for EchoDash's module tracking.
+	 *
+	 * @since 2.0.0
+	 * @var string $icon_background_color
+	 */
+	protected $icon_background_color = '#35495c';
 
 	/**
 	 * Get things started.
@@ -204,7 +218,7 @@ class EchoDash_EDD extends EchoDash_Integration {
 
 		$payment = new EDD_Payment( $payment_id );
 
-		if ( empty( $payment ) || 0 === $payment->ID ) {
+		if ( 0 === $payment->ID ) {
 			return array();
 		}
 

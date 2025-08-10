@@ -1,38 +1,33 @@
 name: Create Release
 
 on:
-  push:
-    tags:
-      - '*.*.*'
+    push:
+        tags:
+            - '*.*.*'
 
 permissions:
-  contents: write  # This is required for creating releases
+    contents: write # This is required for creating releases
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
 
-      - name: WordPress Plugin Deploy
-        id: deploy
-        uses: 10up/action-wordpress-plugin-deploy@stable
-        with:
-          generate-zip: true
-        env:
-          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
-          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+            - name: WordPress Plugin Deploy
+              id: deploy
+              uses: 10up/action-wordpress-plugin-deploy@stable
+              with:
+                  generate-zip: true
+              env:
+                  SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+                  SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
 
-      - name: Create ZIP file
-        run: |
-          # Create zip excluding development files
-          zip -r echodash.zip . -x "*.git*" "*.github*" "*.gitignore" "composer.*" "*.lock" "tests/*" "phpunit.xml*" "*.dist" "*.xml" "/bin/*" "phpstan-bootstrap.php" "phpcs.xml" "phpstan.neon" ".editorconfig" ".phpcs.xml" ".phpcs.xml.dist" "psalm.xml" "psalm.xml.dist" "phpunit.xml" "phpunit.xml.dist" "README.md" "readme.md" "*.json"
-
-      - name: Create Release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: echodash.zip
-          generate_release_notes: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+            - name: Create Release
+              uses: softprops/action-gh-release@v2
+              with:
+                  files: ${{ steps.deploy.outputs.zip-path }}
+                  generate_release_notes: true
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,36 +1,48 @@
-#, fuzzy
+# Copyright (C) 2025 EchoDash
+# This file is distributed under the GPL-3.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: EchoDash\n"
-"POT-Creation-Date: 2025-02-05 19:26+0100\n"
-"PO-Revision-Date: 2024-12-04 13:15+0100\n"
-"Last-Translator: Jack Arturo <info@verygoodplugins.com>\n"
-"Language-Team: Jack Arturo <info@verygoodplugins.com>\n"
+"Project-Id-Version: EchoDash 2.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/echodash\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
-"X-Generator: Poedit 3.5\n"
-"X-Poedit-Basepath: ..\n"
-"X-Poedit-Flags-xgettext: --add-comments=translators:\n"
-"X-Poedit-WPHeader: echodash.php\n"
-"X-Poedit-SourceCharset: UTF-8\n"
-"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
-"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;"
-"_n_noop:1,2;_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
-"X-Poedit-SearchPath-0: .\n"
-"X-Poedit-SearchPathExcluded-0: *.min.js\n"
-"X-Poedit-SearchPathExcluded-1: vendor\n"
+"POT-Creation-Date: 2025-08-10T04:19:33+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: echodash\n"
 
-#: echodash.php:149 echodash.php:161
+#. Plugin Name of the plugin
+#. Author of the plugin
+#: echodash.php
+#: includes/admin/class-echodash-admin.php:205
+#: includes/admin/class-echodash-admin.php:206
+#: includes/admin/option-page.php:20
+msgid "EchoDash"
+msgstr ""
+
+#. Plugin URI of the plugin
+#: echodash.php
+msgid "https://echodash.com/"
+msgstr ""
+
+#. Description of the plugin
+#: echodash.php
+msgid "Track events from WordPress plugins as real-time activities in the EchoDash platform."
+msgstr ""
+
+#: echodash.php:149
+#: echodash.php:161
 msgid "Cheatin&#8217; huh?"
 msgstr ""
 
-#: echodash.php:314
+#: echodash.php:320
 msgid "The EchoDash plugin requires PHP 7.0 or higher."
 msgstr ""
 
-#: echodash.php:319
+#: echodash.php:325
 msgid "The EchoDash plugin requires WordPress 6.0 or higher."
 msgstr ""
 
@@ -40,6 +52,7 @@ msgid "Event Name"
 msgstr ""
 
 #: includes/admin/class-echodash-admin.php:119
+#: includes/admin/class-echodash-admin.php:120
 #: includes/integrations/wordpress/class-echodash-wordpress.php:92
 msgid "WordPress"
 msgstr ""
@@ -48,34 +61,161 @@ msgstr ""
 msgid "Settings saved."
 msgstr ""
 
-#. Plugin Name of the plugin/theme
-#. Author of the plugin/theme
-#: includes/admin/class-echodash-admin.php:205
-#: includes/admin/class-echodash-admin.php:206
-#: includes/admin/option-page.php:20
-msgid "EchoDash"
+#: includes/admin/class-echodash-admin.php:225
+#: includes/admin/class-echodash-react-admin.php:202
+msgid "Loading EchoDash..."
 msgstr ""
 
-#: includes/admin/class-echodash-admin.php:243
-msgid ""
-"Are you sure you want to reset all settings to defaults? This cannot be "
-"undone."
+#: includes/admin/class-echodash-react-admin.php:156
+msgid "Loading..."
 msgstr ""
 
-#: includes/admin/class-echodash-admin.php:244
-msgid "There was an error resetting to defaults. Please try again."
+#: includes/admin/class-echodash-react-admin.php:157
+msgid "Error"
 msgstr ""
 
-#: includes/admin/class-echodash-admin.php:245
-msgid "Event Name is required"
+#: includes/admin/class-echodash-react-admin.php:158
+msgid "Success"
+msgstr ""
+
+#: includes/admin/class-echodash-react-admin.php:159
+msgid "Saving..."
+msgstr ""
+
+#: includes/admin/class-echodash-react-admin.php:160
+msgid "Saved"
+msgstr ""
+
+#: includes/admin/class-echodash-react-admin.php:161
+msgid "Cancel"
+msgstr ""
+
+#: includes/admin/class-echodash-react-admin.php:162
+msgid "Delete"
+msgstr ""
+
+#: includes/admin/class-echodash-react-admin.php:163
+msgid "Edit"
+msgstr ""
+
+#: includes/admin/class-echodash-react-admin.php:164
+msgid "Add"
+msgstr ""
+
+#: includes/admin/class-echodash-react-admin.php:165
+msgid "Remove"
+msgstr ""
+
+#: includes/admin/class-echodash-react-admin.php:166
+msgid "Confirm"
+msgstr ""
+
+#: includes/admin/class-echodash-react-admin.php:167
+msgid "Are you sure you want to delete this item?"
+msgstr ""
+
+#: includes/admin/class-echodash-react-admin.php:168
+msgid "No results found"
+msgstr ""
+
+#: includes/admin/class-echodash-react-admin.php:169
+msgid "Search..."
+msgstr ""
+
+#: includes/admin/class-echodash-react-admin.php:241
+msgid "Loading is taking longer than expected. Please refresh the page."
+msgstr ""
+
+#: includes/admin/class-echodash-rest-api.php:77
+#: includes/admin/class-echodash-rest-api.php:103
+msgid "Integration slug"
+msgstr ""
+
+#: includes/admin/class-echodash-rest-api.php:148
+msgid "Event configuration to preview"
+msgstr ""
+
+#: includes/admin/class-echodash-rest-api.php:153
+msgid "Integration slug for context"
+msgstr ""
+
+#: includes/admin/class-echodash-rest-api.php:158
+msgid "Test data for merge tag processing"
+msgstr ""
+
+#: includes/admin/class-echodash-rest-api.php:178
+msgid "Event data to send"
+msgstr ""
+
+#: includes/admin/class-echodash-rest-api.php:183
+msgid "Integration slug for source context"
+msgstr ""
+
+#: includes/admin/class-echodash-rest-api.php:188
+msgid "Trigger key for context"
+msgstr ""
+
+#: includes/admin/class-echodash-rest-api.php:288
+#: includes/admin/class-echodash-rest-api.php:347
+#: includes/admin/class-echodash-rest-api.php:601
+msgid "Integration not found"
+msgstr ""
+
+#: includes/admin/class-echodash-rest-api.php:442
+msgid "Name and trigger type are required"
+msgstr ""
+
+#: includes/admin/class-echodash-rest-api.php:473
+msgid "Trigger created successfully"
+msgstr ""
+
+#: includes/admin/class-echodash-rest-api.php:496
+#: includes/admin/class-echodash-rest-api.php:535
+msgid "Trigger not found"
+msgstr ""
+
+#: includes/admin/class-echodash-rest-api.php:513
+msgid "Trigger updated successfully"
+msgstr ""
+
+#: includes/admin/class-echodash-rest-api.php:546
+msgid "Trigger deleted successfully"
+msgstr ""
+
+#: includes/admin/class-echodash-rest-api.php:628
+msgid "Test event sent successfully"
+msgstr ""
+
+#: includes/admin/class-echodash-rest-api.php:633
+msgid "Failed to send test event"
+msgstr ""
+
+#: includes/admin/class-echodash-rest-api.php:948
+msgid "Whether the integration is enabled"
+msgstr ""
+
+#: includes/admin/class-echodash-rest-api.php:953
+msgid "Integration-specific settings"
+msgstr ""
+
+#: includes/admin/class-echodash-rest-api.php:970
+msgid "Trigger type"
+msgstr ""
+
+#: includes/admin/class-echodash-rest-api.php:975
+#: includes/admin/class-echodash-rest-api.php:997
+msgid "Event name"
+msgstr ""
+
+#: includes/admin/class-echodash-rest-api.php:980
+#: includes/admin/class-echodash-rest-api.php:1002
+msgid "Event property mappings"
 msgstr ""
 
 #. translators: 1: opening anchor tag, 2: closing anchor tag
 #: includes/admin/option-page.php:28
 #, php-format
-msgid ""
-"%1$sEchoDash%2$s is a service for tracking real-time events on your "
-"WordPress site. It's free and easy to use."
+msgid "%1$sEchoDash%2$s is a service for tracking real-time events on your WordPress site. It's free and easy to use."
 msgstr ""
 
 #: includes/admin/option-page.php:38
@@ -83,12 +223,11 @@ msgid "Connect to EchoDash"
 msgstr ""
 
 #: includes/admin/option-page.php:48
-msgid ""
-"For each trigger, name your event, and enter the data you'd like sent with "
-"the event. You can view your events at"
+msgid "For each trigger, name your event, and enter the data you'd like sent with the event. You can view your events at"
 msgstr ""
 
-#: includes/admin/option-page.php:122 includes/admin/option-page.php:193
+#: includes/admin/option-page.php:122
+#: includes/admin/option-page.php:193
 msgid "Trigger"
 msgstr ""
 
@@ -116,552 +255,540 @@ msgstr ""
 msgid "Reset to Defaults"
 msgstr ""
 
-#: includes/integrations/abandoned-cart/class-echodash-abandoned-cart.php:52
-msgid "Abandoned Cart Created"
-msgstr ""
-
-#: includes/integrations/abandoned-cart/class-echodash-abandoned-cart.php:53
-msgid "Triggered each time an abandoned cart has been created."
-msgstr ""
-
-#: includes/integrations/abandoned-cart/class-echodash-abandoned-cart.php:73
-msgid "Cart"
-msgstr ""
-
-#: includes/integrations/abandoned-cart/class-echodash-abandoned-cart.php:79
-msgid "The cart ID"
-msgstr ""
-
-#: includes/integrations/abandoned-cart/class-echodash-abandoned-cart.php:84
-msgid "The cart recovery URL"
-msgstr ""
-
-#: includes/integrations/abandoned-cart/class-echodash-abandoned-cart.php:89
-msgid "The cart source"
-msgstr ""
-
-#: includes/integrations/abandoned-cart/class-echodash-abandoned-cart.php:94
-msgid "The cart contact id"
-msgstr ""
-
-#: includes/integrations/abandoned-cart/class-echodash-abandoned-cart.php:99
-msgid "The user first name"
-msgstr ""
-
-#: includes/integrations/abandoned-cart/class-echodash-abandoned-cart.php:104
-msgid "The user last name"
-msgstr ""
-
-#: includes/integrations/abandoned-cart/class-echodash-abandoned-cart.php:109
-msgid "The user email address"
-msgstr ""
-
-#: includes/integrations/abandoned-cart/class-echodash-abandoned-cart.php:114
-msgid "the cart total value"
-msgstr ""
-
-#: includes/integrations/abandoned-cart/class-echodash-abandoned-cart.php:119
-msgid "the cart currency"
-msgstr ""
-
-#: includes/integrations/affiliate-wp/class-echodash-affiliatewp.php:61
+#: includes/integrations/affiliatewp/class-echodash-affiliatewp.php:69
 msgid "New Affiliate"
 msgstr ""
 
-#: includes/integrations/affiliate-wp/class-echodash-affiliatewp.php:62
+#: includes/integrations/affiliatewp/class-echodash-affiliatewp.php:70
 msgid "Triggered each time an affiliate registers."
 msgstr ""
 
-#: includes/integrations/affiliate-wp/class-echodash-affiliatewp.php:76
+#: includes/integrations/affiliatewp/class-echodash-affiliatewp.php:84
 msgid "Affiliate Status Updated"
 msgstr ""
 
-#: includes/integrations/affiliate-wp/class-echodash-affiliatewp.php:77
+#: includes/integrations/affiliatewp/class-echodash-affiliatewp.php:85
 msgid "Triggered each time an affiliate's status is updated."
 msgstr ""
 
-#: includes/integrations/affiliate-wp/class-echodash-affiliatewp.php:90
+#: includes/integrations/affiliatewp/class-echodash-affiliatewp.php:98
 msgid "New Visit"
 msgstr ""
 
-#: includes/integrations/affiliate-wp/class-echodash-affiliatewp.php:91
+#: includes/integrations/affiliatewp/class-echodash-affiliatewp.php:99
 msgid "Triggered each time a referral visits a link."
 msgstr ""
 
-#: includes/integrations/affiliate-wp/class-echodash-affiliatewp.php:103
+#: includes/integrations/affiliatewp/class-echodash-affiliatewp.php:111
 msgid "Referral Earned"
 msgstr ""
 
-#: includes/integrations/affiliate-wp/class-echodash-affiliatewp.php:104
+#: includes/integrations/affiliatewp/class-echodash-affiliatewp.php:112
 msgid "Triggered each time a referral is earned."
 msgstr ""
 
-#: includes/integrations/affiliate-wp/class-echodash-affiliatewp.php:134
+#: includes/integrations/affiliatewp/class-echodash-affiliatewp.php:142
 msgid "Affiliate"
 msgstr ""
 
-#: includes/integrations/affiliate-wp/class-echodash-affiliatewp.php:140
+#: includes/integrations/affiliatewp/class-echodash-affiliatewp.php:148
 msgid "The affiliate ID"
 msgstr ""
 
-#: includes/integrations/affiliate-wp/class-echodash-affiliatewp.php:145
+#: includes/integrations/affiliatewp/class-echodash-affiliatewp.php:153
 msgid "The affiliate paypal email"
 msgstr ""
 
-#: includes/integrations/affiliate-wp/class-echodash-affiliatewp.php:150
+#: includes/integrations/affiliatewp/class-echodash-affiliatewp.php:158
 msgid "The referral rate"
 msgstr ""
 
-#: includes/integrations/affiliate-wp/class-echodash-affiliatewp.php:155
+#: includes/integrations/affiliatewp/class-echodash-affiliatewp.php:163
 msgid "The total earnings"
 msgstr ""
 
-#: includes/integrations/affiliate-wp/class-echodash-affiliatewp.php:160
+#: includes/integrations/affiliatewp/class-echodash-affiliatewp.php:168
 msgid "The total number of referrals"
 msgstr ""
 
-#: includes/integrations/affiliate-wp/class-echodash-affiliatewp.php:165
+#: includes/integrations/affiliatewp/class-echodash-affiliatewp.php:173
 msgid "The total number of visits"
 msgstr ""
 
-#: includes/integrations/affiliate-wp/class-echodash-affiliatewp.php:170
+#: includes/integrations/affiliatewp/class-echodash-affiliatewp.php:178
 msgid "The affiliate status"
 msgstr ""
 
-#: includes/integrations/affiliate-wp/class-echodash-affiliatewp.php:268
+#: includes/integrations/affiliatewp/class-echodash-affiliatewp.php:276
 msgid "Link Visit"
 msgstr ""
 
-#: includes/integrations/affiliate-wp/class-echodash-affiliatewp.php:274
+#: includes/integrations/affiliatewp/class-echodash-affiliatewp.php:282
 msgid "The visit ID"
 msgstr ""
 
-#: includes/integrations/affiliate-wp/class-echodash-affiliatewp.php:279
+#: includes/integrations/affiliatewp/class-echodash-affiliatewp.php:287
 msgid "The visited page"
 msgstr ""
 
-#: includes/integrations/affiliate-wp/class-echodash-affiliatewp.php:349
+#: includes/integrations/affiliatewp/class-echodash-affiliatewp.php:357
 msgid "Referral"
 msgstr ""
 
-#: includes/integrations/affiliate-wp/class-echodash-affiliatewp.php:355
+#: includes/integrations/affiliatewp/class-echodash-affiliatewp.php:363
 msgid "The referral ID"
 msgstr ""
 
-#: includes/integrations/affiliate-wp/class-echodash-affiliatewp.php:360
+#: includes/integrations/affiliatewp/class-echodash-affiliatewp.php:368
 msgid "The referral status"
 msgstr ""
 
-#: includes/integrations/affiliate-wp/class-echodash-affiliatewp.php:365
+#: includes/integrations/affiliatewp/class-echodash-affiliatewp.php:373
 msgid "The referral earned amount"
 msgstr ""
 
-#: includes/integrations/affiliate-wp/class-echodash-affiliatewp.php:370
+#: includes/integrations/affiliatewp/class-echodash-affiliatewp.php:378
 msgid "The referral currency"
 msgstr ""
 
-#: includes/integrations/affiliate-wp/class-echodash-affiliatewp.php:375
+#: includes/integrations/affiliatewp/class-echodash-affiliatewp.php:383
 msgid "The referral context"
 msgstr ""
 
-#: includes/integrations/affiliate-wp/class-echodash-affiliatewp.php:380
+#: includes/integrations/affiliatewp/class-echodash-affiliatewp.php:388
 msgid "The referral reference"
 msgstr ""
 
-#: includes/integrations/affiliate-wp/class-echodash-affiliatewp.php:385
+#: includes/integrations/affiliatewp/class-echodash-affiliatewp.php:393
 msgid "The referral customer id"
 msgstr ""
 
-#: includes/integrations/affiliate-wp/class-echodash-affiliatewp.php:390
+#: includes/integrations/affiliatewp/class-echodash-affiliatewp.php:398
 msgid "The referral customer email"
 msgstr ""
 
-#: includes/integrations/affiliate-wp/class-echodash-affiliatewp.php:395
+#: includes/integrations/affiliatewp/class-echodash-affiliatewp.php:403
 msgid "The referral type (Sale, Lead, Optin)"
 msgstr ""
 
-#: includes/integrations/affiliate-wp/class-echodash-affiliatewp.php:400
+#: includes/integrations/affiliatewp/class-echodash-affiliatewp.php:408
 msgid "The referral date"
 msgstr ""
 
-#: includes/integrations/bbpress/class-echodash-bbpress.php:54
+#: includes/integrations/bbpress/class-echodash-bbpress.php:62
 msgid "New Topic"
 msgstr ""
 
-#: includes/integrations/bbpress/class-echodash-bbpress.php:55
+#: includes/integrations/bbpress/class-echodash-bbpress.php:63
 msgid "Triggered each time a single topic is created."
 msgstr ""
 
-#: includes/integrations/bbpress/class-echodash-bbpress.php:68
+#: includes/integrations/bbpress/class-echodash-bbpress.php:76
 msgid "New Reply"
 msgstr ""
 
-#: includes/integrations/bbpress/class-echodash-bbpress.php:69
+#: includes/integrations/bbpress/class-echodash-bbpress.php:77
 msgid "Triggered each time a single topic reply is created."
 msgstr ""
 
-#: includes/integrations/bbpress/class-echodash-bbpress.php:85
+#: includes/integrations/bbpress/class-echodash-bbpress.php:93
 msgid "New Forum Topic"
 msgstr ""
 
-#: includes/integrations/bbpress/class-echodash-bbpress.php:86
+#: includes/integrations/bbpress/class-echodash-bbpress.php:94
 msgid "Triggered each time a single topic is created in the selected forum."
 msgstr ""
 
-#: includes/integrations/bbpress/class-echodash-bbpress.php:149
+#: includes/integrations/bbpress/class-echodash-bbpress.php:157
 msgid "Topic"
 msgstr ""
 
-#: includes/integrations/bbpress/class-echodash-bbpress.php:155
+#: includes/integrations/bbpress/class-echodash-bbpress.php:163
 msgid "The topic ID"
 msgstr ""
 
-#: includes/integrations/bbpress/class-echodash-bbpress.php:160
+#: includes/integrations/bbpress/class-echodash-bbpress.php:168
 msgid "The topic title"
 msgstr ""
 
-#: includes/integrations/bbpress/class-echodash-bbpress.php:165
+#: includes/integrations/bbpress/class-echodash-bbpress.php:173
 msgid "The topic body"
 msgstr ""
 
-#: includes/integrations/bbpress/class-echodash-bbpress.php:170
+#: includes/integrations/bbpress/class-echodash-bbpress.php:178
 msgid "The topic status"
 msgstr ""
 
-#: includes/integrations/bbpress/class-echodash-bbpress.php:175
+#: includes/integrations/bbpress/class-echodash-bbpress.php:183
 msgid "The date the topic was created"
 msgstr ""
 
-#: includes/integrations/bbpress/class-echodash-bbpress.php:180
+#: includes/integrations/bbpress/class-echodash-bbpress.php:188
 msgid "The topic's last modified date"
 msgstr ""
 
-#: includes/integrations/bbpress/class-echodash-bbpress.php:228
+#: includes/integrations/bbpress/class-echodash-bbpress.php:236
 msgid "Reply"
 msgstr ""
 
-#: includes/integrations/bbpress/class-echodash-bbpress.php:234
+#: includes/integrations/bbpress/class-echodash-bbpress.php:242
 msgid "The reply ID"
 msgstr ""
 
-#: includes/integrations/bbpress/class-echodash-bbpress.php:239
+#: includes/integrations/bbpress/class-echodash-bbpress.php:247
 msgid "The reply topic title"
 msgstr ""
 
-#: includes/integrations/bbpress/class-echodash-bbpress.php:244
+#: includes/integrations/bbpress/class-echodash-bbpress.php:252
 msgid "The Reply body"
 msgstr ""
 
-#: includes/integrations/bbpress/class-echodash-bbpress.php:249
+#: includes/integrations/bbpress/class-echodash-bbpress.php:257
 msgid "The Reply status"
 msgstr ""
 
-#: includes/integrations/bbpress/class-echodash-bbpress.php:254
+#: includes/integrations/bbpress/class-echodash-bbpress.php:262
 msgid "The date the reply was created"
 msgstr ""
 
-#: includes/integrations/bbpress/class-echodash-bbpress.php:259
+#: includes/integrations/bbpress/class-echodash-bbpress.php:267
 msgid "The reply's last modified date"
 msgstr ""
 
-#: includes/integrations/bbpress/class-echodash-bbpress.php:307
+#: includes/integrations/bbpress/class-echodash-bbpress.php:315
 msgid "Forum"
 msgstr ""
 
-#: includes/integrations/bbpress/class-echodash-bbpress.php:313
+#: includes/integrations/bbpress/class-echodash-bbpress.php:321
 msgid "The forum ID"
 msgstr ""
 
-#: includes/integrations/bbpress/class-echodash-bbpress.php:318
+#: includes/integrations/bbpress/class-echodash-bbpress.php:326
 msgid "The forum title"
 msgstr ""
 
-#: includes/integrations/bbpress/class-echodash-bbpress.php:323
+#: includes/integrations/bbpress/class-echodash-bbpress.php:331
 msgid "The forum status"
 msgstr ""
 
-#: includes/integrations/bbpress/class-echodash-bbpress.php:328
+#: includes/integrations/bbpress/class-echodash-bbpress.php:336
 msgid "The date the forum was created"
 msgstr ""
 
-#: includes/integrations/bbpress/class-echodash-bbpress.php:333
+#: includes/integrations/bbpress/class-echodash-bbpress.php:341
 msgid "The forum's last modified date"
 msgstr ""
 
-#: includes/integrations/buddypress/class-echodash-buddypress.php:65
-#: includes/integrations/buddypress/class-echodash-buddypress.php:231
+#: includes/integrations/buddypress/class-echodash-buddypress.php:81
+#: includes/integrations/buddypress/class-echodash-buddypress.php:247
 msgid "Joined Group"
 msgstr ""
 
-#: includes/integrations/buddypress/class-echodash-buddypress.php:66
+#: includes/integrations/buddypress/class-echodash-buddypress.php:82
 msgid "Triggered when a user joins a social group."
 msgstr ""
 
-#: includes/integrations/buddypress/class-echodash-buddypress.php:74
-#: includes/integrations/buddypress/class-echodash-buddypress.php:244
+#: includes/integrations/buddypress/class-echodash-buddypress.php:90
+#: includes/integrations/buddypress/class-echodash-buddypress.php:260
 msgid "Left Group"
 msgstr ""
 
-#: includes/integrations/buddypress/class-echodash-buddypress.php:75
+#: includes/integrations/buddypress/class-echodash-buddypress.php:91
 msgid "Triggered when a user leaves a social group."
 msgstr ""
 
-#: includes/integrations/buddypress/class-echodash-buddypress.php:84
+#: includes/integrations/buddypress/class-echodash-buddypress.php:100
 msgid "Updated Profile Photo"
 msgstr ""
 
-#: includes/integrations/buddypress/class-echodash-buddypress.php:85
+#: includes/integrations/buddypress/class-echodash-buddypress.php:101
 msgid "Triggered when a user changes their profile photo."
 msgstr ""
 
-#: includes/integrations/buddypress/class-echodash-buddypress.php:90
+#: includes/integrations/buddypress/class-echodash-buddypress.php:106
 msgid "Updated Cover Photo"
 msgstr ""
 
-#: includes/integrations/buddypress/class-echodash-buddypress.php:91
+#: includes/integrations/buddypress/class-echodash-buddypress.php:107
 msgid "Triggered when a user changes their cover photo."
 msgstr ""
 
-#: includes/integrations/buddypress/class-echodash-buddypress.php:96
+#: includes/integrations/buddypress/class-echodash-buddypress.php:112
 msgid "Profile Completed"
 msgstr ""
 
-#: includes/integrations/buddypress/class-echodash-buddypress.php:97
+#: includes/integrations/buddypress/class-echodash-buddypress.php:113
 msgid "Triggered when a user completes their profile."
 msgstr ""
 
-#: includes/integrations/buddypress/class-echodash-buddypress.php:206
-#: includes/integrations/class-echodash-integration.php:586
+#: includes/integrations/buddypress/class-echodash-buddypress.php:222
+#: includes/integrations/class-echodash-integration.php:634
 msgid "EchoDash - Event Tracking"
 msgstr ""
 
-#: includes/integrations/buddypress/class-echodash-buddypress.php:232
+#: includes/integrations/buddypress/class-echodash-buddypress.php:248
 msgid "This event will be triggered when a user has joined the social group."
 msgstr ""
 
-#: includes/integrations/buddypress/class-echodash-buddypress.php:245
+#: includes/integrations/buddypress/class-echodash-buddypress.php:261
 msgid "This event will be triggered when a user has left the social group."
 msgstr ""
 
-#: includes/integrations/buddypress/class-echodash-buddypress.php:297
+#: includes/integrations/buddypress/class-echodash-buddypress.php:313
 msgid "Social Groups"
 msgstr ""
 
-#: includes/integrations/buddypress/class-echodash-buddypress.php:303
+#: includes/integrations/buddypress/class-echodash-buddypress.php:319
 msgid "The group ID"
 msgstr ""
 
-#: includes/integrations/buddypress/class-echodash-buddypress.php:308
+#: includes/integrations/buddypress/class-echodash-buddypress.php:324
 msgid "The group title"
 msgstr ""
 
-#: includes/integrations/buddypress/class-echodash-buddypress.php:313
+#: includes/integrations/buddypress/class-echodash-buddypress.php:329
 msgid "The group description"
 msgstr ""
 
-#: includes/integrations/buddypress/class-echodash-buddypress.php:318
+#: includes/integrations/buddypress/class-echodash-buddypress.php:334
 msgid "The group status"
 msgstr ""
 
-#: includes/integrations/buddypress/class-echodash-buddypress.php:323
+#: includes/integrations/buddypress/class-echodash-buddypress.php:339
 msgid "The date the group was created"
 msgstr ""
 
-#: includes/integrations/buddypress/class-echodash-buddypress.php:328
+#: includes/integrations/buddypress/class-echodash-buddypress.php:344
 msgid "The group creator name"
 msgstr ""
 
-#: includes/integrations/buddypress/class-echodash-buddypress.php:333
+#: includes/integrations/buddypress/class-echodash-buddypress.php:349
 msgid "The group creator email"
 msgstr ""
 
-#: includes/integrations/edd-recurring/class-echodash-edd-recurring.php:52
+#: includes/integrations/edd-cancellation-survey/class-echodash-edd-cancellation-survey.php:57
+msgid "Subscription Cancelled with Survey"
+msgstr ""
+
+#: includes/integrations/edd-cancellation-survey/class-echodash-edd-cancellation-survey.php:58
+msgid "Triggered when a subscription is cancelled and a survey reason is provided."
+msgstr ""
+
+#: includes/integrations/edd-cancellation-survey/class-echodash-edd-cancellation-survey.php:165
+msgid "Cancellation"
+msgstr ""
+
+#: includes/integrations/edd-cancellation-survey/class-echodash-edd-cancellation-survey.php:170
+msgid "It is too expensive"
+msgstr ""
+
+#: includes/integrations/edd-cancellation-survey/class-echodash-edd-cancellation-survey.php:171
+msgid "The reason given for cancellation"
+msgstr ""
+
+#: includes/integrations/edd-cancellation-survey/class-echodash-edd-cancellation-survey.php:176
+msgid "The reason value/code for cancellation"
+msgstr ""
+
+#: includes/integrations/edd-cancellation-survey/class-echodash-edd-cancellation-survey.php:181
+msgid "The ID of the cancelled subscription"
+msgstr ""
+
+#: includes/integrations/edd-cancellation-survey/class-echodash-edd-cancellation-survey.php:186
+msgid "The email of the customer who cancelled"
+msgstr ""
+
+#: includes/integrations/edd-cancellation-survey/class-echodash-edd-cancellation-survey.php:191
+msgid "The name of the customer who cancelled"
+msgstr ""
+
+#: includes/integrations/edd-recurring/class-echodash-edd-recurring.php:60
 msgid " Subscription Status Changed"
 msgstr ""
 
-#: includes/integrations/edd-recurring/class-echodash-edd-recurring.php:53
+#: includes/integrations/edd-recurring/class-echodash-edd-recurring.php:61
 msgid "Triggered each time a subscription status changes."
 msgstr ""
 
-#: includes/integrations/edd-recurring/class-echodash-edd-recurring.php:110
-#: includes/integrations/woo-subscriptions/class-echodash-woo-subscriptions.php:160
+#: includes/integrations/edd-recurring/class-echodash-edd-recurring.php:118
+#: includes/integrations/woo-subscriptions/class-echodash-woo-subscriptions.php:168
 msgid "Subscription"
 msgstr ""
 
-#: includes/integrations/edd-recurring/class-echodash-edd-recurring.php:116
+#: includes/integrations/edd-recurring/class-echodash-edd-recurring.php:124
 msgid "The subscription ID."
 msgstr ""
 
-#: includes/integrations/edd-recurring/class-echodash-edd-recurring.php:121
+#: includes/integrations/edd-recurring/class-echodash-edd-recurring.php:129
 msgid "The recurring period."
 msgstr ""
 
-#: includes/integrations/edd-recurring/class-echodash-edd-recurring.php:126
+#: includes/integrations/edd-recurring/class-echodash-edd-recurring.php:134
 msgid "The initial amount paid."
 msgstr ""
 
-#: includes/integrations/edd-recurring/class-echodash-edd-recurring.php:131
+#: includes/integrations/edd-recurring/class-echodash-edd-recurring.php:139
 msgid "The recurring amount of the subscription."
 msgstr ""
 
-#: includes/integrations/edd-recurring/class-echodash-edd-recurring.php:136
+#: includes/integrations/edd-recurring/class-echodash-edd-recurring.php:144
 msgid "The subscription status."
 msgstr ""
 
-#: includes/integrations/edd-recurring/class-echodash-edd-recurring.php:141
+#: includes/integrations/edd-recurring/class-echodash-edd-recurring.php:149
 msgid "The subscription created date."
 msgstr ""
 
-#: includes/integrations/edd-recurring/class-echodash-edd-recurring.php:146
+#: includes/integrations/edd-recurring/class-echodash-edd-recurring.php:154
 msgid "The subscription expiration date."
 msgstr ""
 
-#: includes/integrations/edd-software-licensing/class-echodash-edd-software-licensing.php:56
+#: includes/integrations/edd-software-licensing/class-echodash-edd-software-licensing.php:64
 msgid "License Activated"
 msgstr ""
 
-#: includes/integrations/edd-software-licensing/class-echodash-edd-software-licensing.php:57
+#: includes/integrations/edd-software-licensing/class-echodash-edd-software-licensing.php:65
 msgid "Triggered whenever a license key is activated on a site."
 msgstr ""
 
-#: includes/integrations/edd-software-licensing/class-echodash-edd-software-licensing.php:64
+#: includes/integrations/edd-software-licensing/class-echodash-edd-software-licensing.php:72
 msgid "License Deactivated"
 msgstr ""
 
-#: includes/integrations/edd-software-licensing/class-echodash-edd-software-licensing.php:65
+#: includes/integrations/edd-software-licensing/class-echodash-edd-software-licensing.php:73
 msgid "Triggered whenever a license key is deactivated on a site."
 msgstr ""
 
-#: includes/integrations/edd-software-licensing/class-echodash-edd-software-licensing.php:72
+#: includes/integrations/edd-software-licensing/class-echodash-edd-software-licensing.php:80
 msgid "Installed Update"
 msgstr ""
 
-#: includes/integrations/edd-software-licensing/class-echodash-edd-software-licensing.php:73
+#: includes/integrations/edd-software-licensing/class-echodash-edd-software-licensing.php:81
 msgid "Triggered when a plugin update is downloaded onto the remote site."
 msgstr ""
 
-#: includes/integrations/edd-software-licensing/class-echodash-edd-software-licensing.php:162
+#: includes/integrations/edd-software-licensing/class-echodash-edd-software-licensing.php:170
 msgid "License"
 msgstr ""
 
-#: includes/integrations/edd-software-licensing/class-echodash-edd-software-licensing.php:168
+#: includes/integrations/edd-software-licensing/class-echodash-edd-software-licensing.php:176
 msgid "The license key"
 msgstr ""
 
-#: includes/integrations/edd-software-licensing/class-echodash-edd-software-licensing.php:173
+#: includes/integrations/edd-software-licensing/class-echodash-edd-software-licensing.php:181
 msgid "The license status"
 msgstr ""
 
-#: includes/integrations/edd-software-licensing/class-echodash-edd-software-licensing.php:178
+#: includes/integrations/edd-software-licensing/class-echodash-edd-software-licensing.php:186
 msgid "The license activation count"
 msgstr ""
 
-#: includes/integrations/edd-software-licensing/class-echodash-edd-software-licensing.php:183
+#: includes/integrations/edd-software-licensing/class-echodash-edd-software-licensing.php:191
 msgid "The license expiration date"
 msgstr ""
 
-#: includes/integrations/edd-software-licensing/class-echodash-edd-software-licensing.php:188
+#: includes/integrations/edd-software-licensing/class-echodash-edd-software-licensing.php:196
 msgid "The site URL the license was activated/deactivated on"
 msgstr ""
 
-#: includes/integrations/edd-software-licensing/class-echodash-edd-software-licensing.php:193
+#: includes/integrations/edd-software-licensing/class-echodash-edd-software-licensing.php:201
 msgid "The version number the plugin was updated to"
 msgstr ""
 
-#: includes/integrations/edd/class-echodash-edd.php:53
+#: includes/integrations/edd/class-echodash-edd.php:61
 msgid "Completed Purchase"
 msgstr ""
 
-#: includes/integrations/edd/class-echodash-edd.php:54
+#: includes/integrations/edd/class-echodash-edd.php:62
 msgid "Triggered each time a purchase is completed."
 msgstr ""
 
-#: includes/integrations/edd/class-echodash-edd.php:72
+#: includes/integrations/edd/class-echodash-edd.php:80
 msgid "Downloaded Download"
 msgstr ""
 
-#: includes/integrations/edd/class-echodash-edd.php:73
+#: includes/integrations/edd/class-echodash-edd.php:81
 msgid "Triggered each time a file is downloaded."
 msgstr ""
 
-#: includes/integrations/edd/class-echodash-edd.php:148
+#: includes/integrations/edd/class-echodash-edd.php:156
 msgid "Payment"
 msgstr ""
 
-#: includes/integrations/edd/class-echodash-edd.php:154
+#: includes/integrations/edd/class-echodash-edd.php:162
 msgid "The payment ID"
 msgstr ""
 
-#: includes/integrations/edd/class-echodash-edd.php:159
+#: includes/integrations/edd/class-echodash-edd.php:167
 msgid "The date the payment was created"
 msgstr ""
 
-#: includes/integrations/edd/class-echodash-edd.php:164
+#: includes/integrations/edd/class-echodash-edd.php:172
 msgid "The payment status"
 msgstr ""
 
-#: includes/integrations/edd/class-echodash-edd.php:169
+#: includes/integrations/edd/class-echodash-edd.php:177
 msgid "The payment currency"
 msgstr ""
 
-#: includes/integrations/edd/class-echodash-edd.php:174
+#: includes/integrations/edd/class-echodash-edd.php:182
 msgid "The total discount amount"
 msgstr ""
 
-#: includes/integrations/edd/class-echodash-edd.php:179
+#: includes/integrations/edd/class-echodash-edd.php:187
 msgid "The payment total"
 msgstr ""
 
-#: includes/integrations/edd/class-echodash-edd.php:184
+#: includes/integrations/edd/class-echodash-edd.php:192
 msgid "The payment subtotal"
 msgstr ""
 
-#: includes/integrations/edd/class-echodash-edd.php:189
-#: includes/integrations/woocommerce/class-echodash-woocommerce.php:279
+#: includes/integrations/edd/class-echodash-edd.php:197
+#: includes/integrations/woocommerce/class-echodash-woocommerce.php:287
 msgid "The order payment method"
 msgstr ""
 
-#: includes/integrations/edd/class-echodash-edd.php:235
+#: includes/integrations/edd/class-echodash-edd.php:243
 msgid "Download"
 msgstr ""
 
-#: includes/integrations/edd/class-echodash-edd.php:241
+#: includes/integrations/edd/class-echodash-edd.php:249
 msgid "The download ID"
 msgstr ""
 
-#: includes/integrations/edd/class-echodash-edd.php:246
+#: includes/integrations/edd/class-echodash-edd.php:254
 msgid "The download title"
 msgstr ""
 
-#: includes/integrations/edd/class-echodash-edd.php:251
+#: includes/integrations/edd/class-echodash-edd.php:259
 msgid "The date the download was created"
 msgstr ""
 
-#: includes/integrations/edd/class-echodash-edd.php:256
+#: includes/integrations/edd/class-echodash-edd.php:264
 msgid "The download's last modified date"
 msgstr ""
 
-#: includes/integrations/edd/class-echodash-edd.php:261
+#: includes/integrations/edd/class-echodash-edd.php:269
 msgid "The download short description"
 msgstr ""
 
-#: includes/integrations/edd/class-echodash-edd.php:266
+#: includes/integrations/edd/class-echodash-edd.php:274
 msgid "The download SKU"
 msgstr ""
 
-#: includes/integrations/edd/class-echodash-edd.php:271
+#: includes/integrations/edd/class-echodash-edd.php:279
 msgid "The download price"
 msgstr ""
 
-#: includes/integrations/edd/class-echodash-edd.php:313
+#: includes/integrations/edd/class-echodash-edd.php:321
 msgid "File"
 msgstr ""
 
-#: includes/integrations/edd/class-echodash-edd.php:319
+#: includes/integrations/edd/class-echodash-edd.php:327
 msgid "The downloaded file name."
 msgstr ""
 
-#: includes/integrations/edd/class-echodash-edd.php:324
+#: includes/integrations/edd/class-echodash-edd.php:332
 msgid "The downloaded file."
 msgstr ""
 
@@ -836,207 +963,205 @@ msgstr ""
 msgid " (+%d more)"
 msgstr ""
 
-#: includes/integrations/gravity-forms/class-echodash-gravity-forms.php:62
+#: includes/integrations/gravity-forms/class-echodash-gravity-forms.php:70
 msgid "Form Submitted"
 msgstr ""
 
-#: includes/integrations/gravity-forms/class-echodash-gravity-forms.php:63
+#: includes/integrations/gravity-forms/class-echodash-gravity-forms.php:71
 msgid "Triggered each time a form is submitted."
 msgstr ""
 
-#: includes/integrations/gravity-forms/class-echodash-gravity-forms.php:219
+#: includes/integrations/gravity-forms/class-echodash-gravity-forms.php:227
 msgid "Entry"
 msgstr ""
 
-#: includes/integrations/gravity-forms/class-echodash-gravity-forms.php:225
+#: includes/integrations/gravity-forms/class-echodash-gravity-forms.php:233
 msgid "The entry ID"
 msgstr ""
 
-#: includes/integrations/gravity-forms/class-echodash-gravity-forms.php:230
+#: includes/integrations/gravity-forms/class-echodash-gravity-forms.php:238
 msgid "The form ID"
 msgstr ""
 
-#: includes/integrations/gravity-forms/class-echodash-gravity-forms.php:235
+#: includes/integrations/gravity-forms/class-echodash-gravity-forms.php:243
 msgid "The form title"
 msgstr ""
 
-#: includes/integrations/gravity-forms/class-echodash-gravity-forms.php:240
+#: includes/integrations/gravity-forms/class-echodash-gravity-forms.php:248
 msgid "The submission date"
 msgstr ""
 
-#: includes/integrations/gravity-forms/class-echodash-gravity-forms.php:245
+#: includes/integrations/gravity-forms/class-echodash-gravity-forms.php:253
 msgid "The submitter IP address"
 msgstr ""
 
-#: includes/integrations/gravity-forms/class-echodash-gravity-forms.php:250
+#: includes/integrations/gravity-forms/class-echodash-gravity-forms.php:258
 msgid "The submitter browser info"
 msgstr ""
 
-#: includes/integrations/gravity-forms/class-echodash-gravity-forms.php:255
+#: includes/integrations/gravity-forms/class-echodash-gravity-forms.php:263
 msgid "The entry URL in admin"
 msgstr ""
 
-#: includes/integrations/gravity-forms/class-echodash-gravity-forms.php:260
+#: includes/integrations/gravity-forms/class-echodash-gravity-forms.php:268
 msgid "The page title where form was submitted"
 msgstr ""
 
-#: includes/integrations/gravity-forms/class-echodash-gravity-forms.php:265
+#: includes/integrations/gravity-forms/class-echodash-gravity-forms.php:273
 msgid "The page URL where form was submitted"
 msgstr ""
 
-#: includes/integrations/gravity-forms/class-echodash-gravity-forms.php:275
+#: includes/integrations/gravity-forms/class-echodash-gravity-forms.php:283
 msgid "All form fields as array"
 msgstr ""
 
-#: includes/integrations/learndash/class-echodash-learndash.php:59
-#: includes/integrations/learndash/class-echodash-learndash.php:268
-#: includes/integrations/lifterlms/class-echodash-lifterlms.php:57
-#: includes/integrations/lifterlms/class-echodash-lifterlms.php:242
+#: includes/integrations/learndash/class-echodash-learndash.php:67
+#: includes/integrations/learndash/class-echodash-learndash.php:276
+#: includes/integrations/lifterlms/class-echodash-lifterlms.php:65
+#: includes/integrations/lifterlms/class-echodash-lifterlms.php:250
 msgid "Course Start"
 msgstr ""
 
-#: includes/integrations/learndash/class-echodash-learndash.php:60
-#: includes/integrations/learndash/class-echodash-learndash.php:269
-#: includes/integrations/lifterlms/class-echodash-lifterlms.php:58
-#: includes/integrations/lifterlms/class-echodash-lifterlms.php:240
+#: includes/integrations/learndash/class-echodash-learndash.php:68
+#: includes/integrations/learndash/class-echodash-learndash.php:277
+#: includes/integrations/lifterlms/class-echodash-lifterlms.php:66
+#: includes/integrations/lifterlms/class-echodash-lifterlms.php:248
 msgid "Triggered whenever a course is started."
 msgstr ""
 
-#: includes/integrations/learndash/class-echodash-learndash.php:74
-#: includes/integrations/learndash/class-echodash-learndash.php:281
-#: includes/integrations/lifterlms/class-echodash-lifterlms.php:73
-#: includes/integrations/lifterlms/class-echodash-lifterlms.php:251
+#: includes/integrations/learndash/class-echodash-learndash.php:82
+#: includes/integrations/learndash/class-echodash-learndash.php:289
+#: includes/integrations/lifterlms/class-echodash-lifterlms.php:81
+#: includes/integrations/lifterlms/class-echodash-lifterlms.php:259
 msgid "Course Progress"
 msgstr ""
 
-#: includes/integrations/learndash/class-echodash-learndash.php:75
+#: includes/integrations/learndash/class-echodash-learndash.php:83
 msgid "Triggered whenever a lesson or topic is completed within the course."
 msgstr ""
 
-#: includes/integrations/learndash/class-echodash-learndash.php:91
-#: includes/integrations/learndash/class-echodash-learndash.php:294
-#: includes/integrations/lifterlms/class-echodash-lifterlms.php:91
-#: includes/integrations/lifterlms/class-echodash-lifterlms.php:260
+#: includes/integrations/learndash/class-echodash-learndash.php:99
+#: includes/integrations/learndash/class-echodash-learndash.php:302
+#: includes/integrations/lifterlms/class-echodash-lifterlms.php:99
+#: includes/integrations/lifterlms/class-echodash-lifterlms.php:268
 msgid "Quiz Completed"
 msgstr ""
 
-#: includes/integrations/learndash/class-echodash-learndash.php:92
+#: includes/integrations/learndash/class-echodash-learndash.php:100
 msgid "Triggered whenever a quiz in this course is completed."
 msgstr ""
 
-#: includes/integrations/learndash/class-echodash-learndash.php:282
-#: includes/integrations/lifterlms/class-echodash-lifterlms.php:249
-msgid ""
-"Triggered whenever a lesson, topic, or quiz is completed within the course, "
-"as well as when the course itself is completed."
+#: includes/integrations/learndash/class-echodash-learndash.php:290
+#: includes/integrations/lifterlms/class-echodash-lifterlms.php:257
+msgid "Triggered whenever a lesson, topic, or quiz is completed within the course, as well as when the course itself is completed."
 msgstr ""
 
-#: includes/integrations/learndash/class-echodash-learndash.php:295
-#: includes/integrations/lifterlms/class-echodash-lifterlms.php:258
+#: includes/integrations/learndash/class-echodash-learndash.php:303
+#: includes/integrations/lifterlms/class-echodash-lifterlms.php:266
 msgid "Triggered whenever a quiz in this course is marked complete."
 msgstr ""
 
-#: includes/integrations/learndash/class-echodash-learndash.php:323
-#: includes/integrations/lifterlms/class-echodash-lifterlms.php:288
+#: includes/integrations/learndash/class-echodash-learndash.php:331
+#: includes/integrations/lifterlms/class-echodash-lifterlms.php:296
 msgid "The course ID"
 msgstr ""
 
-#: includes/integrations/learndash/class-echodash-learndash.php:328
-#: includes/integrations/lifterlms/class-echodash-lifterlms.php:293
+#: includes/integrations/learndash/class-echodash-learndash.php:336
+#: includes/integrations/lifterlms/class-echodash-lifterlms.php:301
 msgid "The course title"
 msgstr ""
 
-#: includes/integrations/learndash/class-echodash-learndash.php:333
-#: includes/integrations/lifterlms/class-echodash-lifterlms.php:298
+#: includes/integrations/learndash/class-echodash-learndash.php:341
+#: includes/integrations/lifterlms/class-echodash-lifterlms.php:306
 msgid "The title of the last completed course step"
 msgstr ""
 
-#: includes/integrations/learndash/class-echodash-learndash.php:338
-#: includes/integrations/lifterlms/class-echodash-lifterlms.php:303
+#: includes/integrations/learndash/class-echodash-learndash.php:346
+#: includes/integrations/lifterlms/class-echodash-lifterlms.php:311
 msgid "The percentage of the course that's complete"
 msgstr ""
 
-#: includes/integrations/learndash/class-echodash-learndash.php:392
-#: includes/integrations/lifterlms/class-echodash-lifterlms.php:354
+#: includes/integrations/learndash/class-echodash-learndash.php:400
+#: includes/integrations/lifterlms/class-echodash-lifterlms.php:362
 msgid "The quiz ID"
 msgstr ""
 
-#: includes/integrations/learndash/class-echodash-learndash.php:397
-#: includes/integrations/lifterlms/class-echodash-lifterlms.php:359
+#: includes/integrations/learndash/class-echodash-learndash.php:405
+#: includes/integrations/lifterlms/class-echodash-lifterlms.php:367
 msgid "The quiz title"
 msgstr ""
 
-#: includes/integrations/learndash/class-echodash-learndash.php:402
+#: includes/integrations/learndash/class-echodash-learndash.php:410
 msgid "The user's quiz percentage"
 msgstr ""
 
-#: includes/integrations/learndash/class-echodash-learndash.php:407
+#: includes/integrations/learndash/class-echodash-learndash.php:415
 msgid "The user's quiz points"
 msgstr ""
 
-#: includes/integrations/lifterlms/class-echodash-lifterlms.php:74
+#: includes/integrations/lifterlms/class-echodash-lifterlms.php:82
 msgid "Triggered whenever a lesson, topic, or quiz is completed."
 msgstr ""
 
-#: includes/integrations/lifterlms/class-echodash-lifterlms.php:92
+#: includes/integrations/lifterlms/class-echodash-lifterlms.php:100
 msgid "Triggered whenever a quiz is completed."
 msgstr ""
 
-#: includes/integrations/lifterlms/class-echodash-lifterlms.php:282
+#: includes/integrations/lifterlms/class-echodash-lifterlms.php:290
 msgid "Course"
 msgstr ""
 
-#: includes/integrations/lifterlms/class-echodash-lifterlms.php:348
+#: includes/integrations/lifterlms/class-echodash-lifterlms.php:356
 msgid "Quiz"
 msgstr ""
 
-#: includes/integrations/lifterlms/class-echodash-lifterlms.php:364
+#: includes/integrations/lifterlms/class-echodash-lifterlms.php:372
 msgid "The user's quiz grade"
 msgstr ""
 
-#: includes/integrations/presto-player/class-echodash-presto-player.php:50
-#: includes/integrations/presto-player/class-echodash-presto-player.php:172
+#: includes/integrations/presto-player/class-echodash-presto-player.php:58
+#: includes/integrations/presto-player/class-echodash-presto-player.php:180
 msgid "Video Play"
 msgstr ""
 
-#: includes/integrations/presto-player/class-echodash-presto-player.php:51
+#: includes/integrations/presto-player/class-echodash-presto-player.php:59
 msgid "Triggered when a video is played."
 msgstr ""
 
-#: includes/integrations/presto-player/class-echodash-presto-player.php:66
+#: includes/integrations/presto-player/class-echodash-presto-player.php:74
 msgid "Video Complete"
 msgstr ""
 
-#: includes/integrations/presto-player/class-echodash-presto-player.php:67
+#: includes/integrations/presto-player/class-echodash-presto-player.php:75
 msgid "Triggered when a video is watched to completion."
 msgstr ""
 
-#: includes/integrations/presto-player/class-echodash-presto-player.php:178
-#: includes/integrations/presto-player/class-echodash-presto-player.php:208
+#: includes/integrations/presto-player/class-echodash-presto-player.php:186
+#: includes/integrations/presto-player/class-echodash-presto-player.php:216
 msgid "The video ID"
 msgstr ""
 
-#: includes/integrations/presto-player/class-echodash-presto-player.php:183
+#: includes/integrations/presto-player/class-echodash-presto-player.php:191
 msgid "The video title"
 msgstr ""
 
-#: includes/integrations/presto-player/class-echodash-presto-player.php:188
+#: includes/integrations/presto-player/class-echodash-presto-player.php:196
 msgid "The video status"
 msgstr ""
 
-#: includes/integrations/presto-player/class-echodash-presto-player.php:193
+#: includes/integrations/presto-player/class-echodash-presto-player.php:201
 msgid "The date the video was created"
 msgstr ""
 
-#: includes/integrations/presto-player/class-echodash-presto-player.php:198
+#: includes/integrations/presto-player/class-echodash-presto-player.php:206
 msgid "The video's last modified date"
 msgstr ""
 
-#: includes/integrations/presto-player/class-echodash-presto-player.php:203
+#: includes/integrations/presto-player/class-echodash-presto-player.php:211
 msgid "The video src"
 msgstr ""
 
-#: includes/integrations/presto-player/class-echodash-presto-player.php:214
+#: includes/integrations/presto-player/class-echodash-presto-player.php:222
 msgid "The video poster"
 msgstr ""
 
@@ -1048,243 +1173,243 @@ msgstr ""
 msgid "Triggered each time a user logs in."
 msgstr ""
 
-#: includes/integrations/user/class-echodash-user.php:134
+#: includes/integrations/user/class-echodash-user.php:138
 msgid "User"
 msgstr ""
 
-#: includes/integrations/user/class-echodash-user.php:141
+#: includes/integrations/user/class-echodash-user.php:145
 msgid "The user ID"
 msgstr ""
 
-#: includes/integrations/user/class-echodash-user.php:146
+#: includes/integrations/user/class-echodash-user.php:150
 msgid "The user's email address"
 msgstr ""
 
-#: includes/integrations/user/class-echodash-user.php:151
+#: includes/integrations/user/class-echodash-user.php:155
 msgid "The user's display name"
 msgstr ""
 
-#: includes/integrations/user/class-echodash-user.php:156
+#: includes/integrations/user/class-echodash-user.php:160
 msgid "The user's first name"
 msgstr ""
 
-#: includes/integrations/user/class-echodash-user.php:161
+#: includes/integrations/user/class-echodash-user.php:165
 msgid "The user's last name"
 msgstr ""
 
-#: includes/integrations/user/class-echodash-user.php:166
+#: includes/integrations/user/class-echodash-user.php:170
 msgid "The user's username"
 msgstr ""
 
-#: includes/integrations/user/class-echodash-user.php:171
+#: includes/integrations/user/class-echodash-user.php:175
 msgid "The user's roles"
 msgstr ""
 
-#: includes/integrations/user/class-echodash-user.php:175
+#: includes/integrations/user/class-echodash-user.php:179
 msgid "No user meta found"
 msgstr ""
 
-#: includes/integrations/user/class-echodash-user.php:176
+#: includes/integrations/user/class-echodash-user.php:180
 msgid "Any user meta key"
 msgstr ""
 
-#: includes/integrations/user/class-echodash-user.php:181
+#: includes/integrations/user/class-echodash-user.php:185
 msgid "The user's current URL"
 msgstr ""
 
-#: includes/integrations/user/class-echodash-user.php:186
+#: includes/integrations/user/class-echodash-user.php:190
 msgid "The user's previous URL"
 msgstr ""
 
-#: includes/integrations/woo-subscriptions/class-echodash-woo-subscriptions.php:56
+#: includes/integrations/woo-subscriptions/class-echodash-woo-subscriptions.php:64
 msgid "Renewal Payment Received"
 msgstr ""
 
-#: includes/integrations/woo-subscriptions/class-echodash-woo-subscriptions.php:57
+#: includes/integrations/woo-subscriptions/class-echodash-woo-subscriptions.php:65
 msgid "Triggered each time a single renewal payment is received."
 msgstr ""
 
-#: includes/integrations/woo-subscriptions/class-echodash-woo-subscriptions.php:74
+#: includes/integrations/woo-subscriptions/class-echodash-woo-subscriptions.php:82
 msgid "Subscription Status Changed"
 msgstr ""
 
-#: includes/integrations/woo-subscriptions/class-echodash-woo-subscriptions.php:75
+#: includes/integrations/woo-subscriptions/class-echodash-woo-subscriptions.php:83
 msgid "Triggered when a subscription status has changed."
 msgstr ""
 
-#: includes/integrations/woo-subscriptions/class-echodash-woo-subscriptions.php:166
+#: includes/integrations/woo-subscriptions/class-echodash-woo-subscriptions.php:174
 msgid "The subscription ID"
 msgstr ""
 
-#: includes/integrations/woo-subscriptions/class-echodash-woo-subscriptions.php:171
+#: includes/integrations/woo-subscriptions/class-echodash-woo-subscriptions.php:179
 msgid "The subscription parent order ID"
 msgstr ""
 
-#: includes/integrations/woo-subscriptions/class-echodash-woo-subscriptions.php:176
+#: includes/integrations/woo-subscriptions/class-echodash-woo-subscriptions.php:184
 msgid "The subscription renewal date"
 msgstr ""
 
-#: includes/integrations/woo-subscriptions/class-echodash-woo-subscriptions.php:181
+#: includes/integrations/woo-subscriptions/class-echodash-woo-subscriptions.php:189
 msgid "The subscription start date"
 msgstr ""
 
-#: includes/integrations/woo-subscriptions/class-echodash-woo-subscriptions.php:186
+#: includes/integrations/woo-subscriptions/class-echodash-woo-subscriptions.php:194
 msgid "The subscription end date"
 msgstr ""
 
-#: includes/integrations/woo-subscriptions/class-echodash-woo-subscriptions.php:191
+#: includes/integrations/woo-subscriptions/class-echodash-woo-subscriptions.php:199
 msgid "The subscription status"
 msgstr ""
 
-#: includes/integrations/woo-subscriptions/class-echodash-woo-subscriptions.php:196
+#: includes/integrations/woo-subscriptions/class-echodash-woo-subscriptions.php:204
 msgid "The subscription's previous status"
 msgstr ""
 
-#: includes/integrations/woocommerce/class-echodash-woocommerce.php:56
+#: includes/integrations/woocommerce/class-echodash-woocommerce.php:64
 msgid "Order Placed"
 msgstr ""
 
-#: includes/integrations/woocommerce/class-echodash-woocommerce.php:57
+#: includes/integrations/woocommerce/class-echodash-woocommerce.php:65
 msgid "Triggered each time a WooCommerce order is placed."
 msgstr ""
 
-#: includes/integrations/woocommerce/class-echodash-woocommerce.php:74
+#: includes/integrations/woocommerce/class-echodash-woocommerce.php:82
 msgid "Purchased Product"
 msgstr ""
 
-#: includes/integrations/woocommerce/class-echodash-woocommerce.php:75
+#: includes/integrations/woocommerce/class-echodash-woocommerce.php:83
 msgid "Triggered each time a single product is purchased."
 msgstr ""
 
-#: includes/integrations/woocommerce/class-echodash-woocommerce.php:93
+#: includes/integrations/woocommerce/class-echodash-woocommerce.php:101
 msgid "Order Status Changed"
 msgstr ""
 
-#: includes/integrations/woocommerce/class-echodash-woocommerce.php:94
+#: includes/integrations/woocommerce/class-echodash-woocommerce.php:102
 msgid "Triggered when a WooCommerce order status changes."
 msgstr ""
 
-#: includes/integrations/woocommerce/class-echodash-woocommerce.php:193
+#: includes/integrations/woocommerce/class-echodash-woocommerce.php:201
 msgid "Order"
 msgstr ""
 
-#: includes/integrations/woocommerce/class-echodash-woocommerce.php:199
+#: includes/integrations/woocommerce/class-echodash-woocommerce.php:207
 msgid "The order ID"
 msgstr ""
 
-#: includes/integrations/woocommerce/class-echodash-woocommerce.php:204
+#: includes/integrations/woocommerce/class-echodash-woocommerce.php:212
 msgid "The date the order was created"
 msgstr ""
 
-#: includes/integrations/woocommerce/class-echodash-woocommerce.php:209
+#: includes/integrations/woocommerce/class-echodash-woocommerce.php:217
 msgid "The order's last modified date"
 msgstr ""
 
-#: includes/integrations/woocommerce/class-echodash-woocommerce.php:214
+#: includes/integrations/woocommerce/class-echodash-woocommerce.php:222
 msgid "The order status"
 msgstr ""
 
-#: includes/integrations/woocommerce/class-echodash-woocommerce.php:219
+#: includes/integrations/woocommerce/class-echodash-woocommerce.php:227
 msgid "The order's previous status"
 msgstr ""
 
-#: includes/integrations/woocommerce/class-echodash-woocommerce.php:224
+#: includes/integrations/woocommerce/class-echodash-woocommerce.php:232
 msgid "The order currency"
 msgstr ""
 
-#: includes/integrations/woocommerce/class-echodash-woocommerce.php:229
+#: includes/integrations/woocommerce/class-echodash-woocommerce.php:237
 msgid "The total amount of discount"
 msgstr ""
 
-#: includes/integrations/woocommerce/class-echodash-woocommerce.php:234
+#: includes/integrations/woocommerce/class-echodash-woocommerce.php:242
 msgid "The total amount of shipping"
 msgstr ""
 
-#: includes/integrations/woocommerce/class-echodash-woocommerce.php:239
+#: includes/integrations/woocommerce/class-echodash-woocommerce.php:247
 msgid "The total amount of order"
 msgstr ""
 
-#: includes/integrations/woocommerce/class-echodash-woocommerce.php:244
+#: includes/integrations/woocommerce/class-echodash-woocommerce.php:252
 msgid "The order subtotal"
 msgstr ""
 
-#: includes/integrations/woocommerce/class-echodash-woocommerce.php:249
+#: includes/integrations/woocommerce/class-echodash-woocommerce.php:257
 msgid "The Customer billing first Name"
 msgstr ""
 
-#: includes/integrations/woocommerce/class-echodash-woocommerce.php:254
+#: includes/integrations/woocommerce/class-echodash-woocommerce.php:262
 msgid "The Customer billing last Name"
 msgstr ""
 
-#: includes/integrations/woocommerce/class-echodash-woocommerce.php:259
+#: includes/integrations/woocommerce/class-echodash-woocommerce.php:267
 msgid "The Customer billing email address"
 msgstr ""
 
-#: includes/integrations/woocommerce/class-echodash-woocommerce.php:264
+#: includes/integrations/woocommerce/class-echodash-woocommerce.php:272
 msgid "The Customer billing address"
 msgstr ""
 
-#: includes/integrations/woocommerce/class-echodash-woocommerce.php:269
+#: includes/integrations/woocommerce/class-echodash-woocommerce.php:277
 msgid "The Customer billing city"
 msgstr ""
 
-#: includes/integrations/woocommerce/class-echodash-woocommerce.php:274
+#: includes/integrations/woocommerce/class-echodash-woocommerce.php:282
 msgid "The Customer billing country"
 msgstr ""
 
-#: includes/integrations/woocommerce/class-echodash-woocommerce.php:284
+#: includes/integrations/woocommerce/class-echodash-woocommerce.php:292
 msgid "The Customer order note"
 msgstr ""
 
-#: includes/integrations/woocommerce/class-echodash-woocommerce.php:342
+#: includes/integrations/woocommerce/class-echodash-woocommerce.php:350
 msgid "Product"
 msgstr ""
 
-#: includes/integrations/woocommerce/class-echodash-woocommerce.php:348
+#: includes/integrations/woocommerce/class-echodash-woocommerce.php:356
 msgid "The product ID"
 msgstr ""
 
-#: includes/integrations/woocommerce/class-echodash-woocommerce.php:353
+#: includes/integrations/woocommerce/class-echodash-woocommerce.php:361
 msgid "The product title"
 msgstr ""
 
-#: includes/integrations/woocommerce/class-echodash-woocommerce.php:358
+#: includes/integrations/woocommerce/class-echodash-woocommerce.php:366
 msgid "The date the product was created"
 msgstr ""
 
-#: includes/integrations/woocommerce/class-echodash-woocommerce.php:363
+#: includes/integrations/woocommerce/class-echodash-woocommerce.php:371
 msgid "The product's last modified date"
 msgstr ""
 
-#: includes/integrations/woocommerce/class-echodash-woocommerce.php:368
+#: includes/integrations/woocommerce/class-echodash-woocommerce.php:376
 msgid "The product short description"
 msgstr ""
 
-#: includes/integrations/woocommerce/class-echodash-woocommerce.php:373
+#: includes/integrations/woocommerce/class-echodash-woocommerce.php:381
 msgid "The product SKU"
 msgstr ""
 
-#: includes/integrations/woocommerce/class-echodash-woocommerce.php:378
+#: includes/integrations/woocommerce/class-echodash-woocommerce.php:386
 msgid "The product price"
 msgstr ""
 
-#: includes/integrations/woocommerce/class-echodash-woocommerce.php:383
+#: includes/integrations/woocommerce/class-echodash-woocommerce.php:391
 msgid "The product sale price"
 msgstr ""
 
-#: includes/integrations/woocommerce/class-echodash-woocommerce.php:388
+#: includes/integrations/woocommerce/class-echodash-woocommerce.php:396
 msgid "The total number of times the product has been sold"
 msgstr ""
 
-#: includes/integrations/woocommerce/class-echodash-woocommerce.php:393
+#: includes/integrations/woocommerce/class-echodash-woocommerce.php:401
 msgid "The product's stock quantity"
 msgstr ""
 
-#: includes/integrations/woocommerce/class-echodash-woocommerce.php:398
+#: includes/integrations/woocommerce/class-echodash-woocommerce.php:406
 msgid "The product's stock status"
 msgstr ""
 
-#: includes/integrations/woocommerce/class-echodash-woocommerce.php:403
+#: includes/integrations/woocommerce/class-echodash-woocommerce.php:411
 msgid "The product categories (comma separated)"
 msgstr ""
 
@@ -1334,14 +1459,4 @@ msgstr ""
 
 #: includes/integrations/wordpress/class-echodash-wordpress.php:113
 msgid "The plugin description"
-msgstr ""
-
-#. Plugin URI of the plugin/theme
-msgid "https://echodash.com/"
-msgstr ""
-
-#. Description of the plugin/theme
-msgid ""
-"Track events from WordPress plugins as real-time activities in the EchoDash "
-"platform."
 msgstr ""

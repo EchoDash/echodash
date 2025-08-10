@@ -1,6 +1,12 @@
 <?php
+/**
+ * User integration for EchoDash.
+ *
+ * @package EchoDash
+ */
 
 defined( 'ABSPATH' ) || exit;
+
 /**
  * User integration.
  *
@@ -123,7 +129,7 @@ class EchoDash_User extends EchoDash_Integration {
 	 * @return array The download options.
 	 */
 	public function get_user_options() {
-		// Get current user data for previews
+		// Get current user data for previews.
 		$current_user = wp_get_current_user();
 		$user_meta    = array();
 
@@ -141,7 +147,7 @@ class EchoDash_User extends EchoDash_Integration {
 			'options' => array(
 				array(
 					'meta'        => 'id',
-					'preview'     => isset( $current_user->ID ) ? $current_user->ID : 9,
+					'preview'     => $current_user->ID ? $current_user->ID : 9,
 					'placeholder' => __( 'The user ID', 'echodash' ),
 				),
 				array(
@@ -254,7 +260,7 @@ class EchoDash_User extends EchoDash_Integration {
 
 		foreach ( $user_meta as $key => $value ) {
 			if ( is_array( $value ) ) {
-				// Recursively flatten array and filter out non-scalar values
+				// Recursively flatten array and filter out non-scalar values.
 				$flatten = function ( $arr ) use ( &$flatten ) {
 					$result = array();
 					foreach ( $arr as $item ) {
@@ -286,6 +292,14 @@ class EchoDash_User extends EchoDash_Integration {
 		if ( ! empty( $_SERVER['HTTP_REFERER'] ) ) {
 			$user_meta['referer'] = sanitize_url( sanitize_text_field( wp_unslash( $_SERVER['HTTP_REFERER'] ) ) );
 		}
+
+		// Clean it up.
+		$user_meta = array_filter(
+			$user_meta,
+			function ( $value ) {
+				return '' !== $value && null !== $value;
+			}
+		);
 
 		return array(
 			'user' => $user_meta,

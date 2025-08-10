@@ -2,9 +2,9 @@
 Contributors: echodash, verygoodplugins
 Tags: analytics, tracking, activity, log, events
 Requires at least: 6.0
-Tested up to: 6.8
+Tested up to: 6.8.3
 Requires PHP: 7.4
-Stable tag: 1.2.0
+Stable tag: 2.0.0
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -119,7 +119,7 @@ Yes, developers can use our API to track custom events. Documentation is availab
 == Screenshots ==
 
 1. The EchoDash dashboard with real-time event stream and analytics.
-2. Main settings page with Gravity Forms event configuration.
+2. Main settings page with available plugin integrations.
 3. Send events based on WooCommerce orders, product purchases, and order status changes.
 4. Track learner progress in real time with LearnDash and LifterLMS.
 5. Connect unlimited sources. Anything that can send a webhook can appear on your EchoDash activity feed.
@@ -127,7 +127,10 @@ Yes, developers can use our API to track custom events. Documentation is availab
 
 == Changelog ==
 
-= 1.2.1
+= 2.0.0 - August 10, 2025 =
+* New React-based admin UI
+* Added AffiliateWP integration
+
 * Fixed PHP warning when users logged in with an invalid username
 
 = 1.2.0 - June 11, 2025 =

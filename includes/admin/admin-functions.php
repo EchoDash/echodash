@@ -1,4 +1,9 @@
 <?php
+/**
+ * Admin functions for EchoDash.
+ *
+ * @package EchoDash
+ */
 
 defined( 'ABSPATH' ) || exit;
 
@@ -48,12 +53,9 @@ function echodash_render_event_tracking_fields( $args = array() ) {
 		$field_id = sanitize_html_class( $args['meta_name'] ) . '-' . $args['field_id'];
 	}
 
-	$in_option_page = echodash_in_option_page();
-
-	$field_name           = esc_attr( $args['meta_name'] ) . ( ! is_null( $args['field_id'] ) ? '[' . esc_attr( $args['field_id'] ) . ']' : '' );
-	$single_trigger_class = ( ! $in_option_page ? ' single-trigger' : '' );
+	$field_name = esc_attr( $args['meta_name'] ) . ( ! is_null( $args['field_id'] ) ? '[' . esc_attr( $args['field_id'] ) . ']' : '' );
 	echo '
-		<span class="echodash' . esc_attr( $single_trigger_class ) . '" data-trigger="' . esc_attr( $args['trigger'] ) . '" data-integration="' . esc_attr( $args['integration'] ) . '">
+		<span class="echodash single-trigger" data-trigger="' . esc_attr( $args['trigger'] ) . '" data-integration="' . esc_attr( $args['integration'] ) . '">
 			<span class="echodash-input-container">
 				<label for="' . esc_attr( $args['field_id'] ) . '" data-placeholder="Name:"></label>
 				<input value="' . esc_attr( $args['setting']['name'] ) . '" name="' . esc_attr( $field_name ) . '[name]" id="' . esc_attr( $args['field_id'] ) . '" class="ecd-name" type="text">
@@ -62,7 +64,7 @@ function echodash_render_event_tracking_fields( $args = array() ) {
 			<select id="' . esc_attr( $field_id ) . '-name-select" class="select4-event-tracking"></select>
 
 			' .
-			// wpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- HTML output from internal function.
 			echodash_get_event_tracking_value_field( $args, $field_name, $field_id ) . '
   
 		</span>
@@ -74,9 +76,9 @@ function echodash_render_event_tracking_fields( $args = array() ) {
  * Get event value field.
  *
  * @since  1.0.0
- * @param array  $args
- * @param string $field_name
- * @param string $field_id
+ * @param array  $args       The arguments.
+ * @param string $field_name The field name.
+ * @param string $field_id   The field ID.
  */
 function echodash_get_event_tracking_value_field( $args, $field_name, $field_id ) {
 
@@ -84,11 +86,9 @@ function echodash_get_event_tracking_value_field( $args, $field_name, $field_id 
 
 	$value = ( isset( $args['setting']['value'] ) ? $args['setting']['value'] : '' );
 
-	$in_option_page = echodash_in_option_page();
-
 	$output .= '
 		<span class="ecd-multi-key">
-			<span data-repeater-list="' . ( $in_option_page ? 'value' : esc_attr( $field_name . '[value]' ) ) . '">';
+			<span data-repeater-list="' . esc_attr( $field_name . '[value]' ) . '">';
 	foreach ( $value as $val ) {
 		$output .= '
 						<span class="nr-item" data-repeater-item>
@@ -146,22 +146,11 @@ function echodash_get_event_tracking_value_field( $args, $field_name, $field_id 
  * @return string The logo SVG.
  */
 function echodash_logo_svg( $width = 24 ) {
-	$height  = $width; // Logo is square
+	$height  = $width; // Logo is square.
 	$content = '
 	<svg width="' . esc_attr( (string) $width ) . '" height="' . esc_attr( (string) $height ) . '" viewBox="0 0 422 422" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
 	<path fill-rule="evenodd" clip-rule="evenodd" d="M211 0.511108C327.25 0.511103 421.489 94.7502 421.489 211C421.489 327.25 327.25 421.489 211 421.489H59.7111C27.0159 421.489 0.511123 394.984 0.511122 362.289L0.511108 59.7111C0.511107 27.0158 27.0159 0.511116 59.7111 0.511115L211 0.511108ZM105.756 39.9778C147.473 39.9778 185.702 54.9148 215.386 79.7322C146.819 84.2451 92.5999 141.291 92.6 211C92.6 280.709 146.818 337.755 215.386 342.268C185.702 367.085 147.473 382.022 105.756 382.022H79.4126C57.6477 382.005 40.0058 364.37 39.9778 342.608L39.9778 79.3925C40.0058 57.6195 57.6649 39.9778 79.4444 39.9778H105.756ZM382.022 211C382.022 122.94 315.468 50.4251 229.916 41.012C282.253 79.3043 316.244 141.183 316.244 211C316.244 280.817 282.253 342.696 229.916 380.988C315.468 371.575 382.022 299.06 382.022 211ZM248 118.911H224.156C173.296 118.911 132.067 160.141 132.067 211C132.067 261.859 173.296 303.089 224.156 303.089H248C249.362 303.089 250.467 301.985 250.467 300.622V263.622H224.156C195.093 263.622 171.533 240.062 171.533 211C171.533 181.938 195.093 158.378 224.156 158.378H250.467V121.378C250.467 120.015 249.362 118.911 248 118.911ZM224.156 197.844H243.889V224.156H224.156C216.89 224.156 211 218.266 211 211C211 203.734 216.89 197.844 224.156 197.844Z"/>
 	</svg>';
 
 	return $content;
-}
-
-/**
- * Check if we are in the option page.
- *
- * @since  1.0.0
- * @return bool
- */
-function echodash_in_option_page() {
-	$screen = get_current_screen();
-	return $screen && $screen->id === 'settings_page_echodash';
 }

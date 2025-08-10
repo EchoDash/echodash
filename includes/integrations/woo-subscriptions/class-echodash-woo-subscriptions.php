@@ -1,4 +1,9 @@
 <?php
+/**
+ * WooCommerce Subscriptions integration.
+ *
+ * @package EchoDash
+ */
 
 defined( 'ABSPATH' ) || exit;
 
@@ -25,6 +30,14 @@ class EchoDash_Woo_Subscriptions extends EchoDash_Integration {
 	 * @var string $name
 	 */
 	public $name = 'WooCommerce Subscriptions';
+
+	/**
+	 * The background color for the integration icon.
+	 *
+	 * @since 2.0.0
+	 * @var string $icon_background_color
+	 */
+	protected $icon_background_color = '#873EFF';
 
 	/**
 	 * Get things started.

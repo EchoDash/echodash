@@ -1,4 +1,10 @@
 <?php
+/**
+ * WordPress core integration for EchoDash.
+ *
+ * @package EchoDash
+ */
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -14,8 +20,7 @@ class EchoDash_WordPress extends EchoDash_Integration {
 	 * @since 1.1.0
 	 * @var string $slug
 	 */
-	// phpcs:ignore WordPress.WP.CapitalPDangit.Misspelled
-	public $slug = 'wordpress';
+	public $slug = 'wordpress'; // phpcs:disable WordPress.WP.CapitalPDangit.MisspelledInText
 
 	/**
 	 * The plugin name for EchoDash's module tracking.
@@ -141,10 +146,10 @@ class EchoDash_WordPress extends EchoDash_Integration {
 				)
 			);
 		} elseif ( ! empty( $hook_extra['type'] ) && 'plugin' === $hook_extra['type'] ) {
-			// Single plugin update
+			// Single plugin update.
 			if ( ! empty( $hook_extra['plugin'] ) ) {
 				$plugin_file = $hook_extra['plugin'];
-			} elseif ( ! empty( $hook_extra['plugins'] ) && is_array( $hook_extra['plugins'] ) ) { // Bulk plugin update
+			} elseif ( ! empty( $hook_extra['plugins'] ) && is_array( $hook_extra['plugins'] ) ) { // Bulk plugin update.
 				$plugin_file = current( $hook_extra['plugins'] );
 			}
 
@@ -156,7 +161,8 @@ class EchoDash_WordPress extends EchoDash_Integration {
 				require_once ABSPATH . 'wp-admin/includes/plugin.php';
 			}
 
-			$plugin_data = get_plugin_data( ECHODASH_WP_PLUGIN_DIR . '/' . $plugin_file );
+			$plugin_dir  = defined( 'ECHODASH_WP_PLUGIN_DIR' ) ? ECHODASH_WP_PLUGIN_DIR : dirname( plugin_dir_path( __FILE__ ) );
+			$plugin_data = get_plugin_data( $plugin_dir . '/' . $plugin_file );
 
 			$old_version = ! empty( $upgrader->skin->plugin_info['Version'] ) ? $upgrader->skin->plugin_info['Version'] : '';
 

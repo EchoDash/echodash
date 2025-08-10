@@ -1,4 +1,9 @@
 <?php
+/**
+ * Gravity Forms integration.
+ *
+ * @package EchoDash
+ */
 
 defined( 'ABSPATH' ) || exit;
 
@@ -25,6 +30,14 @@ class EchoDash_Gravity_Forms extends EchoDash_Integration {
 	 * @var string $name
 	 */
 	public $name = 'Gravity Forms';
+
+	/**
+	 * The background color for the integration icon.
+	 *
+	 * @since 2.0.0
+	 * @var string $icon_background_color
+	 */
+	protected $icon_background_color = '#4c90b5';
 
 	/**
 	 * Get things started.
@@ -73,7 +86,7 @@ class EchoDash_Gravity_Forms extends EchoDash_Integration {
 						'entry_url'  => '{entry:entry_url}',
 						'page_title' => '{entry:embed_post_title}',
 						'page_url'   => '{entry:embed_post_url}',
-						'fields'     => '{entry:all_fields}',  // All form fields as array
+						'fields'     => '{entry:all_fields}',  // All form fields as array.
 					),
 				),
 			),
@@ -89,7 +102,7 @@ class EchoDash_Gravity_Forms extends EchoDash_Integration {
 	 *
 	 * @since  1.0.0
 	 *
-	 * @param  int $form_id The form ID.
+	 * @param  int $entry_id The entry ID.
 	 * @return array The form variables.
 	 */
 	public function get_entry_vars( $entry_id ) {
@@ -99,7 +112,7 @@ class EchoDash_Gravity_Forms extends EchoDash_Integration {
 
 		$entry_data = array();
 
-		// Add standard entry fields
+		// Add standard entry fields.
 		$entry_data = array(
 			'id'         => $entry['id'],
 			'form_id'    => $entry['form_id'],
@@ -108,23 +121,23 @@ class EchoDash_Gravity_Forms extends EchoDash_Integration {
 			'user_agent' => $entry['user_agent'],
 		);
 
-		// Get all available merge tags
+		// Get all available merge tags.
 		foreach ( GFCommon::get_merge_tags( $form['fields'], null ) as $tag_group ) {
 
 			foreach ( $tag_group['tags'] as $merge_tag ) {
 				if ( false !== strpos( $merge_tag['tag'], 'user:' ) || false !== strpos( $merge_tag['tag'], 'ip:' ) ) {
-					continue; // the core integration already handles these
+					continue; // the core integration already handles these.
 				}
 
-				// Process the merge tag to get the field ID
+				// Process the merge tag to get the field ID.
 				$tag = $merge_tag['tag'];
 				$tag = str_replace( '{', '', $tag );
 				$tag = str_replace( '}', '', $tag );
 
-				// Get the actual value using GF's merge tag system
+				// Get the actual value using GF's merge tag system.
 				$value = GFCommon::replace_variables( $merge_tag['tag'], $form, $entry );
 
-				// Store using the original merge tag format
+				// Store using the original merge tag format.
 				$entry_data[ $tag ] = $value;
 			}
 		}
@@ -137,7 +150,7 @@ class EchoDash_Gravity_Forms extends EchoDash_Integration {
 
 			if ( ! empty( $field->inputs ) ) {
 
-				// Handle multi-input fields (like name, checkbox, etc)
+				// Handle multi-input fields (like name, checkbox, etc).
 				foreach ( $field->inputs as $input ) {
 
 					$input_value = rgar( $entry, $input['id'] );
@@ -212,9 +225,11 @@ class EchoDash_Gravity_Forms extends EchoDash_Integration {
 	 *
 	 * @since  1.1.0
 	 *
+	 * @param array $options The options.
+	 * @param int   $entry_id The entry ID.
 	 * @return array The form options.
 	 */
-	public function get_entry_options( $options, $entry_id = false ) {
+	public function get_entry_options( $options, $entry_id = 0 ) {
 		$options = array(
 			'name'    => __( 'Entry', 'echodash' ),
 			'type'    => 'entry',
@@ -277,7 +292,7 @@ class EchoDash_Gravity_Forms extends EchoDash_Integration {
 			),
 		);
 
-		// Get form fields if entry_id is provided
+		// Get form fields if entry_id is provided.
 		if ( $entry_id ) {
 			$entry  = GFAPI::get_entry( $entry_id );
 			$form   = GFAPI::get_form( $entry['form_id'] );
@@ -286,15 +301,15 @@ class EchoDash_Gravity_Forms extends EchoDash_Integration {
 			$fields = null;
 		}
 
-		// Add all available merge tags
+		// Add all available merge tags.
 		foreach ( GFCommon::get_merge_tags( $fields, null ) as $tag_group ) {
 			foreach ( $tag_group['tags'] as $merge_tag ) {
-				// Skip user and IP tags as they're handled by core
+				// Skip user and IP tags as they're handled by core.
 				if ( false !== strpos( $merge_tag['tag'], 'user:' ) || false !== strpos( $merge_tag['tag'], 'ip:' ) ) {
 					continue;
 				}
 
-				// Process the merge tag to get the field ID
+				// Process the merge tag to get the field ID.
 				$tag = str_replace( array( '{', '}' ), '', $merge_tag['tag'] );
 
 				$options['options'][] = array(
@@ -320,7 +335,7 @@ class EchoDash_Gravity_Forms extends EchoDash_Integration {
 			return;
 		}
 
-		// Track the event with processed values
+		// Track the event with processed values.
 		$this->track_event(
 			'form_submitted',
 			array(
@@ -345,15 +360,15 @@ class EchoDash_Gravity_Forms extends EchoDash_Integration {
 			'form_submitted' => false,
 		);
 
-		// Get all feeds for this form
+		// Get all feeds for this form.
 		$feeds = GFAPI::get_feeds( null, $entry['form_id'], 'echodash' );
 
 		if ( ! empty( $feeds ) && ! is_wp_error( $feeds ) ) {
 			foreach ( $feeds as $feed ) {
 				if ( ! empty( $feed['meta']['form_submitted'] ) ) {
-					// If we find a feed with form_submitted settings, use it
+					// If we find a feed with form_submitted settings, use it.
 					$settings['form_submitted'] = $feed['meta']['form_submitted'];
-					break; // Use first matching feed
+					break; // Use first matching feed.
 				}
 			}
 		}

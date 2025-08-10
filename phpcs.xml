@@ -21,10 +21,18 @@
 
 	<!-- Exclude the tests directory. -->
 	<exclude-pattern>**/tests/*</exclude-pattern>
+	<exclude-pattern>**/test-reports/*</exclude-pattern>
+	<exclude-pattern>**/coverage/*</exclude-pattern>
 
 	<!-- Exclude minified Javascript files. -->
 	<exclude-pattern>*.min.js</exclude-pattern>
 	<exclude-pattern>*.js</exclude-pattern>
+
+	<!-- Exclude build/generated assets -->
+	<exclude-pattern>**/assets/dist/*</exclude-pattern>
+	<exclude-pattern>**/assets/select4/*</exclude-pattern>
+	<exclude-pattern>**/dist/*</exclude-pattern>
+	<exclude-pattern>**/bin/*</exclude-pattern>
 
 	<!-- Strip the filepaths down to the relevant bit. -->
 	<arg name="basepath" value="."/>
@@ -47,10 +55,20 @@
 		<exclude name="WordPress.Files.FileName.InvalidClassFileName" />
 	</rule>
 
+	<!-- Exclude PSR1 side effects rule - doesn't apply to WordPress plugins -->
+	<rule ref="PSR1.Files.SideEffects">
+		<exclude name="PSR1.Files.SideEffects" />
+	</rule>
+
+	<!-- Allow mixed declarations in main plugin file - standard WordPress pattern -->
+	<rule ref="Universal.Files.SeparateFunctionsFromOO">
+		<exclude-pattern>echodash.php</exclude-pattern>
+	</rule>
+
 	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
 		<properties>
 			<property name="prefixes" type="array">
-				<element value="ecd"/>
+				<element value="echodash"/>
 				<element value="EchoDash"/>
 			</property>
 		</properties>

@@ -1,4 +1,9 @@
 <?php
+/**
+ * Give integration for EchoDash.
+ *
+ * @package EchoDash
+ */
 
 defined( 'ABSPATH' ) || exit;
 
@@ -24,7 +29,7 @@ class EchoDash_Give extends EchoDash_Integration {
 	 * @since 1.6.0
 	 * @var string $name
 	 */
-	public $name = 'Give';
+	public $name = 'GiveWP';
 
 	/**
 	 * Get things started.
@@ -32,10 +37,8 @@ class EchoDash_Give extends EchoDash_Integration {
 	 * @since 1.6.0
 	 */
 	public function init() {
-
-		add_action( 'give_insert_payment', array( $this, 'new_donation' ), 10, 2 );
+		add_action( 'give_insert_payment', array( $this, 'new_donation' ) );
 	}
-
 
 	/**
 	 * Gets the triggers for the integration.
@@ -158,7 +161,7 @@ class EchoDash_Give extends EchoDash_Integration {
 	public function get_donation_vars( $donation_id ) {
 		$donation = new Give_Payment( $donation_id );
 
-		if ( empty( $donation ) ) {
+		if ( ! $donation->ID ) {
 			return array();
 		}
 
@@ -174,7 +177,7 @@ class EchoDash_Give extends EchoDash_Integration {
 
 		// Post/meta fields.
 		foreach ( $meta_column as $meta_key ) {
-			if ( isset( $donation->$meta_key ) && $donation->$meta_key != '' ) {
+			if ( isset( $donation->$meta_key ) && '' !== $donation->$meta_key ) {
 				$donation_fields[ $meta_key ] = $donation->$meta_key;
 			}
 		}

@@ -1,4 +1,9 @@
 <?php
+/**
+ * LearnDash integration.
+ *
+ * @package EchoDash
+ */
 
 defined( 'ABSPATH' ) || exit;
 /**
@@ -24,6 +29,14 @@ class EchoDash_LearnDash extends EchoDash_Integration {
 	 * @var string $name
 	 */
 	public $name = 'LearnDash';
+
+	/**
+	 * The icon background color for EchoDash's module tracking.
+	 *
+	 * @since 2.0.0
+	 * @var string $icon_background_color
+	 */
+	protected $icon_background_color = '#faf9f6';
 
 	/**
 	 * Get things started.
@@ -193,7 +206,7 @@ class EchoDash_LearnDash extends EchoDash_Integration {
 			)
 		);
 
-		// Only do it once
+		// Only do it once.
 		remove_action( 'learndash_lesson_completed', array( $this, 'course_progress' ), 5 );
 		remove_action( 'learndash_topic_completed', array( $this, 'course_progress' ), 5 );
 	}
@@ -419,7 +432,7 @@ class EchoDash_LearnDash extends EchoDash_Integration {
 	 * @param  array $data    The quiz result data.
 	 * @return array The product variables.
 	 */
-	public function get_quiz_vars( $quiz_id, $data = false ) {
+	public function get_quiz_vars( $quiz_id, $data = array() ) {
 
 		$vars = array(
 			'quiz' => array(

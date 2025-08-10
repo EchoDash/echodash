@@ -1,0 +1,180 @@
+/**
+ * MergeTagSelector Component Styles
+ * Matches the mockup design for merge tag dropdown
+ */
+
+/* Dropdown Container */
+.echodash-merge-dropdown {
+	position: absolute;
+	background: var(--ecd-color-background);
+	border: 1px solid #d9dae6;
+	border-radius: 3px;
+	box-shadow: var(--ecd-shadow-dropdown);
+	z-index: 110; /* Higher than modal (100) */
+	min-width: 200px;
+	max-width: 250px;
+	max-height: 20rem;
+	overflow: hidden; /* Changed to hide overflow on container */
+	margin-top: 2px;
+	display: flex;
+	flex-direction: column;
+}
+
+/* Search Container */
+.echodash-merge-dropdown__search {
+	padding: 0.75rem;
+	border-bottom: 1px solid #ecedf8;
+	background: var(--ecd-color-background);
+	flex-shrink: 0; /* Prevent search from shrinking */
+}
+
+/* Search Input */
+.echodash-merge-dropdown__search-input {
+	width: 100%;
+	padding: 0.5rem 0.75rem;
+	border: 1px solid #d9dae6;
+	border-radius: 3px;
+	font-size: var(--ecd-font-size-md);
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+	background: #fff;
+	color: #242748;
+	outline: none;
+	transition: border-color 0.15s ease;
+	box-sizing: border-box;
+}
+
+.echodash-merge-dropdown__search-input:focus {
+	border-color: var(--wp-admin-theme-color, #2271b1);
+	box-shadow: 0 0 0 1px var(--wp-admin-theme-color, #2271b1);
+}
+
+.echodash-merge-dropdown__search-input::placeholder {
+	color: var(--ecd-color-text-lighter);
+	font-style: italic;
+}
+
+/* Scrollable Content Area */
+.echodash-merge-dropdown__content {
+	overflow-y: auto;
+	overflow-x: hidden;
+	flex: 1;
+	max-height: calc(20rem - 4rem); /* Subtract search area height */
+}
+
+/* Group Container */
+.echodash-merge-dropdown__group {
+	background-color: var(--ecd-color-background);
+	padding: 0;
+}
+
+.echodash-merge-dropdown__group:not(:last-child) {
+	border-bottom: 1px solid #ecedf8;
+}
+
+/* Group Header */
+.echodash-merge-dropdown__group-header {
+	border-bottom: 1px solid #ecedf8;
+	color: #242748;
+	display: block;
+	font-size: var(--ecd-font-size-md);
+	line-height: 1.1875rem;
+	padding: 0.75rem 1.1875rem 1.0625rem;
+	margin: 0;
+	background-color: var(--ecd-color-background);
+	font-weight: 700;
+}
+
+/* Option Item */
+.echodash-merge-dropdown__option {
+	border-bottom: 1px solid #ecedf8;
+	color: #242748;
+	display: block;
+	font-size: var(--ecd-font-size-md);
+	line-height: 1.1875rem;
+	padding: 0.75rem 1.1875rem 1.0625rem;
+	min-height: 44px; /* touch target */
+	margin: 0;
+	cursor: pointer;
+	background-color: var(--ecd-color-background);
+	transition: background-color 0.1s ease;
+}
+
+.echodash-merge-dropdown__option:focus-visible {
+	outline: 2px solid var(--wp-admin-theme-color, #2271b1);
+	outline-offset: 2px;
+}
+
+.echodash-merge-dropdown__option:hover,
+.echodash-merge-dropdown__option--focused {
+	background: #f6f9fc;
+}
+
+.echodash-merge-dropdown__option:active {
+	background: #f6f9fc;
+}
+
+/* Merge tag in monospace font */
+.echodash-merge-dropdown__option-tag {
+	font-family: Consolas, Monaco, "Courier New", monospace;
+	font-size: var(--ecd-font-size-base);
+	font-weight: 400;
+	color: #2c3338;
+	margin-bottom: 3px;
+	display: block;
+}
+
+/* Description text */
+.echodash-merge-dropdown__option-placeholder {
+	color: var(--ecd-color-text-light);
+	font-size: var(--ecd-font-size-sm);
+	line-height: 1.4;
+	display: block;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+}
+
+/* Preview text */
+.echodash-merge-dropdown__option-preview {
+	color: var(--ecd-color-text-lighter);
+	font-size: 11px;
+	margin-top: 3px;
+	display: block;
+	font-style: italic;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+}
+
+/* Empty State */
+.echodash-merge-dropdown__empty {
+	border-bottom: 1px solid #ecedf8;
+	color: #242748;
+	display: block;
+	font-size: var(--ecd-font-size-md);
+	line-height: 1.1875rem;
+	padding: 0.75rem 1.1875rem 1.0625rem;
+	margin: 0;
+	text-align: center;
+	font-style: italic;
+}
+
+/* Scrollbar Styling for Webkit browsers */
+.echodash-merge-dropdown__content::-webkit-scrollbar {
+	width: 6px;
+}
+
+.echodash-merge-dropdown__content::-webkit-scrollbar-track {
+	background: var(--ecd-color-background-light);
+}
+
+.echodash-merge-dropdown__content::-webkit-scrollbar-thumb {
+	background: var(--ecd-color-border);
+	border-radius: 3px;
+}
+
+.echodash-merge-dropdown__content::-webkit-scrollbar-thumb:hover {
+	background: var(--ecd-color-text-lighter);
+}
+
+/* When dropdown is in modal context, it already handles positioning via inline styles */
+.echodash-merge-dropdown--in-modal {
+
+	/* Position is set inline as 'fixed' by the component */
+}

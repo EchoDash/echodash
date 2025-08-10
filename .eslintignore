@@ -1,0 +1,10 @@
+# Ignore build outputs
+assets/dist/
+
+# Ignore vendor files
+vendor/
+node_modules/
+
+# Ignore test reports
+test-reports/
+coverage/

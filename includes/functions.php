@@ -1,4 +1,9 @@
 <?php
+/**
+ * Functions.
+ *
+ * @package EchoDash
+ */
 
 defined( 'ABSPATH' ) || exit;
 
@@ -70,6 +75,9 @@ function echodash_clean( $data ) {
 	}
 
 	if ( is_scalar( $data ) ) {
-		return sanitize_text_field( $data );
+		return sanitize_text_field( (string) $data );
 	}
+
+	// For non-scalar, non-array data, return empty string.
+	return '';
 }

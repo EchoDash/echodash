@@ -1,6 +1,12 @@
 <?php
+/**
+ * Presto Player integration for EchoDash.
+ *
+ * @package EchoDash
+ */
 
 defined( 'ABSPATH' ) || exit;
+
 /**
  * Presto Player integration.
  *
@@ -24,6 +30,14 @@ class EchoDash_Presto_Player extends EchoDash_Integration {
 	 * @var string $name
 	 */
 	public $name = 'Presto Player';
+
+	/**
+	 * The background color for the integration icon.
+	 *
+	 * @since 2.0.0
+	 * @var string $icon_background_color
+	 */
+	protected $icon_background_color = '#f2f5f7';
 
 	/**
 	 * Get things started.
@@ -104,7 +118,7 @@ class EchoDash_Presto_Player extends EchoDash_Integration {
 			return;
 		}
 
-		// Video Play
+		// Video Play.
 		if ( 0 === $percent ) {
 			$this->track_event(
 				'video_play',
@@ -116,7 +130,7 @@ class EchoDash_Presto_Player extends EchoDash_Integration {
 			);
 		}
 
-		// Video Complete
+		// Video Complete.
 		if ( 100 === $percent ) {
 			$this->track_event(
 				'video_complete',
@@ -227,7 +241,7 @@ class EchoDash_Presto_Player extends EchoDash_Integration {
 	 * @param  int $video_id The video ID.
 	 * @return array The video variables.
 	 */
-	public function get_video_vars( $post_id, $video_id = false ) {
+	public function get_video_vars( $post_id, $video_id = 0 ) {
 		$post = get_post( $post_id, 'ARRAY_A' );
 		if ( empty( $post ) ) {
 			return array();

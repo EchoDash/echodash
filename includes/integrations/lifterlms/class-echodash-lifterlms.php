@@ -1,4 +1,9 @@
 <?php
+/**
+ * LifterLMS integration.
+ *
+ * @package EchoDash
+ */
 
 defined( 'ABSPATH' ) || exit;
 /**
@@ -24,6 +29,14 @@ class EchoDash_LifterLMS extends EchoDash_Integration {
 	 * @var string $name
 	 */
 	public $name = 'LifterLMS';
+
+	/**
+	 * The icon background color for EchoDash's module tracking.
+	 *
+	 * @since 2.0.0
+	 * @var string $icon_background_color
+	 */
+	protected $icon_background_color = '#466dd8';
 
 	/**
 	 * Get things started.
@@ -148,7 +161,7 @@ class EchoDash_LifterLMS extends EchoDash_Integration {
 
 
 	/**
-	 * Triggered when course / lesson marked complete
+	 * Triggered when course / lesson marked complete.
 	 *
 	 * @since 1.0.0
 	 *
@@ -376,10 +389,9 @@ class EchoDash_LifterLMS extends EchoDash_Integration {
 	 * @param  LLMS_Quiz $quiz    The quiz result data.
 	 * @return array     The quiz variables.
 	 */
-	public function get_quiz_vars( $quiz_id, $quiz = false ) {
+	public function get_quiz_vars( $quiz_id, $quiz = null ) {
 
-		// Quiz ID is a course ID in the admin :( .
-		// @Todo need to make this work better.
+		// Quiz ID is a course ID in the admin :(. Need to make this work better.
 
 		if ( 'course' === get_post_type( $quiz_id ) ) {
 			return array();
