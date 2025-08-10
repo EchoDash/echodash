@@ -62,8 +62,8 @@ export const IntegrationList: React.FC<IntegrationListProps> = ({
 					throw new Error('Failed to save endpoint');
 				}
 
-				// Update the settings object
-				settings.endpoint = endpointUrl;
+				// Settings are already saved on the server
+				// Local state (endpointUrl) already reflects the change
 			} catch (error) {
 				console.error('Error saving endpoint:', error);
 				// Revert to original value on error
@@ -93,7 +93,7 @@ export const IntegrationList: React.FC<IntegrationListProps> = ({
 					rel="noopener noreferrer"
 					className="echodash-button echodash-header__docs-link"
 				>
-					Documentation →
+					{__('Documentation', 'echodash')} →
 				</a>
 			</div>
 
@@ -133,7 +133,7 @@ export const IntegrationList: React.FC<IntegrationListProps> = ({
 									type="text" 
 									id="endpoint-url"
 									className="regular-text echodash-welcome__input"
-									placeholder="https://example.com/"
+									placeholder={__('https://example.com/', 'echodash')}
 									value={endpointUrl}
 									onChange={handleEndpointChange}
 									onBlur={handleEndpointBlur}

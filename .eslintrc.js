@@ -16,7 +16,8 @@ module.exports = {
   plugins: [
     '@typescript-eslint',
     'react',
-    'react-hooks'
+    'react-hooks',
+    'jsx-a11y'
   ],
   settings: {
     react: {
@@ -33,6 +34,15 @@ module.exports = {
     'react/prop-types': 'off', // We use TypeScript for prop validation
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',
+    
+    // Accessibility rules
+    'jsx-a11y/alt-text': 'error',
+    'jsx-a11y/anchor-is-valid': 'warn',
+    'jsx-a11y/aria-props': 'error',
+    'jsx-a11y/aria-role': 'error',
+    'jsx-a11y/click-events-have-key-events': 'warn',
+    'jsx-a11y/no-static-element-interactions': 'warn',
+    'jsx-a11y/label-has-associated-control': 'error',
     
     // General rules
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'warn',

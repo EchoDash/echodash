@@ -5,6 +5,7 @@
  */
 
 import React, { useState, useRef, useEffect } from 'react';
+import { __ } from '@wordpress/i18n';
 import { MergeTagSelector } from './MergeTagSelector';
 import './TriggerModal.css';
 
@@ -234,7 +235,9 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 								{editingTrigger ? 'Edit Trigger' : 'Add Trigger'}
 							</h2>
 							<p className="echodash-modal__subtitle">
-								{editingTrigger ? `Edit trigger for ${integration.name}` : `Create a trigger for ${integration.name}`}
+								{editingTrigger 
+									? __('Edit trigger for %s', 'echodash').replace('%s', integration.name) 
+									: __('Create a trigger for %s', 'echodash').replace('%s', integration.name)}
 							</p>
 						</div>
 					</div>
@@ -251,7 +254,7 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 					{/* Trigger Type */}
 					<div className="echodash-form-group">
 						<label className="echodash-form-group__label">
-							Trigger
+							{__('Trigger', 'echodash')}
 						</label>
 						<select 
 							value={selectedTrigger}

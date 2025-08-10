@@ -189,7 +189,7 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 								<div className="echodash-trigger-item__info">
 									<div className="echodash-trigger-item__type">{trigger.name}</div>
 									<div className="echodash-trigger-item__name">
-										{trigger.description || trigger.trigger || 'Trigger'}
+										{trigger.description || trigger.trigger || __('Trigger', 'echodash')}
 									</div>
 								</div>
 
@@ -226,7 +226,7 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 									<button 
 										className="echodash-button"
 										onClick={() => {
-											if (window.confirm(`Are you sure you want to delete the "${trigger.name || 'Untitled'}" trigger? This action cannot be undone.`)) {
+											if (window.confirm(__('Are you sure you want to delete the "%s" trigger? This action cannot be undone.', 'echodash').replace('%s', trigger.name || __('Untitled', 'echodash')))) {
 												onDeleteTrigger(trigger);
 											}
 										}}
@@ -266,10 +266,10 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 									>
 										<div className="echodash-single-trigger-item__info">
 											<div className="echodash-single-trigger-item__title">
-												{item.event_name || 'Untitled Event'}
+												{item.event_name || __('Untitled Event', 'echodash')}
 											</div>
 											<div className="echodash-single-trigger-item__post">
-												Configured on: <strong>{item.post_title}</strong>
+												{__('Configured on:', 'echodash')} <strong>{item.post_title}</strong>
 											</div>
 										</div>
 										
@@ -280,7 +280,7 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 												target="_blank"
 												rel="noopener noreferrer"
 											>
-												Edit Item →
+												{__('Edit Item', 'echodash')} →
 											</a>
 										</div>
 									</div>

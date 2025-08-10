@@ -14,7 +14,7 @@ button.echodash-button {
 	border-radius: 6px;
 	font-size: 14px;
 	font-weight: 500;
-	transition: all 0.4s ease;
+	transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
 }
 
 a.echodash-button:hover,
@@ -22,6 +22,13 @@ button.echodash-button:hover {
 	cursor: pointer;
     background-color: #202E41;
     color: #fff;
+}
+
+/* Focus-visible for keyboard navigation */
+a.echodash-button:focus-visible,
+button.echodash-button:focus-visible {
+	outline: 2px solid #202E41;
+	outline-offset: 2px;
 }
 
 a.echodash-button span.dashicons,
@@ -34,6 +41,11 @@ button.echodash-button-primary {
 	background-color: #202E41;
 	color: #fff;
 	border-color: #202E41;
+}
+
+a.echodash-button-primary:hover,
+button.echodash-button-primary:hover {
+	text-decoration: underline;
 }
 
 /* Icon Styles */
