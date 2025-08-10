@@ -265,6 +265,7 @@ final class EchoDash {
 			'affiliatewp'             => 'Affiliate_WP',
 			'bbpress'                 => 'bbPress',
 			'buddypress'              => 'BuddyPress',
+			'clickwhale'              => 'clickwhale',
 			'edd'                     => 'Easy_Digital_Downloads',
 			'edd-software-licensing'  => 'EDD_Software_Licensing',
 			'edd-recurring'           => 'EDD_Recurring',
@@ -273,6 +274,8 @@ final class EchoDash {
 			'give'                    => 'Give',
 			'learndash'               => 'SFWD_LMS',
 			'lifterlms'               => 'LLMS',
+			'pretty-links'            => 'PrliLink',
+			'searchwp'                => 'SearchWP',
 			'woocommerce'             => 'WooCommerce',
 			'woo-subscriptions'       => 'WC_Subscriptions_Product',
 		);
