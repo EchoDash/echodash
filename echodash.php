@@ -275,6 +275,7 @@ final class EchoDash {
 			'learndash'               => 'SFWD_LMS',
 			'lifterlms'               => 'LLMS',
 			'pretty-links'            => 'PrliLink',
+			'searchwp'                => 'SearchWP',
 			'woocommerce'             => 'WooCommerce',
 			'woo-subscriptions'       => 'WC_Subscriptions_Product',
 		);
