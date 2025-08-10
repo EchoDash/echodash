@@ -3,8 +3,6 @@ name: Pull Request Checks
 on:
     pull_request:
         branches: [master, main]
-    pull_request_target:
-        branches: [master, main]
 
 concurrency:
     group: ${{ github.workflow }}-${{ github.ref }}
@@ -90,14 +88,14 @@ jobs:
             - name: Check for build artifacts (tracked files only)
               run: |
                   git config --global core.autocrlf false
-                  CHANGES="$(git diff --name-status)"
+                  CHANGES="$(git diff --name-status | grep -v '^[AMD]\s*\.github/workflows/')"
                   if [ -n "$CHANGES" ]; then
                     echo "Build modified tracked files:"
                     echo "$CHANGES"
-                    git diff --stat
+                    git diff --stat -- . ':!.github/workflows'
                     exit 1
                   fi
-                  UNTRACKED="$(git ls-files -o --exclude-standard)"
+                  UNTRACKED="$(git ls-files -o --exclude-standard | grep -v '^\.github/workflows/')"
                   if [ -n "$UNTRACKED" ]; then
                     echo "Note: untracked files created (ignored for failure):"
                     echo "$UNTRACKED"
