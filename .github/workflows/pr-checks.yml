@@ -153,10 +153,6 @@ jobs:
             - name: Run JavaScript tests
               run: npm run test:ci
 
-            - name: Run PHP unit tests
-              run: composer run-script test
-              if: hashFiles('composer.json') != '' && contains(fromJson('["test"]'), 'test')
-
             - name: Upload JavaScript coverage to Codecov
               uses: codecov/codecov-action@v4
               with:
@@ -220,6 +216,7 @@ jobs:
 
             - name: Install PHPCompatibility
               run: |
+                  composer global config allow-plugins.dealerdirect/phpcodesniffer-composer-installer true
                   composer global require phpcompatibility/php-compatibility
                   composer global require wp-coding-standards/wpcs
 

@@ -205,7 +205,6 @@ composer phpcbf
 - **Authentication**: WordPress nonces and capability checks
 - **Validation**: Comprehensive input sanitization and validation
 - **Error Handling**: Structured error responses with proper HTTP status codes
-- **Rate Limiting**: WordPress built-in REST API rate limiting
 
 ### Data Flow
 1. **React Configuration** → API calls with WordPress nonces

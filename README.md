@@ -101,7 +101,6 @@ npm run format        # Prettier code formatting
 composer phpcs        # WordPress coding standards
 composer phpcbf       # Auto-fix coding standards
 composer phpstan      # Static analysis (PHPStan level 5)
-composer test         # PHPUnit tests
 ```
 
 #### Automated Quality Checks
@@ -126,10 +125,10 @@ composer test         # PHPUnit tests
 ✅ Coverage: 85.2% lines, 81.4% branches
 ```
 
-#### PHP Tests (PHPUnit + Static Analysis)
+#### PHP Tests (Static Analysis; optional PHPUnit)
 - **PHPStan**: Level 5 static analysis with WordPress stubs
 - **PHPCS**: WordPress coding standards compliance
-- **PHPUnit**: Traditional PHP unit testing
+- **PHPUnit**: Traditional PHP unit testing (optional; not configured by default in v2)
 
 **Common Issues:**
 - **PHPStan warnings** about third-party plugins are normal
