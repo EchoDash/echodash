@@ -54,11 +54,11 @@ class EchoDash_Public {
 
 		do_action( 'echodash_track_event', $event );
 
-		$this->add_to_queue( $event );
-
 		if ( defined( 'ECHODASH_TEST_EVENT' ) ) {
-			return $this->shutdown();
+			return $this->send_event( $event );
 		}
+
+		$this->add_to_queue( $event );
 
 		return true;
 	}
@@ -70,7 +70,7 @@ class EchoDash_Public {
 	 *
 	 * @param array $event The event.
 	 */
-	public function add_to_queue( $event ) {
+	private function add_to_queue( $event ) {
 		$this->events[] = $event;
 	}
 
@@ -78,8 +78,6 @@ class EchoDash_Public {
 	 * Process the queued events on shutdown.
 	 *
 	 * @since 1.0.0
-	 *
-	 * @return WP_Error|true
 	 */
 	public function shutdown() {
 
@@ -87,36 +85,46 @@ class EchoDash_Public {
 			return;
 		}
 
-		$endpoint = esc_url( echodash_get_option( 'endpoint' ) );
+		foreach ( $this->events as $event ) {
+			$this->send_event( $event );
+		}
+	}
 
-		if ( empty( $endpoint ) ) {
-			return new WP_Error( 'echodash_no_endpoint', __( 'No endpoint found', 'echodash' ) );
+	/**
+	 * Sends an event to the endpoint.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param array $event The event.
+	 * @return WP_Error|true
+	 */
+	private function send_event( $event ) {
+
+		$endpoint = echodash_get_option( 'endpoint' );
+
+		if ( empty( $endpoint ) || ! filter_var( $endpoint, FILTER_VALIDATE_URL ) ) {
+			return new WP_Error( 'echodash_no_endpoint', __( 'Missing or invalid endpoint URL: ', 'echodash' ) . $endpoint );
 		}
 
-		foreach ( $this->events as $i => $event ) {
+		$params = array(
+			'headers'    => array(
+				'Content-Type'  => 'application/json',
+				'ecd-summarize' => 'false',
+				'ecd-source'    => $event['source'],
+				'ecd-event'     => $event['event'],
+			),
+			'body'       => wp_json_encode( $event ),
+			'blocking'   => defined( 'ECHODASH_TEST_EVENT' ) ? true : false,
+			'user-agent' => 'EchoDash ' . ECHODASH_VERSION . '; ' . home_url(),
+		);
 
-			$params = array(
-				'headers'    => array(
-					'Content-Type'  => 'application/json',
-					'ecd-summarize' => 'false',
-					'ecd-source'    => $event['source'],
-					'ecd-event'     => $event['event'],
-				),
-				'body'       => wp_json_encode( $event ),
-				'blocking'   => defined( 'ECHODASH_TEST_EVENT' ) ? true : false,
-				'user-agent' => 'EchoDash ' . ECHODASH_VERSION . '; ' . home_url(),
-			);
+		$result = wp_remote_post( $endpoint, $params );
 
-			$result = wp_remote_post( $endpoint, $params );
-
-			unset( $this->events[ $i ] );
-
-			if ( is_wp_error( $result ) ) {
-				return $result;
-			} elseif ( 202 !== wp_remote_retrieve_response_code( $result ) ) {
-				// translators: %s is the endpoint URL, %d is the status code.
-				return new WP_Error( 'echodash_send_failed', sprintf( __( 'Failed to send event to endpoint: %1$s. Status code: %2$d', 'echodash' ), $endpoint, wp_remote_retrieve_response_code( $result ) ) );
-			}
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		} elseif ( 202 !== wp_remote_retrieve_response_code( $result ) ) {
+			// translators: %s is the endpoint URL, %d is the status code.
+			return new WP_Error( 'echodash_send_failed', sprintf( __( 'Failed to send event to endpoint: %1$s. Status code: %2$d', 'echodash' ), $endpoint, wp_remote_retrieve_response_code( $result ) ) );
 		}
 
 		return true;

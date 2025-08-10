@@ -229,7 +229,7 @@ class EchoDash_Gravity_Forms extends EchoDash_Integration {
 	 * @param int   $entry_id The entry ID.
 	 * @return array The form options.
 	 */
-	public function get_entry_options( $options, $entry_id = false ) {
+	public function get_entry_options( $options, $entry_id = 0 ) {
 		$options = array(
 			'name'    => __( 'Entry', 'echodash' ),
 			'type'    => 'entry',

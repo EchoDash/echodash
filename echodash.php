@@ -105,7 +105,7 @@ final class EchoDash {
 	 */
 	public static function instance() {
 
-		if ( ! isset( self::$instance ) ) {
+		if ( ! self::$instance ) {
 
 			self::$instance = new EchoDash();
 
@@ -337,8 +337,6 @@ final class EchoDash {
  * declare the global.
  *
  * @since  1.0.0
- *
- * @return object The one true EchoDash
  */
 function echodash() {
 

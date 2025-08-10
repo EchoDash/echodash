@@ -218,7 +218,7 @@ class EchoDash_EDD extends EchoDash_Integration {
 
 		$payment = new EDD_Payment( $payment_id );
 
-		if ( empty( $payment ) || 0 === $payment->ID ) {
+		if ( 0 === $payment->ID ) {
 			return array();
 		}
 

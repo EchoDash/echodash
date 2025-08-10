@@ -17,7 +17,7 @@ interface IntegrationDetailProps {
 	onAddTrigger: () => void;
 	onEditTrigger: (trigger: Trigger) => void;
 	onDeleteTrigger: (trigger: Trigger) => void;
-	onSendTest: (trigger: Trigger) => void;
+	onSendTest: (trigger: Trigger) => Promise<void>;
 	deletingTrigger?: string | null;
 }
 

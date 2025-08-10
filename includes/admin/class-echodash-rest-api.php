@@ -150,7 +150,7 @@ class EchoDash_REST_API extends WP_REST_Controller {
 	 * @since 2.0.0
 	 *
 	 * @param WP_REST_Request $request The request object.
-	 * @return WP_REST_Response The response object.
+	 * @return WP_REST_Response|WP_Error The response object.
 	 */
 	public function update_settings( $request ) {
 		$params = $request->get_json_params();
@@ -181,7 +181,7 @@ class EchoDash_REST_API extends WP_REST_Controller {
 	 * @since 2.0.0
 	 *
 	 * @param WP_REST_Request $request The request object.
-	 * @return WP_REST_Response The response object.
+	 * @return WP_REST_Response|WP_Error The response object.
 	 */
 	public function create_trigger( $request ) {
 		$slug   = $request->get_param( 'slug' );
@@ -231,7 +231,7 @@ class EchoDash_REST_API extends WP_REST_Controller {
 	 * @since 2.0.0
 	 *
 	 * @param WP_REST_Request $request The request object.
-	 * @return WP_REST_Response The response object.
+	 * @return WP_REST_Response|WP_Error The response object.
 	 */
 	public function update_trigger( $request ) {
 		$slug       = $request->get_param( 'slug' );
@@ -271,7 +271,7 @@ class EchoDash_REST_API extends WP_REST_Controller {
 	 * @since 2.0.0
 	 *
 	 * @param WP_REST_Request $request The request object.
-	 * @return WP_REST_Response The response object.
+	 * @return WP_REST_Response|WP_Error The response object.
 	 */
 	public function delete_trigger( $request ) {
 		$slug       = $request->get_param( 'slug' );
@@ -304,7 +304,7 @@ class EchoDash_REST_API extends WP_REST_Controller {
 	 * @since 2.0.0
 	 *
 	 * @param WP_REST_Request $request The request object.
-	 * @return WP_REST_Response The response object.
+	 * @return WP_REST_Response|WP_Error The response object.
 	 */
 	public function generate_preview( $request ) {
 		$params           = $request->get_json_params();
@@ -375,17 +375,11 @@ class EchoDash_REST_API extends WP_REST_Controller {
 				'processed_data' => $event_data['properties'],
 			);
 			return rest_ensure_response( $response );
-		} elseif ( is_wp_error( $result ) ) {
+		} else {
 			return new WP_Error(
 				'test_event_failed',
 				$result->get_error_message(),
 				array( 'status' => 400 )
-			);
-		} else {
-			return new WP_Error(
-				'test_event_failed',
-				__( 'Failed to send test event', 'echodash' ),
-				array( 'status' => 500 )
 			);
 		}
 	}

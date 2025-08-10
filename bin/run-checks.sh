@@ -86,13 +86,14 @@ else
     exit 1
 fi
 
-print_status "info" "Running Stylelint..."
+print_status "info" "Running Stylelint (WordPress CSS Standards)..."
 if npm run lint:css; then
-    print_status "success" "Stylelint passed"
+    print_status "success" "Stylelint passed - CSS follows WordPress standards"
 else
-    print_status "warning" "Stylelint found issues (many may be from third-party CSS)"
+    print_status "warning" "Stylelint found CSS standard violations"
     echo "💡 Run 'npm run lint:css -- --fix' to auto-fix some issues"
-    echo "💡 Review CSS errors above - many third-party library issues can be ignored"
+    echo "💡 WordPress CSS standards: use lowercase with hyphens (avoid camelCase)"
+    echo "💡 See: https://developer.wordpress.org/coding-standards/wordpress-coding-standards/css/"
 fi
 
 print_status "info" "Checking code formatting..."

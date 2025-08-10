@@ -126,12 +126,11 @@ export const MergeTagSelector: React.FC<MergeTagSelectorProps> = ({
 		return options
 			.map(group => ({
 				...group,
-				options: group.options.filter(option => {
-					// Search in merge tag, placeholder, and preview
-					const mergeTag =
-						`{${group.type}:${option.meta}}`.toLowerCase();
-					const placeholder = option.placeholder.toLowerCase();
-					const preview = String(option.preview).toLowerCase();
+				options: group.options.filter(option => {  
+					// Search in merge tag, placeholder, and preview  
+					const mergeTag = `{${group.type}:${option.meta}}`.toLowerCase();  
+					const placeholder = String(option.placeholder ?? '').toLowerCase();  
+					const preview = String(option.preview ?? '').toLowerCase();  
 
 					return (
 						mergeTag.includes(searchLower) ||

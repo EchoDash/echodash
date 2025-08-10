@@ -343,11 +343,12 @@ class EchoDash_React_Admin {
 			// Convert configured triggers to React-compatible format.
 			foreach ( $configured_trigger_data as $trigger_id => $trigger_data ) {
 				$triggers[] = array(
-					'id'         => $trigger_id,
-					'name'       => $trigger_data['name'] ?? $trigger_id,
-					'trigger'    => $trigger_data['trigger'] ?? $trigger_id,
-					'event_name' => $trigger_data['event_name'] ?? $trigger_data['name'] ?? '',
-					'mappings'   => $trigger_data['mappings'] ?? array(),
+					'id'          => $trigger_id,
+					'name'        => $trigger_data['name'] ?? $trigger_id,
+					'trigger'     => $trigger_data['trigger'] ?? $trigger_id,
+					'event_name'  => $trigger_data['event_name'] ?? $trigger_data['name'] ?? '',
+					'mappings'    => $trigger_data['mappings'] ?? array(),
+					'description' => $trigger_data['description'] ?? '',
 				);
 			}
 
@@ -408,7 +409,7 @@ class EchoDash_React_Admin {
 					'options'      => $integration->get_options( $trigger_id ),
 				);
 
-				// Add description to configured triggers if available.
+				// Update description for configured triggers if not already set.
 				foreach ( $triggers as &$configured_trigger ) {
 					if ( $configured_trigger['trigger'] === $trigger_id && empty( $configured_trigger['description'] ) ) {
 						$configured_trigger['description'] = $trigger_config['description'] ?? '';

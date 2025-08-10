@@ -389,7 +389,7 @@ class EchoDash_LifterLMS extends EchoDash_Integration {
 	 * @param  LLMS_Quiz $quiz    The quiz result data.
 	 * @return array     The quiz variables.
 	 */
-	public function get_quiz_vars( $quiz_id, $quiz = false ) {
+	public function get_quiz_vars( $quiz_id, $quiz = null ) {
 
 		// Quiz ID is a course ID in the admin :(. Need to make this work better.
 

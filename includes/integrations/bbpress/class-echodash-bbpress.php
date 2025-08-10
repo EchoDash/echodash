@@ -46,8 +46,8 @@ class EchoDash_BbPress extends EchoDash_Integration {
 	 */
 	public function init() {
 
-		add_action( 'bbp_new_topic', array( $this, 'topic_created' ), 10, 4 );
-		add_action( 'bbp_new_reply', array( $this, 'reply_created' ), 10, 5 );
+		add_action( 'bbp_new_topic', array( $this, 'topic_created' ) );
+		add_action( 'bbp_new_reply', array( $this, 'reply_created' ) );
 	}
 
 

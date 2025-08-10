@@ -59,3 +59,16 @@ if ( ! defined( 'COOKIEDOMAIN' ) ) {
 	 */
 	define( 'COOKIEDOMAIN', 'domain' );
 }
+
+// WP Fusion function stubs for PHPStan.
+if ( ! function_exists( 'wpf_get_tag_label' ) ) {
+	/**
+	 * Gets the tag label from WP Fusion.
+	 *
+	 * @param string|int $tag_id The tag ID.
+	 * @return string The tag label.
+	 */
+	function wpf_get_tag_label( $tag_id ) {
+		return (string) $tag_id;
+	}
+}

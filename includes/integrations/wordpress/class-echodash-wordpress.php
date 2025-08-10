@@ -161,7 +161,8 @@ class EchoDash_WordPress extends EchoDash_Integration {
 				require_once ABSPATH . 'wp-admin/includes/plugin.php';
 			}
 
-			$plugin_data = get_plugin_data( ECHODASH_WP_PLUGIN_DIR . '/' . $plugin_file );
+			$plugin_dir  = defined( 'ECHODASH_WP_PLUGIN_DIR' ) ? ECHODASH_WP_PLUGIN_DIR : dirname( plugin_dir_path( __FILE__ ) );
+			$plugin_data = get_plugin_data( $plugin_dir . '/' . $plugin_file );
 
 			$old_version = ! empty( $upgrader->skin->plugin_info['Version'] ) ? $upgrader->skin->plugin_info['Version'] : '';
 

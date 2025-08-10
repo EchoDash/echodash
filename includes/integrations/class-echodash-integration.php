@@ -323,7 +323,7 @@ abstract class EchoDash_Integration {
 	 * @since  2.0.0
 	 * @param string $merge_tag The merge tag string that may contain placeholders.
 	 * @param array  $event_data The event data to pull values from.
-	 * @return string|array The processed merge tag with replacements made.
+	 * @return string The processed merge tag with replacements made.
 	 */
 	private function process_merge_tag( $merge_tag, $event_data ) {
 
@@ -408,7 +408,7 @@ abstract class EchoDash_Integration {
 
 		$events = array();
 
-		if ( false !== $post_id ) {
+		if ( $post_id ) {
 
 			// Get the events just for a specific post. Used in the admin when editing a post and when triggering an event.
 			$settings = $this->get_settings( $post_id );
@@ -416,13 +416,13 @@ abstract class EchoDash_Integration {
 			if ( false !== $settings[ $trigger ] ) {
 				$events[] = $settings[ $trigger ];
 			}
-		} elseif ( false === $post_id && $this->triggers[ $trigger ]['has_single'] ) {
+		} elseif ( $this->triggers[ $trigger ]['has_single'] ) {
 			// Get all the single events for a trigger. Used when loading the global options.
 			$events = $this->get_single_events( $trigger );
 		}
 
 		// If the post has no events, check for global events.
-		if ( false === $post_id || empty( $events ) ) {
+		if ( ! $post_id || empty( $events ) ) {
 			$global_events = $this->get_global_events( $trigger );
 			$events        = array_merge( $events, $global_events );
 		}

@@ -77,4 +77,7 @@ function echodash_clean( $data ) {
 	if ( is_scalar( $data ) ) {
 		return sanitize_text_field( $data );
 	}
+
+	// For non-scalar, non-array data, return as-is (should not happen in normal usage).
+	return $data;
 }

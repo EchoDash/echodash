@@ -168,10 +168,10 @@ class EchoDash_Admin {
 	 */
 	public function admin_scripts() {
 
-		wp_register_style( 'select4', ECHODASH_DIR_URL . 'assets/select4/select4.min.css', array(), '4.0.13' );
-		wp_register_script( 'select4', ECHODASH_DIR_URL . 'assets/select4/select4.min.js', array( 'jquery' ), '4.0.13', true );
+		wp_register_style( 'select4', ECHODASH_DIR_URL . 'assets/dist/select4.min.css', array(), '4.0.13' );
+		wp_register_script( 'select4', ECHODASH_DIR_URL . 'assets/dist/select4.min.js', array( 'jquery' ), '4.0.13', true );
 
-		wp_register_script( 'echodash-jquery-repeater', ECHODASH_DIR_URL . 'assets/jquery-repeater/jquery.repeater.min.js', array( 'jquery' ), '1.2.2', true );
+		wp_register_script( 'echodash-jquery-repeater', ECHODASH_DIR_URL . 'assets/dist/jquery.repeater.min.js', array( 'jquery' ), '1.2.2', true );
 
 		wp_register_script( 'echodash-admin', ECHODASH_DIR_URL . 'assets/echodash-admin.js', array( 'jquery', 'jquery-ui-sortable', 'select4' ), ECHODASH_VERSION, true );
 		wp_register_style( 'echodash-admin', ECHODASH_DIR_URL . 'assets/echodash-admin.css', array(), ECHODASH_VERSION );

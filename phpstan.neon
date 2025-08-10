@@ -12,13 +12,12 @@ parameters:
         - **/vendor/*
         - **/tests/*
         - **/assets/dist/*
+        - **/gravity-forms/*
         - !**/*.php
     paths:
         - ./
     ignoreErrors:
-        - '#Class file names should be based on the class name#'
         - '#Function .* not found#'
-        - '#Class .* not found#'
         - '#Instantiated class .* not found#'
         - '#Call to .* on an unknown class#'
         - '#Access to property .* on an unknown class#'

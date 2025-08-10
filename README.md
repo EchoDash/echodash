@@ -192,7 +192,7 @@ add_filter( 'echodash_your-integration_triggers', function( $triggers ) {
 
 ## Support
 
-- Documentation: https://echodash.com/docs/echodash-plugin/
+- Documentation: https://echodash.com/docs/integrations/wordpress/
 - Support: https://echodash.com/support/
 - Issues: [Create a GitHub issue](../../issues/new)
 

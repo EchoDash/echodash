@@ -38,7 +38,7 @@ class EchoDash_Give extends EchoDash_Integration {
 	 */
 	public function init() {
 
-		add_action( 'give_insert_payment', array( $this, 'new_donation' ), 10, 2 );
+		add_action( 'give_insert_payment', array( $this, 'new_donation' ) );
 	}
 
 
@@ -163,7 +163,7 @@ class EchoDash_Give extends EchoDash_Integration {
 	public function get_donation_vars( $donation_id ) {
 		$donation = new Give_Payment( $donation_id );
 
-		if ( empty( $donation ) ) {
+		if ( ! $donation->ID ) {
 			return array();
 		}
 

@@ -50,7 +50,7 @@ class EchoDash_AffiliateWP extends EchoDash_Integration {
 
 		add_action( 'affwp_set_affiliate_status', array( $this, 'affiliate_status_updated' ), 10, 2 );
 
-		add_action( 'affwp_post_insert_visit', array( $this, 'add_visit' ), 10, 3 );
+		add_action( 'affwp_post_insert_visit', array( $this, 'add_visit' ), 10, 2 );
 
 		add_action( 'affwp_referral_accepted', array( $this, 'add_referral' ), 10, 2 );
 	}

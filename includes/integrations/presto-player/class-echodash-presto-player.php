@@ -241,7 +241,7 @@ class EchoDash_Presto_Player extends EchoDash_Integration {
 	 * @param  int $video_id The video ID.
 	 * @return array The video variables.
 	 */
-	public function get_video_vars( $post_id, $video_id = false ) {
+	public function get_video_vars( $post_id, $video_id = 0 ) {
 		$post = get_post( $post_id, 'ARRAY_A' );
 		if ( empty( $post ) ) {
 			return array();

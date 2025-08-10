@@ -48,7 +48,7 @@ class EchoDash_EDD_Software_Licensing extends EchoDash_Integration {
 
 		add_action( 'edd_sl_activate_license', array( $this, 'activate_license' ), 10, 2 );
 		add_action( 'edd_sl_deactivate_license', array( $this, 'deactivate_license' ), 10, 2 );
-		add_action( 'edd_sl_download_package_url', array( $this, 'package_download' ), 10, 3 );
+		add_filter( 'edd_sl_download_package_url', array( $this, 'package_download' ), 10, 3 );
 
 		add_action( 'echodash_edd_meta_box', array( $this, 'meta_box_callback' ) );
 	}
@@ -217,7 +217,7 @@ class EchoDash_EDD_Software_Licensing extends EchoDash_Integration {
 	 * @param  int $license_id The license ID.
 	 * @return array The product variables.
 	 */
-	public function get_license_vars( $license_id = false ) {
+	public function get_license_vars( $license_id = 0 ) {
 
 		$license = edd_software_licensing()->get_license( $license_id );
 

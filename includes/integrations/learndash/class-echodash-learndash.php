@@ -432,7 +432,7 @@ class EchoDash_LearnDash extends EchoDash_Integration {
 	 * @param  array $data    The quiz result data.
 	 * @return array The product variables.
 	 */
-	public function get_quiz_vars( $quiz_id, $data = false ) {
+	public function get_quiz_vars( $quiz_id, $data = array() ) {
 
 		$vars = array(
 			'quiz' => array(
