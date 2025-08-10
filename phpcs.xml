@@ -21,6 +21,8 @@
 
 	<!-- Exclude the tests directory. -->
 	<exclude-pattern>**/tests/*</exclude-pattern>
+	<exclude-pattern>**/test-reports/*</exclude-pattern>
+	<exclude-pattern>**/coverage/*</exclude-pattern>
 
 	<!-- Exclude minified Javascript files. -->
 	<exclude-pattern>*.min.js</exclude-pattern>

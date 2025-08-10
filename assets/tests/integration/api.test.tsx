@@ -232,7 +232,7 @@ describe('API Integration Tests', () => {
 			fireEvent.click(deleteButtons[0]);
 
 			await waitFor(() => {
-				expect(mockConfirm).toHaveBeenCalled();
+				expect(window.confirm).toHaveBeenCalled();
 				expect(fetch).toHaveBeenCalledWith(
 					'/wp-json/echodash/v1/integrations/woocommerce/triggers/1',
 					{

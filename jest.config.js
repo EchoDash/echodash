@@ -121,7 +121,7 @@ module.exports = {
 
 	// Custom test environment options
 	testEnvironmentOptions: {
-		url: 'https://test.example.com/wp-admin/admin.php?page=echodash',
+		url: 'https://test.example.com/wp-admin/options-general.php?page=echodash',
 	},
 
 	// Reporter configuration

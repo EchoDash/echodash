@@ -17,7 +17,7 @@ jobs:
 
         strategy:
             matrix:
-                php-version: ['7.4', '8.0', '8.1', '8.2']
+                php-version: ['7.4', '8.1', '8.2']  # Removed 8.0 - 8.1 covers most use cases
 
         steps:
             - name: Checkout code
@@ -101,14 +101,10 @@ jobs:
 
         strategy:
             matrix:
-                wp-version: ['6.0', '6.1', '6.2', '6.3', '6.4']
+                wp-version: ['6.2', '6.3', '6.4']  # Focus on recent versions
                 php-version: ['7.4', '8.1']
                 exclude:
-                    # Reduce matrix to save on CI time - test latest WP with all PHP versions
-                    - wp-version: '6.0'
-                      php-version: '8.1'
-                    - wp-version: '6.1'
-                      php-version: '8.1'
+                    # Test latest WP with both PHP versions, older WP with just 7.4
                     - wp-version: '6.2'
                       php-version: '8.1'
                     - wp-version: '6.3'

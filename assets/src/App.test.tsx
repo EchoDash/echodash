@@ -524,6 +524,66 @@ describe('App Component', () => {
 		});
 	});
 
+	describe('Development Logging', () => {
+		it('logs errors in development mode', async () => {
+			const originalEnv = process.env.NODE_ENV;
+			process.env.NODE_ENV = 'development';
+			const mockConsoleError = jest
+				.spyOn(console, 'error')
+				.mockImplementation();
+			mockFetchError('Test error for development logging');
+
+			render(<App />);
+
+			// Trigger an error that would call the logger
+			fireEvent.click(screen.getByText('Go to WooCommerce'));
+			await waitFor(() => screen.getByTestId('integration-detail'));
+			const sendTestButton = screen.getAllByText('Send Test')[0];
+			fireEvent.click(sendTestButton);
+
+			await waitFor(() => {
+				expect(mockConsoleError).toHaveBeenCalledWith(
+					'Error sending test event:',
+					expect.any(Error)
+				);
+			});
+
+			// Restore original environment
+			process.env.NODE_ENV = originalEnv;
+			mockConsoleError.mockRestore();
+		});
+
+		it('handles test event response error with message', async () => {
+			// Mock successful preview response
+			mockFetchResponse({
+				eventName: 'Test Event',
+				processedData: { test: 'data' },
+			});
+
+			// Mock failed test event with error message
+			(fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce({
+				ok: false,
+				status: 400,
+				json: async () => ({ message: 'Custom error message' }),
+			} as Response);
+
+			const mockAlert = jest.spyOn(window, 'alert').mockImplementation();
+
+			render(<App />);
+
+			fireEvent.click(screen.getByText('Go to WooCommerce'));
+			await waitFor(() => screen.getByTestId('integration-detail'));
+			const sendTestButton = screen.getAllByText('Send Test')[0];
+			fireEvent.click(sendTestButton);
+
+			await waitFor(() => {
+				expect(mockAlert).toHaveBeenCalledWith('Custom error message');
+			});
+
+			mockAlert.mockRestore();
+		});
+	});
+
 	describe('State Management', () => {
 		it('maintains trigger count when adding new triggers', async () => {
 			mockFetchResponse({ id: 'new-trigger-456' });

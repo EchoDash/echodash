@@ -1,29 +1,93 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="170" failures="1" errors="0" time="5.202">
-  <testsuite name="MergeTagSelector Component" errors="0" failures="0" skipped="0" timestamp="2025-08-10T15:36:16" time="0.996" tests="36">
-    <testcase classname="MergeTagSelector Component Rendering does not render when isOpen is false" name="MergeTagSelector Component Rendering does not render when isOpen is false" time="0.017">
+<testsuites name="jest tests" tests="172" failures="0" errors="0" time="4.712">
+  <testsuite name="IntegrationDetail Component" errors="0" failures="0" skipped="0" timestamp="2025-08-10T16:14:02" time="0.708" tests="31">
+    <testcase classname="IntegrationDetail Component Rendering renders header with logo and documentation link" name="IntegrationDetail Component Rendering renders header with logo and documentation link" time="0.026">
     </testcase>
-    <testcase classname="MergeTagSelector Component Rendering renders dropdown with search input when open" name="MergeTagSelector Component Rendering renders dropdown with search input when open" time="0.023">
+    <testcase classname="IntegrationDetail Component Rendering renders breadcrumb navigation" name="IntegrationDetail Component Rendering renders breadcrumb navigation" time="0.006">
     </testcase>
-    <testcase classname="MergeTagSelector Component Rendering renders all groups and options" name="MergeTagSelector Component Rendering renders all groups and options" time="0.009">
+    <testcase classname="IntegrationDetail Component Rendering renders integration header with icon and info" name="IntegrationDetail Component Rendering renders integration header with icon and info" time="0.019">
+    </testcase>
+    <testcase classname="IntegrationDetail Component Rendering renders integration header with fallback description" name="IntegrationDetail Component Rendering renders integration header with fallback description" time="0.004">
+    </testcase>
+    <testcase classname="IntegrationDetail Component Rendering renders global triggers section" name="IntegrationDetail Component Rendering renders global triggers section" time="0.006">
+    </testcase>
+    <testcase classname="IntegrationDetail Component Empty State renders empty state when no triggers exist" name="IntegrationDetail Component Empty State renders empty state when no triggers exist" time="0.003">
+    </testcase>
+    <testcase classname="IntegrationDetail Component Empty State clicking add trigger button in empty state calls onAddTrigger" name="IntegrationDetail Component Empty State clicking add trigger button in empty state calls onAddTrigger" time="0.005">
+    </testcase>
+    <testcase classname="IntegrationDetail Component Trigger List renders all trigger items with correct information" name="IntegrationDetail Component Trigger List renders all trigger items with correct information" time="0.005">
+    </testcase>
+    <testcase classname="IntegrationDetail Component Trigger List renders trigger items with fallback description" name="IntegrationDetail Component Trigger List renders trigger items with fallback description" time="0.004">
+    </testcase>
+    <testcase classname="IntegrationDetail Component Trigger List renders drag handles for trigger reordering" name="IntegrationDetail Component Trigger List renders drag handles for trigger reordering" time="0.006">
+    </testcase>
+    <testcase classname="IntegrationDetail Component Trigger Actions calls onEditTrigger when edit button is clicked" name="IntegrationDetail Component Trigger Actions calls onEditTrigger when edit button is clicked" time="0.004">
+    </testcase>
+    <testcase classname="IntegrationDetail Component Trigger Actions shows confirmation dialog and calls onDeleteTrigger when delete is confirmed" name="IntegrationDetail Component Trigger Actions shows confirmation dialog and calls onDeleteTrigger when delete is confirmed" time="0.003">
+    </testcase>
+    <testcase classname="IntegrationDetail Component Trigger Actions does not call onDeleteTrigger when delete is cancelled" name="IntegrationDetail Component Trigger Actions does not call onDeleteTrigger when delete is cancelled" time="0.003">
+    </testcase>
+    <testcase classname="IntegrationDetail Component Trigger Actions handles delete confirmation with fallback trigger name" name="IntegrationDetail Component Trigger Actions handles delete confirmation with fallback trigger name" time="0.003">
+    </testcase>
+    <testcase classname="IntegrationDetail Component Send Test Functionality calls onSendTest when send test button is clicked" name="IntegrationDetail Component Send Test Functionality calls onSendTest when send test button is clicked" time="0.008">
+    </testcase>
+    <testcase classname="IntegrationDetail Component Send Test Functionality shows sending state during test event" name="IntegrationDetail Component Send Test Functionality shows sending state during test event" time="0.015">
+    </testcase>
+    <testcase classname="IntegrationDetail Component Send Test Functionality handles test event error gracefully" name="IntegrationDetail Component Send Test Functionality handles test event error gracefully" time="0.007">
+    </testcase>
+    <testcase classname="IntegrationDetail Component Send Test Functionality disables buttons when trigger is being deleted" name="IntegrationDetail Component Send Test Functionality disables buttons when trigger is being deleted" time="0.003">
+    </testcase>
+    <testcase classname="IntegrationDetail Component Send Test Functionality shows loading spinner when trigger is being deleted" name="IntegrationDetail Component Send Test Functionality shows loading spinner when trigger is being deleted" time="0.003">
+    </testcase>
+    <testcase classname="IntegrationDetail Component Single Item Triggers renders single-item triggers section when present" name="IntegrationDetail Component Single Item Triggers renders single-item triggers section when present" time="0.003">
+    </testcase>
+    <testcase classname="IntegrationDetail Component Single Item Triggers renders single-item trigger items with correct information" name="IntegrationDetail Component Single Item Triggers renders single-item trigger items with correct information" time="0.003">
+    </testcase>
+    <testcase classname="IntegrationDetail Component Single Item Triggers renders edit item links with correct URLs" name="IntegrationDetail Component Single Item Triggers renders edit item links with correct URLs" time="0.003">
+    </testcase>
+    <testcase classname="IntegrationDetail Component Single Item Triggers handles single-item triggers with fallback event names" name="IntegrationDetail Component Single Item Triggers handles single-item triggers with fallback event names" time="0.002">
+    </testcase>
+    <testcase classname="IntegrationDetail Component Single Item Triggers does not render single-item triggers section when not present" name="IntegrationDetail Component Single Item Triggers does not render single-item triggers section when not present" time="0.004">
+    </testcase>
+    <testcase classname="IntegrationDetail Component Single Item Triggers does not render single-item triggers section when array is empty" name="IntegrationDetail Component Single Item Triggers does not render single-item triggers section when array is empty" time="0.002">
+    </testcase>
+    <testcase classname="IntegrationDetail Component Navigation calls onBack when breadcrumb integrations link is clicked" name="IntegrationDetail Component Navigation calls onBack when breadcrumb integrations link is clicked" time="0.003">
+    </testcase>
+    <testcase classname="IntegrationDetail Component Navigation calls onAddTrigger when add trigger button is clicked" name="IntegrationDetail Component Navigation calls onAddTrigger when add trigger button is clicked" time="0.002">
+    </testcase>
+    <testcase classname="IntegrationDetail Component External Links renders external links with correct attributes" name="IntegrationDetail Component External Links renders external links with correct attributes" time="0.003">
+    </testcase>
+    <testcase classname="IntegrationDetail Component Edge Cases handles triggers without IDs gracefully" name="IntegrationDetail Component Edge Cases handles triggers without IDs gracefully" time="0.002">
+    </testcase>
+    <testcase classname="IntegrationDetail Component Edge Cases handles empty trigger mappings" name="IntegrationDetail Component Edge Cases handles empty trigger mappings" time="0.001">
+    </testcase>
+    <testcase classname="IntegrationDetail Component Edge Cases handles integration without icon" name="IntegrationDetail Component Edge Cases handles integration without icon" time="0.003">
+    </testcase>
+  </testsuite>
+  <testsuite name="MergeTagSelector Component" errors="0" failures="0" skipped="0" timestamp="2025-08-10T16:14:02" time="0.784" tests="36">
+    <testcase classname="MergeTagSelector Component Rendering does not render when isOpen is false" name="MergeTagSelector Component Rendering does not render when isOpen is false" time="0.016">
+    </testcase>
+    <testcase classname="MergeTagSelector Component Rendering renders dropdown with search input when open" name="MergeTagSelector Component Rendering renders dropdown with search input when open" time="0.022">
+    </testcase>
+    <testcase classname="MergeTagSelector Component Rendering renders all groups and options" name="MergeTagSelector Component Rendering renders all groups and options" time="0.01">
     </testcase>
     <testcase classname="MergeTagSelector Component Rendering focuses search input when opened" name="MergeTagSelector Component Rendering focuses search input when opened" time="0.108">
     </testcase>
     <testcase classname="MergeTagSelector Component Rendering renders empty state when no options available" name="MergeTagSelector Component Rendering renders empty state when no options available" time="0.002">
     </testcase>
-    <testcase classname="MergeTagSelector Component Search Functionality filters options based on search term" name="MergeTagSelector Component Search Functionality filters options based on search term" time="0.007">
+    <testcase classname="MergeTagSelector Component Search Functionality filters options based on search term" name="MergeTagSelector Component Search Functionality filters options based on search term" time="0.005">
     </testcase>
-    <testcase classname="MergeTagSelector Component Search Functionality filters based on placeholder text" name="MergeTagSelector Component Search Functionality filters based on placeholder text" time="0.007">
+    <testcase classname="MergeTagSelector Component Search Functionality filters based on placeholder text" name="MergeTagSelector Component Search Functionality filters based on placeholder text" time="0.004">
     </testcase>
     <testcase classname="MergeTagSelector Component Search Functionality filters based on preview text" name="MergeTagSelector Component Search Functionality filters based on preview text" time="0.003">
     </testcase>
     <testcase classname="MergeTagSelector Component Search Functionality shows no results message when search has no matches" name="MergeTagSelector Component Search Functionality shows no results message when search has no matches" time="0.004">
     </testcase>
-    <testcase classname="MergeTagSelector Component Search Functionality is case insensitive" name="MergeTagSelector Component Search Functionality is case insensitive" time="0.005">
+    <testcase classname="MergeTagSelector Component Search Functionality is case insensitive" name="MergeTagSelector Component Search Functionality is case insensitive" time="0.003">
     </testcase>
-    <testcase classname="MergeTagSelector Component Search Functionality resets search when dropdown closes and reopens" name="MergeTagSelector Component Search Functionality resets search when dropdown closes and reopens" time="0.006">
+    <testcase classname="MergeTagSelector Component Search Functionality resets search when dropdown closes and reopens" name="MergeTagSelector Component Search Functionality resets search when dropdown closes and reopens" time="0.005">
     </testcase>
-    <testcase classname="MergeTagSelector Component Search Functionality removes empty groups after filtering" name="MergeTagSelector Component Search Functionality removes empty groups after filtering" time="0.004">
+    <testcase classname="MergeTagSelector Component Search Functionality removes empty groups after filtering" name="MergeTagSelector Component Search Functionality removes empty groups after filtering" time="0.003">
     </testcase>
     <testcase classname="MergeTagSelector Component Option Selection calls onSelect with correct merge tag when option is clicked" name="MergeTagSelector Component Option Selection calls onSelect with correct merge tag when option is clicked" time="0.004">
     </testcase>
@@ -31,35 +95,35 @@
     </testcase>
     <testcase classname="MergeTagSelector Component Option Selection handles option selection via keyboard" name="MergeTagSelector Component Option Selection handles option selection via keyboard" time="0.004">
     </testcase>
-    <testcase classname="MergeTagSelector Component Option Selection handles option selection via space key" name="MergeTagSelector Component Option Selection handles option selection via space key" time="0.005">
+    <testcase classname="MergeTagSelector Component Option Selection handles option selection via space key" name="MergeTagSelector Component Option Selection handles option selection via space key" time="0.003">
     </testcase>
-    <testcase classname="MergeTagSelector Component Keyboard Navigation navigates down with arrow key from search input" name="MergeTagSelector Component Keyboard Navigation navigates down with arrow key from search input" time="0.007">
+    <testcase classname="MergeTagSelector Component Keyboard Navigation navigates down with arrow key from search input" name="MergeTagSelector Component Keyboard Navigation navigates down with arrow key from search input" time="0.006">
     </testcase>
-    <testcase classname="MergeTagSelector Component Keyboard Navigation navigates between options with arrow keys" name="MergeTagSelector Component Keyboard Navigation navigates between options with arrow keys" time="0.008">
+    <testcase classname="MergeTagSelector Component Keyboard Navigation navigates between options with arrow keys" name="MergeTagSelector Component Keyboard Navigation navigates between options with arrow keys" time="0.007">
     </testcase>
     <testcase classname="MergeTagSelector Component Keyboard Navigation selects focused option with Enter key" name="MergeTagSelector Component Keyboard Navigation selects focused option with Enter key" time="0.005">
     </testcase>
     <testcase classname="MergeTagSelector Component Keyboard Navigation closes dropdown with Escape key" name="MergeTagSelector Component Keyboard Navigation closes dropdown with Escape key" time="0.003">
     </testcase>
-    <testcase classname="MergeTagSelector Component Keyboard Navigation prevents dropdown close when typing in search input" name="MergeTagSelector Component Keyboard Navigation prevents dropdown close when typing in search input" time="0.003">
+    <testcase classname="MergeTagSelector Component Keyboard Navigation prevents dropdown close when typing in search input" name="MergeTagSelector Component Keyboard Navigation prevents dropdown close when typing in search input" time="0.005">
     </testcase>
-    <testcase classname="MergeTagSelector Component Keyboard Navigation navigates back to search input with ArrowUp from first option" name="MergeTagSelector Component Keyboard Navigation navigates back to search input with ArrowUp from first option" time="0.005">
+    <testcase classname="MergeTagSelector Component Keyboard Navigation navigates back to search input with ArrowUp from first option" name="MergeTagSelector Component Keyboard Navigation navigates back to search input with ArrowUp from first option" time="0.006">
     </testcase>
-    <testcase classname="MergeTagSelector Component Click Outside Behavior calls onClose when clicking outside dropdown" name="MergeTagSelector Component Click Outside Behavior calls onClose when clicking outside dropdown" time="0.002">
+    <testcase classname="MergeTagSelector Component Click Outside Behavior calls onClose when clicking outside dropdown" name="MergeTagSelector Component Click Outside Behavior calls onClose when clicking outside dropdown" time="0.003">
     </testcase>
-    <testcase classname="MergeTagSelector Component Click Outside Behavior does not close when clicking inside dropdown" name="MergeTagSelector Component Click Outside Behavior does not close when clicking inside dropdown" time="0.005">
+    <testcase classname="MergeTagSelector Component Click Outside Behavior does not close when clicking inside dropdown" name="MergeTagSelector Component Click Outside Behavior does not close when clicking inside dropdown" time="0.003">
     </testcase>
     <testcase classname="MergeTagSelector Component Click Outside Behavior does not close when clicking the button" name="MergeTagSelector Component Click Outside Behavior does not close when clicking the button" time="0.003">
     </testcase>
-    <testcase classname="MergeTagSelector Component Positioning positions dropdown below button by default" name="MergeTagSelector Component Positioning positions dropdown below button by default" time="0.003">
+    <testcase classname="MergeTagSelector Component Positioning positions dropdown below button by default" name="MergeTagSelector Component Positioning positions dropdown below button by default" time="0.004">
     </testcase>
-    <testcase classname="MergeTagSelector Component Positioning positions dropdown in fixed mode when inside modal" name="MergeTagSelector Component Positioning positions dropdown in fixed mode when inside modal" time="0.002">
+    <testcase classname="MergeTagSelector Component Positioning positions dropdown in fixed mode when inside modal" name="MergeTagSelector Component Positioning positions dropdown in fixed mode when inside modal" time="0.003">
     </testcase>
     <testcase classname="MergeTagSelector Component Positioning adjusts position when dropdown would overflow screen" name="MergeTagSelector Component Positioning adjusts position when dropdown would overflow screen" time="0.002">
     </testcase>
     <testcase classname="MergeTagSelector Component Auto-scroll Behavior scrolls focused option into view" name="MergeTagSelector Component Auto-scroll Behavior scrolls focused option into view" time="0.005">
     </testcase>
-    <testcase classname="MergeTagSelector Component Accessibility has proper ARIA attributes" name="MergeTagSelector Component Accessibility has proper ARIA attributes" time="0.004">
+    <testcase classname="MergeTagSelector Component Accessibility has proper ARIA attributes" name="MergeTagSelector Component Accessibility has proper ARIA attributes" time="0.006">
     </testcase>
     <testcase classname="MergeTagSelector Component Accessibility manages focus properly" name="MergeTagSelector Component Accessibility manages focus properly" time="0.104">
     </testcase>
@@ -74,122 +138,114 @@
     <testcase classname="MergeTagSelector Component Edge Cases handles rapid keyboard navigation" name="MergeTagSelector Component Edge Cases handles rapid keyboard navigation" time="0.005">
     </testcase>
   </testsuite>
-  <testsuite name="App Component" errors="0" failures="0" skipped="0" timestamp="2025-08-10T15:36:16" time="1.021" tests="19">
-    <testcase classname="App Component Initial Rendering renders the integration list by default" name="App Component Initial Rendering renders the integration list by default" time="0.017">
+  <testsuite name="Performance Tests" errors="0" failures="0" skipped="0" timestamp="2025-08-10T16:14:03" time="0.13" tests="6">
+    <testcase classname="Performance Tests Bundle Size should maintain reasonable bundle size limits" name="Performance Tests Bundle Size should maintain reasonable bundle size limits" time="0.001">
+    </testcase>
+    <testcase classname="Performance Tests Bundle Size should not import unnecessary dependencies in production builds" name="Performance Tests Bundle Size should not import unnecessary dependencies in production builds" time="0">
+    </testcase>
+    <testcase classname="Performance Tests Rendering Performance should render main app within performance budget" name="Performance Tests Rendering Performance should render main app within performance budget" time="0.006">
+    </testcase>
+    <testcase classname="Performance Tests Rendering Performance should render integration list efficiently" name="Performance Tests Rendering Performance should render integration list efficiently" time="0.003">
+    </testcase>
+    <testcase classname="Performance Tests Memory Usage should not create memory leaks during component lifecycle" name="Performance Tests Memory Usage should not create memory leaks during component lifecycle" time="0.002">
+    </testcase>
+    <testcase classname="Performance Tests Core Web Vitals should meet Core Web Vitals thresholds" name="Performance Tests Core Web Vitals should meet Core Web Vitals thresholds" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="App Component" errors="0" failures="0" skipped="0" timestamp="2025-08-10T16:14:02" time="0.908" tests="21">
+    <testcase classname="App Component Initial Rendering renders the integration list by default" name="App Component Initial Rendering renders the integration list by default" time="0.016">
     </testcase>
     <testcase classname="App Component Initial Rendering renders with default data when window.ecdReactData is undefined" name="App Component Initial Rendering renders with default data when window.ecdReactData is undefined" time="0.002">
     </testcase>
-    <testcase classname="App Component Navigation navigates to integration detail when clicking an integration" name="App Component Navigation navigates to integration detail when clicking an integration" time="0.011">
+    <testcase classname="App Component Navigation navigates to integration detail when clicking an integration" name="App Component Navigation navigates to integration detail when clicking an integration" time="0.01">
     </testcase>
     <testcase classname="App Component Navigation navigates back to integration list when clicking back" name="App Component Navigation navigates back to integration list when clicking back" time="0.008">
     </testcase>
     <testcase classname="App Component Navigation updates URL hash when navigating to integration detail" name="App Component Navigation updates URL hash when navigating to integration detail" time="0.006">
     </testcase>
-    <testcase classname="App Component Navigation handles browser back/forward navigation" name="App Component Navigation handles browser back/forward navigation" time="0.01">
+    <testcase classname="App Component Navigation handles browser back/forward navigation" name="App Component Navigation handles browser back/forward navigation" time="0.005">
     </testcase>
     <testcase classname="App Component Trigger Modal Management opens trigger modal when adding trigger from list" name="App Component Trigger Modal Management opens trigger modal when adding trigger from list" time="0.058">
     </testcase>
-    <testcase classname="App Component Trigger Modal Management opens trigger modal when adding trigger from detail view" name="App Component Trigger Modal Management opens trigger modal when adding trigger from detail view" time="0.023">
+    <testcase classname="App Component Trigger Modal Management opens trigger modal when adding trigger from detail view" name="App Component Trigger Modal Management opens trigger modal when adding trigger from detail view" time="0.021">
     </testcase>
-    <testcase classname="App Component Trigger Modal Management opens trigger modal for editing existing trigger" name="App Component Trigger Modal Management opens trigger modal for editing existing trigger" time="0.008">
+    <testcase classname="App Component Trigger Modal Management opens trigger modal for editing existing trigger" name="App Component Trigger Modal Management opens trigger modal for editing existing trigger" time="0.007">
     </testcase>
     <testcase classname="App Component Trigger Modal Management closes trigger modal when clicking close" name="App Component Trigger Modal Management closes trigger modal when clicking close" time="0.007">
     </testcase>
-    <testcase classname="App Component Trigger CRUD Operations creates a new trigger successfully" name="App Component Trigger CRUD Operations creates a new trigger successfully" time="0.013">
+    <testcase classname="App Component Trigger CRUD Operations creates a new trigger successfully" name="App Component Trigger CRUD Operations creates a new trigger successfully" time="0.009">
     </testcase>
-    <testcase classname="App Component Trigger CRUD Operations handles trigger creation error" name="App Component Trigger CRUD Operations handles trigger creation error" time="0.059">
+    <testcase classname="App Component Trigger CRUD Operations handles trigger creation error" name="App Component Trigger CRUD Operations handles trigger creation error" time="0.057">
     </testcase>
-    <testcase classname="App Component Trigger CRUD Operations deletes a trigger successfully" name="App Component Trigger CRUD Operations deletes a trigger successfully" time="0.006">
+    <testcase classname="App Component Trigger CRUD Operations deletes a trigger successfully" name="App Component Trigger CRUD Operations deletes a trigger successfully" time="0.005">
     </testcase>
-    <testcase classname="App Component Trigger CRUD Operations cancels trigger deletion when user cancels confirmation" name="App Component Trigger CRUD Operations cancels trigger deletion when user cancels confirmation" time="0.004">
+    <testcase classname="App Component Trigger CRUD Operations cancels trigger deletion when user cancels confirmation" name="App Component Trigger CRUD Operations cancels trigger deletion when user cancels confirmation" time="0.003">
     </testcase>
-    <testcase classname="App Component Test Event Functionality sends test event successfully" name="App Component Test Event Functionality sends test event successfully" time="0.055">
+    <testcase classname="App Component Test Event Functionality sends test event successfully" name="App Component Test Event Functionality sends test event successfully" time="0.056">
     </testcase>
-    <testcase classname="App Component Test Event Functionality handles test event error" name="App Component Test Event Functionality handles test event error" time="0.055">
+    <testcase classname="App Component Test Event Functionality handles test event error" name="App Component Test Event Functionality handles test event error" time="0.057">
     </testcase>
     <testcase classname="App Component EchoDash Callback Handling reloads page when EchoDash callback parameters are present" name="App Component EchoDash Callback Handling reloads page when EchoDash callback parameters are present" time="0.001">
     </testcase>
-    <testcase classname="App Component State Management maintains trigger count when adding new triggers" name="App Component State Management maintains trigger count when adding new triggers" time="0.061">
+    <testcase classname="App Component Development Logging logs errors in development mode" name="App Component Development Logging logs errors in development mode" time="0.056">
     </testcase>
-    <testcase classname="App Component State Management maintains integration state consistency during operations" name="App Component State Management maintains integration state consistency during operations" time="0.009">
+    <testcase classname="App Component Development Logging handles test event response error with message" name="App Component Development Logging handles test event response error with message" time="0.056">
     </testcase>
-  </testsuite>
-  <testsuite name="IntegrationDetail Component" errors="0" failures="0" skipped="0" timestamp="2025-08-10T15:36:16" time="1.026" tests="31">
-    <testcase classname="IntegrationDetail Component Rendering renders header with logo and documentation link" name="IntegrationDetail Component Rendering renders header with logo and documentation link" time="0.027">
+    <testcase classname="App Component State Management maintains trigger count when adding new triggers" name="App Component State Management maintains trigger count when adding new triggers" time="0.062">
     </testcase>
-    <testcase classname="IntegrationDetail Component Rendering renders breadcrumb navigation" name="IntegrationDetail Component Rendering renders breadcrumb navigation" time="0.007">
-    </testcase>
-    <testcase classname="IntegrationDetail Component Rendering renders integration header with icon and info" name="IntegrationDetail Component Rendering renders integration header with icon and info" time="0.015">
-    </testcase>
-    <testcase classname="IntegrationDetail Component Rendering renders integration header with fallback description" name="IntegrationDetail Component Rendering renders integration header with fallback description" time="0.006">
-    </testcase>
-    <testcase classname="IntegrationDetail Component Rendering renders global triggers section" name="IntegrationDetail Component Rendering renders global triggers section" time="0.006">
-    </testcase>
-    <testcase classname="IntegrationDetail Component Empty State renders empty state when no triggers exist" name="IntegrationDetail Component Empty State renders empty state when no triggers exist" time="0.003">
-    </testcase>
-    <testcase classname="IntegrationDetail Component Empty State clicking add trigger button in empty state calls onAddTrigger" name="IntegrationDetail Component Empty State clicking add trigger button in empty state calls onAddTrigger" time="0.005">
-    </testcase>
-    <testcase classname="IntegrationDetail Component Trigger List renders all trigger items with correct information" name="IntegrationDetail Component Trigger List renders all trigger items with correct information" time="0.004">
-    </testcase>
-    <testcase classname="IntegrationDetail Component Trigger List renders trigger items with fallback description" name="IntegrationDetail Component Trigger List renders trigger items with fallback description" time="0.004">
-    </testcase>
-    <testcase classname="IntegrationDetail Component Trigger List renders drag handles for trigger reordering" name="IntegrationDetail Component Trigger List renders drag handles for trigger reordering" time="0.003">
-    </testcase>
-    <testcase classname="IntegrationDetail Component Trigger Actions calls onEditTrigger when edit button is clicked" name="IntegrationDetail Component Trigger Actions calls onEditTrigger when edit button is clicked" time="0.005">
-    </testcase>
-    <testcase classname="IntegrationDetail Component Trigger Actions shows confirmation dialog and calls onDeleteTrigger when delete is confirmed" name="IntegrationDetail Component Trigger Actions shows confirmation dialog and calls onDeleteTrigger when delete is confirmed" time="0.003">
-    </testcase>
-    <testcase classname="IntegrationDetail Component Trigger Actions does not call onDeleteTrigger when delete is cancelled" name="IntegrationDetail Component Trigger Actions does not call onDeleteTrigger when delete is cancelled" time="0.003">
-    </testcase>
-    <testcase classname="IntegrationDetail Component Trigger Actions handles delete confirmation with fallback trigger name" name="IntegrationDetail Component Trigger Actions handles delete confirmation with fallback trigger name" time="0.003">
-    </testcase>
-    <testcase classname="IntegrationDetail Component Send Test Functionality calls onSendTest when send test button is clicked" name="IntegrationDetail Component Send Test Functionality calls onSendTest when send test button is clicked" time="0.009">
-    </testcase>
-    <testcase classname="IntegrationDetail Component Send Test Functionality shows sending state during test event" name="IntegrationDetail Component Send Test Functionality shows sending state during test event" time="0.013">
-    </testcase>
-    <testcase classname="IntegrationDetail Component Send Test Functionality handles test event error gracefully" name="IntegrationDetail Component Send Test Functionality handles test event error gracefully" time="0.008">
-    </testcase>
-    <testcase classname="IntegrationDetail Component Send Test Functionality disables buttons when trigger is being deleted" name="IntegrationDetail Component Send Test Functionality disables buttons when trigger is being deleted" time="0.005">
-    </testcase>
-    <testcase classname="IntegrationDetail Component Send Test Functionality shows loading spinner when trigger is being deleted" name="IntegrationDetail Component Send Test Functionality shows loading spinner when trigger is being deleted" time="0.004">
-    </testcase>
-    <testcase classname="IntegrationDetail Component Single Item Triggers renders single-item triggers section when present" name="IntegrationDetail Component Single Item Triggers renders single-item triggers section when present" time="0.006">
-    </testcase>
-    <testcase classname="IntegrationDetail Component Single Item Triggers renders single-item trigger items with correct information" name="IntegrationDetail Component Single Item Triggers renders single-item trigger items with correct information" time="0.005">
-    </testcase>
-    <testcase classname="IntegrationDetail Component Single Item Triggers renders edit item links with correct URLs" name="IntegrationDetail Component Single Item Triggers renders edit item links with correct URLs" time="0.006">
-    </testcase>
-    <testcase classname="IntegrationDetail Component Single Item Triggers handles single-item triggers with fallback event names" name="IntegrationDetail Component Single Item Triggers handles single-item triggers with fallback event names" time="0.003">
-    </testcase>
-    <testcase classname="IntegrationDetail Component Single Item Triggers does not render single-item triggers section when not present" name="IntegrationDetail Component Single Item Triggers does not render single-item triggers section when not present" time="0.002">
-    </testcase>
-    <testcase classname="IntegrationDetail Component Single Item Triggers does not render single-item triggers section when array is empty" name="IntegrationDetail Component Single Item Triggers does not render single-item triggers section when array is empty" time="0.003">
-    </testcase>
-    <testcase classname="IntegrationDetail Component Navigation calls onBack when breadcrumb integrations link is clicked" name="IntegrationDetail Component Navigation calls onBack when breadcrumb integrations link is clicked" time="0.009">
-    </testcase>
-    <testcase classname="IntegrationDetail Component Navigation calls onAddTrigger when add trigger button is clicked" name="IntegrationDetail Component Navigation calls onAddTrigger when add trigger button is clicked" time="0.009">
-    </testcase>
-    <testcase classname="IntegrationDetail Component External Links renders external links with correct attributes" name="IntegrationDetail Component External Links renders external links with correct attributes" time="0.004">
-    </testcase>
-    <testcase classname="IntegrationDetail Component Edge Cases handles triggers without IDs gracefully" name="IntegrationDetail Component Edge Cases handles triggers without IDs gracefully" time="0.002">
-    </testcase>
-    <testcase classname="IntegrationDetail Component Edge Cases handles empty trigger mappings" name="IntegrationDetail Component Edge Cases handles empty trigger mappings" time="0.002">
-    </testcase>
-    <testcase classname="IntegrationDetail Component Edge Cases handles integration without icon" name="IntegrationDetail Component Edge Cases handles integration without icon" time="0.002">
+    <testcase classname="App Component State Management maintains integration state consistency during operations" name="App Component State Management maintains integration state consistency during operations" time="0.008">
     </testcase>
   </testsuite>
-  <testsuite name="IntegrationList Component" errors="0" failures="0" skipped="0" timestamp="2025-08-10T15:36:17" time="0.415" tests="20">
-    <testcase classname="IntegrationList Component Rendering renders header with logo and documentation link" name="IntegrationList Component Rendering renders header with logo and documentation link" time="0.01">
+  <testsuite name="API Integration Tests" errors="0" failures="0" skipped="0" timestamp="2025-08-10T16:14:02" time="0.96" tests="18">
+    <testcase classname="API Integration Tests Settings API saves endpoint settings successfully" name="API Integration Tests Settings API saves endpoint settings successfully" time="0.03">
     </testcase>
-    <testcase classname="IntegrationList Component Rendering renders welcome section with correct title and description" name="IntegrationList Component Rendering renders welcome section with correct title and description" time="0.004">
+    <testcase classname="API Integration Tests Settings API handles settings API error gracefully" name="API Integration Tests Settings API handles settings API error gracefully" time="0.013">
     </testcase>
-    <testcase classname="IntegrationList Component Rendering renders all integrations in the list" name="IntegrationList Component Rendering renders all integrations in the list" time="0.012">
+    <testcase classname="API Integration Tests Triggers API creates new trigger via API" name="API Integration Tests Triggers API creates new trigger via API" time="0.075">
+    </testcase>
+    <testcase classname="API Integration Tests Triggers API updates existing trigger via API" name="API Integration Tests Triggers API updates existing trigger via API" time="0.046">
+    </testcase>
+    <testcase classname="API Integration Tests Triggers API deletes trigger via API" name="API Integration Tests Triggers API deletes trigger via API" time="0.012">
+    </testcase>
+    <testcase classname="API Integration Tests Triggers API handles trigger creation error" name="API Integration Tests Triggers API handles trigger creation error" time="0.048">
+    </testcase>
+    <testcase classname="API Integration Tests Triggers API handles trigger deletion error" name="API Integration Tests Triggers API handles trigger deletion error" time="0.011">
+    </testcase>
+    <testcase classname="API Integration Tests Test Event API sends test event with proper API calls" name="API Integration Tests Test Event API sends test event with proper API calls" time="0.012">
+    </testcase>
+    <testcase classname="API Integration Tests Test Event API handles test event preview API error" name="API Integration Tests Test Event API handles test event preview API error" time="0.013">
+    </testcase>
+    <testcase classname="API Integration Tests Test Event API handles test event API error after successful preview" name="API Integration Tests Test Event API handles test event API error after successful preview" time="0.012">
+    </testcase>
+    <testcase classname="API Integration Tests API Error Handling handles network errors gracefully" name="API Integration Tests API Error Handling handles network errors gracefully" time="0.006">
+    </testcase>
+    <testcase classname="API Integration Tests API Error Handling handles HTTP error responses" name="API Integration Tests API Error Handling handles HTTP error responses" time="0.007">
+    </testcase>
+    <testcase classname="API Integration Tests API Error Handling handles malformed JSON responses" name="API Integration Tests API Error Handling handles malformed JSON responses" time="0.006">
+    </testcase>
+    <testcase classname="API Integration Tests API Authentication includes WordPress nonce in all API requests" name="API Integration Tests API Authentication includes WordPress nonce in all API requests" time="0.006">
+    </testcase>
+    <testcase classname="API Integration Tests API Authentication handles missing nonce gracefully" name="API Integration Tests API Authentication handles missing nonce gracefully" time="0.005">
+    </testcase>
+    <testcase classname="API Integration Tests API Data Validation validates trigger data before sending" name="API Integration Tests API Data Validation validates trigger data before sending" time="0.041">
+    </testcase>
+    <testcase classname="API Integration Tests API Data Validation handles empty trigger data" name="API Integration Tests API Data Validation handles empty trigger data" time="0.055">
+    </testcase>
+    <testcase classname="API Integration Tests Concurrent API Calls handles multiple simultaneous API calls" name="API Integration Tests Concurrent API Calls handles multiple simultaneous API calls" time="0.012">
+    </testcase>
+  </testsuite>
+  <testsuite name="IntegrationList Component" errors="0" failures="0" skipped="0" timestamp="2025-08-10T16:14:03" time="0.29" tests="20">
+    <testcase classname="IntegrationList Component Rendering renders header with logo and documentation link" name="IntegrationList Component Rendering renders header with logo and documentation link" time="0.007">
+    </testcase>
+    <testcase classname="IntegrationList Component Rendering renders welcome section with correct title and description" name="IntegrationList Component Rendering renders welcome section with correct title and description" time="0.003">
+    </testcase>
+    <testcase classname="IntegrationList Component Rendering renders all integrations in the list" name="IntegrationList Component Rendering renders all integrations in the list" time="0.003">
     </testcase>
     <testcase classname="IntegrationList Component Rendering displays correct trigger counts for each integration" name="IntegrationList Component Rendering displays correct trigger counts for each integration" time="0.003">
     </testcase>
-    <testcase classname="IntegrationList Component Rendering renders integration icons with correct styling" name="IntegrationList Component Rendering renders integration icons with correct styling" time="0.009">
+    <testcase classname="IntegrationList Component Rendering renders integration icons with correct styling" name="IntegrationList Component Rendering renders integration icons with correct styling" time="0.011">
     </testcase>
-    <testcase classname="IntegrationList Component Connection States shows connect button when not connected" name="IntegrationList Component Connection States shows connect button when not connected" time="0.003">
+    <testcase classname="IntegrationList Component Connection States shows connect button when not connected" name="IntegrationList Component Connection States shows connect button when not connected" time="0.002">
     </testcase>
     <testcase classname="IntegrationList Component Connection States shows endpoint input when connected" name="IntegrationList Component Connection States shows endpoint input when connected" time="0.003">
     </testcase>
@@ -197,13 +253,13 @@
     </testcase>
     <testcase classname="IntegrationList Component Endpoint Management does not save endpoint when value has not changed" name="IntegrationList Component Endpoint Management does not save endpoint when value has not changed" time="0.003">
     </testcase>
-    <testcase classname="IntegrationList Component Endpoint Management shows saving indicator during save operation" name="IntegrationList Component Endpoint Management shows saving indicator during save operation" time="0.008">
+    <testcase classname="IntegrationList Component Endpoint Management shows saving indicator during save operation" name="IntegrationList Component Endpoint Management shows saving indicator during save operation" time="0.009">
     </testcase>
-    <testcase classname="IntegrationList Component Endpoint Management handles save error and reverts value" name="IntegrationList Component Endpoint Management handles save error and reverts value" time="0.006">
+    <testcase classname="IntegrationList Component Endpoint Management handles save error and reverts value" name="IntegrationList Component Endpoint Management handles save error and reverts value" time="0.011">
     </testcase>
-    <testcase classname="IntegrationList Component Endpoint Management shows configuration error when API URL is not available" name="IntegrationList Component Endpoint Management shows configuration error when API URL is not available" time="0.004">
+    <testcase classname="IntegrationList Component Endpoint Management shows configuration error when API URL is not available" name="IntegrationList Component Endpoint Management shows configuration error when API URL is not available" time="0.005">
     </testcase>
-    <testcase classname="IntegrationList Component User Interactions calls onIntegrationClick when manage button is clicked" name="IntegrationList Component User Interactions calls onIntegrationClick when manage button is clicked" time="0.003">
+    <testcase classname="IntegrationList Component User Interactions calls onIntegrationClick when manage button is clicked" name="IntegrationList Component User Interactions calls onIntegrationClick when manage button is clicked" time="0.002">
     </testcase>
     <testcase classname="IntegrationList Component User Interactions calls onAddTrigger when add trigger button is clicked" name="IntegrationList Component User Interactions calls onAddTrigger when add trigger button is clicked" time="0.002">
     </testcase>
@@ -211,224 +267,95 @@
     </testcase>
     <testcase classname="IntegrationList Component External Links renders external links with correct attributes" name="IntegrationList Component External Links renders external links with correct attributes" time="0.002">
     </testcase>
-    <testcase classname="IntegrationList Component Video Placeholder renders video placeholder section" name="IntegrationList Component Video Placeholder renders video placeholder section" time="0.003">
+    <testcase classname="IntegrationList Component Video Placeholder renders video placeholder section" name="IntegrationList Component Video Placeholder renders video placeholder section" time="0.002">
     </testcase>
-    <testcase classname="IntegrationList Component Edge Cases handles empty integrations array" name="IntegrationList Component Edge Cases handles empty integrations array" time="0.002">
+    <testcase classname="IntegrationList Component Edge Cases handles empty integrations array" name="IntegrationList Component Edge Cases handles empty integrations array" time="0.001">
     </testcase>
     <testcase classname="IntegrationList Component Edge Cases handles integrations with missing optional properties" name="IntegrationList Component Edge Cases handles integrations with missing optional properties" time="0.001">
     </testcase>
     <testcase classname="IntegrationList Component Edge Cases handles settings with missing optional properties" name="IntegrationList Component Edge Cases handles settings with missing optional properties" time="0.003">
     </testcase>
   </testsuite>
-  <testsuite name="Performance Tests" errors="0" failures="0" skipped="0" timestamp="2025-08-10T15:36:17" time="0.518" tests="6">
-    <testcase classname="Performance Tests Bundle Size should maintain reasonable bundle size limits" name="Performance Tests Bundle Size should maintain reasonable bundle size limits" time="0.001">
+  <testsuite name="TriggerModal Component" errors="0" failures="0" skipped="0" timestamp="2025-08-10T16:14:02" time="3.991" tests="40">
+    <testcase classname="TriggerModal Component Rendering does not render when isOpen is false" name="TriggerModal Component Rendering does not render when isOpen is false" time="0.013">
     </testcase>
-    <testcase classname="Performance Tests Bundle Size should not import unnecessary dependencies in production builds" name="Performance Tests Bundle Size should not import unnecessary dependencies in production builds" time="0">
+    <testcase classname="TriggerModal Component Rendering renders modal header with integration info" name="TriggerModal Component Rendering renders modal header with integration info" time="0.037">
     </testcase>
-    <testcase classname="Performance Tests Rendering Performance should render main app within performance budget" name="Performance Tests Rendering Performance should render main app within performance budget" time="0.006">
+    <testcase classname="TriggerModal Component Rendering renders modal header for editing trigger" name="TriggerModal Component Rendering renders modal header for editing trigger" time="0.013">
     </testcase>
-    <testcase classname="Performance Tests Rendering Performance should render integration list efficiently" name="Performance Tests Rendering Performance should render integration list efficiently" time="0.006">
+    <testcase classname="TriggerModal Component Rendering renders trigger selector with available options" name="TriggerModal Component Rendering renders trigger selector with available options" time="0.009">
     </testcase>
-    <testcase classname="Performance Tests Memory Usage should not create memory leaks during component lifecycle" name="Performance Tests Memory Usage should not create memory leaks during component lifecycle" time="0.002">
-    </testcase>
-    <testcase classname="Performance Tests Core Web Vitals should meet Core Web Vitals thresholds" name="Performance Tests Core Web Vitals should meet Core Web Vitals thresholds" time="0.001">
-    </testcase>
-  </testsuite>
-  <testsuite name="API Integration Tests" errors="0" failures="1" skipped="0" timestamp="2025-08-10T15:36:16" time="2.458" tests="18">
-    <testcase classname="API Integration Tests Settings API saves endpoint settings successfully" name="API Integration Tests Settings API saves endpoint settings successfully" time="0.04">
-    </testcase>
-    <testcase classname="API Integration Tests Settings API handles settings API error gracefully" name="API Integration Tests Settings API handles settings API error gracefully" time="0.009">
-    </testcase>
-    <testcase classname="API Integration Tests Triggers API creates new trigger via API" name="API Integration Tests Triggers API creates new trigger via API" time="0.096">
-    </testcase>
-    <testcase classname="API Integration Tests Triggers API updates existing trigger via API" name="API Integration Tests Triggers API updates existing trigger via API" time="0.051">
-    </testcase>
-    <testcase classname="API Integration Tests Triggers API deletes trigger via API" name="API Integration Tests Triggers API deletes trigger via API" time="1.025">
-      <failure>ReferenceError: mockConfirm is not defined
-
-Ignored nodes: comments, script, style
-&lt;html&gt;
-  &lt;head /&gt;
-  &lt;body&gt;
-    &lt;div&gt;
-      &lt;div
-        class=&quot;wrap&quot;
-      &gt;
-        &lt;div
-          class=&quot;echodash-header&quot;
-        &gt;
-          &lt;a
-            class=&quot;echodash-header__logo-link&quot;
-            href=&quot;https://echodash.com/?utm_source=echodash-plugin&amp;utm_medium=plugin&amp;utm_campaign=echodash-plugin&quot;
-            rel=&quot;noopener&quot;
-            target=&quot;_blank&quot;
-          &gt;
-            &lt;svg
-              aria-label=&quot;EchoDash&quot;
-              class=&quot;echodash-header__logo&quot;
-              fill=&quot;none&quot;
-              height=&quot;36&quot;
-              viewBox=&quot;0 0 189 36&quot;
-              width=&quot;189&quot;
-              xmlns=&quot;http://www.w3.org/2000/svg&quot;
-            &gt;
-              &lt;path
-                d=&quot;M182.926 12.7229C186.698 12.7229 188.528 14.7598 188.528 18.977V27.4114H184.202V20.1819C184.202 17.6286 183.342 16.7967 181.29 16.7967C178.988 16.7967 177.768 18.0016 177.768 20.4114V27.4114H173.469V7.32947H177.768V16.309H177.851C178.461 14.0426 180.264 12.7229 182.926 12.7229Z&quot;
-                fill=&quot;#202E41&quot;
-              /&gt;
-              &lt;path
-                d=&quot;M164.131 27.6983C160.886 27.6983 157.613 26.1491 157.059 23.5385L161.08 22.5344C161.468 23.8827 162.467 24.4565 164.353 24.4565C165.934 24.4565 166.766 24.1122 166.766 23.2803C166.738 22.5057 165.989 22.104 164.408 21.8745L161.801 21.5303C158.945 21.186 157.336 19.5221 157.281 17.1122C157.225 14.2721 159.472 12.7229 163.604 12.7229C167.736 12.7229 170.038 14.3008 170.759 16.9688L166.793 17.8581C166.544 16.4237 165.434 15.7352 163.77 15.7352C162.328 15.7352 161.579 16.1368 161.579 16.9401C161.579 17.5999 162.245 18.1163 163.632 18.2598L166.682 18.5754C169.373 18.8622 171.037 20.4975 171.092 22.8786C171.148 26.0057 168.652 27.6983 164.131 27.6983Z&quot;
-                fill=&quot;#202E41&quot;
-              /&gt;
-              &lt;path
-                d=&quot;M147.792 12.7229C151.841 12.7229 154.837 14.5877 154.837 18.2024V27.4114H151.148L150.649 24.4278H150.565C149.761 26.5508 147.986 27.6983 145.296 27.6983C142.134 27.6983 140.082 26.1491 140.082 23.768C140.082 20.9565 141.607 19.9524 149.29 18.7475L150.676 18.518L150.649 17.9729C150.51 16.5672 149.623 16.1942 147.737 16.1942C145.573 16.1942 144.63 16.9688 144.547 18.518L140.997 17.5999C141.164 14.3581 144.325 12.7229 147.792 12.7229ZM146.738 24.6286C148.901 24.6286 150.621 22.6778 150.676 20.8418L149.484 21.0426C146.378 21.645 144.353 22.1327 144.353 23.309C144.353 24.1696 145.157 24.6286 146.738 24.6286Z&quot;
-                fill=&quot;#202E41&quot;
-              /&gt;
-              &lt;path
-                d=&quot;M118.471 27.4114V7.32947H128.705C135.139 7.32947 138.772 11.2885 138.772 17.3705C138.772 23.5098 135.083 27.4114 128.705 27.4114H118.471ZM122.991 23.1082H128.594C132.782 23.1082 134.14 21.7024 134.14 17.3705C134.14 13.0385 132.782 11.6041 128.594 11.6041H122.991V23.1082Z&quot;
-                fill=&quot;#202E41&quot;
-              /&gt;
-              &lt;path
-                d=&quot;M107.177 27.6983C102.462 27.6983 98.8848 25.0303 98.8848 20.2393C98.8848 15.4196 102.518 12.7229 107.177 12.7229C111.975 12.7229 115.47 15.4483 115.47 20.2393C115.47 25.0877 111.864 27.6983 107.177 27.6983ZM107.177 23.6245C109.784 23.6245 111.143 22.7639 111.143 20.2393C111.143 17.8581 110.173 16.7967 107.177 16.7967C104.293 16.7967 103.211 17.8581 103.211 20.2393C103.211 22.8213 104.626 23.6245 107.177 23.6245Z&quot;
-                fill=&quot;#202E41&quot;
-              /&gt;
-              &lt;path
-                d=&quot;M90.7854 12.7229C94.5573 12.7229 96.3877 14.7598 96.3877 18.977V27.4114H92.0612V20.1819C92.0612 17.6286 91.2014 16.7967 89.1491 16.7967C86.8472 16.7967 85.6269 18.0016 85.6269 20.4114V27.4114H81.3281V7.32947H85.6269V16.309H85.7101C86.3202 14.0426 88.123 12.7229 90.7854 12.7229Z&quot;
-                fill=&quot;#202E41&quot;
-              /&gt;
-              &lt;path
-                d=&quot;M71.4833 27.6983C66.4634 27.6983 63.1076 24.9442 63.1076 20.2393C63.1076 15.4483 66.4912 12.7229 71.4833 12.7229C75.9762 12.7229 78.3613 14.6737 79.2488 18.4893L75.0887 19.4647C74.7282 17.5713 73.6465 16.7967 71.4833 16.7967C68.5435 16.7967 67.4064 17.8581 67.4064 20.2393C67.4064 22.5918 68.5435 23.6245 71.4833 23.6245C73.8961 23.6245 74.6727 22.8213 75.0887 20.9565L79.2488 21.9319C78.3336 25.7762 75.9207 27.6983 71.4833 27.6983Z&quot;
-                fill=&quot;#202E41&quot;
-              /&gt;
-              &lt;path
-                d=&quot;M61.0768 11.6041H50.621V14.9893H60.1615V19.1205H50.621V23.1368H61.0768V27.4114H46.1836V7.32947H61.0768V11.6041Z&quot;
-                fill=&quot;#202E41&quot;
-              /&gt;
-              &lt;path
-                clip-rule=&quot;evenodd&quot;
-                d=&quot;M7.50689 4.31251C10.4771 4.31415 13.1988 5.37832 15.3125 7.14551C10.4262 7.4671 6.56249 11.5323 6.56249 16.5C6.56249 21.4677 10.4262 25.5329 15.3125 25.8545C13.1972 27.6231 10.4729 28.6875 7.5 28.6875L5.62191 28.6875C4.07003 28.6858 2.81251 27.4273 2.81251 25.875L2.8125 7.125C2.8125 5.5717 4.0717 4.31251 5.625 4.31251L7.49999 4.3125L7.50689 4.31251ZM27.1875 16.5C27.1875 10.2246 22.4446 5.05701 16.348 4.38621C20.0776 7.11502 22.5 11.5246 22.5 16.5C22.5 21.4754 20.0776 25.885 16.348 28.6138C22.4446 27.943 27.1875 22.7754 27.1875 16.5ZM7.50764 1.50001L15 1.50001C23.2843 1.50001 30 8.21573 30 16.5C30 24.7843 23.2843 31.5 15 31.5L7.5 31.5L5.625 31.5L4.21874 31.5C1.88879 31.5 -3.89726e-06 29.6112 -3.9991e-06 27.2813L-4.94163e-06 5.71876C-5.04348e-06 3.3888 1.88879 1.50001 4.21874 1.5L5.625 1.50001L7.49999 1.5L7.50764 1.50001ZM17.6367 9.9375L15.9375 9.9375C12.3131 9.9375 9.37499 12.8756 9.37499 16.5C9.37499 20.1244 12.3131 23.0625 15.9375 23.0625L17.6367 23.0625C17.7338 23.0625 17.8125 22.9838 17.8125 22.8867L17.8125 20.25L15.9375 20.25C13.8664 20.25 12.1875 18.5711 12.1875 16.5C12.1875 14.4289 13.8664 12.75 15.9375 12.75L17.8125 12.75L17.8125 10.1133C17.8125 10.0162 17.7338 9.9375 17.6367 9.9375ZM15.9375 15.5625L17.3437 15.5625L17.3437 17.4375L15.9375 17.4375C15.4197 17.4375 15 17.0178 15 16.5C15 15.9822 15.4197 15.5625 15.9375 15.5625Z&quot;
-                fill=&quot;#202E41&quot;
-                fill-rule=&quot;evenodd&quot;
-              /&gt;
-            &lt;/svg&gt;
-          &lt;/a&gt;
-          &lt;a
-            class=&quot;echoda...
-    at /Users/jgarturo/Local Sites/dev/app/public/wp-content/plugins/echodash/assets/tests/integration/api.test.tsx:235:12
-    at runWithExpensiveErrorDiagnosticsDisabled (/Users/jgarturo/Local Sites/dev/app/public/wp-content/plugins/echodash/node_modules/@testing-library/react/node_modules/@testing-library/dom/dist/config.js:47:12)
-    at checkCallback (/Users/jgarturo/Local Sites/dev/app/public/wp-content/plugins/echodash/node_modules/@testing-library/react/node_modules/@testing-library/dom/dist/wait-for.js:124:77)
-    at checkRealTimersCallback (/Users/jgarturo/Local Sites/dev/app/public/wp-content/plugins/echodash/node_modules/@testing-library/react/node_modules/@testing-library/dom/dist/wait-for.js:118:16)
-    at Timeout.task [as _onTimeout] (/Users/jgarturo/Local Sites/dev/app/public/wp-content/plugins/echodash/node_modules/jsdom/lib/jsdom/browser/Window.js:520:19)
-    at listOnTimeout (node:internal/timers:588:17)
-    at processTimers (node:internal/timers:523:7)</failure>
-    </testcase>
-    <testcase classname="API Integration Tests Triggers API handles trigger creation error" name="API Integration Tests Triggers API handles trigger creation error" time="0.054">
-    </testcase>
-    <testcase classname="API Integration Tests Triggers API handles trigger deletion error" name="API Integration Tests Triggers API handles trigger deletion error" time="0.011">
-    </testcase>
-    <testcase classname="API Integration Tests Test Event API sends test event with proper API calls" name="API Integration Tests Test Event API sends test event with proper API calls" time="0.013">
-    </testcase>
-    <testcase classname="API Integration Tests Test Event API handles test event preview API error" name="API Integration Tests Test Event API handles test event preview API error" time="0.01">
-    </testcase>
-    <testcase classname="API Integration Tests Test Event API handles test event API error after successful preview" name="API Integration Tests Test Event API handles test event API error after successful preview" time="0.01">
-    </testcase>
-    <testcase classname="API Integration Tests API Error Handling handles network errors gracefully" name="API Integration Tests API Error Handling handles network errors gracefully" time="0.005">
-    </testcase>
-    <testcase classname="API Integration Tests API Error Handling handles HTTP error responses" name="API Integration Tests API Error Handling handles HTTP error responses" time="0.005">
-    </testcase>
-    <testcase classname="API Integration Tests API Error Handling handles malformed JSON responses" name="API Integration Tests API Error Handling handles malformed JSON responses" time="0.006">
-    </testcase>
-    <testcase classname="API Integration Tests API Authentication includes WordPress nonce in all API requests" name="API Integration Tests API Authentication includes WordPress nonce in all API requests" time="0.005">
-    </testcase>
-    <testcase classname="API Integration Tests API Authentication handles missing nonce gracefully" name="API Integration Tests API Authentication handles missing nonce gracefully" time="0.004">
-    </testcase>
-    <testcase classname="API Integration Tests API Data Validation validates trigger data before sending" name="API Integration Tests API Data Validation validates trigger data before sending" time="0.04">
-    </testcase>
-    <testcase classname="API Integration Tests API Data Validation handles empty trigger data" name="API Integration Tests API Data Validation handles empty trigger data" time="0.042">
-    </testcase>
-    <testcase classname="API Integration Tests Concurrent API Calls handles multiple simultaneous API calls" name="API Integration Tests Concurrent API Calls handles multiple simultaneous API calls" time="0.009">
-    </testcase>
-  </testsuite>
-  <testsuite name="TriggerModal Component" errors="0" failures="0" skipped="0" timestamp="2025-08-10T15:36:16" time="4.362" tests="40">
-    <testcase classname="TriggerModal Component Rendering does not render when isOpen is false" name="TriggerModal Component Rendering does not render when isOpen is false" time="0.014">
-    </testcase>
-    <testcase classname="TriggerModal Component Rendering renders modal header with integration info" name="TriggerModal Component Rendering renders modal header with integration info" time="0.041">
-    </testcase>
-    <testcase classname="TriggerModal Component Rendering renders modal header for editing trigger" name="TriggerModal Component Rendering renders modal header for editing trigger" time="0.012">
-    </testcase>
-    <testcase classname="TriggerModal Component Rendering renders trigger selector with available options" name="TriggerModal Component Rendering renders trigger selector with available options" time="0.01">
-    </testcase>
-    <testcase classname="TriggerModal Component Rendering renders event name input with default value" name="TriggerModal Component Rendering renders event name input with default value" time="0.008">
+    <testcase classname="TriggerModal Component Rendering renders event name input with default value" name="TriggerModal Component Rendering renders event name input with default value" time="0.005">
     </testcase>
     <testcase classname="TriggerModal Component Rendering renders key-value pairs from default event mappings" name="TriggerModal Component Rendering renders key-value pairs from default event mappings" time="0.004">
     </testcase>
     <testcase classname="TriggerModal Component Rendering renders with editing trigger data" name="TriggerModal Component Rendering renders with editing trigger data" time="0.004">
     </testcase>
-    <testcase classname="TriggerModal Component Rendering renders trigger description info box" name="TriggerModal Component Rendering renders trigger description info box" time="0.003">
+    <testcase classname="TriggerModal Component Rendering renders trigger description info box" name="TriggerModal Component Rendering renders trigger description info box" time="0.006">
     </testcase>
-    <testcase classname="TriggerModal Component Rendering handles integration without icon" name="TriggerModal Component Rendering handles integration without icon" time="0.005">
+    <testcase classname="TriggerModal Component Rendering handles integration without icon" name="TriggerModal Component Rendering handles integration without icon" time="0.004">
     </testcase>
     <testcase classname="TriggerModal Component Form Interactions updates trigger selection and related fields" name="TriggerModal Component Form Interactions updates trigger selection and related fields" time="0.011">
     </testcase>
-    <testcase classname="TriggerModal Component Form Interactions updates event name input" name="TriggerModal Component Form Interactions updates event name input" time="0.005">
+    <testcase classname="TriggerModal Component Form Interactions updates event name input" name="TriggerModal Component Form Interactions updates event name input" time="0.006">
     </testcase>
-    <testcase classname="TriggerModal Component Form Interactions updates key-value pair inputs" name="TriggerModal Component Form Interactions updates key-value pair inputs" time="0.008">
+    <testcase classname="TriggerModal Component Form Interactions updates key-value pair inputs" name="TriggerModal Component Form Interactions updates key-value pair inputs" time="0.005">
     </testcase>
-    <testcase classname="TriggerModal Component Form Interactions adds new key-value pair when plus button is clicked" name="TriggerModal Component Form Interactions adds new key-value pair when plus button is clicked" time="0.059">
+    <testcase classname="TriggerModal Component Form Interactions adds new key-value pair when plus button is clicked" name="TriggerModal Component Form Interactions adds new key-value pair when plus button is clicked" time="0.057">
     </testcase>
-    <testcase classname="TriggerModal Component Form Interactions removes key-value pair when minus button is clicked" name="TriggerModal Component Form Interactions removes key-value pair when minus button is clicked" time="0.048">
+    <testcase classname="TriggerModal Component Form Interactions removes key-value pair when minus button is clicked" name="TriggerModal Component Form Interactions removes key-value pair when minus button is clicked" time="0.045">
     </testcase>
-    <testcase classname="TriggerModal Component Form Interactions shows minus buttons when there are multiple pairs" name="TriggerModal Component Form Interactions shows minus buttons when there are multiple pairs" time="0.003">
+    <testcase classname="TriggerModal Component Form Interactions shows minus buttons when there are multiple pairs" name="TriggerModal Component Form Interactions shows minus buttons when there are multiple pairs" time="0.002">
     </testcase>
-    <testcase classname="TriggerModal Component Form Interactions disables form elements when savingTrigger is true" name="TriggerModal Component Form Interactions disables form elements when savingTrigger is true" time="0.006">
+    <testcase classname="TriggerModal Component Form Interactions disables form elements when savingTrigger is true" name="TriggerModal Component Form Interactions disables form elements when savingTrigger is true" time="0.007">
     </testcase>
     <testcase classname="TriggerModal Component Form Interactions disables trigger selector when editing existing trigger" name="TriggerModal Component Form Interactions disables trigger selector when editing existing trigger" time="0.006">
     </testcase>
-    <testcase classname="TriggerModal Component Merge Tag Functionality opens merge tag selector for event name" name="TriggerModal Component Merge Tag Functionality opens merge tag selector for event name" time="0.004">
+    <testcase classname="TriggerModal Component Merge Tag Functionality opens merge tag selector for event name" name="TriggerModal Component Merge Tag Functionality opens merge tag selector for event name" time="0.005">
     </testcase>
     <testcase classname="TriggerModal Component Merge Tag Functionality selects merge tag for event name" name="TriggerModal Component Merge Tag Functionality selects merge tag for event name" time="0.007">
     </testcase>
-    <testcase classname="TriggerModal Component Merge Tag Functionality opens merge tag selector for value field" name="TriggerModal Component Merge Tag Functionality opens merge tag selector for value field" time="0.006">
+    <testcase classname="TriggerModal Component Merge Tag Functionality opens merge tag selector for value field" name="TriggerModal Component Merge Tag Functionality opens merge tag selector for value field" time="0.004">
     </testcase>
-    <testcase classname="TriggerModal Component Merge Tag Functionality selects merge tag for value field" name="TriggerModal Component Merge Tag Functionality selects merge tag for value field" time="0.03">
+    <testcase classname="TriggerModal Component Merge Tag Functionality selects merge tag for value field" name="TriggerModal Component Merge Tag Functionality selects merge tag for value field" time="0.005">
     </testcase>
     <testcase classname="TriggerModal Component Merge Tag Functionality closes merge tag selector when close button is clicked" name="TriggerModal Component Merge Tag Functionality closes merge tag selector when close button is clicked" time="0.006">
     </testcase>
-    <testcase classname="TriggerModal Component Save Functionality calls onSave with correct data when save button is clicked" name="TriggerModal Component Save Functionality calls onSave with correct data when save button is clicked" time="0.023">
+    <testcase classname="TriggerModal Component Save Functionality calls onSave with correct data when save button is clicked" name="TriggerModal Component Save Functionality calls onSave with correct data when save button is clicked" time="0.025">
     </testcase>
-    <testcase classname="TriggerModal Component Save Functionality filters out empty key-value pairs when saving" name="TriggerModal Component Save Functionality filters out empty key-value pairs when saving" time="0.048">
+    <testcase classname="TriggerModal Component Save Functionality filters out empty key-value pairs when saving" name="TriggerModal Component Save Functionality filters out empty key-value pairs when saving" time="0.049">
     </testcase>
     <testcase classname="TriggerModal Component Save Functionality shows correct button text when saving" name="TriggerModal Component Save Functionality shows correct button text when saving" time="0.003">
     </testcase>
-    <testcase classname="TriggerModal Component Save Functionality shows correct button text for editing" name="TriggerModal Component Save Functionality shows correct button text for editing" time="0.003">
+    <testcase classname="TriggerModal Component Save Functionality shows correct button text for editing" name="TriggerModal Component Save Functionality shows correct button text for editing" time="0.004">
     </testcase>
-    <testcase classname="TriggerModal Component Save Functionality enables save button when fallback trigger is provided" name="TriggerModal Component Save Functionality enables save button when fallback trigger is provided" time="0.021">
+    <testcase classname="TriggerModal Component Save Functionality enables save button when fallback trigger is provided" name="TriggerModal Component Save Functionality enables save button when fallback trigger is provided" time="0.024">
     </testcase>
-    <testcase classname="TriggerModal Component Send Test Functionality calls onSendTest with trigger data when send test button is clicked" name="TriggerModal Component Send Test Functionality calls onSendTest with trigger data when send test button is clicked" time="0.01">
+    <testcase classname="TriggerModal Component Send Test Functionality calls onSendTest with trigger data when send test button is clicked" name="TriggerModal Component Send Test Functionality calls onSendTest with trigger data when send test button is clicked" time="0.008">
     </testcase>
-    <testcase classname="TriggerModal Component Send Test Functionality shows sending state during test" name="TriggerModal Component Send Test Functionality shows sending state during test" time="3.014">
+    <testcase classname="TriggerModal Component Send Test Functionality shows sending state during test" name="TriggerModal Component Send Test Functionality shows sending state during test" time="3.021">
     </testcase>
-    <testcase classname="TriggerModal Component Send Test Functionality handles test error gracefully" name="TriggerModal Component Send Test Functionality handles test error gracefully" time="0.013">
+    <testcase classname="TriggerModal Component Send Test Functionality handles test error gracefully" name="TriggerModal Component Send Test Functionality handles test error gracefully" time="0.016">
     </testcase>
-    <testcase classname="TriggerModal Component Send Test Functionality disables send test button when no onSendTest prop" name="TriggerModal Component Send Test Functionality disables send test button when no onSendTest prop" time="0.004">
+    <testcase classname="TriggerModal Component Send Test Functionality disables send test button when no onSendTest prop" name="TriggerModal Component Send Test Functionality disables send test button when no onSendTest prop" time="0.005">
     </testcase>
     <testcase classname="TriggerModal Component Send Test Functionality disables send test button when saving" name="TriggerModal Component Send Test Functionality disables send test button when saving" time="0.004">
     </testcase>
-    <testcase classname="TriggerModal Component Modal Controls calls onClose when close button is clicked" name="TriggerModal Component Modal Controls calls onClose when close button is clicked" time="0.003">
+    <testcase classname="TriggerModal Component Modal Controls calls onClose when close button is clicked" name="TriggerModal Component Modal Controls calls onClose when close button is clicked" time="0.004">
     </testcase>
     <testcase classname="TriggerModal Component Modal Controls calls onClose when cancel button is clicked" name="TriggerModal Component Modal Controls calls onClose when cancel button is clicked" time="0.004">
     </testcase>
     <testcase classname="TriggerModal Component Modal Controls disables cancel button when saving" name="TriggerModal Component Modal Controls disables cancel button when saving" time="0.003">
     </testcase>
-    <testcase classname="TriggerModal Component Default Values handles integration without available triggers" name="TriggerModal Component Default Values handles integration without available triggers" time="0.004">
+    <testcase classname="TriggerModal Component Default Values handles integration without available triggers" name="TriggerModal Component Default Values handles integration without available triggers" time="0.003">
     </testcase>
-    <testcase classname="TriggerModal Component Default Values initializes with fallback values when no default event" name="TriggerModal Component Default Values initializes with fallback values when no default event" time="0.004">
+    <testcase classname="TriggerModal Component Default Values initializes with fallback values when no default event" name="TriggerModal Component Default Values initializes with fallback values when no default event" time="0.003">
     </testcase>
     <testcase classname="TriggerModal Component Default Values handles editing trigger with empty mappings" name="TriggerModal Component Default Values handles editing trigger with empty mappings" time="0.002">
     </testcase>
     <testcase classname="TriggerModal Component Integration Icon Handling renders correct dashicon for gravity-forms" name="TriggerModal Component Integration Icon Handling renders correct dashicon for gravity-forms" time="0.003">
     </testcase>
-    <testcase classname="TriggerModal Component Integration Icon Handling renders default dashicon for other integrations without icon" name="TriggerModal Component Integration Icon Handling renders default dashicon for other integrations without icon" time="0.002">
+    <testcase classname="TriggerModal Component Integration Icon Handling renders default dashicon for other integrations without icon" name="TriggerModal Component Integration Icon Handling renders default dashicon for other integrations without icon" time="0.003">
     </testcase>
   </testsuite>
 </testsuites>

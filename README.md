@@ -25,6 +25,229 @@ Track user events and interactions across your WordPress site with EchoDash anal
 3. Activate through WordPress admin
 4. Connect to EchoDash in Settings → EchoDash
 
+## Development Setup
+
+### Prerequisites
+
+- Node.js 18+ and npm 8+
+- PHP 7.4+ (tested up to PHP 8.2)
+- Composer
+- WordPress development environment
+
+### Quick Start
+
+1. **Clone and Install Dependencies**
+   ```bash
+   git clone https://github.com/yourusername/echodash.git
+   cd echodash
+   
+   # Install PHP dependencies
+   composer install
+   
+   # Install Node.js dependencies
+   npm install
+   ```
+
+2. **Start Development**
+   ```bash
+   # Start React development server with hot reloading
+   npm run dev
+   # or
+   npm run start
+   ```
+
+3. **Build for Production**
+   ```bash
+   npm run build
+   ```
+
+### Development Commands
+
+#### React Development (Primary Interface)
+```bash
+npm run dev           # Start development server with hot reloading
+npm run build         # Production build with optimization
+npm run build:analyze # Build with bundle size analysis
+```
+
+#### Testing (Comprehensive Test Suite)
+```bash
+# Run all tests
+npm run test:all      # Complete test suite (unit + integration + e2e)
+
+# Individual test types
+npm run test          # Basic Jest unit tests
+npm run test:unit     # Unit tests only
+npm run test:integration # API integration tests
+npm run test:performance # Performance benchmarks
+npm run test:e2e      # End-to-end Playwright tests
+npm run test:visual   # Visual regression tests
+
+# Test utilities
+npm run test:watch    # Watch mode for development
+npm run test:coverage # Generate coverage reports
+npm run test:ci       # CI-optimized test run (used in GitHub Actions)
+```
+
+#### Code Quality
+```bash
+# Linting and formatting
+npm run lint          # ESLint + Stylelint
+npm run lint:js       # JavaScript/TypeScript linting
+npm run lint:css      # CSS/SCSS linting
+npm run format        # Prettier code formatting
+
+# PHP quality checks
+composer phpcs        # WordPress coding standards
+composer phpcbf       # Auto-fix coding standards
+composer phpstan      # Static analysis (PHPStan level 5)
+composer test         # PHPUnit tests
+```
+
+#### Automated Quality Checks
+```bash
+# Run the same checks as CI
+./bin/run-checks.sh   # Complete local quality check suite
+```
+
+### Understanding Test Results
+
+#### JavaScript Tests (Jest)
+- **Coverage Reports**: Generated in `/coverage/` folder
+- **Test Reports**: HTML reports in `/test-reports/jest-report.html`
+- **Coverage Thresholds**: 80% minimum (branches, functions, lines, statements)
+- **Test Files**: `*.test.{js,jsx,ts,tsx}` in `assets/src/` and `assets/tests/`
+
+**Interpreting Results:**
+```bash
+# Example successful output
+✅ Test Suites: 15 passed, 15 total
+✅ Tests: 89 passed, 89 total
+✅ Coverage: 85.2% lines, 81.4% branches
+```
+
+#### PHP Tests (PHPUnit + Static Analysis)
+- **PHPStan**: Level 5 static analysis with WordPress stubs
+- **PHPCS**: WordPress coding standards compliance
+- **PHPUnit**: Traditional PHP unit testing
+
+**Common Issues:**
+- **PHPStan warnings** about third-party plugins are normal
+- **PHPCS errors** must be fixed (warnings are acceptable)
+- **Coverage** reports help identify untested code paths
+
+#### Visual Regression Tests (Playwright)
+```bash
+npm run test:visual        # Run visual tests
+npm run test:visual:update # Update visual baselines
+npm run test:visual:ui     # Interactive test runner
+```
+
+### Performance Monitoring
+
+#### Bundle Analysis
+```bash
+npm run build:analyze
+# Opens bundle-report.html showing:
+# - Bundle sizes and dependencies
+# - Performance recommendations
+# - Code splitting effectiveness
+```
+
+#### Performance Budgets
+- **500KB maximum** per chunk (enforced at build time)
+- **Core Web Vitals** monitoring in production
+- **Bundle splitting** for WordPress components and vendors
+
+### Continuous Integration
+
+Our GitHub Actions workflow runs:
+
+1. **PHP Quality Checks** (multiple PHP versions 7.4-8.2)
+   - WordPress coding standards (PHPCS)
+   - Static analysis (PHPStan)
+   - Compatibility checks
+
+2. **JavaScript Quality Checks**
+   - ESLint + Stylelint
+   - Code formatting (Prettier)
+   - License compliance
+   - Engine compatibility
+
+3. **Comprehensive Testing**
+   - Jest unit/integration tests
+   - Playwright E2E tests
+   - Visual regression tests
+   - Multiple WordPress versions (6.0-6.4)
+
+4. **Security & Compatibility**
+   - Composer security audit
+   - npm security audit
+   - PHP compatibility checks
+   - WordPress compatibility verification
+
+5. **Build Verification**
+   - Production build test
+   - Bundle size analysis
+   - Plugin ZIP creation
+
+### Troubleshooting
+
+#### Common Development Issues
+
+**Build Errors:**
+```bash
+# Clear caches and reinstall
+rm -rf node_modules vendor coverage test-reports
+npm install && composer install
+npm run build
+```
+
+**Test Failures:**
+```bash
+# Update test snapshots if UI changed
+npm run test:visual:update
+
+# Check for missing WordPress mocks
+# See assets/tests/__mocks__/wordpress/ for available mocks
+```
+
+**PHP Issues:**
+```bash
+# Fix coding standards automatically
+composer phpcbf
+
+# Check PHPStan with more detail
+composer phpstan -- --verbose
+```
+
+#### Performance Issues
+- **Large bundles**: Check `bundle-report.html` after `npm run build:analyze`
+- **Slow tests**: Run specific test suites instead of all tests
+- **Memory issues**: PHPStan has 2GB memory limit configured
+
+### File Structure
+
+```
+echodash/
+├── assets/
+│   ├── src/                 # React TypeScript source code
+│   ├── tests/               # Jest test files and mocks
+│   └── dist/                # Built assets (auto-generated)
+├── includes/
+│   ├── integrations/        # PHP integration classes
+│   ├── admin/               # WordPress admin functionality
+│   └── public/              # Public-facing functionality
+├── tests/                   # PHP tests (if implemented)
+├── bin/                     # Development scripts
+│   └── run-checks.sh        # Local CI simulation
+├── .github/workflows/       # GitHub Actions CI/CD
+├── webpack.config.js        # Build configuration
+├── jest.config.js           # Test configuration
+├── phpcs.xml                # PHP coding standards
+└── composer.json            # PHP dependencies
+```
+
 ## Creating Custom Integrations
 
 ### 1. Basic Integration Structure
