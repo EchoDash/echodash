@@ -143,28 +143,29 @@ class EchoDash_EDD extends EchoDash_Integration {
 			);
 		}
 
-		// Track discount usage if discounts were used.
-		if ( ! empty( $payment->discounts ) ) {
-
-			$discounts = $payment->discounts;
-
-			if ( ! is_array( $discounts ) ) {
-				$discounts = explode( ',', $discounts );
-			}
-
-			foreach ( $discounts as $discount_code ) {
-				// Remove "none" discount if it exists (EDD sometimes adds this).
-				if ( 'none' !== strtolower( $discount_code ) ) {
-					$this->track_event(
-						'discount_used',
-						array(
-							'discount' => $discount_code,
-							'payment'  => $payment_id,
-						)
-					);
-				}
-			}
-		}
+        // Track discount usage if discounts were used.
+        if ( ! empty( $payment->discounts ) ) {
+            $discounts = $payment->discounts;
+            if ( ! is_array( $discounts ) ) {
+                $discounts = array_map( 'trim', explode( ',', (string) $discounts ) );
+            } else {
+                $discounts = array_map( 'trim', $discounts );
+            }
+            $discounts = array_filter( array_unique( $discounts ) );
+            foreach ( $discounts as $discount_code ) {
+                // Remove "none" (EDD sometimes adds this).
+                if ( '' === $discount_code || 0 === strcasecmp( $discount_code, 'none' ) ) {
+                    continue;
+                }
+                $this->track_event(
+                    'discount_used',
+                    array(
+                        'discount' => $discount_code,
+                        'payment'  => $payment_id,
+                    )
+                );
+            }
+        }
 	}
 
 	/**
