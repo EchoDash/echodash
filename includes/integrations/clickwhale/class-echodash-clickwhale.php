@@ -204,18 +204,29 @@ class EchoDash_ClickWhale extends EchoDash_Integration {
 			}
 		}
 
-		// Get click count from database since it's not in the hook data.
-		// Uses ClickWhale's track table with event_type='click' filter.
-		$click_count = 0;
-		global $wpdb;
-		$track_table = $wpdb->prefix . 'clickwhale_track';
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery
-		$click_count = (int) $wpdb->get_var(
-			$wpdb->prepare(
-				"SELECT COUNT(*) FROM {$track_table} WHERE link_id = %d AND event_type = 'click'",
-				$link_id
-			)
-		);
+		$cache_key = "echodash_clickwhale_clicks_{$link_id}";
+		$click_count = wp_cache_get( $cache_key );
+
+		if ( false === $click_count ) {
+
+			// Get click count from database since it's not in the hook data.
+
+			$click_count = 0;
+
+			global $wpdb;
+			$track_table = $wpdb->prefix . 'clickwhale_track';
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery
+			$click_count = (int) $wpdb->get_var(
+				$wpdb->prepare(
+					// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+					"SELECT COUNT(*) FROM {$track_table} WHERE link_id = %d AND event_type = 'click'",
+					$link_id
+				)
+			);
+
+			wp_cache_set( $cache_key, $click_count, 'echodash', 300 ); // 5 min cache
+		}
+
 
 		return array(
 			'link' => array(
