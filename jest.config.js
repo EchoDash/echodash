@@ -11,8 +11,7 @@ module.exports = {
 
 	// Setup files
 	setupFilesAfterEnv: [
-		'<rootDir>/assets/src/utils/test-utils.tsx',
-		'<rootDir>/assets/tests/setup.ts',
+		// '<rootDir>/assets/tests/setup.ts', // TODO: Create test setup files when needed
 	],
 
 	// File extensions
@@ -47,7 +46,7 @@ module.exports = {
 	],
 
 	// Module mocking
-	moduleNameMapping: {
+	moduleNameMapper: {
 		// Mock CSS and asset imports
 		'\\.(css|less|scss|sass)$': 'identity-obj-proxy',
 		'\\.(jpg|jpeg|png|gif|svg)$':
@@ -88,19 +87,13 @@ module.exports = {
 			lines: 80,
 			statements: 80,
 		},
-		// Specific thresholds for critical files
-		'assets/src/utils/validation.ts': {
-			branches: 90,
-			functions: 90,
-			lines: 90,
-			statements: 90,
-		},
-		'assets/src/utils/performance.ts': {
-			branches: 85,
-			functions: 85,
-			lines: 85,
-			statements: 85,
-		},
+		// Specific thresholds for critical files (when they exist)
+		// 'assets/src/utils/validation.ts': {
+		// 	branches: 90,
+		// 	functions: 90,
+		// 	lines: 90,
+		// 	statements: 90,
+		// },
 	},
 
 	// Coverage reporters
@@ -125,8 +118,8 @@ module.exports = {
 	],
 
 	// Global setup/teardown
-	globalSetup: '<rootDir>/assets/tests/globalSetup.ts',
-	globalTeardown: '<rootDir>/assets/tests/globalTeardown.ts',
+	// globalSetup: '<rootDir>/assets/tests/globalSetup.ts', // TODO: Create when needed
+	// globalTeardown: '<rootDir>/assets/tests/globalTeardown.ts', // TODO: Create when needed
 
 	// Custom test environment options
 	testEnvironmentOptions: {
@@ -182,7 +175,7 @@ module.exports = {
 				'<rootDir>/assets/tests/performance/**/*.test.{js,jsx,ts,tsx}',
 			],
 			testEnvironment: 'jsdom',
-			testTimeout: 30000,
+			// timeout: 30000, // TODO: Use testTimeout in project config when supported
 		},
 	],
 

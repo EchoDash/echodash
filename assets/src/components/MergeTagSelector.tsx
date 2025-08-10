@@ -126,11 +126,14 @@ export const MergeTagSelector: React.FC<MergeTagSelectorProps> = ({
 		return options
 			.map(group => ({
 				...group,
-				options: group.options.filter(option => {  
-					// Search in merge tag, placeholder, and preview  
-					const mergeTag = `{${group.type}:${option.meta}}`.toLowerCase();  
-					const placeholder = String(option.placeholder ?? '').toLowerCase();  
-					const preview = String(option.preview ?? '').toLowerCase();  
+				options: group.options.filter(option => {
+					// Search in merge tag, placeholder, and preview
+					const mergeTag =
+						`{${group.type}:${option.meta}}`.toLowerCase();
+					const placeholder = String(
+						option.placeholder ?? ''
+					).toLowerCase();
+					const preview = String(option.preview ?? '').toLowerCase();
 
 					return (
 						mergeTag.includes(searchLower) ||
@@ -175,7 +178,7 @@ export const MergeTagSelector: React.FC<MergeTagSelectorProps> = ({
 			groupType: string;
 			meta: string;
 			groupName: string;
-			option: any;
+			option: MergeTagOption;
 		}> = [];
 		filteredOptions.forEach(group => {
 			group.options.forEach(option => {
@@ -274,6 +277,8 @@ export const MergeTagSelector: React.FC<MergeTagSelectorProps> = ({
 			<div
 				className="echodash-merge-dropdown__content"
 				onKeyDown={handleKeyDown}
+				role="listbox"
+				tabIndex={-1}
 			>
 				{filteredOptions.map((group, groupIndex) => {
 					let optionIndexCounter = 0;

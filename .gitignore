@@ -51,3 +51,4 @@ echodash.code-workspace
 composer.lock
 vendor/*
 node_modules
+/coverage
