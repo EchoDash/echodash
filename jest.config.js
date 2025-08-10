@@ -5,8 +5,6 @@
  * performance testing, and WordPress environment mocking.
  */
 
-const path = require('path');
-
 module.exports = {
 	// Test environment
 	testEnvironment: 'jsdom',
@@ -16,12 +14,6 @@ module.exports = {
 		'<rootDir>/assets/src/utils/test-utils.tsx',
 		'<rootDir>/assets/tests/setup.ts',
 	],
-	
-	// Module paths
-	moduleNameMapping: {
-		'^@/(.*)$': '<rootDir>/assets/src/$1',
-		'^@tests/(.*)$': '<rootDir>/assets/tests/$1',
-	},
 	
 	// File extensions
 	moduleFileExtensions: [

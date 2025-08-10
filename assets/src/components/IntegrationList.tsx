@@ -24,17 +24,24 @@ export const IntegrationList: React.FC<IntegrationListProps> = ({
 	onAddTrigger,
 }) => {
 	const [endpointUrl, setEndpointUrl] = useState(settings.endpoint || '');
+	const [lastSavedEndpoint, setLastSavedEndpoint] = useState(settings.endpoint || '');
 	const [isSaving, setIsSaving] = useState(false);
 
-	const handleEndpointChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+	const handleEndpointChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
 		setEndpointUrl(e.target.value);
 	};
 
-	const handleEndpointBlur = async () => {
-		if (endpointUrl !== settings.endpoint) {
+	const handleEndpointBlur = async (): Promise<void> => {
+		if (endpointUrl !== lastSavedEndpoint) {
+			// Check if API URL is available
+			if (!window.ecdReactData?.apiUrl) {
+				alert(__('Configuration error: API URL not available. Please refresh the page and try again.', 'echodash'));
+				return;
+			}
+
 			setIsSaving(true);
 			try {
-				const response = await fetch(window.ecdReactData?.apiUrl + 'settings', {
+				const response = await fetch(window.ecdReactData.apiUrl + 'settings', {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
@@ -49,12 +56,11 @@ export const IntegrationList: React.FC<IntegrationListProps> = ({
 					throw new Error('Failed to save endpoint');
 				}
 
-				// Settings are already saved on the server
-				// Local state (endpointUrl) already reflects the change
-			} catch (error) {
-				console.error('Error saving endpoint:', error);
-				// Revert to original value on error
-				setEndpointUrl(settings.endpoint || '');
+				// Update the last saved endpoint to prevent repeated saves
+				setLastSavedEndpoint(endpointUrl);
+			} catch {
+				// Revert to last saved value on error
+				setEndpointUrl(lastSavedEndpoint);
 				alert(__('Failed to save endpoint URL. Please try again.', 'echodash'));
 			} finally {
 				setIsSaving(false);

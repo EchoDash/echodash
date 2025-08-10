@@ -358,19 +358,30 @@ class EchoDash_REST_API extends WP_REST_Controller {
 		$source_name  = $integration->name;
 		$trigger_name = $integration->get_trigger_name( $trigger );
 
+		define( 'ECHODASH_TEST_EVENT', true );
+
 		// Track test event with processed parameters
 		$result = echodash_track_event( $event_data['name'], $event_data['properties'], $source_name, $trigger_name );
 
-		if ( $result ) {
-			return rest_ensure_response(
-				array(
-					'success'        => true,
-					'message'        => __( 'Test event sent successfully', 'echodash' ),
-					'processed_data' => $event_data['properties'],
-				)
+		if ( ! is_wp_error( $result ) ) {
+			$response = array(
+				'success'        => true,
+				'message'        => __( 'Test event sent successfully', 'echodash' ),
+				'processed_data' => $event_data['properties'],
+			);
+			return rest_ensure_response( $response );
+		} elseif ( is_wp_error( $result ) ) {
+			return new WP_Error(
+				'test_event_failed',
+				$result->get_error_message(),
+				array( 'status' => 400 )
 			);
 		} else {
-			return new WP_Error( 'event_send_failed', __( 'Failed to send test event', 'echodash' ), array( 'status' => 500 ) );
+			return new WP_Error(
+				'test_event_failed',
+				__( 'Failed to send test event', 'echodash' ),
+				array( 'status' => 500 )
+			);
 		}
 	}
 

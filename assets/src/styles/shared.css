@@ -137,13 +137,14 @@ button.echodash-button-primary:hover {
 }
 
 /* Disabled button styles */
-a.echodash-button:disabled,
+a.echodash-button[aria-disabled="true"],
 button.echodash-button:disabled {
-	background-color: var(--ecd-color-background-light);
-	color: var(--ecd-color-text-lighter);
-	border-color: var(--ecd-color-border-lighter);
-	cursor: not-allowed;
-	opacity: 0.6;
+   background-color: var(--ecd-color-background-light);
+   color: var(--ecd-color-text-lighter);
+   border-color: var(--ecd-color-border-lighter);
+   cursor: not-allowed;
+   opacity: 0.6;
+   pointer-events: none;
 }
 
 a.echodash-button:disabled:hover,
@@ -346,3 +347,14 @@ button.echodash-button .ecd-spinner {
     43% { transform: rotate(0); }
     100% { transform: rotate(0); }
   }
+
+/* Respect user's reduced motion preferences for accessibility */
+@media (prefers-reduced-motion: reduce) {
+	.ecd-spinner {
+		animation: none;
+	}
+	
+	.ecd-ring {
+		animation: none;
+	}
+}

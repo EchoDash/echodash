@@ -8,15 +8,23 @@ import React, { useState, useRef, useEffect } from 'react';
 import { __ } from '@wordpress/i18n';
 import { MergeTagSelector } from './MergeTagSelector';
 import './TriggerModal.css';
-import type { Integration, KeyValuePair } from '../types';
+import type { Integration, KeyValuePair, Trigger, TriggerMapping, MergeTagGroup } from '../types';
+
+// Interface for the data passed to onSave
+interface TriggerSaveData {
+	trigger: string;
+	name: string;
+	mappings: TriggerMapping[];
+	sendTest?: boolean;
+}
 
 interface TriggerModalProps {
 	isOpen: boolean;
 	onClose: () => void;
-	onSave: (data: any) => void;
-	onSendTest?: (data: any) => void;
+	onSave: (data: TriggerSaveData) => void;
+	onSendTest?: (data: Trigger) => void;
 	integration: Integration;
-	editingTrigger?: any;
+	editingTrigger?: Trigger;
 	savingTrigger?: boolean;
 }
 
@@ -34,14 +42,14 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 	];
 
 	// Initialize state based on whether we're editing or creating
-	const getInitialTrigger = () => {
+	const getInitialTrigger = (): string => {
 		if (editingTrigger) {
 			return editingTrigger.trigger || editingTrigger.id || '';
 		}
 		return availableTriggers[0]?.id || '';
 	};
 
-	const getInitialEventName = () => {
+	const getInitialEventName = (): string => {
 		if (editingTrigger) {
 			return editingTrigger.name || editingTrigger.event_name || '';
 		}
@@ -50,10 +58,10 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 	};
 
 	// Initialize key-value pairs from editing data or default event mappings
-	const getInitialKeyValuePairs = () => {
+	const getInitialKeyValuePairs = (): KeyValuePair[] => {
 		if (editingTrigger?.mappings && Array.isArray(editingTrigger.mappings)) {
 			// Use existing mappings from editing trigger
-			const pairs = editingTrigger.mappings.map((mapping: any) => ({
+			const pairs = editingTrigger.mappings.map((mapping: TriggerMapping) => ({
 				key: mapping.key || '',
 				value: mapping.value || ''
 			}));
@@ -100,7 +108,7 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 
 	if (!isOpen) return null;
 
-	const handleTriggerChange = (triggerId: string) => {
+	const handleTriggerChange = (triggerId: string): void => {
 		setSelectedTrigger(triggerId);
 		const trigger = availableTriggers.find(t => t.id === triggerId);
 		if (trigger) {
@@ -118,24 +126,24 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 		}
 	};
 
-	const updateKeyValuePair = (index: number, field: 'key' | 'value', value: string) => {
+	const updateKeyValuePair = (index: number, field: 'key' | 'value', value: string): void => {
 		const newPairs = [...keyValuePairs];
 		newPairs[index][field] = value;
 		setKeyValuePairs(newPairs);
 	};
 
-	const addKeyValuePair = () => {
+	const addKeyValuePair = (): void => {
 		setKeyValuePairs([...keyValuePairs, { key: '', value: '' }]);
 	};
 
-	const removeKeyValuePair = (index: number) => {
+	const removeKeyValuePair = (index: number): void => {
 		if (keyValuePairs.length > 1) {
 			const newPairs = keyValuePairs.filter((_, i) => i !== index);
 			setKeyValuePairs(newPairs);
 		}
 	};
 
-	const handleMergeTagSelect = (mergeTag: string) => {
+	const handleMergeTagSelect = (mergeTag: string): void => {
 		if (openDropdownIndex?.type === 'name') {
 			setEventName((prev: string) => prev + mergeTag);
 		} else if (openDropdownIndex?.type === 'value') {
@@ -146,12 +154,12 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 	};
 
 	// Get current trigger options for merge tag selector
-	const getCurrentTriggerOptions = () => {
+	const getCurrentTriggerOptions = (): MergeTagGroup[] => {
 		const trigger = availableTriggers.find(t => t.id === selectedTrigger);
 		return trigger?.options || [];
 	};
 
-	const handleSave = () => {
+	const handleSave = (): void => {
 		const data = {
 			trigger: selectedTrigger,
 			name: eventName,
@@ -160,7 +168,7 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 		onSave(data);
 	};
 
-	const handleSendTest = async () => {
+	const handleSendTest = async (): Promise<void> => {
 		if (!onSendTest) return;
 		
 		setSendingTest(true);
@@ -171,12 +179,13 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 				name: eventName,
 				mappings: keyValuePairs.filter(pair => pair.key && pair.value),
 			};
-			await onSendTest(data);
+			await onSendTest(data as Trigger);
 			// Show "Sent!" state for 3 seconds
 			setSentTest(true);
 			setTimeout(() => setSentTest(false), 3000);
-		} catch (error) {
-			// onSendTest handles error display, just clear loading state
+		} catch {
+			// Error handling is done in App.tsx, just reset loading state
+			// Error handling is done in App.tsx
 		} finally {
 			setSendingTest(false);
 		}
@@ -190,11 +199,11 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 					<div className="echodash-modal__header-content">
 						<div 
 							className="echodash-modal__header-icon echodash-integration-item__icon"
-							style={{ backgroundColor: (integration as any).iconBackgroundColor || '#ff6900' }}
+							style={{ backgroundColor: integration.iconBackgroundColor || '#ff6900' }}
 						>
-							{(integration as any).icon ? (
+							{integration.icon ? (
 								<img 
-									src={(integration as any).icon}
+									src={integration.icon}
 									alt={`${integration.name} logo`}
 									className="echodash-modal__header-icon-image"
 								/>

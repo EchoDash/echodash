@@ -35,7 +35,7 @@ export interface AvailableTrigger {
 	description?: string;
 	defaultEvent?: {
 		name?: string;
-		mappings?: Record<string, any>;
+		mappings?: Record<string, string | number>;
 	};
 	options?: MergeTagGroup[];
 }
@@ -67,7 +67,7 @@ export interface SingleItemTriggerItem {
 	post_title: string;
 	edit_url: string;
 	event_name: string;
-	mappings: any;
+	mappings: TriggerMapping[];
 }
 
 export interface EchoDashSettings {

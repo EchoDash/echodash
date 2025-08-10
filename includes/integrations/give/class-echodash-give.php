@@ -24,7 +24,7 @@ class EchoDash_Give extends EchoDash_Integration {
 	 * @since 1.6.0
 	 * @var string $name
 	 */
-	public $name = 'Give';
+	public $name = 'GiveWP';
 
 	/**
 	 * Get things started.

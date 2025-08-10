@@ -28,7 +28,6 @@ class EchoDash_Admin {
 	public function __construct() {
 
 		add_action( 'admin_footer', array( $this, 'admin_scripts' ) );
-		add_action( 'admin_menu', array( $this, 'add_settings_submenu' ), 11 );
 		add_action( 'admin_init', array( $this, 'save_echodash_callback' ) );
 
 		add_action( 'wp_ajax_echodash_send_test', array( $this, 'send_event_test' ) );
@@ -155,42 +154,6 @@ class EchoDash_Admin {
 
 		wp_safe_redirect( admin_url( 'options-general.php?page=echodash' ) );
 		exit;
-	}
-
-	/**
-	 * Add event tracking submenu page under settings.
-	 *
-	 * @return void
-	 */
-	public function add_settings_submenu() {
-		add_submenu_page(
-			'options-general.php',
-			__( 'EchoDash', 'echodash' ),
-			__( 'EchoDash', 'echodash' ),
-			'manage_options',
-			'echodash',
-			array( $this, 'submenu_callback' )
-		);
-	}
-
-	/**
-	 * Submenu callback.
-	 *
-	 * @return void
-	 */
-	public function submenu_callback() {
-		?>
-
-		<div class="wrap">
-			<div id="echodash-react-app">
-				<!-- React app will be mounted here -->
-				<div id="echodash-loading" class="ecd-loading">
-					<p><?php esc_html_e( 'Loading EchoDash...', 'echodash' ); ?></p>
-				</div>
-			</div>
-		</div>
-
-		<?php
 	}
 
 	/**

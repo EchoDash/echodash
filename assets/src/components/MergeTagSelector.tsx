@@ -62,8 +62,8 @@ export const MergeTagSelector: React.FC<MergeTagSelectorProps> = ({
 				setPosition({ top, left });
 			} else {
 				// For non-modal context, use absolute positioning
-				let top = buttonRect.bottom + window.scrollY + 2;
-				let left = buttonRect.left + window.scrollX;
+				const top = buttonRect.bottom + window.scrollY + 2;
+				const left = buttonRect.left + window.scrollX;
 				
 				setPosition({ top, left });
 			}
@@ -71,7 +71,7 @@ export const MergeTagSelector: React.FC<MergeTagSelectorProps> = ({
 	}, [isOpen, buttonRef]);
 
 	useEffect(() => {
-		const handleClickOutside = (event: MouseEvent) => {
+		const handleClickOutside = (event: MouseEvent): void => {
 			if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node) &&
 				buttonRef.current && !buttonRef.current.contains(event.target as Node)) {
 				onClose();
@@ -84,7 +84,7 @@ export const MergeTagSelector: React.FC<MergeTagSelectorProps> = ({
 		}
 	}, [isOpen, onClose, buttonRef]);
 
-	const handleSelect = (groupType: string, meta: string) => {
+	const handleSelect = (groupType: string, meta: string): void => {
 		const mergeTag = `{${groupType}:${meta}}`;
 		onSelect(mergeTag);
 		onClose();
@@ -114,11 +114,20 @@ export const MergeTagSelector: React.FC<MergeTagSelectorProps> = ({
 					
 					{/* Group Options */}
 					{group.options.map((option, optionIndex) => (
-						<div
-							key={optionIndex}
-							onClick={() => handleSelect(group.type, option.meta)}
-							className="echodash-merge-dropdown__option"
-						>
+										<div
+					key={optionIndex}
+					onClick={() => handleSelect(group.type, option.meta)}
+					onKeyDown={(e) => {
+						if (e.key === 'Enter' || e.key === ' ') {
+							e.preventDefault();
+							handleSelect(group.type, option.meta);
+						}
+					}}
+					tabIndex={0}
+					role="button"
+					aria-label={`Select merge tag ${group.type}:${option.meta}`}
+					className="echodash-merge-dropdown__option"
+				>
 							<div className="echodash-merge-dropdown__option-tag">
 								{`{${group.type}:${option.meta}}`}
 							</div>

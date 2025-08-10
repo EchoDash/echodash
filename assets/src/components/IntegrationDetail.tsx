@@ -5,7 +5,7 @@
  */
 
 import React, { useState } from 'react';
-import { __, _n } from '@wordpress/i18n';
+import { __ } from '@wordpress/i18n';
 import './IntegrationDetail.css';
 import { EchoDashLogo } from './EchoDashLogo';
 import type { Integration, Trigger } from '../types';
@@ -34,7 +34,7 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 	const [sendingTest, setSendingTest] = useState<string | null>(null);
 	const [sentTest, setSentTest] = useState<string | null>(null);
 
-	const handleSendTest = async (trigger: Trigger) => {
+	const handleSendTest = async (trigger: Trigger): Promise<void> => {
 		setSendingTest(trigger.id);
 		setSentTest(null); // Clear any previous sent state
 		try {
@@ -42,8 +42,8 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 			// Show "Sent!" state for 3 seconds
 			setSentTest(trigger.id);
 			setTimeout(() => setSentTest(null), 3000);
-		} catch (error) {
-			// onSendTest handles error display, just clear loading state
+		} catch {
+			// Error handling is done in App.tsx
 		} finally {
 			setSendingTest(null);
 		}

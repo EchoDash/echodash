@@ -12,8 +12,27 @@ import type {
 	Integration, 
 	Trigger, 
 	SingleItemTriggerGroup, 
-	EchoDashSettings 
+	EchoDashSettings,
+	TriggerMapping
 } from './types';
+
+// Interface for trigger data when saving
+interface TriggerFormData {
+	trigger: string;
+	name: string;
+	mappings: TriggerMapping[];
+	sendTest?: boolean;
+}
+
+// Simple logger utility for development
+const logger = {
+	error: (message: string, data?: unknown): void => {
+		if (process.env.NODE_ENV === 'development') {
+			// eslint-disable-next-line no-console
+			console.error(message, data);
+		}
+	}
+};
 
 // Get global data from PHP
 declare global {
@@ -36,7 +55,7 @@ export const App: React.FC = () => {
 	const [currentView, setCurrentView] = useState<'list' | 'detail'>('list');
 	const [selectedIntegration, setSelectedIntegration] = useState<string | null>(null);
 	const [showTriggerModal, setShowTriggerModal] = useState(false);
-	const [editingTrigger, setEditingTrigger] = useState<any | null>(null);
+	const [editingTrigger, setEditingTrigger] = useState<Trigger | null>(null);
 	const [userTriggers, setUserTriggers] = useState(window.ecdReactData?.userTriggers || {});
 	const [integrations, setIntegrations] = useState(window.ecdReactData?.integrations || []);
 	const [savingTrigger, setSavingTrigger] = useState(false);
@@ -64,7 +83,7 @@ export const App: React.FC = () => {
 
 	// Handle browser back/forward buttons
 	useEffect(() => {
-		const handlePopState = () => {
+		const handlePopState = (): void => {
 			const hash = window.location.hash;
 			if (hash.startsWith('#/integration/')) {
 				const slug = hash.replace('#/integration/', '');
@@ -98,22 +117,22 @@ export const App: React.FC = () => {
 		}
 	}, []);
 
-	const handleIntegrationClick = (slug: string) => {
+	const handleIntegrationClick = (slug: string): void => {
 		setSelectedIntegration(slug);
 		setCurrentView('detail');
 	};
 
-	const handleBackToList = () => {
+	const handleBackToList = (): void => {
 		setCurrentView('list');
 		setSelectedIntegration(null);
 	};
 
-	const handleAddTrigger = () => {
+	const handleAddTrigger = (): void => {
 		setEditingTrigger(null); // Clear any editing state
 		setShowTriggerModal(true);
 	};
 
-	const handleAddTriggerFromList = (slug: string) => {
+	const handleAddTriggerFromList = (slug: string): void => {
 		setSelectedIntegration(slug);
 		setCurrentView('detail');
 		// Small delay to ensure the view has changed before opening modal
@@ -123,12 +142,12 @@ export const App: React.FC = () => {
 		}, 50);
 	};
 
-	const handleEditTrigger = (trigger: any) => {
+	const handleEditTrigger = (trigger: Trigger): void => {
 		setEditingTrigger(trigger);
 		setShowTriggerModal(true);
 	};
 
-	const handleSendTest = async (trigger: any) => {
+	const handleSendTest = async (trigger: Trigger): Promise<void> => {
 		try {
 			// First, generate a preview to process merge tags with real test data
 			const eventConfig = {
@@ -179,16 +198,17 @@ export const App: React.FC = () => {
 				return;
 			} else {
 				const errorData = await testResponse.json();
-				console.error('Failed to send test event:', errorData);
-				alert('Failed to send test event. Please try again.');
+				logger.error('Failed to send test event:', errorData);
+				throw new Error(errorData.message || 'Failed to send test event. Please try again.');
 			}
 		} catch (error) {
-			console.error('Error sending test event:', error);
-			alert('Error sending test event. Please check your connection and try again.');
+			logger.error('Error sending test event:', error);
+			const errorMessage = error instanceof Error ? error.message : 'Error sending test event. Please check your connection and try again.';
+			alert(errorMessage);
 		}
 	};
 
-	const handleDeleteTrigger = async (trigger: any) => {
+	const handleDeleteTrigger = async (trigger: Trigger): Promise<void> => {
 		setDeletingTrigger(trigger.id);
 		try {
 			const url = `${data.apiUrl}integrations/${selectedIntegration}/triggers/${trigger.id}`;
@@ -227,18 +247,19 @@ export const App: React.FC = () => {
 				}
 			} else {
 				const errorData = await response.json();
-				console.error('Failed to delete trigger:', errorData);
-				alert('Failed to delete trigger. Please try again.');
+				logger.error('Failed to delete trigger:', errorData);
+				throw new Error(errorData.message || 'Failed to delete trigger. Please try again.');
 			}
 		} catch (error) {
-			console.error('Error deleting trigger:', error);
-			alert('Error deleting trigger. Please check your connection and try again.');
+			logger.error('Error deleting trigger:', error);
+			const errorMessage = error instanceof Error ? error.message : 'Error deleting trigger. Please check your connection and try again.';
+			alert(errorMessage);
 		} finally {
 			setDeletingTrigger(null);
 		}
 	};
 
-	const handleSaveTrigger = async (triggerData: any) => {
+	const handleSaveTrigger = async (triggerData: TriggerFormData): Promise<void> => {
 		setSavingTrigger(true);
 		try {
 			const isEditing = editingTrigger !== null;
@@ -336,12 +357,13 @@ export const App: React.FC = () => {
 				setEditingTrigger(null);
 			} else {
 				const errorData = await response.json();
-				console.error('Failed to save trigger:', errorData);
-				alert('Failed to save trigger. Please try again.');
+				logger.error('Failed to save trigger:', errorData);
+				throw new Error(errorData.message || 'Failed to save trigger. Please try again.');
 			}
 		} catch (error) {
-			console.error('Error saving trigger:', error);
-			alert('Error saving trigger. Please check your connection and try again.');
+			logger.error('Error saving trigger:', error);
+			const errorMessage = error instanceof Error ? error.message : 'Error saving trigger. Please check your connection and try again.';
+			alert(errorMessage);
 		} finally {
 			setSavingTrigger(false);
 		}
@@ -359,13 +381,13 @@ export const App: React.FC = () => {
 					onAddTrigger={handleAddTriggerFromList}
 				/>
 			) : (
-				selectedIntegrationData && (
+				selectedIntegrationData && selectedIntegration && (
 					<IntegrationDetail
 						integration={{
 							...selectedIntegrationData,
-							singleItemTriggers: userTriggers[selectedIntegration!]?.singleItem || []
+							singleItemTriggers: userTriggers[selectedIntegration]?.singleItem || []
 						}}
-						triggers={userTriggers[selectedIntegration!]?.global || []}
+						triggers={userTriggers[selectedIntegration]?.global || []}
 						onBack={handleBackToList}
 						onAddTrigger={handleAddTrigger}
 						onEditTrigger={handleEditTrigger}

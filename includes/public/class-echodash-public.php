@@ -47,6 +47,10 @@ class EchoDash_Public {
 
 		$this->add_to_queue( $event );
 
+		if ( defined( 'ECHODASH_TEST_EVENT' ) ) {
+			return $this->shutdown();
+		}
+
 		return true;
 	}
 
@@ -65,6 +69,8 @@ class EchoDash_Public {
 	 * Process the queued events on shutdown.
 	 *
 	 * @since 1.0.0
+	 *
+	 * @return WP_Error|true
 	 */
 	public function shutdown() {
 
@@ -75,26 +81,35 @@ class EchoDash_Public {
 		$endpoint = esc_url( echodash_get_option( 'endpoint' ) );
 
 		if ( empty( $endpoint ) ) {
-			return;
+			return new WP_Error( 'echodash_no_endpoint', __( 'No endpoint found', 'echodash' ) );
 		}
 
-		foreach ( $this->events as $event ) {
+		foreach ( $this->events as $i => $event ) {
 
-			wp_remote_post(
-				$endpoint,
-				array(
-					'headers'    => array(
-						'Content-Type'  => 'application/json',
-						'ecd-summarize' => 'false',
-						'ecd-source'    => $event['source'],
-						'ecd-event'     => $event['event'],
-					),
-					'body'       => wp_json_encode( $event ),
-					'blocking'   => false,
-					'user-agent' => 'EchoDash ' . ECHODASH_VERSION . '; ' . home_url(),
-				)
+			$params = array(
+				'headers'    => array(
+					'Content-Type'  => 'application/json',
+					'ecd-summarize' => 'false',
+					'ecd-source'    => $event['source'],
+					'ecd-event'     => $event['event'],
+				),
+				'body'       => wp_json_encode( $event ),
+				'blocking'   => defined( 'ECHODASH_TEST_EVENT' ) ? true : false,
+				'user-agent' => 'EchoDash ' . ECHODASH_VERSION . '; ' . home_url(),
 			);
 
+			$result = wp_remote_post( $endpoint, $params );
+
+			unset( $this->events[ $i ] );
+
+			if ( is_wp_error( $result ) ) {
+				return $result;
+			} elseif ( 202 !== wp_remote_retrieve_response_code( $result ) ) {
+				// translators: %s is the endpoint URL, %d is the status code.
+				return new WP_Error( 'echodash_send_failed', sprintf( __( 'Failed to send event to endpoint: %1$s. Status code: %2$d', 'echodash' ), $endpoint, wp_remote_retrieve_response_code( $result ) ) );
+			}
 		}
+
+		return true;
 	}
 }

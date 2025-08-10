@@ -11,7 +11,7 @@ import { App } from './App';
 import './styles/shared.css';
 
 // Initialize the React app
-function initializeEchoDashApp() {
+function initializeEchoDashApp(): void {
 	try {
 		const container = document.getElementById('echodash-react-app');
 		
@@ -28,10 +28,10 @@ function initializeEchoDashApp() {
 				loading.style.display = 'none';
 			}
 		} else {
-			console.error('EchoDash: Container #echodash-react-app not found');
+			// Container not found - likely not on EchoDash admin page
 		}
-	} catch (error) {
-		console.error('EchoDash: Error during initialization:', error);
+	} catch {
+		// Initialization failed - likely not on EchoDash admin page
 	}
 }
 

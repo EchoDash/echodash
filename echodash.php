@@ -26,7 +26,7 @@
  */
 
 /**
- * @copyright Copyright (c) 2024. All rights reserved.
+ * @copyright Copyright (c) 2025. All rights reserved.
  *
  * @license   Released under the GPL license http://www.opensource.org/licenses/gpl-license.php
  *

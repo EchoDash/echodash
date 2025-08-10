@@ -254,32 +254,32 @@ class EchoDash_WooCommerce extends EchoDash_Integration {
 				array(
 					'meta'        => 'billing_first_name',
 					'preview'     => 'John',
-					'placeholder' => __( 'The Customer billing first Name', 'echodash' ),
+					'placeholder' => __( 'The customer billing first name', 'echodash' ),
 				),
 				array(
 					'meta'        => 'billing_last_name',
 					'preview'     => 'Doe',
-					'placeholder' => __( 'The Customer billing last Name', 'echodash' ),
+					'placeholder' => __( 'The customer billing last name', 'echodash' ),
 				),
 				array(
 					'meta'        => 'billing_email',
 					'preview'     => 'john.doe@email.com',
-					'placeholder' => __( 'The Customer billing email address', 'echodash' ),
+					'placeholder' => __( 'The customer billing email address', 'echodash' ),
 				),
 				array(
 					'meta'        => 'billing_address',
 					'preview'     => '906 Second Avenue',
-					'placeholder' => __( 'The Customer billing address', 'echodash' ),
+					'placeholder' => __( 'The customer billing address', 'echodash' ),
 				),
 				array(
 					'meta'        => 'billing_city',
 					'preview'     => 'New York',
-					'placeholder' => __( 'The Customer billing city', 'echodash' ),
+					'placeholder' => __( 'The customer billing city', 'echodash' ),
 				),
 				array(
 					'meta'        => 'billing_country',
 					'preview'     => 'United States',
-					'placeholder' => __( 'The Customer billing country', 'echodash' ),
+					'placeholder' => __( 'The customer billing country', 'echodash' ),
 				),
 				array(
 					'meta'        => 'payment_method',
@@ -289,7 +289,7 @@ class EchoDash_WooCommerce extends EchoDash_Integration {
 				array(
 					'meta'        => 'customer_note',
 					'preview'     => 'Note Example',
-					'placeholder' => __( 'The Customer order note', 'echodash' ),
+					'placeholder' => __( 'The customer order note', 'echodash' ),
 				),
 			),
 		);

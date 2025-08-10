@@ -23,13 +23,33 @@ class EchoDash_React_Admin {
 
 		// Core hooks
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_react_assets' ) );
+		add_action( 'admin_menu', array( $this, 'add_settings_submenu' ) );
 
 		// Asset optimization hooks
 		add_filter( 'script_loader_tag', array( $this, 'add_script_attributes' ), 10, 3 );
 	}
 
+
+	/**
+	 * Add EchoDash submenu page under settings.
+	 *
+	 * @since 2.0.0
+	 */
+	public function add_settings_submenu() {
+		add_submenu_page(
+			'options-general.php',
+			__( 'EchoDash', 'echodash' ),
+			__( 'EchoDash', 'echodash' ),
+			'manage_options',
+			'echodash',
+			array( $this, 'render_react_container' )
+		);
+	}
+
 	/**
 	 * Enqueue React assets with performance optimization
+	 *
+	 * @since 2.0.0
 	 */
 	public function enqueue_react_assets( $hook ) {
 		// Only load on EchoDash settings page
@@ -38,10 +58,14 @@ class EchoDash_React_Admin {
 		}
 
 		// Load asset file
-		$asset_file = include ECHODASH_DIR_PATH . 'assets/dist/index.asset.php';
+		$asset_path = ECHODASH_DIR_PATH . 'assets/dist/index.asset.php';
+		if ( ! file_exists( $asset_path ) ) {
+			return;
+		}
+		$asset_file = include $asset_path;
 
 		// Enqueue vendor chunks first (if they exist)
-		$this->enqueue_vendor_chunks( $asset_file );
+		$this->enqueue_vendor_chunks( $asset_file, $asset_path );
 
 		// Enqueue main React script with optimization
 		wp_enqueue_script(
@@ -73,6 +97,8 @@ class EchoDash_React_Admin {
 
 	/**
 	 * Enqueue vendor chunks for better caching
+	 *
+	 * @since 2.0.0
 	 */
 	private function enqueue_vendor_chunks( $asset_file ) {
 		// Check for vendor chunk
@@ -102,6 +128,8 @@ class EchoDash_React_Admin {
 
 	/**
 	 * Get localized data for React app with caching
+	 *
+	 * @since 2.0.0
 	 */
 	private function get_localized_data() {
 
@@ -174,6 +202,8 @@ class EchoDash_React_Admin {
 
 	/**
 	 * Render React container with loading states
+	 *
+	 * @since 2.0.0
 	 */
 	public function render_react_container() {
 		$screen = get_current_screen();
@@ -230,6 +260,8 @@ class EchoDash_React_Admin {
 
 	/**
 	 * Add script attributes for performance optimization
+	 *
+	 * @since 2.0.0
 	 */
 	public function add_script_attributes( $tag, $handle, $src ) {
 		// Add defer to non-critical scripts only
@@ -243,6 +275,8 @@ class EchoDash_React_Admin {
 
 	/**
 	 * Get integrations data with full trigger information
+	 *
+	 * @since 2.0.0
 	 */
 	private function get_integrations_data() {
 		$echodash     = echodash();
@@ -274,7 +308,7 @@ class EchoDash_React_Admin {
 				}
 
 				foreach ( $settings[ $slug ] as $trigger_data ) {
-					$id                       = $trigger_data['trigger'] . '_' . time();
+					$id                       = $trigger_data['trigger'] . '_' . uniqid( '', true );
 					$trigger_data['mappings'] = $trigger_data['value'];
 					unset( $trigger_data['value'] );
 					$settings['integrations'][ $slug ]['triggers'][ $id ] = $trigger_data;
@@ -284,10 +318,6 @@ class EchoDash_React_Admin {
 
 				$needs_update = true;
 
-			}
-
-			if ( $needs_update ) {
-				update_option( 'echodash_options', $settings );
 			}
 
 			// Load configured triggers from the correct settings path
@@ -324,7 +354,7 @@ class EchoDash_React_Admin {
 						foreach ( $single_events as $event ) {
 							// Get post title and edit URL
 							$post_title = isset( $event['post_title'] ) ? $event['post_title'] : get_the_title( $event['post_id'] );
-							$edit_url   = isset( $event['edit_url'] ) ? $event['edit_url'] : get_edit_post_link( $event['post_id'], '', 'raw' ) . '#echodash';
+							$edit_url   = isset( $event['edit_url'] ) ? $event['edit_url'] : get_edit_post_link( $event['post_id'], 'raw' ) . '#echodash';
 
 							$grouped_events[] = array(
 								'post_id'    => $event['post_id'],
@@ -381,7 +411,12 @@ class EchoDash_React_Admin {
 			);
 		}
 
-		// Sort integrations alphabetically by name
+		// Update the options after migrating to 2.0.
+		if ( $needs_update ) {
+			update_option( 'echodash_options', $settings );
+		}
+
+		// Sort integrations alphabetically by name.
 		usort(
 			$integrations,
 			function ( $a, $b ) {
@@ -393,7 +428,7 @@ class EchoDash_React_Admin {
 	}
 }
 
-// Initialize React admin if in admin area
+// Initialize React admin if in admin area.
 if ( is_admin() ) {
 	new EchoDash_React_Admin();
 }
