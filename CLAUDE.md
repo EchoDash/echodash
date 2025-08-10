@@ -401,6 +401,50 @@ public function get_user_data() { /* not needed */ }
 - **API First**: All data changes work through the REST API
 - **Backward Compatibility**: Maintain compatibility with existing integrations
 
+### Documentation Standards
+- Only use `@access` tags for non-public methods and properties
+- Public methods and properties should not include `@access` tags
+- **ALWAYS use `x.x.x` as the version placeholder for new code** - this makes it easy to update all new additions during release
+
+**Class docblocks:**
+```php
+/**
+ * Class description.
+ *
+ * @package EchoDash
+ * @since x.x.x
+ */
+```
+
+**Method docblocks:**
+```php
+/**
+ * Method description.
+ *
+ * @since x.x.x
+ *
+ * @param  string $param Description.
+ * @return mixed Description.
+ */
+```
+
+**Property docblocks:**
+```php
+/**
+ * Property description.
+ *
+ * @since x.x.x
+ * @var string $property_name
+ */
+```
+
+**Version Tagging Guidelines:**
+- **New classes**: Use `@since x.x.x`
+- **New methods**: Use `@since x.x.x`
+- **New properties**: Use `@since x.x.x`
+- **Modified existing code**: Keep existing `@since` tags unchanged
+- **Before release**: Find and replace all `x.x.x` with the actual version number
+
 ### Performance Guidelines
 - **Bundle Monitoring**: Regular bundle size analysis and optimization
 - **API Optimization**: Efficient data structures and caching strategies

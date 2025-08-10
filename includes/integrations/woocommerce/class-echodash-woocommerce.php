@@ -69,11 +69,10 @@ class EchoDash_WooCommerce extends EchoDash_Integration {
 				'name'               => __( 'Order Placed', 'echodash' ),
 				'description'        => __( 'Triggered each time a WooCommerce order is placed.', 'echodash' ),
 				'has_global'         => true,
-				'placeholder'        => 'Order',
 				'option_types'       => array( 'order' ),
 				'enabled_by_default' => true,
 				'default_event'      => array(
-					'name'     => 'Order Placed',
+					'name'     => __( 'Order Placed', 'echodash' ),
 					'mappings' => array(
 						'order_id'       => '{order:id}',
 						'total'          => '{order:total}',
@@ -92,7 +91,7 @@ class EchoDash_WooCommerce extends EchoDash_Integration {
 				'option_types'       => array( 'product', 'order' ),
 				'enabled_by_default' => false,
 				'default_event'      => array(
-					'name'     => 'Product Purchase',
+					'name'     => __( 'Product Purchase', 'echodash' ),
 					'mappings' => array(
 						'product_id'     => '{product:id}',
 						'product_name'   => '{product:title}',
@@ -106,16 +105,31 @@ class EchoDash_WooCommerce extends EchoDash_Integration {
 				'name'               => __( 'Order Status Changed', 'echodash' ),
 				'description'        => __( 'Triggered when a WooCommerce order status changes.', 'echodash' ),
 				'has_global'         => true,
-				'placeholder'        => 'Order',
 				'option_types'       => array( 'order' ),
 				'enabled_by_default' => true,
 				'default_event'      => array(
-					'name'     => 'Order Status Update',
+					'name'     => __( 'Order Status Update', 'echodash' ),
 					'mappings' => array(
 						'order_id'       => '{order:id}',
 						'old_status'     => '{order:old_status}',
 						'new_status'     => '{order:status}',
 						'total'          => '{order:total}',
+						'customer_email' => '{order:billing_email}',
+					),
+				),
+			),
+			'coupon_used'          => array(
+				'name'               => __( 'Coupon Used', 'echodash' ),
+				'description'        => __( 'Triggered when a coupon is used on a WooCommerce order.', 'echodash' ),
+				'has_global'         => true,
+				'option_types'       => array( 'coupon', 'order' ),
+				'enabled_by_default' => false,
+				'default_event'      => array(
+					'name'     => __( 'Coupon Used', 'echodash' ),
+					'mappings' => array(
+						'coupon_code'    => '{coupon:code}',
+						'coupon_amount'  => '{coupon:amount}',
+						'order_total'    => '{order:total}',
 						'customer_email' => '{order:billing_email}',
 					),
 				),
@@ -137,6 +151,10 @@ class EchoDash_WooCommerce extends EchoDash_Integration {
 
 		$order = wc_get_order( $order_id );
 
+		if ( ! $order instanceof WC_Order ) {
+			return;
+		}
+
 		$this->track_event(
 			'order_placed',
 			array(
@@ -144,6 +162,27 @@ class EchoDash_WooCommerce extends EchoDash_Integration {
 				'user'  => $order->get_user_id(),
 			)
 		);
+
+		// Track coupon usage if coupons were used.
+		$used_coupons = $order->get_coupon_codes();
+		if ( ! empty( $used_coupons ) ) {
+			foreach ( $used_coupons as $coupon_code ) {
+
+				$coupon_code = trim( (string) $coupon_code );
+				if ( '' === $coupon_code ) {
+					continue;
+				}
+
+				$this->track_event(
+					'coupon_used',
+					array(
+						'coupon' => $coupon_code,
+						'order'  => $order_id,
+						'user'   => $order->get_user_id(),
+					)
+				);
+			}
+		}
 	}
 
 	/**
@@ -466,6 +505,95 @@ class EchoDash_WooCommerce extends EchoDash_Integration {
 		}
 
 		return $vars;
+	}
+
+	/**
+	 * Gets the coupon options.
+	 *
+	 * @since  2.0.0
+	 *
+	 * @return array The coupon options.
+	 */
+	public function get_coupon_options() {
+
+		return array(
+			'name'    => __( 'Coupon', 'echodash' ),
+			'type'    => 'coupon',
+			'options' => array(
+				array(
+					'meta'        => 'code',
+					'preview'     => 'SAVE20',
+					'placeholder' => __( 'The coupon code', 'echodash' ),
+				),
+				array(
+					'meta'        => 'amount',
+					'preview'     => '20.00',
+					'placeholder' => __( 'The coupon discount amount', 'echodash' ),
+				),
+				array(
+					'meta'        => 'discount_type',
+					'preview'     => 'percent',
+					'placeholder' => __( 'The coupon discount type', 'echodash' ),
+				),
+				array(
+					'meta'        => 'description',
+					'preview'     => 'Save 20% on your order',
+					'placeholder' => __( 'The coupon description', 'echodash' ),
+				),
+				array(
+					'meta'        => 'usage_count',
+					'preview'     => 5,
+					'placeholder' => __( 'Number of times the coupon has been used', 'echodash' ),
+				),
+				array(
+					'meta'        => 'usage_limit',
+					'preview'     => 100,
+					'placeholder' => __( 'The coupon usage limit', 'echodash' ),
+				),
+				array(
+					'meta'        => 'minimum_amount',
+					'preview'     => '50.00',
+					'placeholder' => __( 'The minimum order amount required', 'echodash' ),
+				),
+				array(
+					'meta'        => 'maximum_amount',
+					'preview'     => '500.00',
+					'placeholder' => __( 'The maximum order amount allowed', 'echodash' ),
+				),
+			),
+		);
+	}
+
+	/**
+	 * Gets the coupon variables.
+	 *
+	 * @since  2.0.0
+	 *
+	 * @param  string $coupon_code The coupon code.
+	 * @return array The coupon variables.
+	 */
+	public function get_coupon_vars( $coupon_code ) {
+
+		$coupon = new WC_Coupon( $coupon_code );
+
+		if ( ! $coupon->get_id() ) {
+			return array();
+		}
+
+		$data = $coupon->get_data();
+
+		return array(
+			'coupon' => array(
+				'code'           => $data['code'],
+				'amount'         => $data['amount'],
+				'discount_type'  => $data['discount_type'],
+				'description'    => $data['description'],
+				'usage_count'    => $data['usage_count'],
+				'usage_limit'    => $data['usage_limit'],
+				'minimum_amount' => $data['minimum_amount'],
+				'maximum_amount' => $data['maximum_amount'],
+			),
+		);
 	}
 }
 

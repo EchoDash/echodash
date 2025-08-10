@@ -72,7 +72,7 @@ class EchoDash_EDD extends EchoDash_Integration {
 				'option_types'       => array( 'download', 'payment' ),
 				'enabled_by_default' => true,
 				'default_event'      => array(
-					'name'     => 'Download Purchase',
+					'name'     => __( 'Download Purchase', 'echodash' ),
 					'mappings' => array(
 						'download_name'  => '{download:title}',
 						'download_price' => '{download:price}',
@@ -91,11 +91,26 @@ class EchoDash_EDD extends EchoDash_Integration {
 				'option_types'       => array( 'download', 'file' ),
 				'enabled_by_default' => true,
 				'default_event'      => array(
-					'name'     => 'File Download',
+					'name'     => __( 'File Download', 'echodash' ),
 					'mappings' => array(
 						'download_name' => '{download:title}',
 						'file_name'     => '{file:name}',
 						'file_path'     => '{file:file}',
+					),
+				),
+			),
+			'discount_used'       => array(
+				'name'               => __( 'Discount Used', 'echodash' ),
+				'description'        => __( 'Triggered when a discount is used on a completed EDD purchase.', 'echodash' ),
+				'has_global'         => true,
+				'option_types'       => array( 'discount', 'payment' ),
+				'enabled_by_default' => false,
+				'default_event'      => array(
+					'name'     => __( 'Discount Used', 'echodash' ),
+					'mappings' => array(
+						'discount_code'   => '{discount:code}',
+						'discount_amount' => '{discount:amount}',
+						'payment_total'   => '{payment:total}',
 					),
 				),
 			),
@@ -126,6 +141,30 @@ class EchoDash_EDD extends EchoDash_Integration {
 					'payment'  => $payment_id,
 				)
 			);
+		}
+
+		// Track discount usage if discounts were used.
+		if ( ! empty( $payment->discounts ) ) {
+			$discounts = $payment->discounts;
+			if ( ! is_array( $discounts ) ) {
+				$discounts = array_map( 'trim', explode( ',', (string) $discounts ) );
+			} else {
+				$discounts = array_map( 'trim', $discounts );
+			}
+			$discounts = array_filter( array_unique( $discounts ) );
+			foreach ( $discounts as $discount_code ) {
+				// Remove "none" (EDD sometimes adds this).
+				if ( '' === $discount_code || 0 === strcasecmp( $discount_code, 'none' ) ) {
+					continue;
+				}
+				$this->track_event(
+					'discount_used',
+					array(
+						'discount' => $discount_code,
+						'payment'  => $payment_id,
+					)
+				);
+			}
 		}
 	}
 
@@ -369,6 +408,93 @@ class EchoDash_EDD extends EchoDash_Integration {
 			'file' => array(
 				'name' => $file['name'],
 				'file' => basename( $file['file'] ),
+			),
+		);
+	}
+
+	/**
+	 * Gets the discount options.
+	 *
+	 * @since  2.0.0
+	 *
+	 * @return array The discount options.
+	 */
+	public function get_discount_options() {
+
+		return array(
+			'name'    => __( 'Discount', 'echodash' ),
+			'type'    => 'discount',
+			'options' => array(
+				array(
+					'meta'        => 'code',
+					'preview'     => 'SAVE20',
+					'placeholder' => __( 'The discount code', 'echodash' ),
+				),
+				array(
+					'meta'        => 'amount',
+					'preview'     => '20.00',
+					'placeholder' => __( 'The discount amount', 'echodash' ),
+				),
+				array(
+					'meta'        => 'type',
+					'preview'     => 'percent',
+					'placeholder' => __( 'The discount type', 'echodash' ),
+				),
+				array(
+					'meta'        => 'status',
+					'preview'     => 'active',
+					'placeholder' => __( 'The discount status', 'echodash' ),
+				),
+				array(
+					'meta'        => 'uses',
+					'preview'     => 5,
+					'placeholder' => __( 'Number of times the discount has been used', 'echodash' ),
+				),
+				array(
+					'meta'        => 'max_uses',
+					'preview'     => 100,
+					'placeholder' => __( 'The discount usage limit', 'echodash' ),
+				),
+				array(
+					'meta'        => 'min_price',
+					'preview'     => '50.00',
+					'placeholder' => __( 'The minimum order amount required', 'echodash' ),
+				),
+			),
+		);
+	}
+
+	/**
+	 * Gets the discount variables.
+	 *
+	 * @since  2.0.0
+	 *
+	 * @param  string $discount_code The discount code.
+	 * @return array The discount variables.
+	 */
+	public function get_discount_vars( $discount_code ) {
+
+		$discount_id = edd_get_discount_id_by_code( $discount_code );
+
+		if ( ! $discount_id ) {
+			return array();
+		}
+
+		$discount = edd_get_discount( $discount_id );
+
+		if ( ! $discount ) {
+			return array();
+		}
+
+		return array(
+			'discount' => array(
+				'code'      => $discount->code,
+				'amount'    => $discount->amount,
+				'type'      => $discount->type,
+				'status'    => $discount->status,
+				'uses'      => $discount->uses,
+				'max_uses'  => $discount->max_uses,
+				'min_price' => $discount->min_price,
 			),
 		);
 	}
