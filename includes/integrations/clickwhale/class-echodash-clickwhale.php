@@ -227,7 +227,6 @@ class EchoDash_ClickWhale extends EchoDash_Integration {
 			wp_cache_set( $cache_key, $click_count, 'echodash', 300 ); // 5 min cache
 		}
 
-
 		return array(
 			'link' => array(
 				'title'         => $link['title'],
