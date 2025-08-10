@@ -209,10 +209,11 @@ class EchoDash_ClickWhale extends EchoDash_Integration {
 		$click_count = 0;
 		global $wpdb;
 		$track_table = $wpdb->prefix . 'clickwhale_track';
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery
 		$click_count = (int) $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT COUNT(*) FROM {$track_table} WHERE link_id = %d AND event_type = 'click'",
+				"SELECT COUNT(*) FROM %i WHERE link_id = %d AND event_type = 'click'",
+				$track_table,
 				$link_id
 			)
 		);
