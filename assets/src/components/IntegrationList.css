@@ -60,6 +60,14 @@
 	padding-left: 45px;
 }
 
+.echodash-welcome__field-group .echodash-saving-indicator {
+	position: absolute;
+	right: var(--ecd-spacing-md);
+	top: 50%;
+	transform: translateY(-50%);
+	opacity: 0.75;
+}
+
 .echodash-welcome .echodash-input-wrapper.echodash-input-wrapper--endpoint-url::before {
 	content: "URL:";
 	position: absolute;

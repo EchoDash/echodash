@@ -587,7 +587,7 @@ describe('API Integration Tests', () => {
 			window.ecdReactData = {
 				...originalData,
 				nonce: undefined,
-			} as any;
+			} as typeof window.ecdReactData;
 
 			mockFetchResponse({});
 
@@ -666,10 +666,12 @@ describe('API Integration Tests', () => {
 					const body = JSON.parse(fetchCall[1]!.body as string);
 
 					// Should only include mappings with both key and value
-					body.mappings.forEach((mapping: any) => {
-						expect(mapping.key).toBeTruthy();
-						expect(mapping.value).toBeTruthy();
-					});
+					body.mappings.forEach(
+						(mapping: { key: string; value: string }) => {
+							expect(mapping.key).toBeTruthy();
+							expect(mapping.value).toBeTruthy();
+						}
+					);
 				}
 			});
 		});

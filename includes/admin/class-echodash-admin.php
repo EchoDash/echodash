@@ -36,7 +36,6 @@ class EchoDash_Admin {
 		add_action( 'admin_init', array( $this, 'save_echodash_callback' ) );
 
 		add_action( 'wp_ajax_echodash_send_test', array( $this, 'send_event_test' ) );
-		add_action( 'wp_ajax_echodash_reset_to_defaults', array( $this, 'reset_to_defaults' ) );
 	}
 
 	/**
@@ -243,27 +242,5 @@ class EchoDash_Admin {
 		if ( $modified ) {
 			update_option( 'echodash_options', $settings, false );
 		}
-	}
-
-	/**
-	 * Reset all integration settings to defaults while preserving the endpoint URL.
-	 *
-	 * @since 1.0.0
-	 */
-	public function reset_to_defaults() {
-		check_ajax_referer( 'echodash_ajax_nonce', '_ajax_nonce' );
-
-		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( 'insufficient_permissions' );
-		}
-
-		// Delete existing settings to force initialize_default_settings to recreate them.
-		delete_option( 'echodash_options' );
-		delete_option( 'echodash_endpoint' );
-
-		// Initialize defaults.
-		$this->initialize_default_settings();
-
-		wp_send_json_success();
 	}
 }

@@ -292,7 +292,10 @@ describe('IntegrationList Component', () => {
 
 		it('shows saving indicator during save operation', async () => {
 			// Create a promise that we can control
-			let resolvePromise!: (value: any) => void;
+			let resolvePromise!: (value: {
+				ok: boolean;
+				json: () => Promise<Record<string, unknown>>;
+			}) => void;
 			const savePromise = new Promise(resolve => {
 				resolvePromise = resolve;
 			});
@@ -301,7 +304,7 @@ describe('IntegrationList Component', () => {
 				savePromise.then(() => ({
 					ok: true,
 					json: async () => ({}),
-				})) as any
+				})) as Promise<Response>
 			);
 
 			render(
@@ -383,7 +386,7 @@ describe('IntegrationList Component', () => {
 			window.ecdReactData = {
 				...originalData,
 				apiUrl: undefined,
-			} as any;
+			} as typeof window.ecdReactData;
 
 			const mockAlert = jest.spyOn(window, 'alert');
 

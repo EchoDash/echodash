@@ -248,15 +248,15 @@ export const App: React.FC = () => {
 						t => t.id !== trigger.id
 					);
 
-					setUserTriggers({
-						...userTriggers,
+					setUserTriggers(prevUserTriggers => ({
+						...prevUserTriggers,
 						[selectedIntegration]: {
 							global: updatedTriggers,
 							singleItem:
-								userTriggers[selectedIntegration]?.singleItem ||
-								[],
+								prevUserTriggers[selectedIntegration]
+									?.singleItem || [],
 						},
-					});
+					}));
 
 					// Update integration trigger count
 					setIntegrations(prev =>
@@ -326,6 +326,8 @@ export const App: React.FC = () => {
 				if (selectedIntegration) {
 					const integrationTriggers =
 						userTriggers[selectedIntegration]?.global || [];
+					const singleItemTriggers =
+						userTriggers[selectedIntegration]?.singleItem || [];
 
 					// Get the description from the integration's available triggers
 					const selectedIntegrationData = integrations.find(
@@ -339,32 +341,65 @@ export const App: React.FC = () => {
 						availableTrigger?.description || '';
 
 					if (isEditing) {
-						// Update existing trigger
-						const updatedTriggers = integrationTriggers.map(t =>
-							t.id === editingTrigger.id
-								? {
-										...t,
-										id: result.id || editingTrigger.id,
-										name: triggerData.name,
-										trigger: triggerData.trigger,
-										event_name: triggerData.name,
-										mappings: triggerData.mappings,
-										description: triggerDescription,
-										enabled: true,
-								  }
-								: t
+						// Check if trigger exists in global triggers
+						const isInGlobal = integrationTriggers.some(
+							t => t.id === editingTrigger.id
 						);
-						setUserTriggers({
-							...userTriggers,
-							[selectedIntegration]: {
-								global: updatedTriggers,
-								singleItem:
-									userTriggers[selectedIntegration]
-										?.singleItem || [],
-							},
-						});
+
+						if (isInGlobal) {
+							// Update existing trigger in global array
+							const updatedTriggers = integrationTriggers.map(
+								t =>
+									t.id === editingTrigger.id
+										? {
+												...t,
+												id:
+													result.id ||
+													editingTrigger.id,
+												name: triggerData.name,
+												trigger: triggerData.trigger,
+												event_name: triggerData.name,
+												mappings: triggerData.mappings,
+												description: triggerDescription,
+												enabled: true,
+										  }
+										: t
+							);
+							setUserTriggers(prevUserTriggers => ({
+								...prevUserTriggers,
+								[selectedIntegration]: {
+									global: updatedTriggers,
+									singleItem: singleItemTriggers,
+								},
+							}));
+						} else {
+							// Update existing trigger in singleItem array
+							const updatedSingleItemTriggers =
+								singleItemTriggers.map(group => ({
+									...group,
+									items: group.items.map(item =>
+										item.post_id.toString() ===
+										editingTrigger.id
+											? {
+													...item,
+													event_name:
+														triggerData.name,
+													mappings:
+														triggerData.mappings,
+											  }
+											: item
+									),
+								}));
+							setUserTriggers(prevUserTriggers => ({
+								...prevUserTriggers,
+								[selectedIntegration]: {
+									global: integrationTriggers,
+									singleItem: updatedSingleItemTriggers,
+								},
+							}));
+						}
 					} else {
-						// Add new trigger
+						// Add new trigger (always goes to global array for new triggers)
 						const newTrigger = {
 							id: result.id || Date.now().toString(),
 							name: triggerData.name,
@@ -375,15 +410,13 @@ export const App: React.FC = () => {
 							enabled: true,
 						};
 
-						setUserTriggers({
-							...userTriggers,
+						setUserTriggers(prevUserTriggers => ({
+							...prevUserTriggers,
 							[selectedIntegration]: {
 								global: [...integrationTriggers, newTrigger],
-								singleItem:
-									userTriggers[selectedIntegration]
-										?.singleItem || [],
+								singleItem: singleItemTriggers,
 							},
-						});
+						}));
 
 						// Update integration trigger count for new triggers only
 						setIntegrations(prev =>

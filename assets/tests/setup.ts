@@ -390,7 +390,11 @@ beforeEach(() => {
 });
 
 // Global test utilities
-export const mockFetchResponse = (data: any, status = 200, ok = true): void => {
+export const mockFetchResponse = (
+	data: Record<string, unknown>,
+	status = 200,
+	ok = true
+): void => {
 	(fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce({
 		ok,
 		status,

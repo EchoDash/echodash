@@ -45,7 +45,19 @@ class EchoDash_REST_API extends WP_REST_Controller {
 					'methods'             => WP_REST_Server::CREATABLE,
 					'callback'            => array( $this, 'update_settings' ),
 					'permission_callback' => array( $this, 'update_settings_permissions_check' ),
-					'args'                => $this->get_endpoint_args_for_item_schema( WP_REST_Server::CREATABLE ),
+					'args'                => array(
+						'endpoint' => array(
+							'description'       => __( 'EchoDash endpoint URL', 'echodash' ),
+							'type'              => 'string',
+							'required'          => false,
+							'sanitize_callback' => 'esc_url_raw',
+						),
+						'settings' => array(
+							'description' => __( 'Plugin settings payload', 'echodash' ),
+							'type'        => 'object',
+							'required'    => false,
+						),
+					),
 				),
 			)
 		);
@@ -487,12 +499,12 @@ class EchoDash_REST_API extends WP_REST_Controller {
 			'name'     => array(
 				'description' => __( 'Event name', 'echodash' ),
 				'type'        => 'string',
-				'required'    => false,
+				'required'    => true,
 			),
 			'mappings' => array(
 				'description' => __( 'Event property mappings', 'echodash' ),
 				'type'        => 'array',
-				'required'    => false,
+				'required'    => true,
 			),
 		);
 	}
@@ -509,12 +521,12 @@ class EchoDash_REST_API extends WP_REST_Controller {
 			'name'     => array(
 				'description' => __( 'Event name', 'echodash' ),
 				'type'        => 'string',
-				'required'    => false,
+				'required'    => true,
 			),
 			'mappings' => array(
 				'description' => __( 'Event property mappings', 'echodash' ),
 				'type'        => 'array',
-				'required'    => false,
+				'required'    => true,
 			),
 		);
 	}

@@ -19,7 +19,13 @@ import type { Trigger } from './types';
 
 // Mock the child components to isolate App component testing
 jest.mock('./components/IntegrationList', () => ({
-	IntegrationList: ({ onIntegrationClick, onAddTrigger }: any) => (
+	IntegrationList: ({
+		onIntegrationClick,
+		onAddTrigger,
+	}: {
+		onIntegrationClick: (slug: string) => void;
+		onAddTrigger: (slug: string) => void;
+	}) => (
 		<div data-testid="integration-list">
 			<button onClick={() => onIntegrationClick('woocommerce')}>
 				Go to WooCommerce
@@ -40,7 +46,15 @@ jest.mock('./components/IntegrationDetail', () => ({
 		onEditTrigger,
 		onDeleteTrigger,
 		onSendTest,
-	}: any) => (
+	}: {
+		integration: { name: string };
+		triggers: Trigger[];
+		onBack: () => void;
+		onAddTrigger: () => void;
+		onEditTrigger: (trigger: Trigger) => void;
+		onDeleteTrigger: (trigger: Trigger) => void;
+		onSendTest: (trigger: Trigger) => void;
+	}) => (
 		<div data-testid="integration-detail">
 			<h1>{integration.name}</h1>
 			<button onClick={onBack}>Back to List</button>
@@ -78,7 +92,17 @@ jest.mock('./components/TriggerModal', () => ({
 		onSave,
 		editingTrigger,
 		integration,
-	}: any) => {
+	}: {
+		isOpen: boolean;
+		onClose: () => void;
+		onSave: (data: {
+			trigger: string;
+			name: string;
+			mappings: { key: string; value: string }[];
+		}) => void;
+		editingTrigger?: Trigger;
+		integration: { name: string };
+	}) => {
 		if (!isOpen) return null;
 
 		const handleSave = (): void => {
@@ -119,7 +143,8 @@ describe('App Component', () => {
 
 		it('renders with default data when window.ecdReactData is undefined', () => {
 			const originalData = window.ecdReactData;
-			delete (window as any).ecdReactData;
+			delete (window as unknown as { ecdReactData?: unknown })
+				.ecdReactData;
 
 			render(<App />);
 
@@ -506,14 +531,14 @@ describe('App Component', () => {
 
 			// Mock URL search params
 			const originalLocation = window.location;
-			delete (window as any).location;
+			delete (window as unknown as { location?: Location }).location;
 			window.location = {
 				href: 'http://localhost/',
 				pathname: '/',
 				search: '?page=echodash&endpoint_url=https://test.com&wpnonce=abc123',
 				hash: '',
 				reload: mockReload,
-			} as any;
+			} as Location;
 
 			render(<App />);
 
@@ -582,9 +607,232 @@ describe('App Component', () => {
 
 			mockAlert.mockRestore();
 		});
+
+		it('handles preview API error during test event', async () => {
+			// Mock failed preview response (line 185)
+			(fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce({
+				ok: false,
+				status: 400,
+				json: async () => ({
+					message: 'Failed to generate event preview',
+				}),
+			} as Response);
+
+			const mockAlert = jest.spyOn(window, 'alert').mockImplementation();
+
+			render(<App />);
+
+			fireEvent.click(screen.getByText('Go to WooCommerce'));
+			await waitFor(() => screen.getByTestId('integration-detail'));
+			const sendTestButton = screen.getAllByText('Send Test')[0];
+			fireEvent.click(sendTestButton);
+
+			await waitFor(() => {
+				expect(mockAlert).toHaveBeenCalledWith(
+					expect.stringContaining('Failed to generate event preview')
+				);
+			});
+
+			mockAlert.mockRestore();
+		});
+
+		it('handles trigger deletion error response', async () => {
+			// Mock error response for deletion (lines 278-280)
+			(fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce({
+				ok: false,
+				status: 400,
+				json: async () => ({ message: 'Failed to delete trigger' }),
+			} as Response);
+
+			const mockConfirm = jest
+				.spyOn(window, 'confirm')
+				.mockReturnValue(true);
+			const mockAlert = jest.spyOn(window, 'alert').mockImplementation();
+
+			render(<App />);
+
+			fireEvent.click(screen.getByText('Go to WooCommerce'));
+			await waitFor(() => screen.getByTestId('integration-detail'));
+			const deleteButton = screen.getAllByText('Delete')[0];
+			fireEvent.click(deleteButton);
+
+			await waitFor(() => {
+				expect(mockAlert).toHaveBeenCalledWith(
+					expect.stringContaining('Failed to delete trigger')
+				);
+			});
+
+			mockConfirm.mockRestore();
+			mockAlert.mockRestore();
+		});
+
+		it('handles trigger save error response', async () => {
+			// Mock error response for saving (lines 441-443)
+			(fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce({
+				ok: false,
+				status: 400,
+				json: async () => ({ message: 'Failed to save trigger' }),
+			} as Response);
+
+			const mockAlert = jest.spyOn(window, 'alert').mockImplementation();
+
+			render(<App />);
+
+			fireEvent.click(screen.getByText('Go to WooCommerce'));
+			await waitFor(() => screen.getByTestId('integration-detail'));
+			fireEvent.click(screen.getByText('Add Trigger'));
+
+			// Save trigger to trigger error
+			fireEvent.click(screen.getByText('Save'));
+
+			await waitFor(() => {
+				expect(mockAlert).toHaveBeenCalledWith(
+					expect.stringContaining('Failed to save trigger')
+				);
+			});
+
+			mockAlert.mockRestore();
+		});
+
+		it('handles single item trigger editing', async () => {
+			// Mock the response for updating a single item trigger
+			mockFetchResponse({ id: 'updated-trigger-123' });
+
+			render(<App />);
+
+			// Navigate to WooCommerce
+			fireEvent.click(screen.getByText('Go to WooCommerce'));
+			await waitFor(() => screen.getByTestId('integration-detail'));
+
+			// Edit existing trigger to test save branch
+			fireEvent.click(screen.getByText('Add Trigger'));
+			fireEvent.click(screen.getByText('Save'));
+
+			await waitFor(() => {
+				expect(fetch).toHaveBeenCalled();
+			});
+		});
+
+		it('handles undefined window.ecdReactData gracefully', () => {
+			const originalData = window.ecdReactData;
+			delete (window as unknown as { ecdReactData?: unknown })
+				.ecdReactData;
+
+			render(<App />);
+
+			expect(screen.getByTestId('integration-list')).toBeInTheDocument();
+
+			// Restore original data
+			window.ecdReactData = originalData;
+		});
+
+		it('handles initialization without URL hash', () => {
+			window.location.hash = '';
+			render(<App />);
+
+			expect(screen.getByTestId('integration-list')).toBeInTheDocument();
+		});
+
+		it('handles initialization with invalid hash format', () => {
+			window.location.hash = '#invalid-format';
+			render(<App />);
+
+			expect(screen.getByTestId('integration-list')).toBeInTheDocument();
+		});
+
+		it('handles popstate event without hash', () => {
+			render(<App />);
+
+			// Navigate to detail first
+			fireEvent.click(screen.getByText('Go to WooCommerce'));
+
+			// Then simulate popstate without hash
+			act(() => {
+				window.location.hash = '';
+				window.dispatchEvent(new PopStateEvent('popstate'));
+			});
+
+			expect(screen.getByTestId('integration-list')).toBeInTheDocument();
+		});
+
+		it('handles error in sendTestEvent due to network failure', async () => {
+			// Mock network error during preview
+			(fetch as jest.MockedFunction<typeof fetch>).mockRejectedValueOnce(
+				new Error('Network error')
+			);
+
+			const mockAlert = jest.spyOn(window, 'alert').mockImplementation();
+
+			render(<App />);
+
+			fireEvent.click(screen.getByText('Go to WooCommerce'));
+			await waitFor(() => screen.getByTestId('integration-detail'));
+			const sendTestButton = screen.getAllByText('Send Test')[0];
+			fireEvent.click(sendTestButton);
+
+			await waitFor(() => {
+				expect(mockAlert).toHaveBeenCalledWith(
+					expect.stringContaining('Network error')
+				);
+			});
+
+			mockAlert.mockRestore();
+		});
+
+		it('handles error in deleteTrigger due to network failure', async () => {
+			// Mock network error during deletion
+			(fetch as jest.MockedFunction<typeof fetch>).mockRejectedValueOnce(
+				new Error('Network deletion error')
+			);
+
+			const mockConfirm = jest
+				.spyOn(window, 'confirm')
+				.mockReturnValue(true);
+			const mockAlert = jest.spyOn(window, 'alert').mockImplementation();
+
+			render(<App />);
+
+			fireEvent.click(screen.getByText('Go to WooCommerce'));
+			await waitFor(() => screen.getByTestId('integration-detail'));
+			const deleteButton = screen.getAllByText('Delete')[0];
+			fireEvent.click(deleteButton);
+
+			await waitFor(() => {
+				expect(mockAlert).toHaveBeenCalledWith(
+					expect.stringContaining('Network deletion error')
+				);
+			});
+
+			mockConfirm.mockRestore();
+			mockAlert.mockRestore();
+		});
+
+		it('handles error in saveTrigger due to network failure', async () => {
+			// Mock network error during save
+			(fetch as jest.MockedFunction<typeof fetch>).mockRejectedValueOnce(
+				new Error('Network save error')
+			);
+
+			const mockAlert = jest.spyOn(window, 'alert').mockImplementation();
+
+			render(<App />);
+
+			fireEvent.click(screen.getByText('Go to WooCommerce'));
+			await waitFor(() => screen.getByTestId('integration-detail'));
+			fireEvent.click(screen.getByText('Add Trigger'));
+			fireEvent.click(screen.getByText('Save'));
+
+			await waitFor(() => {
+				expect(mockAlert).toHaveBeenCalledWith(
+					expect.stringContaining('Network save error')
+				);
+			});
+
+			mockAlert.mockRestore();
+		});
 	});
 
-	describe('State Management', () => {
+	describe('Additional Error Handling', () => {
 		it('maintains trigger count when adding new triggers', async () => {
 			mockFetchResponse({ id: 'new-trigger-456' });
 

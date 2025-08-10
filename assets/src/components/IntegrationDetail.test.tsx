@@ -550,7 +550,14 @@ describe('IntegrationDetail Component', () => {
 				'https://echodash.com/?utm_source=echodash-plugin&utm_medium=plugin&utm_campaign=echodash-plugin'
 			);
 			expect(logoLink).toHaveAttribute('target', '_blank');
-			expect(logoLink).toHaveAttribute('rel', 'noopener');
+			expect(logoLink).toHaveAttribute(
+				'rel',
+				expect.stringContaining('noopener')
+			);
+			expect(logoLink).toHaveAttribute(
+				'rel',
+				expect.stringContaining('noreferrer')
+			);
 
 			// Documentation link
 			const docsLink = screen.getByText(/Documentation/).closest('a');
@@ -559,7 +566,14 @@ describe('IntegrationDetail Component', () => {
 				'https://echodash.com/docs/echodash-plugin/?utm_source=echodash-plugin&utm_medium=plugin&utm_campaign=echodash-plugin'
 			);
 			expect(docsLink).toHaveAttribute('target', '_blank');
-			expect(docsLink).toHaveAttribute('rel', 'noopener');
+			expect(docsLink).toHaveAttribute(
+				'rel',
+				expect.stringContaining('noopener')
+			);
+			expect(docsLink).toHaveAttribute(
+				'rel',
+				expect.stringContaining('noreferrer')
+			);
 		});
 	});
 
@@ -568,7 +582,7 @@ describe('IntegrationDetail Component', () => {
 			const triggersWithoutIds = [
 				{
 					...mockTriggers[0],
-					id: undefined as any,
+					id: undefined as unknown as string,
 				},
 			];
 

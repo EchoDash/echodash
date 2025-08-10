@@ -56,7 +56,7 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 				<a
 					href="https://echodash.com/?utm_source=echodash-plugin&utm_medium=plugin&utm_campaign=echodash-plugin"
 					target="_blank"
-					rel="noopener"
+					rel="noopener noreferrer"
 					className="echodash-header__logo-link"
 				>
 					<EchoDashLogo className="echodash-header__logo" />
@@ -64,7 +64,7 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 				<a
 					href="https://echodash.com/docs/echodash-plugin/?utm_source=echodash-plugin&utm_medium=plugin&utm_campaign=echodash-plugin"
 					target="_blank"
-					rel="noopener"
+					rel="noopener noreferrer"
 					className="echodash-button echodash-header__docs-link"
 				>
 					{__('Documentation', 'echodash')} →
