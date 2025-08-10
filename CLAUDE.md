@@ -286,6 +286,106 @@ class EchoDash_Your_Integration extends EchoDash_Integration {
 - `get_{type}_options()` - Available fields for data type
 - `get_{type}_vars($id)` - Actual data for object ID
 
+### Using track_event() in Integrations
+
+The `track_event()` method is the core function for triggering events. It accepts three parameters:
+
+```php
+$this->track_event( $trigger, $objects, $args );
+```
+
+**Parameters:**
+1. **`$trigger`** (string): The trigger slug (e.g., 'order_placed', 'subscription_renewed')
+2. **`$objects`** (array): Object type => object ID pairs for database lookups
+   - Format: `array( 'object_type' => object_id, 'object_type2' => object_id2 )`
+   - Example: `array( 'order' => 123, 'user' => 456, 'product' => 789 )`
+3. **`$args`** (array, optional): Additional data available from the current hook
+   - Format: `array( 'object_type' => array( 'property' => 'value' ) )`
+   - Use this for data already available to avoid extra database queries
+
+**Real Examples from Integrations:**
+
+```php
+// WooCommerce order placed - simple case with objects only
+$this->track_event(
+    'order_placed',
+    array(
+        'order' => $order_id,
+        'user'  => $order->get_user_id(),
+    )
+);
+
+// WooCommerce order status changed - with additional hook data
+$this->track_event(
+    'order_status_changed',
+    array(
+        'order' => $order_id,
+        'user'  => $order->get_user_id(),
+    ),
+    array(
+        'order' => array(
+            'old_status' => $old_status,  // From hook parameter
+            'new_status' => $new_status,  // From hook parameter
+        ),
+    )
+);
+
+// WooCommerce Subscriptions status update
+$this->track_event(
+    'subscriptions_status_updated',
+    array(
+        'subscription' => $subscription->get_id(),
+        'user'         => $subscription->get_user_id(),
+    ),
+    array(
+        'subscription' => array(
+            'old_status' => $old_status,  // Available from hook
+            'new_status' => $status,      // Available from hook
+        ),
+    )
+);
+```
+
+**How It Works:**
+1. The `$objects` array tells EchoDash which object IDs to fetch data for
+2. EchoDash calls `get_{object_type}_vars($object_id)` for each object type
+3. The `$args` array merges additional data directly into the event (no database lookup)
+4. All data is combined and sent to the EchoDash platform with the configured mappings
+
+### User Object Type - Special Handling
+When working with the `user` object type, **do not** include:
+- `get_user_options()` or `get_user_data()` methods in your integration
+- `'user'` property in the data array when calling `track_event()`
+- `'user'` in `'option_types'` array when calling `setup_triggers()`
+
+**Why?** The `EchoDash_User` integration declares itself as a global option type. By default the
+data for the current user is merged automatically. This can be overridden by passing `user` in the
+`$objects` array when calling `track_event()`.
+
+**Example:**
+```php
+// ✅ Correct - don't include 'user' in option_types
+'option_types' => array( 'post' ),
+
+// ✅ Correct - don't pass user data in track_event()
+$this->track_event(
+    'my_trigger',
+    array(
+        'post' => $post_id,
+        'user' => $post->post_author,
+    ),
+    array(
+        'post' => array(
+            'post_status' => $post->post_status,
+        ),
+    )
+);
+
+// ❌ Incorrect - don't create these methods
+public function get_user_options() { /* not needed */ }
+public function get_user_data() { /* not needed */ }
+```
+
 ## Development Best Practices
 
 ### React Development (Primary Focus)
@@ -358,12 +458,12 @@ The plugin currently supports both modern React and legacy jQuery interfaces:
 
 ## Important Notes
 
-### For Claude Code Development
-- **Prefer React**: Use React components and TypeScript for new admin features
-- **Maintain PHP**: Keep integration classes and event tracking in PHP
-- **Use REST API**: All React-PHP communication through comprehensive REST API
-- **Test Both Systems**: Ensure changes work with both React and legacy interfaces
-- **Follow Patterns**: Use established component patterns and API structures
+### For Claude Code Development  
+- **Prefer React**: Use React components and TypeScript for new admin features  
+- **Maintain PHP**: Keep integration classes and event tracking in PHP  
+- **Use REST API**: All React-PHP communication through comprehensive REST API  
+- **React-first Testing**: Ensure changes work in the React admin interface (legacy deprecated/removed)  
+- **Follow Patterns**: Use established component patterns and API structures  
 
 ### Code Organization
 - **React Components**: Organized by feature with comprehensive TypeScript typing

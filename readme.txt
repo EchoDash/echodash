@@ -130,7 +130,7 @@ Yes, developers can use our API to track custom events. Documentation is availab
 = 2.0.0 - August 10, 2025 =
 * New React-based admin UI
 * Added AffiliateWP integration
-
+* Added new WordPress core triggers: New Post Comment, New Comment Reply, Post Published, Post Updated, Post Status Changed
 * Fixed PHP warning when users logged in with an invalid username
 
 = 1.2.0 - June 11, 2025 =

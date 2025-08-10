@@ -238,9 +238,15 @@ abstract class EchoDash_Integration {
 	 * Tracks an event.
 	 *
 	 * @since 1.0.0
-	 * @param string $trigger The trigger.
-	 * @param array  $objects The objects.
-	 * @param array  $args    The event arguments.
+	 *
+	 * @param string $trigger The trigger slug (e.g., 'subscription_status_updated').
+	 * @param array  $objects Array of object_type => object_id pairs that are relevant to this event.
+	 *                        Example: array( 'subscription' => 123, 'user' => 456 ).
+	 *                        These IDs are used to fetch data from the database via get_{object_type}_vars() methods.
+	 * @param array  $args    Optional. Additional data to merge directly into the event without database lookup.
+	 *                        Organized as object_type => array( property => value ).
+	 *                        Example: array( 'subscription' => array( 'old_status' => 'pending', 'new_status' => 'active' ) ).
+	 *                        This is useful for passing data that's already available from the triggering hook.
 	 */
 	public function track_event( $trigger, $objects = array(), $args = array() ) {
 
