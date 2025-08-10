@@ -229,10 +229,6 @@ class EchoDash_React_Admin {
 		</style>
 
 		<script>
-		// Performance monitoring
-		if (window.performance && window.performance.mark) {
-			window.performance.mark('echodash-react-start');
-		}
 		
 		// Timeout fallback
 		setTimeout(function() {
@@ -288,13 +284,11 @@ class EchoDash_React_Admin {
 			// Convert configured triggers to React-compatible format
 			foreach ( $configured_trigger_data as $trigger_id => $trigger_data ) {
 				$triggers[] = array(
-					'id'          => $trigger_id,
-					'name'        => $trigger_data['name'] ?? $trigger_id,
-					'trigger'     => $trigger_data['trigger'] ?? $trigger_id,
-					'event_name'  => $trigger_data['event_name'] ?? $trigger_data['name'] ?? '',
-					'mappings'    => $trigger_data['mappings'] ?? array(),
-					'enabled'     => true, // Assume enabled if configured
-					'description' => '', // Will be populated from available triggers below
+					'id'         => $trigger_id,
+					'name'       => $trigger_data['name'] ?? $trigger_id,
+					'trigger'    => $trigger_data['trigger'] ?? $trigger_id,
+					'event_name' => $trigger_data['event_name'] ?? $trigger_data['name'] ?? '',
+					'mappings'   => $trigger_data['mappings'] ?? array(),
 				);
 			}
 
@@ -314,7 +308,7 @@ class EchoDash_React_Admin {
 						foreach ( $single_events as $event ) {
 							// Get post title and edit URL
 							$post_title = isset( $event['post_title'] ) ? $event['post_title'] : get_the_title( $event['post_id'] );
-							$edit_url   = isset( $event['edit_url'] ) ? $event['edit_url'] : get_edit_post_link( $event['post_id'] ) . '#echodash';
+							$edit_url   = isset( $event['edit_url'] ) ? $event['edit_url'] : get_edit_post_link( $event['post_id'], '', 'raw' ) . '#echodash';
 
 							$grouped_events[] = array(
 								'post_id'    => $event['post_id'],

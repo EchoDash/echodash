@@ -30,7 +30,6 @@ class EchoDash_Admin {
 		add_action( 'admin_footer', array( $this, 'admin_scripts' ) );
 		add_action( 'admin_menu', array( $this, 'add_settings_submenu' ), 11 );
 		add_action( 'admin_init', array( $this, 'save_echodash_callback' ) );
-		add_action( 'admin_init', array( $this, 'save_settings' ) );
 
 		add_action( 'wp_ajax_echodash_send_test', array( $this, 'send_event_test' ) );
 		add_action( 'wp_ajax_echodash_reset_to_defaults', array( $this, 'reset_to_defaults' ) );
@@ -156,42 +155,6 @@ class EchoDash_Admin {
 
 		wp_safe_redirect( admin_url( 'options-general.php?page=echodash' ) );
 		exit;
-	}
-
-	/**
-	 * Saves the global settings.
-	 *
-	 * @since 1.0.0
-	 */
-	public function save_settings() {
-		if ( ! isset( $_POST['echodash_options'] ) || ! isset( $_POST['echodash_options_nonce'] ) ) {
-			return;
-		}
-
-		if ( ! check_admin_referer( 'echodash_options', 'echodash_options_nonce' ) ) {
-			return;
-		}
-
-		$data = echodash_clean( wp_unslash( $_POST['echodash_options'] ) );
-
-		if ( ! empty( $data ) ) {
-			update_option( 'echodash_options', $data, false );
-		} else {
-			delete_option( 'echodash_options' );
-		}
-
-		if ( ! empty( $data['endpoint'] ) ) {
-			update_option( 'echodash_endpoint', esc_url_raw( $data['endpoint'] ), true );
-		} else {
-			delete_option( 'echodash_endpoint' );
-		}
-
-		add_action(
-			'admin_notices',
-			function () {
-				echo '<div id="message" class="updated fade"><p><strong>' . esc_html__( 'Settings saved.', 'echodash' ) . '</strong></p></div>';
-			}
-		);
 	}
 
 	/**

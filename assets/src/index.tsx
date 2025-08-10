@@ -9,7 +9,6 @@ import { App } from './App';
 
 // Import our styles (WordPress styles are loaded separately via PHP)
 import './styles/shared.css';
-import './styles/main.css';
 
 // Initialize the React app
 function initializeEchoDashApp() {

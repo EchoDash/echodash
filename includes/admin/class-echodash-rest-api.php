@@ -393,7 +393,7 @@ class EchoDash_REST_API extends WP_REST_Controller {
 					foreach ( $single_events as $event ) {
 						// Get post title and edit URL
 						$post_title = isset( $event['post_title'] ) ? $event['post_title'] : get_the_title( $event['post_id'] );
-						$edit_url   = isset( $event['edit_url'] ) ? $event['edit_url'] : get_edit_post_link( $event['post_id'] ) . '#echodash';
+						$edit_url   = isset( $event['edit_url'] ) ? $event['edit_url'] : get_edit_post_link( $event['post_id'], '', 'raw' ) . '#echodash';
 
 						$grouped_events[] = array(
 							'post_id'    => $event['post_id'],
