@@ -425,39 +425,39 @@
 		max-height: 90vh;
 		overflow-y: auto;
 	}
-	
+
 			.echodash-modal__content {
 			padding: var(--ecd-spacing-lg);
 		}
-	
+
 			.echodash-modal__footer {
 			flex-direction: column-reverse;
 			gap: var(--ecd-spacing-md);
 		}
-	
+
 	.echodash-modal__footer-actions {
 		width: 100%;
 		justify-content: stretch;
 	}
-	
+
 	.echodash-modal__footer-actions .echodash-button {
 		flex: 1;
 	}
-	
+
 	.echodash-send-test-button {
 		width: 100%;
 	}
-	
+
 			.echodash-key-value-pair {
 			flex-wrap: wrap;
 			gap: var(--ecd-spacing-sm);
 		}
-	
+
 	.echodash-key-value-pair__field {
 		flex: 1 1 100%;
 		margin-right: 0;
 	}
-	
+
 	.echodash-key-value-pair__actions {
 		width: 100%;
 		justify-content: flex-end;

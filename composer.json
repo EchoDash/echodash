@@ -12,7 +12,8 @@
 	"scripts": {
 		"test": "./vendor/bin/phpunit -c phpunit.xml",
 		"phpstan": "./vendor/bin/phpstan analyse --memory-limit=2G",
-		"phpcs": "./vendor/bin/phpcs --standard=phpcs.xml"
+		"phpcs": "./vendor/bin/phpcs --standard=phpcs.xml",
+		"phpcbf": "./vendor/bin/phpcbf --standard=phpcs.xml"
 	},
   "require": {
     "php": ">=7.4",

@@ -1,4 +1,9 @@
 <?php
+/**
+ * WooCommerce Subscriptions integration.
+ *
+ * @package EchoDash
+ */
 
 defined( 'ABSPATH' ) || exit;
 
