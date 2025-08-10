@@ -26,8 +26,6 @@ class EchoDash_React_Admin {
 
 		// Asset optimization hooks
 		add_filter( 'script_loader_tag', array( $this, 'add_script_attributes' ), 10, 3 );
-		// Temporarily disabled preload to debug script execution issue
-		// add_action( 'admin_print_scripts', array( $this, 'preload_critical_assets' ) );
 	}
 
 	/**
@@ -99,7 +97,7 @@ class EchoDash_React_Admin {
 				ECHODASH_DIR_URL . 'assets/dist/wordpress.js',
 				array( 'wp-element', 'wp-components', 'wp-api-fetch' ),
 				$asset_file['version'],
-				truet
+				true
 			);
 		}
 	}
