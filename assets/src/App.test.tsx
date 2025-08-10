@@ -43,7 +43,11 @@ jest.mock('./components/IntegrationDetail', () => ({
 				<div key={trigger.id} data-testid={`trigger-${trigger.id}`}>
 					<span>{trigger.name}</span>
 					<button onClick={() => onEditTrigger(trigger)}>Edit</button>
-					<button onClick={() => onDeleteTrigger(trigger)}>Delete</button>
+					<button onClick={() => {
+						if (window.confirm(`Are you sure you want to delete the "${trigger.name}" trigger? This action cannot be undone.`)) {
+							onDeleteTrigger(trigger);
+						}
+					}}>Delete</button>
 					<button onClick={() => onSendTest(trigger)}>Send Test</button>
 				</div>
 			))}
@@ -203,7 +207,7 @@ describe('App Component', () => {
 			fireEvent.click(screen.getByText('Add Trigger'));
 			
 			expect(screen.getByTestId('trigger-modal')).toBeInTheDocument();
-			expect(screen.getByText('Add Trigger')).toBeInTheDocument();
+			expect(screen.getByRole('heading', { name: 'Add Trigger' })).toBeInTheDocument();
 		});
 
 		it('opens trigger modal for editing existing trigger', async () => {
@@ -299,7 +303,7 @@ describe('App Component', () => {
 			
 			await waitFor(() => {
 				expect(mockAlert).toHaveBeenCalledWith(
-					expect.stringContaining('Error saving trigger')
+					expect.stringContaining('Failed to create trigger')
 				);
 			});
 		});
@@ -380,7 +384,14 @@ describe('App Component', () => {
 					expect.objectContaining({
 						method: 'POST',
 						body: JSON.stringify({
-							eventConfig: expect.any(Object),
+							eventConfig: {
+								name: 'Purchase Completed',
+								mappings: [
+									{ key: 'order_id', value: '{order:id}' },
+									{ key: 'customer_email', value: '{user:user_email}' },
+									{ key: 'order_total', value: '{order:total}' }
+								]
+							},
 							integrationSlug: 'woocommerce',
 							triggerId: 'order_completed',
 						}),
@@ -421,7 +432,7 @@ describe('App Component', () => {
 			
 			await waitFor(() => {
 				expect(mockAlert).toHaveBeenCalledWith(
-					expect.stringContaining('Error sending test event')
+					expect.stringContaining('Network error')
 				);
 			});
 		});
@@ -432,16 +443,22 @@ describe('App Component', () => {
 			const mockReload = jest.spyOn(window.location, 'reload').mockImplementation();
 			
 			// Mock URL search params
-			delete window.location;
+			const originalLocation = window.location;
+			delete (window as any).location;
 			window.location = {
-				...window.location,
+				href: 'http://localhost/',
+				pathname: '/',
 				search: '?page=echodash&endpoint_url=https://test.com&wpnonce=abc123',
+				hash: '',
 				reload: mockReload,
 			} as any;
 			
 			render(<App />);
 			
 			expect(mockReload).toHaveBeenCalled();
+			
+			// Restore original location
+			window.location = originalLocation;
 		});
 	});
 
@@ -458,7 +475,8 @@ describe('App Component', () => {
 			// The integration should now show Gravity Forms
 			expect(screen.getByText('Gravity Forms')).toBeInTheDocument();
 			
-			// Save new trigger
+			// Wait for modal to open and save new trigger
+			await waitFor(() => screen.getByTestId('trigger-modal'));
 			fireEvent.click(screen.getByText('Save'));
 			
 			await waitFor(() => {

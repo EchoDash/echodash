@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
 import { App } from '../../src/App';
 import { mockFetchResponse, mockFetchError } from '../setup';
 
@@ -82,21 +82,30 @@ describe('API Integration Tests', () => {
 
 			render(<App />);
 
-			// Navigate to integration detail
-			const integrationButtons = screen.getAllByText('Go to WooCommerce');
-			fireEvent.click(integrationButtons[0]);
-
+			// Wait for component to render with data, then navigate to integration detail
 			await waitFor(() => {
 				expect(screen.getByText('WooCommerce')).toBeInTheDocument();
 			});
 
-			// Open trigger modal
+			const integrationButtons = screen.getAllByText('Manage');
+			fireEvent.click(integrationButtons[0]);
+
+			await waitFor(() => {
+				expect(screen.getAllByText('WooCommerce').length).toBeGreaterThan(0);
+			});
+
+			// Find and click the Add Trigger button in the integration detail page
 			const addTriggerButton = screen.getByText('+ Add Trigger');
 			fireEvent.click(addTriggerButton);
 
-			// Save trigger
-			const saveButton = screen.getByText('Add Trigger');
-			fireEvent.click(saveButton);
+			// Wait for modal to open and save trigger
+			await waitFor(() => {
+				expect(screen.getByRole('dialog')).toBeInTheDocument();
+			});
+			
+			const modal = screen.getByRole('dialog');
+			const modalFooter = within(modal).getByRole('button', { name: /add trigger/i });
+			fireEvent.click(modalFooter);
 
 			await waitFor(() => {
 				expect(fetch).toHaveBeenCalledWith(
@@ -109,9 +118,13 @@ describe('API Integration Tests', () => {
 						},
 						body: JSON.stringify({
 							trigger: 'order_completed',
-							name: 'Test Trigger',
-							event_name: 'Test Trigger',
-							mappings: [{ key: 'test', value: '{user:email}' }],
+							name: 'Order Completed',
+							event_name: 'Order Completed',
+							mappings: [
+								{ key: 'order_id', value: '{order:id}' },
+								{ key: 'customer_email', value: '{user:user_email}' },
+								{ key: 'order_total', value: '{order:total}' }
+							],
 							send_test: undefined,
 						}),
 					}
@@ -124,20 +137,29 @@ describe('API Integration Tests', () => {
 
 			render(<App />);
 
-			// Navigate to integration detail
-			const integrationButtons = screen.getAllByText('Go to WooCommerce');
+			// Wait for component to render with data, then navigate to integration detail
+			await waitFor(() => {
+				expect(screen.getByText('WooCommerce')).toBeInTheDocument();
+			});
+
+			const integrationButtons = screen.getAllByText('Manage');
 			fireEvent.click(integrationButtons[0]);
 
 			await waitFor(() => {
-				expect(screen.getByText('WooCommerce')).toBeInTheDocument();
+				expect(screen.getAllByText('WooCommerce').length).toBeGreaterThan(0);
 			});
 
 			// Edit existing trigger
 			const editButtons = screen.getAllByText('Edit');
 			fireEvent.click(editButtons[0]);
 
-			// Save trigger
-			const saveButton = screen.getByText('Update Trigger');
+			// Wait for modal to open and save trigger
+			await waitFor(() => {
+				expect(screen.getByRole('dialog')).toBeInTheDocument();
+			});
+			
+			const modal = screen.getByRole('dialog');
+			const saveButton = within(modal).getByRole('button', { name: /update trigger/i });
 			fireEvent.click(saveButton);
 
 			await waitFor(() => {
@@ -151,9 +173,13 @@ describe('API Integration Tests', () => {
 						},
 						body: JSON.stringify({
 							trigger: 'order_completed',
-							name: 'Test Trigger',
-							event_name: 'Test Trigger',
-							mappings: [{ key: 'test', value: '{user:email}' }],
+							name: 'Purchase Completed',
+							event_name: 'Purchase Completed',
+							mappings: [
+								{ key: 'order_id', value: '{order:id}' },
+								{ key: 'customer_email', value: '{user:user_email}' },
+								{ key: 'order_total', value: '{order:total}' }
+							],
 							send_test: undefined,
 						}),
 					}
@@ -167,12 +193,16 @@ describe('API Integration Tests', () => {
 
 			render(<App />);
 
-			// Navigate to integration detail
-			const integrationButtons = screen.getAllByText('Go to WooCommerce');
+			// Wait for component to render with data, then navigate to integration detail
+			await waitFor(() => {
+				expect(screen.getByText('WooCommerce')).toBeInTheDocument();
+			});
+
+			const integrationButtons = screen.getAllByText('Manage');
 			fireEvent.click(integrationButtons[0]);
 
 			await waitFor(() => {
-				expect(screen.getByText('WooCommerce')).toBeInTheDocument();
+				expect(screen.getAllByText('WooCommerce').length).toBeGreaterThan(0);
 			});
 
 			// Delete trigger
@@ -199,24 +229,32 @@ describe('API Integration Tests', () => {
 
 			render(<App />);
 
-			// Navigate and create trigger
-			const integrationButtons = screen.getAllByText('Go to WooCommerce');
-			fireEvent.click(integrationButtons[0]);
-
+			// Wait for component to render with data, then navigate and create trigger
 			await waitFor(() => {
 				expect(screen.getByText('WooCommerce')).toBeInTheDocument();
 			});
 
+			const integrationButtons = screen.getAllByText('Manage');
+			fireEvent.click(integrationButtons[0]);
+
+			await waitFor(() => {
+				expect(screen.getAllByText('WooCommerce').length).toBeGreaterThan(0);
+			});
+
+			// Find and click the Add Trigger button in the integration detail page
 			const addTriggerButton = screen.getByText('+ Add Trigger');
 			fireEvent.click(addTriggerButton);
 
-			const saveButton = screen.getByText('Add Trigger');
+			await waitFor(() => {
+				expect(screen.getByRole('dialog')).toBeInTheDocument();
+			});
+			
+			const modal = screen.getByRole('dialog');
+			const saveButton = within(modal).getByRole('button', { name: /add trigger/i });
 			fireEvent.click(saveButton);
 
 			await waitFor(() => {
-				expect(mockAlert).toHaveBeenCalledWith(
-					expect.stringContaining('Error saving trigger')
-				);
+				expect(mockAlert).toHaveBeenCalledWith('Trigger creation failed');
 			});
 		});
 
@@ -227,21 +265,23 @@ describe('API Integration Tests', () => {
 
 			render(<App />);
 
-			// Navigate and delete trigger
-			const integrationButtons = screen.getAllByText('Go to WooCommerce');
+			// Wait for component to render with data, then navigate and delete trigger
+			await waitFor(() => {
+				expect(screen.getByText('WooCommerce')).toBeInTheDocument();
+			});
+
+			const integrationButtons = screen.getAllByText('Manage');
 			fireEvent.click(integrationButtons[0]);
 
 			await waitFor(() => {
-				expect(screen.getByText('WooCommerce')).toBeInTheDocument();
+				expect(screen.getAllByText('WooCommerce').length).toBeGreaterThan(0);
 			});
 
 			const deleteButtons = screen.getAllByTitle('Delete trigger');
 			fireEvent.click(deleteButtons[0]);
 
 			await waitFor(() => {
-				expect(mockAlert).toHaveBeenCalledWith(
-					expect.stringContaining('Error deleting trigger')
-				);
+				expect(mockAlert).toHaveBeenCalledWith('Trigger deletion failed');
 			});
 		});
 	});
@@ -259,12 +299,16 @@ describe('API Integration Tests', () => {
 
 			render(<App />);
 
-			// Navigate to integration detail
-			const integrationButtons = screen.getAllByText('Go to WooCommerce');
+			// Wait for component to render with data, then navigate to integration detail
+			await waitFor(() => {
+				expect(screen.getByText('WooCommerce')).toBeInTheDocument();
+			});
+
+			const integrationButtons = screen.getAllByText('Manage');
 			fireEvent.click(integrationButtons[0]);
 
 			await waitFor(() => {
-				expect(screen.getByText('WooCommerce')).toBeInTheDocument();
+				expect(screen.getAllByText('WooCommerce').length).toBeGreaterThan(0);
 			});
 
 			// Send test event
@@ -287,6 +331,7 @@ describe('API Integration Tests', () => {
 								mappings: [
 									{ key: 'order_id', value: '{order:id}' },
 									{ key: 'customer_email', value: '{user:user_email}' },
+									{ key: 'order_total', value: '{order:total}' },
 								],
 							},
 							integrationSlug: 'woocommerce',
@@ -323,21 +368,23 @@ describe('API Integration Tests', () => {
 
 			render(<App />);
 
-			// Navigate and send test
-			const integrationButtons = screen.getAllByText('Go to WooCommerce');
+			// Wait for component to render with data, then navigate and send test
+			await waitFor(() => {
+				expect(screen.getByText('WooCommerce')).toBeInTheDocument();
+			});
+
+			const integrationButtons = screen.getAllByText('Manage');
 			fireEvent.click(integrationButtons[0]);
 
 			await waitFor(() => {
-				expect(screen.getByText('WooCommerce')).toBeInTheDocument();
+				expect(screen.getAllByText('WooCommerce').length).toBeGreaterThan(0);
 			});
 
 			const sendTestButtons = screen.getAllByText('Send Test');
 			fireEvent.click(sendTestButtons[0]);
 
 			await waitFor(() => {
-				expect(mockAlert).toHaveBeenCalledWith(
-					expect.stringContaining('Error sending test event')
-				);
+				expect(mockAlert).toHaveBeenCalledWith('Preview API error');
 			});
 		});
 
@@ -354,21 +401,23 @@ describe('API Integration Tests', () => {
 
 			render(<App />);
 
-			// Navigate and send test
-			const integrationButtons = screen.getAllByText('Go to WooCommerce');
+			// Wait for component to render with data, then navigate and send test
+			await waitFor(() => {
+				expect(screen.getByText('WooCommerce')).toBeInTheDocument();
+			});
+
+			const integrationButtons = screen.getAllByText('Manage');
 			fireEvent.click(integrationButtons[0]);
 
 			await waitFor(() => {
-				expect(screen.getByText('WooCommerce')).toBeInTheDocument();
+				expect(screen.getAllByText('WooCommerce').length).toBeGreaterThan(0);
 			});
 
 			const sendTestButtons = screen.getAllByText('Send Test');
 			fireEvent.click(sendTestButtons[0]);
 
 			await waitFor(() => {
-				expect(mockAlert).toHaveBeenCalledWith(
-					expect.stringContaining('Error sending test event')
-				);
+				expect(mockAlert).toHaveBeenCalledWith('Test event API error');
 			});
 		});
 	});
@@ -525,20 +574,31 @@ describe('API Integration Tests', () => {
 
 			render(<App />);
 
-			// Navigate to integration detail
-			const integrationButtons = screen.getAllByText('Go to WooCommerce');
+			// Wait for component to render with data, then navigate to integration detail
+			await waitFor(() => {
+				expect(screen.getByText('WooCommerce')).toBeInTheDocument();
+			});
+
+			const integrationButtons = screen.getAllByText('Manage');
 			fireEvent.click(integrationButtons[0]);
 
 			await waitFor(() => {
-				expect(screen.getByText('WooCommerce')).toBeInTheDocument();
+				expect(screen.getAllByText('WooCommerce').length).toBeGreaterThan(0);
 			});
 
 			// Open trigger modal
 			const addTriggerButton = screen.getByText('+ Add Trigger');
 			fireEvent.click(addTriggerButton);
 
+			// Wait for modal to open
+			await waitFor(() => {
+				expect(screen.getByRole('dialog')).toBeInTheDocument();
+			});
+			
+			const modal = screen.getByRole('dialog');
+
 			// Save trigger (should filter out empty mappings)
-			const saveButton = screen.getByText('Add Trigger');
+			const saveButton = within(modal).getByRole('button', { name: /add trigger/i });
 			fireEvent.click(saveButton);
 
 			await waitFor(() => {
@@ -565,24 +625,36 @@ describe('API Integration Tests', () => {
 
 			render(<App />);
 
-			// Navigate to integration detail
-			const integrationButtons = screen.getAllByText('Go to WooCommerce');
+			// Wait for component to render with data, then navigate to integration detail
+			await waitFor(() => {
+				expect(screen.getByText('WooCommerce')).toBeInTheDocument();
+			});
+
+			const integrationButtons = screen.getAllByText('Manage');
 			fireEvent.click(integrationButtons[0]);
 
 			await waitFor(() => {
-				expect(screen.getByText('WooCommerce')).toBeInTheDocument();
+				expect(screen.getAllByText('WooCommerce').length).toBeGreaterThan(0);
 			});
 
 			// Open trigger modal and clear all fields
 			const addTriggerButton = screen.getByText('+ Add Trigger');
 			fireEvent.click(addTriggerButton);
 
-			// Clear event name
-			const eventNameInput = screen.getByDisplayValue('Order Completed');
+			// Wait for modal to open
+			await waitFor(() => {
+				expect(screen.getByRole('dialog')).toBeInTheDocument();
+			});
+			
+			const modal = screen.getByRole('dialog');
+			
+			// Clear event name using CSS selector since multiple textboxes exist
+			const eventNameInput = document.querySelector('.echodash-event-name__input') as HTMLInputElement;
 			fireEvent.change(eventNameInput, { target: { value: '' } });
 
 			// Save trigger
-			const saveButton = screen.getByText('Add Trigger');
+			const saveButton = within(modal).getAllByRole('button', { name: /add trigger/i })
+				.find(btn => btn.classList.contains('echodash-button-primary'));
 			fireEvent.click(saveButton);
 
 			await waitFor(() => {
@@ -608,12 +680,16 @@ describe('API Integration Tests', () => {
 
 			render(<App />);
 
-			// Navigate to integration detail
-			const integrationButtons = screen.getAllByText('Go to WooCommerce');
+			// Wait for component to render with data, then navigate to integration detail
+			await waitFor(() => {
+				expect(screen.getByText('WooCommerce')).toBeInTheDocument();
+			});
+
+			const integrationButtons = screen.getAllByText('Manage');
 			fireEvent.click(integrationButtons[0]);
 
 			await waitFor(() => {
-				expect(screen.getByText('WooCommerce')).toBeInTheDocument();
+				expect(screen.getAllByText('WooCommerce').length).toBeGreaterThan(0);
 			});
 
 			// Trigger multiple test events quickly

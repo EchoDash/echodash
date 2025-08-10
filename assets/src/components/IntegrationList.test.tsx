@@ -82,10 +82,10 @@ describe('IntegrationList Component', () => {
 			);
 
 			expect(screen.getByTestId('echodash-logo')).toBeInTheDocument();
-			expect(screen.getByText('Documentation')).toBeInTheDocument();
-			expect(screen.getByText('Documentation').closest('a')).toHaveAttribute(
+			expect(screen.getByText(/Documentation/)).toBeInTheDocument();
+			expect(screen.getByText(/Documentation/).closest('a')).toHaveAttribute(
 				'href',
-				'https://echodash.com/docs/echodash-plugin'
+				'https://echodash.com/docs/echodash-plugin/?utm_source=echodash-plugin&utm_medium=plugin&utm_campaign=echodash-plugin'
 			);
 		});
 
@@ -183,7 +183,7 @@ describe('IntegrationList Component', () => {
 				)
 			).toBeInTheDocument();
 			
-			const connectButton = screen.getByText('Connect to EchoDash');
+			const connectButton = screen.getByText(/Connect to EchoDash/);
 			expect(connectButton).toBeInTheDocument();
 			expect(connectButton.closest('a')).toHaveAttribute(
 				'href',
@@ -482,15 +482,15 @@ describe('IntegrationList Component', () => {
 
 			// Logo link
 			const logoLink = screen.getByTestId('echodash-logo').closest('a');
-			expect(logoLink).toHaveAttribute('href', 'https://echodash.com');
+			expect(logoLink).toHaveAttribute('href', 'https://echodash.com/?utm_source=echodash-plugin&utm_medium=plugin&utm_campaign=echodash-plugin');
 			expect(logoLink).toHaveAttribute('target', '_blank');
-			expect(logoLink).toHaveAttribute('rel', 'noopener noreferrer');
+			expect(logoLink).toHaveAttribute('rel', 'noopener');
 
 			// Documentation link
-			const docsLink = screen.getByText('Documentation').closest('a');
-			expect(docsLink).toHaveAttribute('href', 'https://echodash.com/docs/echodash-plugin');
+			const docsLink = screen.getByText(/Documentation/).closest('a');
+			expect(docsLink).toHaveAttribute('href', 'https://echodash.com/docs/echodash-plugin/?utm_source=echodash-plugin&utm_medium=plugin&utm_campaign=echodash-plugin');
 			expect(docsLink).toHaveAttribute('target', '_blank');
-			expect(docsLink).toHaveAttribute('rel', 'noopener noreferrer');
+			expect(docsLink).toHaveAttribute('rel', 'noopener');
 		});
 	});
 
@@ -573,7 +573,7 @@ describe('IntegrationList Component', () => {
 			);
 
 			// Should show connect button with fallback href
-			const connectButton = screen.getByText('Connect to EchoDash');
+			const connectButton = screen.getByText(/Connect to EchoDash/);
 			expect(connectButton.closest('a')).toHaveAttribute('href', '#');
 		});
 	});

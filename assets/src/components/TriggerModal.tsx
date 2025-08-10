@@ -43,7 +43,7 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 	editingTrigger,
 	savingTrigger = false,
 }) => {
-	const availableTriggers = integration.availableTriggers || [
+	const availableTriggers = (integration.availableTriggers && integration.availableTriggers.length > 0) ? integration.availableTriggers : [
 		{
 			id: 'form_submitted',
 			name: 'Form Submitted',
@@ -238,7 +238,7 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 
 	return (
 		<div className="echodash-modal-overlay">
-			<div className="echodash-modal">
+			<div className="echodash-modal" role="dialog" aria-modal="true" tabIndex={-1}>
 				{/* Header */}
 				<div className="echodash-modal__header">
 					<div className="echodash-modal__header-content">

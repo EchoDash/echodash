@@ -30,6 +30,113 @@ const mockI18n = {
 Object.defineProperty(window, 'wp', {
 	value: {
 		i18n: mockI18n,
+		apiFetch: jest.fn().mockImplementation((options) => {
+			// Handle different API endpoints based on options
+			const { path, method = 'GET', data } = options;
+			
+			// Mock responses for different endpoints
+			if (path === '/echodash/v1/settings') {
+				if (method === 'GET') {
+					return Promise.resolve({
+						endpoint: 'https://test.echodash.com/webhook/test-endpoint',
+						isConnected: true,
+						connectUrl: 'https://echodash.com/connect',
+					});
+				} else if (method === 'POST') {
+					return Promise.resolve({
+						success: true,
+						message: 'Settings saved successfully',
+						data: data,
+					});
+				}
+			}
+			
+			if (path === '/echodash/v1/integrations') {
+				return Promise.resolve([
+					{
+						slug: 'woocommerce',
+						name: 'WooCommerce',
+						enabled: true,
+						triggerCount: 3,
+					},
+					{
+						slug: 'gravity-forms',
+						name: 'Gravity Forms',
+						enabled: true,
+						triggerCount: 1,
+					},
+				]);
+			}
+			
+			if (path && path.includes('/echodash/v1/integrations/')) {
+				const slug = path.split('/').pop();
+				return Promise.resolve({
+					slug: slug,
+					name: slug.charAt(0).toUpperCase() + slug.slice(1),
+					enabled: true,
+					triggers: [],
+				});
+			}
+			
+			if (path === '/echodash/v1/test-event') {
+				return Promise.resolve({
+					success: true,
+					message: 'Test event sent successfully',
+				});
+			}
+			
+			if (path === '/echodash/v1/preview') {
+				return Promise.resolve({
+					success: true,
+					preview: {
+						event_name: 'Test Event',
+						mappings: {
+							user_email: 'test@example.com',
+							user_id: 123,
+						},
+					},
+				});
+			}
+			
+			// Default response for unknown endpoints
+			return Promise.resolve({
+				success: true,
+				data: {},
+			});
+		}),
+	},
+	writable: true,
+});
+
+// Mock WordPress ajaxurl global
+Object.defineProperty(window, 'ajaxurl', {
+	value: '/wp-admin/admin-ajax.php',
+	writable: true,
+});
+
+// Mock echodash_vars global for legacy PHP admin interface
+Object.defineProperty(window, 'echodash_vars', {
+	value: {
+		nonce: 'test-nonce-12345',
+		ajax_url: '/wp-admin/admin-ajax.php',
+		api_url: '/wp-json/echodash/v1/',
+		version: '2.0.0',
+		plugin_url: '/wp-content/plugins/echodash/',
+		admin_url: '/wp-admin/admin.php?page=echodash',
+		i18n: {
+			save: 'Save',
+			cancel: 'Cancel',
+			delete: 'Delete',
+			edit: 'Edit',
+			loading: 'Loading...',
+			confirm_delete: 'Are you sure you want to delete this item?',
+			error_occurred: 'An error occurred. Please try again.',
+		},
+		settings: {
+			endpoint: 'https://test.echodash.com/webhook/test-endpoint',
+			isConnected: true,
+			connectUrl: 'https://echodash.com/connect',
+		},
 	},
 	writable: true,
 });
@@ -254,10 +361,23 @@ beforeEach(() => {
 	// Reset fetch mock
 	(fetch as jest.MockedFunction<typeof fetch>).mockClear();
 	
+	// Reset wp.apiFetch mock
+	if (window.wp && window.wp.apiFetch) {
+		(window.wp.apiFetch as jest.MockedFunction<any>).mockClear();
+	}
+	
 	// Reset window methods
 	(window.confirm as jest.MockedFunction<typeof window.confirm>).mockReturnValue(true);
 	(window.alert as jest.MockedFunction<typeof window.alert>).mockClear();
 	(window.history.pushState as jest.MockedFunction<typeof window.history.pushState>).mockClear();
+	
+	// Mock RAF for animations if not present
+	if (!window.requestAnimationFrame) {
+		window.requestAnimationFrame = jest.fn((cb) => setTimeout(cb, 16));
+	}
+	if (!window.cancelAnimationFrame) {
+		window.cancelAnimationFrame = jest.fn();
+	}
 });
 
 // Global test utilities

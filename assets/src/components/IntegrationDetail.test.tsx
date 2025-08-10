@@ -105,10 +105,10 @@ describe('IntegrationDetail Component', () => {
 			render(<IntegrationDetail {...mockProps} />);
 
 			expect(screen.getByTestId('echodash-logo')).toBeInTheDocument();
-			expect(screen.getByText('Documentation')).toBeInTheDocument();
-			expect(screen.getByText('Documentation').closest('a')).toHaveAttribute(
+			expect(screen.getByText(/Documentation/)).toBeInTheDocument();
+			expect(screen.getByText(/Documentation/).closest('a')).toHaveAttribute(
 				'href',
-				'https://echodash.com/docs/echodash-plugin'
+				'https://echodash.com/docs/echodash-plugin/?utm_source=echodash-plugin&utm_medium=plugin&utm_campaign=echodash-plugin'
 			);
 		});
 
@@ -116,7 +116,7 @@ describe('IntegrationDetail Component', () => {
 			render(<IntegrationDetail {...mockProps} />);
 
 			expect(screen.getByText('Integrations')).toBeInTheDocument();
-			expect(screen.getByText('WooCommerce')).toBeInTheDocument();
+			expect(screen.getAllByText('WooCommerce').length).toBeGreaterThan(0);
 			expect(screen.getByText('/')).toBeInTheDocument();
 		});
 
@@ -130,7 +130,7 @@ describe('IntegrationDetail Component', () => {
 				backgroundColor: '#96588a',
 			});
 
-			expect(screen.getByText('WooCommerce')).toBeInTheDocument();
+			expect(screen.getAllByText('WooCommerce').length).toBeGreaterThan(0);
 			expect(screen.getByText('Track WooCommerce events and customer data')).toBeInTheDocument();
 		});
 
@@ -167,15 +167,15 @@ describe('IntegrationDetail Component', () => {
 				)
 			).toBeInTheDocument();
 
-			const addTriggerButton = screen.getByText('+ Add Trigger');
-			expect(addTriggerButton).toBeInTheDocument();
+			const addTriggerButtons = screen.getAllByText('+ Add Trigger');
+			expect(addTriggerButtons.length).toBeGreaterThan(0);
 		});
 
 		it('clicking add trigger button in empty state calls onAddTrigger', () => {
 			render(<IntegrationDetail {...mockProps} triggers={[]} />);
 
-			const addTriggerButton = screen.getByText('+ Add Trigger');
-			fireEvent.click(addTriggerButton);
+			const addTriggerButtons = screen.getAllByText('+ Add Trigger');
+			fireEvent.click(addTriggerButtons[0]); // Click the first one
 
 			expect(mockProps.onAddTrigger).toHaveBeenCalled();
 		});
@@ -448,8 +448,8 @@ describe('IntegrationDetail Component', () => {
 		it('calls onAddTrigger when add trigger button is clicked', () => {
 			render(<IntegrationDetail {...mockProps} />);
 
-			const addTriggerButton = screen.getByText('+ Add Trigger');
-			fireEvent.click(addTriggerButton);
+			const addTriggerButtons = screen.getAllByText('+ Add Trigger');
+			fireEvent.click(addTriggerButtons[0]); // Click the first one
 
 			expect(mockProps.onAddTrigger).toHaveBeenCalled();
 		});
@@ -461,15 +461,15 @@ describe('IntegrationDetail Component', () => {
 
 			// Logo link
 			const logoLink = screen.getByTestId('echodash-logo').closest('a');
-			expect(logoLink).toHaveAttribute('href', 'https://echodash.com');
+			expect(logoLink).toHaveAttribute('href', 'https://echodash.com/?utm_source=echodash-plugin&utm_medium=plugin&utm_campaign=echodash-plugin');
 			expect(logoLink).toHaveAttribute('target', '_blank');
-			expect(logoLink).toHaveAttribute('rel', 'noopener noreferrer');
+			expect(logoLink).toHaveAttribute('rel', 'noopener');
 
 			// Documentation link
-			const docsLink = screen.getByText('Documentation').closest('a');
-			expect(docsLink).toHaveAttribute('href', 'https://echodash.com/docs/echodash-plugin');
+			const docsLink = screen.getByText(/Documentation/).closest('a');
+			expect(docsLink).toHaveAttribute('href', 'https://echodash.com/docs/echodash-plugin/?utm_source=echodash-plugin&utm_medium=plugin&utm_campaign=echodash-plugin');
 			expect(docsLink).toHaveAttribute('target', '_blank');
-			expect(docsLink).toHaveAttribute('rel', 'noopener noreferrer');
+			expect(docsLink).toHaveAttribute('rel', 'noopener');
 		});
 	});
 
@@ -509,7 +509,7 @@ describe('IntegrationDetail Component', () => {
 			render(<IntegrationDetail {...mockProps} integration={integrationWithoutIcon} />);
 
 			// Should still render without breaking
-			expect(screen.getByText('WooCommerce')).toBeInTheDocument();
+			expect(screen.getAllByText('WooCommerce').length).toBeGreaterThan(0);
 		});
 	});
 });

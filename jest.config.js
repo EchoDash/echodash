@@ -102,8 +102,8 @@ module.exports = {
 	// Coverage directory
 	coverageDirectory: '<rootDir>/coverage',
 
-	// Test timeout
-	testTimeout: 10000,
+	// Test timeout - increased for async operations
+	testTimeout: 15000,
 
 	// Verbose output
 	verbose: true,

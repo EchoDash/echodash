@@ -88,7 +88,7 @@ export const App: React.FC = () => {
 				window.location.pathname + window.location.search
 			);
 		} else if (currentView === 'detail' && selectedIntegration) {
-			const url = new URL(window.location.href);
+			const url = new URL(window.location.href || 'http://localhost/');
 			url.hash = `/integration/${selectedIntegration}`;
 			window.history.pushState({}, '', url.toString());
 		}

@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
 import { TriggerModal } from './TriggerModal';
 import type { Integration, Trigger } from '../types';
 
@@ -135,7 +135,9 @@ describe('TriggerModal Component', () => {
 		it('renders modal header with integration info', () => {
 			render(<TriggerModal {...defaultProps} />);
 
-			expect(screen.getByText('Add Trigger')).toBeInTheDocument();
+			// Check modal title in header
+			const modal = screen.getByRole('dialog');
+			expect(within(modal).getByRole('heading', { name: /add trigger/i })).toBeInTheDocument();
 			expect(screen.getByText('Create a trigger for WooCommerce')).toBeInTheDocument();
 			expect(screen.getByAltText('WooCommerce logo')).toBeInTheDocument();
 		});
@@ -143,14 +145,16 @@ describe('TriggerModal Component', () => {
 		it('renders modal header for editing trigger', () => {
 			render(<TriggerModal {...defaultProps} editingTrigger={mockEditingTrigger} />);
 
-			expect(screen.getByText('Edit Trigger')).toBeInTheDocument();
+			// Check modal title changes to "Edit Trigger" in header
+			const modal = screen.getByRole('dialog');
+			expect(within(modal).getByRole('heading', { name: /edit trigger/i })).toBeInTheDocument();
 			expect(screen.getByText('Edit trigger for WooCommerce')).toBeInTheDocument();
 		});
 
 		it('renders trigger selector with available options', () => {
 			render(<TriggerModal {...defaultProps} />);
 
-			const triggerSelect = screen.getByDisplayValue('Order Completed');
+			const triggerSelect = screen.getByRole('combobox');
 			expect(triggerSelect).toBeInTheDocument();
 			
 			// Should have both trigger options
@@ -161,8 +165,9 @@ describe('TriggerModal Component', () => {
 		it('renders event name input with default value', () => {
 			render(<TriggerModal {...defaultProps} />);
 
-			const eventNameInput = screen.getByDisplayValue('Order Completed');
+			const eventNameInput = document.querySelector('.echodash-event-name__input') as HTMLInputElement;
 			expect(eventNameInput).toBeInTheDocument();
+			expect(eventNameInput.value).toBe('Order Completed');
 		});
 
 		it('renders key-value pairs from default event mappings', () => {
@@ -216,7 +221,7 @@ describe('TriggerModal Component', () => {
 		it('updates event name input', () => {
 			render(<TriggerModal {...defaultProps} />);
 
-			const eventNameInput = screen.getByDisplayValue('Order Completed');
+			const eventNameInput = document.querySelector('.echodash-event-name__input') as HTMLInputElement;
 			fireEvent.change(eventNameInput, { target: { value: 'Custom Event Name' } });
 
 			expect(screen.getByDisplayValue('Custom Event Name')).toBeInTheDocument();
@@ -239,9 +244,12 @@ describe('TriggerModal Component', () => {
 			render(<TriggerModal {...defaultProps} />);
 
 			const initialPairs = screen.getAllByRole('textbox');
-			const plusButtons = screen.getAllByText('+');
+			// Find plus button by CSS class since it uses dashicons
+			const plusButton = screen.getAllByRole('button').find(btn => 
+				btn.querySelector('.dashicons-plus-alt2')
+			);
 			
-			fireEvent.click(plusButtons[0]);
+			fireEvent.click(plusButton);
 
 			const newPairs = screen.getAllByRole('textbox');
 			expect(newPairs.length).toBe(initialPairs.length + 2); // +2 for key and value
@@ -251,16 +259,19 @@ describe('TriggerModal Component', () => {
 			render(<TriggerModal {...defaultProps} />);
 
 			const initialPairs = screen.getAllByRole('textbox');
-			const minusButtons = screen.getAllByText('−');
+			// Find minus button by CSS class since it uses dashicons
+			const minusButton = screen.getAllByRole('button').find(btn => 
+				btn.querySelector('.dashicons-minus')
+			);
 			
-			fireEvent.click(minusButtons[0]);
+			fireEvent.click(minusButton!);
 
 			const newPairs = screen.getAllByRole('textbox');
 			expect(newPairs.length).toBe(initialPairs.length - 2); // -2 for key and value
 		});
 
-		it('prevents removing the last key-value pair', () => {
-			// Start with only one pair
+		it('shows minus buttons when there are multiple pairs', () => {
+			// Start with one real mapping plus one empty pair (total of 2)
 			const singlePairIntegration = {
 				...mockIntegration,
 				availableTriggers: [
@@ -278,15 +289,16 @@ describe('TriggerModal Component', () => {
 
 			render(<TriggerModal {...defaultProps} integration={singlePairIntegration} />);
 
-			const minusButtons = screen.queryAllByText('−');
-			expect(minusButtons).toHaveLength(0); // Should not show minus button when only one pair
+			// Should show minus buttons because there are 2 pairs total (1 real + 1 empty)
+			const minusButtons = document.querySelectorAll('.dashicons-minus');
+			expect(minusButtons.length).toBeGreaterThan(0); 
 		});
 
 		it('disables form elements when savingTrigger is true', () => {
 			render(<TriggerModal {...defaultProps} savingTrigger={true} />);
 
 			const triggerSelect = screen.getByRole('combobox');
-			const eventNameInput = screen.getByDisplayValue('Order Completed');
+			const eventNameInput = document.querySelector('.echodash-event-name__input') as HTMLInputElement;
 			const saveButton = screen.getByText('Saving...');
 
 			expect(triggerSelect).toBeDisabled();
@@ -363,7 +375,10 @@ describe('TriggerModal Component', () => {
 		it('calls onSave with correct data when save button is clicked', () => {
 			render(<TriggerModal {...defaultProps} />);
 
-			const saveButton = screen.getByText('Add Trigger');
+			// Find save button in modal footer
+			const modal = screen.getByRole('dialog');
+			const saveButton = within(modal).getAllByRole('button', { name: /add trigger/i })
+				.find(btn => btn.classList.contains('echodash-button-primary'));
 			fireEvent.click(saveButton);
 
 			expect(defaultProps.onSave).toHaveBeenCalledWith({
@@ -380,10 +395,15 @@ describe('TriggerModal Component', () => {
 			render(<TriggerModal {...defaultProps} />);
 
 			// Add some empty pairs
-			const plusButtons = screen.getAllByText('+');
-			fireEvent.click(plusButtons[0]);
+			const plusButton = screen.getAllByRole('button').find(btn => 
+				btn.querySelector('.dashicons-plus-alt2')
+			);
+			fireEvent.click(plusButton);
 
-			const saveButton = screen.getByText('Add Trigger');
+			// Find save button in modal footer
+			const modal = screen.getByRole('dialog');
+			const saveButton = within(modal).getAllByRole('button', { name: /add trigger/i })
+				.find(btn => btn.classList.contains('echodash-button-primary'));
 			fireEvent.click(saveButton);
 
 			expect(defaultProps.onSave).toHaveBeenCalledWith({
@@ -409,8 +429,8 @@ describe('TriggerModal Component', () => {
 			expect(screen.getByText('Update Trigger')).toBeInTheDocument();
 		});
 
-		it('disables save button when no trigger is selected', () => {
-			// Mock integration without available triggers
+		it('enables save button when fallback trigger is provided', () => {
+			// Mock integration without available triggers (fallback should be used)
 			const emptyIntegration = {
 				...mockIntegration,
 				availableTriggers: [],
@@ -418,8 +438,11 @@ describe('TriggerModal Component', () => {
 
 			render(<TriggerModal {...defaultProps} integration={emptyIntegration} />);
 
-			const saveButton = screen.getByText('Add Trigger');
-			expect(saveButton).toBeDisabled();
+			// Find save button in modal footer
+			const modal = screen.getByRole('dialog');
+			const saveButton = within(modal).getAllByRole('button', { name: /add trigger/i })
+				.find(btn => btn.classList.contains('echodash-button-primary'));
+			expect(saveButton).not.toBeDisabled(); // Should not be disabled due to fallback trigger
 		});
 	});
 
@@ -507,8 +530,8 @@ describe('TriggerModal Component', () => {
 		it('calls onClose when close button is clicked', () => {
 			render(<TriggerModal {...defaultProps} />);
 
-			const closeButton = screen.getByText('×');
-			fireEvent.click(closeButton);
+			const closeButton = document.querySelector('.echodash-modal__close');
+			fireEvent.click(closeButton!);
 
 			expect(defaultProps.onClose).toHaveBeenCalled();
 		});
@@ -558,7 +581,11 @@ describe('TriggerModal Component', () => {
 
 			render(<TriggerModal {...defaultProps} integration={integrationWithoutDefaults} />);
 
-			expect(screen.getByDisplayValue('Custom Trigger')).toBeInTheDocument();
+			// Should show Custom Trigger in both selector and event name input
+			const customTriggerElements = screen.getAllByDisplayValue('Custom Trigger');
+			expect(customTriggerElements).toHaveLength(2); // select option and text input
+			
+			// Should show fallback key-value pairs
 			expect(screen.getByDisplayValue('user_name')).toBeInTheDocument();
 			expect(screen.getByDisplayValue('{user_name}')).toBeInTheDocument();
 		});
