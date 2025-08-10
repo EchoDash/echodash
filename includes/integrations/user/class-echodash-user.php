@@ -147,7 +147,7 @@ class EchoDash_User extends EchoDash_Integration {
 			'options' => array(
 				array(
 					'meta'        => 'id',
-					'preview'     => $current_user->ID ?: 9,
+					'preview'     => $current_user->ID ? $current_user->ID : 9,
 					'placeholder' => __( 'The user ID', 'echodash' ),
 				),
 				array(
