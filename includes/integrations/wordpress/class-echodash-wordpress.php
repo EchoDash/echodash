@@ -50,9 +50,8 @@ class EchoDash_WordPress extends EchoDash_Integration {
 	 */
 	public function init() {
 		add_action( 'upgrader_process_complete', array( $this, 'upgrader_process_complete' ), 10, 2 );
-		add_action( 'comment_post', array( $this, 'comment_post' ), 10, 3 );
+		add_action( 'comment_post', array( $this, 'comment_post' ), 10, 2 );
 		add_action( 'wp_insert_comment', array( $this, 'wp_insert_comment' ), 10, 2 );
-		add_action( 'publish_post', array( $this, 'post_published' ), 10, 2 );
 		add_action( 'post_updated', array( $this, 'post_updated' ), 10, 3 );
 		add_action( 'transition_post_status', array( $this, 'post_status_changed' ), 10, 3 );
 	}
@@ -226,16 +225,6 @@ class EchoDash_WordPress extends EchoDash_Integration {
 					'preview'     => __( 'An ecommerce toolkit that helps you sell anything. Beautifully.', 'echodash' ),
 					'placeholder' => __( 'The plugin description', 'echodash' ),
 				),
-				array(
-					'meta'        => 'old_status',
-					'preview'     => __( 'draft', 'echodash' ),
-					'placeholder' => __( 'The previous post status', 'echodash' ),
-				),
-				array(
-					'meta'        => 'new_status',
-					'preview'     => __( 'publish', 'echodash' ),
-					'placeholder' => __( 'The new post status', 'echodash' ),
-				),
 			),
 		);
 	}
@@ -394,6 +383,11 @@ class EchoDash_WordPress extends EchoDash_Integration {
 					'preview'     => __( 'draft', 'echodash' ),
 					'placeholder' => __( 'The previous post status', 'echodash' ),
 				),
+				array(
+					'meta'        => 'new_status',
+					'preview'     => __( 'publish', 'echodash' ),
+					'placeholder' => __( 'The new post status', 'echodash' ),
+				),
 			),
 		);
 	}
@@ -405,24 +399,22 @@ class EchoDash_WordPress extends EchoDash_Integration {
 	 *
 	 * @param int        $comment_id     The comment ID.
 	 * @param int|string $comment_approved 1 if approved, 0 if not, 'spam' if spam.
-	 * @param array      $commentdata    Comment data.
 	 */
-	public function comment_post( $comment_id, $comment_approved, $commentdata ) {
+	public function comment_post( $comment_id, $comment_approved ) {
 		// Only track approved comments.
-		if ( 1 !== $comment_approved ) {
+		if ( '1' !== $comment_approved ) {
 			return;
 		}
 
-		$comment = get_comment( $comment_id );
-		$post    = get_post( $comment->comment_post_ID );
+		$comment = get_comment( (int) $comment_id );
+		$post    = get_post( (int) $comment->comment_post_ID );
 
 		if ( ! $comment || ! $post ) {
 			return;
 		}
 
-		// Check if this is a reply to another comment.
+		// Skip replies - they're handled in wp_insert_comment to avoid duplicates.
 		if ( ! empty( $comment->comment_parent ) ) {
-			$this->handle_comment_reply( $comment_id );
 			return;
 		}
 
@@ -461,9 +453,9 @@ class EchoDash_WordPress extends EchoDash_Integration {
 	 * @param int $comment_id The comment ID.
 	 */
 	private function handle_comment_reply( $comment_id ) {
-		$comment        = get_comment( $comment_id );
-		$parent_comment = get_comment( $comment->comment_parent );
-		$post           = get_post( $comment->comment_post_ID );
+		$comment        = get_comment( (int) $comment_id );
+		$parent_comment = get_comment( (int) $comment->comment_parent );
+		$post           = get_post( (int) $comment->comment_post_ID );
 
 		if ( ! $comment || ! $parent_comment || ! $post ) {
 			return;
@@ -485,34 +477,6 @@ class EchoDash_WordPress extends EchoDash_Integration {
 		);
 	}
 
-	/**
-	 * Handle post published.
-	 *
-	 * @since 2.0.0
-	 *
-	 * @param int     $post_id The post ID.
-	 * @param WP_Post $post    Post object.
-	 */
-	public function post_published( $post_id, $post ) {
-		// Skip auto-drafts and revisions.
-		if ( wp_is_post_revision( $post_id ) || wp_is_post_autosave( $post_id ) ) {
-			return;
-		}
-
-		// Prevent duplicate events for the same post in this request.
-		if ( in_array( $post_id, $this->processed_posts, true ) ) {
-			return;
-		}
-		$this->processed_posts[] = $post_id;
-
-		$this->track_event(
-			'post_published',
-			array(
-				'post'   => $post_id,
-				'author' => $post->post_author,
-			)
-		);
-	}
 
 	/**
 	 * Handle post updated.
@@ -587,6 +551,18 @@ class EchoDash_WordPress extends EchoDash_Integration {
 			return;
 		}
 		$this->processed_posts[] = $post->ID;
+
+		// Check if post is being published for the first time.
+		if ( 'publish' === $new_status && 'publish' !== $old_status ) {
+			$this->track_event(
+				'post_published',
+				array(
+					'post'   => $post->ID,
+					'author' => $post->post_author,
+				)
+			);
+			return;
+		}
 
 		$this->track_event(
 			'post_status_changed',
@@ -681,6 +657,7 @@ class EchoDash_WordPress extends EchoDash_Integration {
 				'post_type'    => $post->post_type,
 				'post_date'    => $post->post_date,
 				'post_status'  => $post->post_status,
+				'new_status'   => $post->post_status,
 			),
 		);
 	}

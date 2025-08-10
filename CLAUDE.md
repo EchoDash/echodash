@@ -364,7 +364,7 @@ data for the current user is merged automatically. This can be overridden by pas
 
 **Example:**
 ```php
-// ✅ Correct - don't include 'user' in option_types
+// ✅ Correct - only pass 'user' in $objects if you need to override the default current user context.
 'option_types' => array( 'post' ),
 
 // ✅ Correct - don't pass user data in track_event()
@@ -372,7 +372,7 @@ $this->track_event(
     'my_trigger',
     array(
         'post' => $post_id,
-        'user' => $post->post_author,
+        'user' => $post->post_author, // override: use post author rather than current user.
     ),
     array(
         'post' => array(
