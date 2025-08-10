@@ -1,4 +1,9 @@
 <?php
+/**
+ * EDD Cancellation Survey integration.
+ *
+ * @package EchoDash
+ */
 
 defined( 'ABSPATH' ) || exit;
 /**
@@ -38,7 +43,7 @@ class EchoDash_EDD_Cancellation_Survey extends EchoDash_Integration {
 	 * @since 1.2.0
 	 */
 	public function init() {
-		// Hook into the EDD subscription cancellation action
+		// Hook into the EDD subscription cancellation action.
 		add_action( 'edd_subscription_cancelled', array( $this, 'track_cancellation_survey' ), 15, 2 );
 	}
 
@@ -56,7 +61,7 @@ class EchoDash_EDD_Cancellation_Survey extends EchoDash_Integration {
 			'subscription_cancelled' => array(
 				'name'               => __( 'Subscription Cancelled with Survey', 'echodash' ),
 				'description'        => __( 'Triggered when a subscription is cancelled and a survey reason is provided.', 'echodash' ),
-				'post_types'         => array(), // No post types needed for this global trigger
+				'post_types'         => array(), // No post types needed for this global trigger.
 				'has_single'         => false,
 				'has_global'         => true,
 				'option_types'       => array( 'cancellation' ),
@@ -87,17 +92,17 @@ class EchoDash_EDD_Cancellation_Survey extends EchoDash_Integration {
 	 */
 	public function track_cancellation_survey( $sub_id, $sub ) {
 
-		// Only proceed if a cancellation reason was provided
+		// Only proceed if a cancellation reason was provided.
 		if ( ! isset( $_GET['cancellation_reason'] ) ) {
 			return;
 		}
 
-		$reason_value = sanitize_text_field( $_GET['cancellation_reason'] );
+		$reason_value = sanitize_text_field( wp_unslash( $_GET['cancellation_reason'] ) );
 
-		// Get the user-friendly reason text
+		// Get the user-friendly reason text.
 		$reason_text = $this->get_reason_text( $reason_value );
 
-		// Get customer information
+		// Get customer information.
 		$customer_email = '';
 		$customer_name  = '';
 
@@ -203,9 +208,9 @@ class EchoDash_EDD_Cancellation_Survey extends EchoDash_Integration {
 	 * @return array The cancellation variables.
 	 */
 	public function get_cancellation_vars( $subscription_id ) {
-		// This method is called by the event tracking system
-		// The actual data is passed directly in track_cancellation_survey()
-		// For consistency, we should implement this method
+		// This method is called by the event tracking system.
+		// The actual data is passed directly in track_cancellation_survey().
+		// For consistency, we should implement this method.
 
 		$vars = array(
 			'cancellation' => array(

@@ -1,6 +1,6 @@
 /**
  * Merge Tag Selector Component
- * 
+ *
  * Dropdown component for selecting merge tags from available options
  */
 
@@ -21,7 +21,7 @@ export const MergeTagSelector: React.FC<MergeTagSelectorProps> = ({
 	onSelect,
 	isOpen,
 	onClose,
-	buttonRef
+	buttonRef,
 }) => {
 	const dropdownRef = useRef<HTMLDivElement>(null);
 	const searchInputRef = useRef<HTMLInputElement>(null);
@@ -33,41 +33,48 @@ export const MergeTagSelector: React.FC<MergeTagSelectorProps> = ({
 	useEffect(() => {
 		if (isOpen && buttonRef.current) {
 			const buttonRect = buttonRef.current.getBoundingClientRect();
-			
+
 			// Check if we're inside a modal
 			const modalParent = buttonRef.current.closest('.echodash-modal');
 			setIsInModal(!!modalParent);
-			
+
 			if (modalParent) {
 				// For modal context, use fixed positioning
 				let top = buttonRect.bottom + 2;
 				let left = buttonRect.left;
-				
+
 				// Get dropdown dimensions after render
 				setTimeout(() => {
 					if (dropdownRef.current) {
-						const dropdownRect = dropdownRef.current.getBoundingClientRect();
-						
+						const dropdownRect =
+							dropdownRef.current.getBoundingClientRect();
+
 						// Adjust if dropdown would go off screen to the right
-						if (left + dropdownRect.width > window.innerWidth - 20) {
+						if (
+							left + dropdownRect.width >
+							window.innerWidth - 20
+						) {
 							left = buttonRect.right - dropdownRect.width;
 						}
-						
+
 						// Adjust if dropdown would go off screen to the bottom
-						if (top + dropdownRect.height > window.innerHeight - 20) {
+						if (
+							top + dropdownRect.height >
+							window.innerHeight - 20
+						) {
 							top = buttonRect.top - dropdownRect.height - 2;
 						}
-						
+
 						setPosition({ top, left });
 					}
 				}, 0);
-				
+
 				setPosition({ top, left });
 			} else {
 				// For non-modal context, use absolute positioning
 				const top = buttonRect.bottom + window.scrollY + 2;
 				const left = buttonRect.left + window.scrollX;
-				
+
 				setPosition({ top, left });
 			}
 		}
@@ -75,15 +82,20 @@ export const MergeTagSelector: React.FC<MergeTagSelectorProps> = ({
 
 	useEffect(() => {
 		const handleClickOutside = (event: MouseEvent): void => {
-			if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node) &&
-				buttonRef.current && !buttonRef.current.contains(event.target as Node)) {
+			if (
+				dropdownRef.current &&
+				!dropdownRef.current.contains(event.target as Node) &&
+				buttonRef.current &&
+				!buttonRef.current.contains(event.target as Node)
+			) {
 				onClose();
 			}
 		};
 
 		if (isOpen) {
 			document.addEventListener('mousedown', handleClickOutside);
-			return () => document.removeEventListener('mousedown', handleClickOutside);
+			return () =>
+				document.removeEventListener('mousedown', handleClickOutside);
 		}
 	}, [isOpen, onClose, buttonRef]);
 
@@ -95,7 +107,7 @@ export const MergeTagSelector: React.FC<MergeTagSelectorProps> = ({
 				searchInputRef.current?.focus();
 			}, 100);
 		}
-		
+
 		// Reset search when dropdown closes
 		if (!isOpen) {
 			setSearchTerm('');
@@ -110,38 +122,49 @@ export const MergeTagSelector: React.FC<MergeTagSelectorProps> = ({
 		}
 
 		const searchLower = searchTerm.toLowerCase();
-		
-		return options.map(group => ({
-			...group,
-			options: group.options.filter(option => {
-				// Search in merge tag, placeholder, and preview
-				const mergeTag = `{${group.type}:${option.meta}}`.toLowerCase();
-				const placeholder = option.placeholder.toLowerCase();
-				const preview = String(option.preview).toLowerCase();
-				
-				return mergeTag.includes(searchLower) || 
-				       placeholder.includes(searchLower) || 
-				       preview.includes(searchLower);
-			})
-		})).filter(group => group.options.length > 0); // Remove empty groups
+
+		return options
+			.map(group => ({
+				...group,
+				options: group.options.filter(option => {
+					// Search in merge tag, placeholder, and preview
+					const mergeTag =
+						`{${group.type}:${option.meta}}`.toLowerCase();
+					const placeholder = option.placeholder.toLowerCase();
+					const preview = String(option.preview).toLowerCase();
+
+					return (
+						mergeTag.includes(searchLower) ||
+						placeholder.includes(searchLower) ||
+						preview.includes(searchLower)
+					);
+				}),
+			}))
+			.filter(group => group.options.length > 0); // Remove empty groups
 	}, [options, searchTerm]);
 
 	// Auto-scroll focused item into view
 	useEffect(() => {
 		if (focusedIndex >= 0 && dropdownRef.current) {
-			const contentArea = dropdownRef.current.querySelector('.echodash-merge-dropdown__content');
-			const focusedElement = contentArea?.querySelector('.echodash-merge-dropdown__option--focused');
-			
+			const contentArea = dropdownRef.current.querySelector(
+				'.echodash-merge-dropdown__content'
+			);
+			const focusedElement = contentArea?.querySelector(
+				'.echodash-merge-dropdown__option--focused'
+			);
+
 			if (focusedElement && contentArea) {
 				const contentRect = contentArea.getBoundingClientRect();
 				const elementRect = focusedElement.getBoundingClientRect();
-				
+
 				if (elementRect.bottom > contentRect.bottom) {
 					// Scroll down
-					contentArea.scrollTop += elementRect.bottom - contentRect.bottom + 5;
+					contentArea.scrollTop +=
+						elementRect.bottom - contentRect.bottom + 5;
 				} else if (elementRect.top < contentRect.top) {
 					// Scroll up
-					contentArea.scrollTop -= contentRect.top - elementRect.top + 5;
+					contentArea.scrollTop -=
+						contentRect.top - elementRect.top + 5;
 				}
 			}
 		}
@@ -149,14 +172,19 @@ export const MergeTagSelector: React.FC<MergeTagSelectorProps> = ({
 
 	// Flatten filtered options for keyboard navigation
 	const flattenedOptions = useMemo(() => {
-		const flattened: Array<{ groupType: string; meta: string; groupName: string; option: any }> = [];
+		const flattened: Array<{
+			groupType: string;
+			meta: string;
+			groupName: string;
+			option: any;
+		}> = [];
 		filteredOptions.forEach(group => {
 			group.options.forEach(option => {
 				flattened.push({
 					groupType: group.type,
 					meta: option.meta,
 					groupName: group.name,
-					option
+					option,
 				});
 			});
 		});
@@ -173,13 +201,13 @@ export const MergeTagSelector: React.FC<MergeTagSelectorProps> = ({
 		switch (e.key) {
 			case 'ArrowDown':
 				e.preventDefault();
-				setFocusedIndex(prev => 
+				setFocusedIndex(prev =>
 					prev < flattenedOptions.length - 1 ? prev + 1 : prev
 				);
 				break;
 			case 'ArrowUp':
 				e.preventDefault();
-				setFocusedIndex(prev => prev > 0 ? prev - 1 : -1);
+				setFocusedIndex(prev => (prev > 0 ? prev - 1 : -1));
 				if (focusedIndex === 0) {
 					// Focus back to search input
 					searchInputRef.current?.focus();
@@ -187,7 +215,10 @@ export const MergeTagSelector: React.FC<MergeTagSelectorProps> = ({
 				break;
 			case 'Enter':
 				e.preventDefault();
-				if (focusedIndex >= 0 && focusedIndex < flattenedOptions.length) {
+				if (
+					focusedIndex >= 0 &&
+					focusedIndex < flattenedOptions.length
+				) {
 					const selected = flattenedOptions[focusedIndex];
 					handleSelect(selected.groupType, selected.meta);
 				}
@@ -204,11 +235,13 @@ export const MergeTagSelector: React.FC<MergeTagSelectorProps> = ({
 	return (
 		<div
 			ref={dropdownRef}
-			className={`echodash-merge-dropdown ${isInModal ? 'echodash-merge-dropdown--in-modal' : ''}`}
+			className={`echodash-merge-dropdown ${
+				isInModal ? 'echodash-merge-dropdown--in-modal' : ''
+			}`}
 			style={{
 				position: isInModal ? 'fixed' : 'absolute',
 				top: position.top,
-				left: position.left
+				left: position.left,
 			}}
 		>
 			{/* Search Input */}
@@ -218,10 +251,13 @@ export const MergeTagSelector: React.FC<MergeTagSelectorProps> = ({
 					type="text"
 					placeholder="Search merge tags..."
 					value={searchTerm}
-					onChange={(e) => setSearchTerm(e.target.value)}
+					onChange={e => setSearchTerm(e.target.value)}
 					className="echodash-merge-dropdown__search-input"
-					onKeyDown={(e) => {
-						if (e.key === 'ArrowDown' && flattenedOptions.length > 0) {
+					onKeyDown={e => {
+						if (
+							e.key === 'ArrowDown' &&
+							flattenedOptions.length > 0
+						) {
 							e.preventDefault();
 							setFocusedIndex(0);
 						} else if (e.key === 'Escape') {
@@ -236,7 +272,7 @@ export const MergeTagSelector: React.FC<MergeTagSelectorProps> = ({
 			</div>
 
 			{/* Scrollable Content */}
-			<div 
+			<div
 				className="echodash-merge-dropdown__content"
 				onKeyDown={handleKeyDown}
 			>
@@ -246,43 +282,59 @@ export const MergeTagSelector: React.FC<MergeTagSelectorProps> = ({
 					for (let i = 0; i < groupIndex; i++) {
 						optionIndexCounter += filteredOptions[i].options.length;
 					}
-					
+
 					return (
-						<div 
-							key={groupIndex} 
+						<div
+							key={groupIndex}
 							className="echodash-merge-dropdown__group"
 						>
 							{/* Group Header */}
 							<div className="echodash-merge-dropdown__group-header">
 								{group.name}
 							</div>
-							
+
 							{/* Group Options */}
 							{group.options.map((option, optionIndex) => {
-								const globalIndex = optionIndexCounter + optionIndex;
+								const globalIndex =
+									optionIndexCounter + optionIndex;
 								const isFocused = focusedIndex === globalIndex;
-								
+
 								return (
 									<div
 										key={optionIndex}
-										onClick={() => handleSelect(group.type, option.meta)}
-										onKeyDown={(e) => {
-											if (e.key === 'Enter' || e.key === ' ') {
+										onClick={() =>
+											handleSelect(
+												group.type,
+												option.meta
+											)
+										}
+										onKeyDown={e => {
+											if (
+												e.key === 'Enter' ||
+												e.key === ' '
+											) {
 												e.preventDefault();
-												handleSelect(group.type, option.meta);
+												handleSelect(
+													group.type,
+													option.meta
+												);
 											}
 										}}
 										tabIndex={isFocused ? 0 : -1}
 										role="button"
 										aria-label={`Select merge tag ${group.type}:${option.meta}`}
-										className={`echodash-merge-dropdown__option ${isFocused ? 'echodash-merge-dropdown__option--focused' : ''}`}
+										className={`echodash-merge-dropdown__option ${
+											isFocused
+												? 'echodash-merge-dropdown__option--focused'
+												: ''
+										}`}
 									>
-							<div className="echodash-merge-dropdown__option-tag">
-								{`{${group.type}:${option.meta}}`}
-							</div>
-							<div className="echodash-merge-dropdown__option-placeholder">
-								{option.placeholder}
-							</div>
+										<div className="echodash-merge-dropdown__option-tag">
+											{`{${group.type}:${option.meta}}`}
+										</div>
+										<div className="echodash-merge-dropdown__option-placeholder">
+											{option.placeholder}
+										</div>
 										<div className="echodash-merge-dropdown__option-preview">
 											Preview: {String(option.preview)}
 										</div>
@@ -292,10 +344,12 @@ export const MergeTagSelector: React.FC<MergeTagSelectorProps> = ({
 						</div>
 					);
 				})}
-				
+
 				{filteredOptions.length === 0 && (
 					<div className="echodash-merge-dropdown__empty">
-						{searchTerm.trim() ? 'No matching merge tags found' : 'No merge tags available'}
+						{searchTerm.trim()
+							? 'No matching merge tags found'
+							: 'No merge tags available'}
 					</div>
 				)}
 			</div>

@@ -1,4 +1,9 @@
 <?php
+/**
+ * GamiPress integration for EchoDash.
+ *
+ * @package EchoDash
+ */
 
 defined( 'ABSPATH' ) || exit;
 
@@ -148,7 +153,7 @@ class EchoDash_GamiPress extends EchoDash_Integration {
 	 * @param array  $args           The args.
 	 */
 	public function user_complete_achievement( $user_id, $achievement_id, $trigger, $site_id, $args ) {
-		// Check if it's an achievement
+		// Check if it's an achievement.
 		if ( ! get_post_type( $achievement_id ) || get_post_type( $achievement_id ) === 'points-award' ) {
 			return;
 		}
@@ -172,7 +177,7 @@ class EchoDash_GamiPress extends EchoDash_Integration {
 	 * @param int $earning_id     The earning ID.
 	 */
 	public function user_revoke_achievement( $user_id, $achievement_id, $earning_id ) {
-		// Check if it's an achievement
+		// Check if it's an achievement.
 		if ( ! get_post_type( $achievement_id ) || get_post_type( $achievement_id ) === 'points-award' ) {
 			return;
 		}

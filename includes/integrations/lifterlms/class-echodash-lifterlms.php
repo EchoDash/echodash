@@ -1,4 +1,9 @@
 <?php
+/**
+ * LifterLMS integration.
+ *
+ * @package EchoDash
+ */
 
 defined( 'ABSPATH' ) || exit;
 /**
@@ -156,7 +161,7 @@ class EchoDash_LifterLMS extends EchoDash_Integration {
 
 
 	/**
-	 * Triggered when course / lesson marked complete
+	 * Triggered when course / lesson marked complete.
 	 *
 	 * @since 1.0.0
 	 *
@@ -386,8 +391,7 @@ class EchoDash_LifterLMS extends EchoDash_Integration {
 	 */
 	public function get_quiz_vars( $quiz_id, $quiz = false ) {
 
-		// Quiz ID is a course ID in the admin :( .
-		// @Todo need to make this work better.
+		// Quiz ID is a course ID in the admin :(. Need to make this work better.
 
 		if ( 'course' === get_post_type( $quiz_id ) ) {
 			return array();

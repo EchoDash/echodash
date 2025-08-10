@@ -1,4 +1,9 @@
 <?php
+/**
+ * Base class for EchoDash integrations.
+ *
+ * @package EchoDash
+ */
 
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
@@ -68,7 +73,7 @@ abstract class EchoDash_Integration {
 	 */
 	public function __construct() {
 
-		// Set default icon if not already set by child class
+		// Set default icon if not already set by child class.
 		if ( empty( $this->icon ) ) {
 			$this->icon = $this->slug . '-icon.png';
 		}
@@ -188,7 +193,7 @@ abstract class EchoDash_Integration {
 	 */
 	private function get_object_id_for_trigger( $trigger, $objects ) {
 
-		// Check if this trigger supports single events
+		// Check if this trigger supports single events.
 		if ( empty( $this->triggers[ $trigger ]['has_single'] ) ) {
 			return false;
 		}
@@ -197,7 +202,7 @@ abstract class EchoDash_Integration {
 			return false;
 		}
 
-		// Get first key/value pair
+		// Get first key/value pair.
 		reset( $objects );
 		$object_type = key( $objects );
 		$object_id   = current( $objects );
@@ -214,7 +219,8 @@ abstract class EchoDash_Integration {
 	 * Gets the event data from the get_{$object_type}_vars method in each integration.
 	 *
 	 * @since 1.0.0
-	 * @param array $objects The objects.
+	 * @param array $event_data The event data.
+	 * @param array $objects    The objects.
 	 * @return array The event data.
 	 */
 	public function get_event_data( $event_data = array(), $objects = array() ) {
@@ -240,16 +246,16 @@ abstract class EchoDash_Integration {
 
 		$objects = apply_filters( 'echodash_event_objects', $objects, $trigger );
 
-		// Get object ID if applicable
+		// Get object ID if applicable.
 		$object_id = $this->get_object_id_for_trigger( $trigger, $objects );
 
-		// Get events configured for this trigger
+		// Get events configured for this trigger.
 		$events = $this->get_events( $trigger, $object_id );
 
 		// Get merge variables from this and any other relevant integrations.
 		$event_data = apply_filters( 'echodash_event_data', array(), $objects );
 
-		// Merge in any custom arguments passed from the trigger
+		// Merge in any custom arguments passed from the trigger.
 		foreach ( $args as $object_type => $values ) {
 			if ( isset( $event_data[ $object_type ] ) ) {
 				$event_data[ $object_type ] = array_merge( $event_data[ $object_type ], $values );
@@ -258,7 +264,7 @@ abstract class EchoDash_Integration {
 			}
 		}
 
-		// Process each event
+		// Process each event.
 		foreach ( $events as $event ) {
 
 			if ( isset( $event['mappings'] ) ) {
@@ -269,10 +275,10 @@ abstract class EchoDash_Integration {
 			// Format the values from settings storage into key-value pairs.
 			$event['value'] = wp_list_pluck( $event['value'], 'value', 'key' );
 
-			// Replace merge tags in event data
+			// Replace merge tags in event data.
 			$event['value'] = $this->replace_tags( $event['value'], $event_data );
 
-			// Track via public class
+			// Track via public class.
 			echodash()->public->track_event(
 				$event['name'],
 				$event['value'],
@@ -297,11 +303,16 @@ abstract class EchoDash_Integration {
 			$mappings[ $field ] = $this->process_merge_tag( $merge_tag, $event_data );
 		}
 
-		// Handle array expansions (creates new fields like field_key => value)
+		// Handle array expansions (creates new fields like field_key => value).
 		$mappings = $this->expand_array_fields( $mappings );
 
-		// Remove any empty values
-		$mappings = array_filter( $mappings );
+		// Remove any empty values, but keep '0' and other valid but "falsy" values.
+		$mappings = array_filter(
+			$mappings,
+			function ( $value ) {
+				return null !== $value && '' !== $value && array() !== $value;
+			}
+		);
 
 		return apply_filters( 'echodash_replace_tags', $mappings, $event_data );
 	}
@@ -324,7 +335,7 @@ abstract class EchoDash_Integration {
 				$placeholder = $this->build_placeholder( $object_type, $object_key );
 
 				if ( $this->should_replace_placeholder( $merge_tag, $placeholder, $object_value ) ) {
-					$processed_tag = str_replace( $placeholder, $object_value, $processed_tag );
+					$processed_tag = str_replace( $placeholder, $object_value, $merge_tag );
 				}
 			}
 		}
@@ -373,7 +384,7 @@ abstract class EchoDash_Integration {
 
 		foreach ( $mappings as $field => $value ) {
 			if ( is_array( $value ) ) {
-				// Expand array into separate fields
+				// Expand array into separate fields.
 				foreach ( $value as $key => $sub_value ) {
 					$expanded_mappings[ $field . '_' . $key ] = $sub_value;
 				}
@@ -717,7 +728,7 @@ abstract class EchoDash_Integration {
 	 * @param WP_Post $post The post.
 	 */
 	public function meta_box_callback( $post ) {
-		// Add nonce field
+		// Add nonce field.
 		wp_nonce_field( 'echodash_save_settings', 'echodash_nonce' );
 
 		echo '<table class="form-table echodash"><tbody>';

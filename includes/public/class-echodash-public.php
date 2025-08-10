@@ -1,4 +1,9 @@
 <?php
+/**
+ * Public functionality for EchoDash.
+ *
+ * @package EchoDash
+ */
 
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
@@ -33,6 +38,10 @@ class EchoDash_Public {
 	 * Tracks an event.
 	 *
 	 * @since 1.0.0
+	 * @param string $event_name The event name.
+	 * @param array  $values     The event values.
+	 * @param mixed  $source     The event source.
+	 * @param mixed  $trigger    The event trigger.
 	 */
 	public function track_event( $event_name, $values = array(), $source = false, $trigger = false ) {
 

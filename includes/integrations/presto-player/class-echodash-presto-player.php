@@ -1,6 +1,12 @@
 <?php
+/**
+ * Presto Player integration for EchoDash.
+ *
+ * @package EchoDash
+ */
 
 defined( 'ABSPATH' ) || exit;
+
 /**
  * Presto Player integration.
  *
@@ -112,7 +118,7 @@ class EchoDash_Presto_Player extends EchoDash_Integration {
 			return;
 		}
 
-		// Video Play
+		// Video Play.
 		if ( 0 === $percent ) {
 			$this->track_event(
 				'video_play',
@@ -124,7 +130,7 @@ class EchoDash_Presto_Player extends EchoDash_Integration {
 			);
 		}
 
-		// Video Complete
+		// Video Complete.
 		if ( 100 === $percent ) {
 			$this->track_event(
 				'video_complete',

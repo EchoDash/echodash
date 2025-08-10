@@ -1,9 +1,14 @@
 <?php
+/**
+ * BbPress integration for EchoDash.
+ *
+ * @package EchoDash
+ */
 
 defined( 'ABSPATH' ) || exit;
 
 /**
- * bbPress integration.
+ * BbPress integration.
  *
  * @since 1.2.0
  */
@@ -213,7 +218,7 @@ class EchoDash_BbPress extends EchoDash_Integration {
 
 		// Post/meta fields.
 		foreach ( $meta_column as $meta_key ) {
-			if ( isset( $topic[ $meta_key ] ) && $topic[ $meta_key ] != '' ) {
+			if ( isset( $topic[ $meta_key ] ) && '' !== $topic[ $meta_key ] ) {
 				$topic_fields[ $meta_key ] = $topic[ $meta_key ];
 			}
 		}
@@ -292,7 +297,7 @@ class EchoDash_BbPress extends EchoDash_Integration {
 
 		// Post/meta fields.
 		foreach ( $meta_column as $meta_key ) {
-			if ( isset( $reply[ $meta_key ] ) && $reply[ $meta_key ] != '' ) {
+			if ( isset( $reply[ $meta_key ] ) && '' !== $reply[ $meta_key ] ) {
 				$reply_fields[ $meta_key ] = $reply[ $meta_key ];
 			}
 		}
@@ -367,7 +372,7 @@ class EchoDash_BbPress extends EchoDash_Integration {
 
 		// Post/meta fields.
 		foreach ( $meta_column as $meta_key ) {
-			if ( isset( $forum[ $meta_key ] ) && $forum[ $meta_key ] != '' ) {
+			if ( isset( $forum[ $meta_key ] ) && '' !== $forum[ $meta_key ] ) {
 				$forum_fields[ $meta_key ] = $forum[ $meta_key ];
 			}
 		}

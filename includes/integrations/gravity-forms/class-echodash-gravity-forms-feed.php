@@ -1,4 +1,9 @@
 <?php
+/**
+ * Gravity Forms integration.
+ *
+ * @package EchoDash
+ */
 
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
@@ -12,10 +17,44 @@ GFForms::include_feed_addon_framework();
  */
 class EchoDash_Gravity_Forms_Feed extends GFFeedAddOn {
 
-	protected $_version     = ECHODASH_VERSION;
-	protected $_slug        = 'echodash';
-	protected $_full_path   = __FILE__;
-	protected $_title       = 'EchoDash Integration';
+	/**
+	 * The version of the plugin.
+	 *
+	 * @since 1.0.0
+	 * @var string
+	 */
+	protected $_version = ECHODASH_VERSION;
+
+	/**
+	 * The slug of the plugin.
+	 *
+	 * @since 1.0.0
+	 * @var string
+	 */
+	protected $_slug = 'echodash';
+
+	/**
+	 * The full path of the plugin.
+	 *
+	 * @since 1.0.0
+	 * @var string
+	 */
+	protected $_full_path = __FILE__;
+
+	/**
+	 * The title of the plugin.
+	 *
+	 * @since 1.0.0
+	 * @var string
+	 */
+	protected $_title = 'EchoDash Integration';
+
+	/**
+	 * The short title of the plugin.
+	 *
+	 * @since 1.0.0
+	 * @var string
+	 */
 	protected $_short_title = 'EchoDash';
 
 

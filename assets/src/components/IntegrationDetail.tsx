@@ -1,6 +1,6 @@
 /**
  * Integration Detail Component
- * 
+ *
  * Shows individual integration with triggers matching mockup
  */
 
@@ -53,17 +53,17 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 		<>
 			{/* Header with logo */}
 			<div className="echodash-header">
-				<a 
-					href="https://echodash.com" 
-					target="_blank" 
+				<a
+					href="https://echodash.com"
+					target="_blank"
 					rel="noopener noreferrer"
 					className="echodash-header__logo-link"
 				>
 					<EchoDashLogo className="echodash-header__logo" />
 				</a>
-				<a 
-					href="https://echodash.com/docs/echodash-plugin" 
-					target="_blank" 
+				<a
+					href="https://echodash.com/docs/echodash-plugin"
+					target="_blank"
 					rel="noopener noreferrer"
 					className="echodash-button echodash-header__docs-link"
 				>
@@ -73,7 +73,7 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 
 			{/* Breadcrumb navigation */}
 			<div className="echodash-breadcrumb">
-				<button 
+				<button
 					onClick={onBack}
 					className="button-link echodash-breadcrumb__link"
 				>
@@ -87,25 +87,33 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 			<div className="echodash-card echodash-integration-header">
 				<div className="echodash-integration-header__content">
 					{/* Icon */}
-					<div 
+					<div
 						className="echodash-integration-header__icon echodash-integration-item__icon"
-						style={{ backgroundColor: integration.iconBackgroundColor }}
+						style={{
+							backgroundColor: integration.iconBackgroundColor,
+						}}
 					>
-					<img 
-						src={integration.icon}
-						alt={`${integration.name} logo`}
-						className="echodash-integration-header__icon-image echodash-integration-item__icon-image"
-					/>
+						<img
+							src={integration.icon}
+							alt={`${integration.name} logo`}
+							className="echodash-integration-header__icon-image echodash-integration-item__icon-image"
+						/>
 					</div>
 
 					<div className="echodash-integration-header__info">
-						<h1 className="echodash-integration-header__title">{integration.name}</h1>
+						<h1 className="echodash-integration-header__title">
+							{integration.name}
+						</h1>
 						<p className="echodash-integration-header__description">
-							{integration.description || __('Configure triggers for this integration', 'echodash')}
+							{integration.description ||
+								__(
+									'Configure triggers for this integration',
+									'echodash'
+								)}
 						</p>
 					</div>
 
-					<button 
+					<button
 						className="echodash-button echodash-integration-header__add-trigger"
 						onClick={onAddTrigger}
 					>
@@ -116,25 +124,36 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 
 			{/* Triggers section */}
 			<div className="echodash-card echodash-triggers">
-				<h2 className="echodash-triggers__title">{__('Global Triggers', 'echodash')}</h2>
-				
+				<h2 className="echodash-triggers__title">
+					{__('Global Triggers', 'echodash')}
+				</h2>
+
 				{triggers.length === 0 ? (
 					<div className="echodash-triggers__empty-state">
-						<div 
+						<div
 							className="echodash-triggers__empty-icon echodash-integration-item__icon"
-							style={{ backgroundColor: integration.iconBackgroundColor }}
+							style={{
+								backgroundColor:
+									integration.iconBackgroundColor,
+							}}
 						>
-						<img 
-							src={integration.icon}
-							alt={`${integration.name} logo`}
-							className="echodash-triggers__empty-icon-image echodash-integration-item__icon-image"
-						/>
+							<img
+								src={integration.icon}
+								alt={`${integration.name} logo`}
+								className="echodash-triggers__empty-icon-image echodash-integration-item__icon-image"
+							/>
 						</div>
-						<h3 className="echodash-triggers__empty-title">{__('Add your first %s trigger', 'echodash').replace('%s', integration.name)}</h3>
+						<h3 className="echodash-triggers__empty-title">
+							{__(
+								'Add your first %s trigger',
+								'echodash'
+							).replace('%s', integration.name)}
+						</h3>
 						<p className="echodash-triggers__empty-description">
-							Global triggers fire for all events of the selected type across your site.
+							Global triggers fire for all events of the selected
+							type across your site.
 						</p>
-						<button 
+						<button
 							className="echodash-button echodash-button-primary"
 							onClick={onAddTrigger}
 						>
@@ -149,24 +168,29 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 								className="echodash-trigger-item echodash-integration-item"
 							>
 								{/* Drag handle */}
-								<span 
-									className="dashicons dashicons-menu echodash-trigger-item__handle" 
-								></span>
+								<span className="dashicons dashicons-menu echodash-trigger-item__handle"></span>
 
 								{/* Trigger info */}
 								<div className="echodash-trigger-item__info">
-									<div className="echodash-trigger-item__type">{trigger.name}</div>
+									<div className="echodash-trigger-item__type">
+										{trigger.name}
+									</div>
 									<div className="echodash-trigger-item__name">
-										{trigger.description || trigger.trigger || __('Trigger', 'echodash')}
+										{trigger.description ||
+											trigger.trigger ||
+											__('Trigger', 'echodash')}
 									</div>
 								</div>
 
 								{/* Actions */}
 								<div className="echodash-trigger-item__actions">
-									<button 
+									<button
 										className="echodash-button"
 										onClick={() => handleSendTest(trigger)}
-										disabled={sendingTest === trigger.id || deletingTrigger === trigger.id}
+										disabled={
+											sendingTest === trigger.id ||
+											deletingTrigger === trigger.id
+										}
 									>
 										{sendingTest === trigger.id ? (
 											<>
@@ -185,22 +209,40 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 											</>
 										)}
 									</button>
-									<button 
+									<button
 										className="echodash-button"
 										onClick={() => onEditTrigger(trigger)}
-										disabled={deletingTrigger === trigger.id}
+										disabled={
+											deletingTrigger === trigger.id
+										}
 									>
 										Edit
 									</button>
-									<button 
+									<button
 										className="echodash-button"
 										onClick={() => {
-											if (window.confirm(__('Are you sure you want to delete the "%s" trigger? This action cannot be undone.', 'echodash').replace('%s', trigger.name || __('Untitled', 'echodash')))) {
+											if (
+												window.confirm(
+													__(
+														'Are you sure you want to delete the "%s" trigger? This action cannot be undone.',
+														'echodash'
+													).replace(
+														'%s',
+														trigger.name ||
+															__(
+																'Untitled',
+																'echodash'
+															)
+													)
+												)
+											) {
 												onDeleteTrigger(trigger);
 											}
 										}}
 										title="Delete trigger"
-										disabled={deletingTrigger === trigger.id}
+										disabled={
+											deletingTrigger === trigger.id
+										}
 									>
 										{deletingTrigger === trigger.id ? (
 											<span className="dashicons dashicons-update-alt ecd-spinner"></span>
@@ -216,54 +258,81 @@ export const IntegrationDetail: React.FC<IntegrationDetailProps> = ({
 			</div>
 
 			{/* Single-item triggers section */}
-			{integration.singleItemTriggers && integration.singleItemTriggers.length > 0 && (
-				<div className="echodash-card echodash-single-triggers">
-					<h2 className="echodash-triggers__title">Single-Item Events</h2>
-					<p className="echodash-single-triggers__description">
-						These events are configured on individual posts, forms, products, or courses.
-					</p>
-					
-					{integration.singleItemTriggers.map((triggerGroup, groupIndex) => (
-						<div key={`${triggerGroup.trigger}-${groupIndex}`} className="echodash-single-trigger-group">
-							<h3 className="echodash-single-trigger-group__title">
-								{triggerGroup.name}
-							</h3>
-							<p className="echodash-single-trigger-group__description">
-								{triggerGroup.description}
-							</p>
-							
-							<div className="echodash-single-triggers__list">
-								{triggerGroup.items.map((item, itemIndex) => (
-									<div 
-										key={`${item.post_id}-${itemIndex}`}
-										className="echodash-single-trigger-item echodash-integration-item"
-									>
-										<div className="echodash-single-trigger-item__info">
-											<div className="echodash-single-trigger-item__title">
-												{item.event_name || __('Untitled Event', 'echodash')}
-											</div>
-											<div className="echodash-single-trigger-item__post">
-												{__('Configured on:', 'echodash')} <strong>{item.post_title}</strong>
-											</div>
-										</div>
-										
-										<div className="echodash-single-trigger-item__actions">
-											<a 
-												href={item.edit_url}
-												className="echodash-button"
-												target="_blank"
-												rel="noopener noreferrer"
-											>
-												{__('Edit Item', 'echodash')} →
-											</a>
-										</div>
+			{integration.singleItemTriggers &&
+				integration.singleItemTriggers.length > 0 && (
+					<div className="echodash-card echodash-single-triggers">
+						<h2 className="echodash-triggers__title">
+							Single-Item Events
+						</h2>
+						<p className="echodash-single-triggers__description">
+							These events are configured on individual posts,
+							forms, products, or courses.
+						</p>
+
+						{integration.singleItemTriggers.map(
+							(triggerGroup, groupIndex) => (
+								<div
+									key={`${triggerGroup.trigger}-${groupIndex}`}
+									className="echodash-single-trigger-group"
+								>
+									<h3 className="echodash-single-trigger-group__title">
+										{triggerGroup.name}
+									</h3>
+									<p className="echodash-single-trigger-group__description">
+										{triggerGroup.description}
+									</p>
+
+									<div className="echodash-single-triggers__list">
+										{triggerGroup.items.map(
+											(item, itemIndex) => (
+												<div
+													key={`${item.post_id}-${itemIndex}`}
+													className="echodash-single-trigger-item echodash-integration-item"
+												>
+													<div className="echodash-single-trigger-item__info">
+														<div className="echodash-single-trigger-item__title">
+															{item.event_name ||
+																__(
+																	'Untitled Event',
+																	'echodash'
+																)}
+														</div>
+														<div className="echodash-single-trigger-item__post">
+															{__(
+																'Configured on:',
+																'echodash'
+															)}{' '}
+															<strong>
+																{
+																	item.post_title
+																}
+															</strong>
+														</div>
+													</div>
+
+													<div className="echodash-single-trigger-item__actions">
+														<a
+															href={item.edit_url}
+															className="echodash-button"
+															target="_blank"
+															rel="noopener noreferrer"
+														>
+															{__(
+																'Edit Item',
+																'echodash'
+															)}{' '}
+															→
+														</a>
+													</div>
+												</div>
+											)
+										)}
 									</div>
-								))}
-							</div>
-						</div>
-					))}
-				</div>
-			)}
+								</div>
+							)
+						)}
+					</div>
+				)}
 		</>
 	);
 };

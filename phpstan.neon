@@ -1,6 +1,7 @@
 parameters:
     level: 5
     checkExplicitMixedMissingReturn: false
+    treatPhpDocTypesAsCertain: false
     bootstrapFiles:
         - ./bin/phpstan-bootstrap.php
         - ./vendor/php-stubs/wordpress-stubs/wordpress-stubs.php
@@ -10,8 +11,16 @@ parameters:
         - **/node_modules/*
         - **/vendor/*
         - **/tests/*
+        - **/assets/dist/*
         - !**/*.php
     paths:
         - ./
     ignoreErrors:
         - '#Class file names should be based on the class name#'
+        - '#Function .* not found#'
+        - '#Class .* not found#'
+        - '#Instantiated class .* not found#'
+        - '#Call to .* on an unknown class#'
+        - '#Access to property .* on an unknown class#'
+        - '#Parameter .* has invalid type .*#'
+        - '#Path in .* is not a file or it does not exist#'

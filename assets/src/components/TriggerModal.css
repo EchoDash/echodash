@@ -10,7 +10,7 @@
 	left: 0;
 	right: 0;
 	bottom: 0;
-	background-color: #202E41B2;
+	background-color: #202e41b2;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -184,8 +184,8 @@
 }
 
 .echodash-modal hr {
-	border-top: 1px solid #E3E6EF;
-	height: 0px;
+	border-top: 1px solid #e3e6ef;
+	height: 0;
 }
 
 /* Payload Section */
@@ -276,7 +276,7 @@
 	transition: all 0.2s ease;
 	border-top-right-radius: var(--ecd-radius-lg);
 	border-bottom-right-radius: var(--ecd-radius-lg);
-	font-family: Consolas, Monaco, 'Courier New', monospace;
+	font-family: Consolas, Monaco, "Courier New", monospace;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
@@ -418,6 +418,7 @@
 
 /* Responsive adjustments */
 @media (max-width: 600px) {
+
 	.echodash-modal {
 		width: 95%;
 		max-width: none;
@@ -426,14 +427,14 @@
 		overflow-y: auto;
 	}
 
-			.echodash-modal__content {
-			padding: var(--ecd-spacing-lg);
-		}
+	.echodash-modal__content {
+		padding: var(--ecd-spacing-lg);
+	}
 
-			.echodash-modal__footer {
-			flex-direction: column-reverse;
-			gap: var(--ecd-spacing-md);
-		}
+	.echodash-modal__footer {
+		flex-direction: column-reverse;
+		gap: var(--ecd-spacing-md);
+	}
 
 	.echodash-modal__footer-actions {
 		width: 100%;
@@ -448,10 +449,10 @@
 		width: 100%;
 	}
 
-			.echodash-key-value-pair {
-			flex-wrap: wrap;
-			gap: var(--ecd-spacing-sm);
-		}
+	.echodash-key-value-pair {
+		flex-wrap: wrap;
+		gap: var(--ecd-spacing-sm);
+	}
 
 	.echodash-key-value-pair__field {
 		flex: 1 1 100%;

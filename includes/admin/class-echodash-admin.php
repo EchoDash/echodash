@@ -1,4 +1,9 @@
 <?php
+/**
+ * Admin functionality for EchoDash.
+ *
+ * @package EchoDash
+ */
 
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
@@ -199,7 +204,7 @@ class EchoDash_Admin {
 		$modified = false;
 
 		foreach ( echodash()->integrations as $integration ) {
-			// Skip if this integration already has settings
+			// Skip if this integration already has settings.
 			if ( ! empty( $settings[ $integration->slug ] ) ) {
 				continue;
 			}
@@ -252,11 +257,11 @@ class EchoDash_Admin {
 			wp_send_json_error( 'insufficient_permissions' );
 		}
 
-		// Delete existing settings to force initialize_default_settings to recreate them
+		// Delete existing settings to force initialize_default_settings to recreate them.
 		delete_option( 'echodash_options' );
 		delete_option( 'echodash_endpoint' );
 
-		// Initialize defaults
+		// Initialize defaults.
 		$this->initialize_default_settings();
 
 		wp_send_json_success();

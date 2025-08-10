@@ -1,6 +1,6 @@
 /**
  * Trigger Modal Component
- * 
+ *
  * Modal for adding/editing triggers matching the mockup design
  */
 
@@ -8,7 +8,13 @@ import React, { useState, useRef, useEffect } from 'react';
 import { __ } from '@wordpress/i18n';
 import { MergeTagSelector } from './MergeTagSelector';
 import './TriggerModal.css';
-import type { Integration, KeyValuePair, Trigger, TriggerMapping, MergeTagGroup } from '../types';
+import type {
+	Integration,
+	KeyValuePair,
+	Trigger,
+	TriggerMapping,
+	MergeTagGroup,
+} from '../types';
 
 // Interface for the data passed to onSave
 interface TriggerSaveData {
@@ -38,7 +44,11 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 	savingTrigger = false,
 }) => {
 	const availableTriggers = integration.availableTriggers || [
-		{ id: 'form_submitted', name: 'Form Submitted', description: 'Triggered each time a form is submitted.' }
+		{
+			id: 'form_submitted',
+			name: 'Form Submitted',
+			description: 'Triggered each time a form is submitted.',
+		},
 	];
 
 	// Initialize state based on whether we're editing or creating
@@ -59,24 +69,38 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 
 	// Initialize key-value pairs from editing data or default event mappings
 	const getInitialKeyValuePairs = (): KeyValuePair[] => {
-		if (editingTrigger?.mappings && Array.isArray(editingTrigger.mappings)) {
+		if (
+			editingTrigger?.mappings &&
+			Array.isArray(editingTrigger.mappings)
+		) {
 			// Use existing mappings from editing trigger
-			const pairs = editingTrigger.mappings.map((mapping: TriggerMapping) => ({
-				key: mapping.key || '',
-				value: mapping.value || ''
-			}));
+			const pairs = editingTrigger.mappings.map(
+				(mapping: TriggerMapping) => ({
+					key: mapping.key || '',
+					value: mapping.value || '',
+				})
+			);
 			// Add empty row at the end if not already present
-			if (pairs.length === 0 || (pairs[pairs.length - 1].key !== '' || pairs[pairs.length - 1].value !== '')) {
+			if (
+				pairs.length === 0 ||
+				pairs[pairs.length - 1].key !== '' ||
+				pairs[pairs.length - 1].value !== ''
+			) {
 				pairs.push({ key: '', value: '' });
 			}
 			return pairs;
 		} else if (!editingTrigger) {
 			// For new triggers, use default event mappings if available
 			const firstTrigger = availableTriggers[0];
-			if (firstTrigger?.defaultEvent?.mappings && typeof firstTrigger.defaultEvent.mappings === 'object') {
-				const pairs = Object.entries(firstTrigger.defaultEvent.mappings).map(([key, value]) => ({
+			if (
+				firstTrigger?.defaultEvent?.mappings &&
+				typeof firstTrigger.defaultEvent.mappings === 'object'
+			) {
+				const pairs = Object.entries(
+					firstTrigger.defaultEvent.mappings
+				).map(([key, value]) => ({
 					key,
-					value: String(value)
+					value: String(value),
 				}));
 				pairs.push({ key: '', value: '' });
 				return pairs;
@@ -86,24 +110,32 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 		return [
 			{ key: 'user_name', value: '{user_name}' },
 			{ key: 'user_id', value: '{user_id}' },
-			{ key: '', value: '' }
+			{ key: '', value: '' },
 		];
 	};
 
 	const [selectedTrigger, setSelectedTrigger] = useState(getInitialTrigger());
 	const [eventName, setEventName] = useState(getInitialEventName());
-	const [keyValuePairs, setKeyValuePairs] = useState<KeyValuePair[]>(getInitialKeyValuePairs());
-	const [openDropdownIndex, setOpenDropdownIndex] = useState<{type: 'name' | 'value', index: number} | null>(null);
+	const [keyValuePairs, setKeyValuePairs] = useState<KeyValuePair[]>(
+		getInitialKeyValuePairs()
+	);
+	const [openDropdownIndex, setOpenDropdownIndex] = useState<{
+		type: 'name' | 'value';
+		index: number;
+	} | null>(null);
 	const [sendingTest, setSendingTest] = useState(false);
 	const [sentTest, setSentTest] = useState(false);
-	
+
 	// Refs for merge tag buttons
 	const nameButtonRef = useRef<HTMLButtonElement>(null);
 	const valueButtonRefs = useRef<Array<HTMLButtonElement | null>>([]);
 
 	// Initialize refs array when keyValuePairs change
 	useEffect(() => {
-		valueButtonRefs.current = valueButtonRefs.current.slice(0, keyValuePairs.length);
+		valueButtonRefs.current = valueButtonRefs.current.slice(
+			0,
+			keyValuePairs.length
+		);
 	}, [keyValuePairs.length]);
 
 	if (!isOpen) return null;
@@ -113,20 +145,29 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 		const trigger = availableTriggers.find(t => t.id === triggerId);
 		if (trigger) {
 			setEventName(trigger.defaultEvent?.name || trigger.name);
-			
+
 			// Update key-value pairs based on the selected trigger's defaultEvent.mappings
-			if (trigger.defaultEvent?.mappings && typeof trigger.defaultEvent.mappings === 'object') {
-				const pairs = Object.entries(trigger.defaultEvent.mappings).map(([key, value]) => ({
-					key,
-					value: String(value)
-				}));
+			if (
+				trigger.defaultEvent?.mappings &&
+				typeof trigger.defaultEvent.mappings === 'object'
+			) {
+				const pairs = Object.entries(trigger.defaultEvent.mappings).map(
+					([key, value]) => ({
+						key,
+						value: String(value),
+					})
+				);
 				pairs.push({ key: '', value: '' });
 				setKeyValuePairs(pairs);
 			}
 		}
 	};
 
-	const updateKeyValuePair = (index: number, field: 'key' | 'value', value: string): void => {
+	const updateKeyValuePair = (
+		index: number,
+		field: 'key' | 'value',
+		value: string
+	): void => {
 		const newPairs = [...keyValuePairs];
 		newPairs[index][field] = value;
 		setKeyValuePairs(newPairs);
@@ -148,7 +189,11 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 			setEventName((prev: string) => prev + mergeTag);
 		} else if (openDropdownIndex?.type === 'value') {
 			const index = openDropdownIndex.index;
-			updateKeyValuePair(index, 'value', keyValuePairs[index].value + mergeTag);
+			updateKeyValuePair(
+				index,
+				'value',
+				keyValuePairs[index].value + mergeTag
+			);
 		}
 		setOpenDropdownIndex(null);
 	};
@@ -170,7 +215,7 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 
 	const handleSendTest = async (): Promise<void> => {
 		if (!onSendTest) return;
-		
+
 		setSendingTest(true);
 		setSentTest(false); // Clear any previous sent state
 		try {
@@ -197,37 +242,50 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 				{/* Header */}
 				<div className="echodash-modal__header">
 					<div className="echodash-modal__header-content">
-						<div 
+						<div
 							className="echodash-modal__header-icon echodash-integration-item__icon"
-							style={{ backgroundColor: integration.iconBackgroundColor || '#ff6900' }}
+							style={{
+								backgroundColor:
+									integration.iconBackgroundColor ||
+									'#ff6900',
+							}}
 						>
 							{integration.icon ? (
-								<img 
+								<img
 									src={integration.icon}
 									alt={`${integration.name} logo`}
 									className="echodash-modal__header-icon-image"
 								/>
 							) : (
-								<span 
-									className={`dashicons dashicons-${integration.slug === 'gravity-forms' ? 'feedback' : 'admin-plugins'} echodash-modal__header-icon-dashicon`} 
+								<span
+									className={`dashicons dashicons-${
+										integration.slug === 'gravity-forms'
+											? 'feedback'
+											: 'admin-plugins'
+									} echodash-modal__header-icon-dashicon`}
 								></span>
 							)}
 						</div>
 						<div className="echodash-modal__header-text">
 							<h2 className="echodash-modal__title">
-								{editingTrigger ? 'Edit Trigger' : 'Add Trigger'}
+								{editingTrigger
+									? 'Edit Trigger'
+									: 'Add Trigger'}
 							</h2>
 							<p className="echodash-modal__subtitle">
-								{editingTrigger 
-									? __('Edit trigger for %s', 'echodash').replace('%s', integration.name) 
-									: __('Create a trigger for %s', 'echodash').replace('%s', integration.name)}
+								{editingTrigger
+									? __(
+											'Edit trigger for %s',
+											'echodash'
+									  ).replace('%s', integration.name)
+									: __(
+											'Create a trigger for %s',
+											'echodash'
+									  ).replace('%s', integration.name)}
 							</p>
 						</div>
 					</div>
-					<button 
-						onClick={onClose}
-						className="echodash-modal__close"
-					>
+					<button onClick={onClose} className="echodash-modal__close">
 						<span className="dashicons dashicons-no-alt"></span>
 					</button>
 				</div>
@@ -239,9 +297,9 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 						<label className="echodash-form-group__label">
 							{__('Trigger', 'echodash')}
 						</label>
-						<select 
+						<select
 							value={selectedTrigger}
-							onChange={(e) => handleTriggerChange(e.target.value)}
+							onChange={e => handleTriggerChange(e.target.value)}
 							className="echodash-form-group__select"
 							disabled={!!editingTrigger || savingTrigger}
 						>
@@ -253,11 +311,12 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 						</select>
 						{selectedTrigger && (
 							<div className="echodash-info-box">
-								<span 
-									className="dashicons dashicons-info-outline echodash-info-box__icon" 
-								></span>
+								<span className="dashicons dashicons-info-outline echodash-info-box__icon"></span>
 								<span className="echodash-info-box__text">
-									{availableTriggers.find(t => t.id === selectedTrigger)?.description || 'No description available.'}
+									{availableTriggers.find(
+										t => t.id === selectedTrigger
+									)?.description ||
+										'No description available.'}
 								</span>
 							</div>
 						)}
@@ -272,17 +331,22 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 						{/* Event Name */}
 						<div className="echodash-event-name">
 							<div className="echodash-input-wrapper echodash-input-wrapper--name">
-								<input 
+								<input
 									type="text"
 									value={eventName}
-									onChange={(e) => setEventName(e.target.value)}
+									onChange={e => setEventName(e.target.value)}
 									className="echodash-event-name__input"
 									disabled={savingTrigger}
 								/>
-								<button 
+								<button
 									ref={nameButtonRef}
 									type="button"
-									onClick={() => setOpenDropdownIndex({ type: 'name', index: -1 })}
+									onClick={() =>
+										setOpenDropdownIndex({
+											type: 'name',
+											index: -1,
+										})
+									}
 									className="echodash-merge-tag-button echodash-merge-tag-button--inline"
 									disabled={savingTrigger}
 								></button>
@@ -291,13 +355,22 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 
 						{/* Key-Value Pairs */}
 						{keyValuePairs.map((pair, index) => (
-							<div key={index} className="echodash-key-value-pair">
+							<div
+								key={index}
+								className="echodash-key-value-pair"
+							>
 								<div className="echodash-key-value-pair__field echodash-key-value-pair__field--key">
 									<div className="echodash-input-wrapper echodash-input-wrapper--key">
-										<input 
+										<input
 											type="text"
 											value={pair.key}
-											onChange={(e) => updateKeyValuePair(index, 'key', e.target.value)}
+											onChange={e =>
+												updateKeyValuePair(
+													index,
+													'key',
+													e.target.value
+												)
+											}
 											className="echodash-key-value-pair__input"
 											disabled={savingTrigger}
 										/>
@@ -305,28 +378,41 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 								</div>
 								<div className="echodash-key-value-pair__field echodash-key-value-pair__field--value">
 									<div className="echodash-input-wrapper echodash-input-wrapper--value">
-										<input 
+										<input
 											type="text"
 											value={pair.value}
-											onChange={(e) => updateKeyValuePair(index, 'value', e.target.value)}
+											onChange={e =>
+												updateKeyValuePair(
+													index,
+													'value',
+													e.target.value
+												)
+											}
 											className="echodash-key-value-pair__input"
 											disabled={savingTrigger}
 										/>
-										<button 
-											ref={(el) => {
+										<button
+											ref={el => {
 												if (valueButtonRefs.current) {
-													valueButtonRefs.current[index] = el;
+													valueButtonRefs.current[
+														index
+													] = el;
 												}
 											}}
 											type="button"
-											onClick={() => setOpenDropdownIndex({ type: 'value', index })}
+											onClick={() =>
+												setOpenDropdownIndex({
+													type: 'value',
+													index,
+												})
+											}
 											className="echodash-merge-tag-button echodash-merge-tag-button--inline"
 											disabled={savingTrigger}
 										></button>
 									</div>
 								</div>
 								<div className="echodash-key-value-pair__actions">
-									<button 
+									<button
 										type="button"
 										onClick={addKeyValuePair}
 										className="echodash-key-value-pair__action-button"
@@ -335,9 +421,11 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 										<span className="dashicons dashicons-plus-alt2"></span>
 									</button>
 									{keyValuePairs.length > 1 && (
-										<button 
+										<button
 											type="button"
-											onClick={() => removeKeyValuePair(index)}
+											onClick={() =>
+												removeKeyValuePair(index)
+											}
 											className="echodash-key-value-pair__action-button"
 											disabled={savingTrigger}
 										>
@@ -358,20 +446,30 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 						isOpen={true}
 						onClose={() => setOpenDropdownIndex(null)}
 						buttonRef={
-							openDropdownIndex.type === 'name' 
-								? nameButtonRef 
-								: { current: valueButtonRefs.current[openDropdownIndex.index] }
+							openDropdownIndex.type === 'name'
+								? nameButtonRef
+								: {
+										current:
+											valueButtonRefs.current[
+												openDropdownIndex.index
+											],
+								  }
 						}
 					/>
 				)}
 
 				{/* Footer */}
 				<div className="echodash-modal__footer">
-					<button 
+					<button
 						type="button"
 						className="echodash-button echodash-send-test-button"
 						onClick={handleSendTest}
-						disabled={sendingTest || !onSendTest || !selectedTrigger || savingTrigger}
+						disabled={
+							sendingTest ||
+							!onSendTest ||
+							!selectedTrigger ||
+							savingTrigger
+						}
 					>
 						{sendingTest ? (
 							<>
@@ -391,27 +489,29 @@ export const TriggerModal: React.FC<TriggerModalProps> = ({
 						)}
 					</button>
 					<div className="echodash-modal__footer-actions">
-											<button 
-						onClick={onClose}
-						className="echodash-button"
-						disabled={savingTrigger}
-					>
-						Cancel
-					</button>
-					<button 
-						onClick={handleSave}
-						className="echodash-button echodash-button-primary"
-						disabled={!selectedTrigger || savingTrigger}
-					>
-						{savingTrigger ? (
-							<>
-								<span className="dashicons dashicons-update-alt ecd-spinner"></span>
-								Saving...
-							</>
-						) : (
-							editingTrigger ? 'Update Trigger' : 'Add Trigger'
-						)}
-					</button>
+						<button
+							onClick={onClose}
+							className="echodash-button"
+							disabled={savingTrigger}
+						>
+							Cancel
+						</button>
+						<button
+							onClick={handleSave}
+							className="echodash-button echodash-button-primary"
+							disabled={!selectedTrigger || savingTrigger}
+						>
+							{savingTrigger ? (
+								<>
+									<span className="dashicons dashicons-update-alt ecd-spinner"></span>
+									Saving...
+								</>
+							) : editingTrigger ? (
+								'Update Trigger'
+							) : (
+								'Add Trigger'
+							)}
+						</button>
 					</div>
 				</div>
 			</div>

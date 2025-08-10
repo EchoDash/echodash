@@ -1,6 +1,6 @@
 /**
  * EchoDash Main App Component
- * 
+ *
  * Simple React app for EchoDash settings matching mockups
  */
 
@@ -8,12 +8,12 @@ import React, { useState, useEffect } from 'react';
 import { IntegrationList } from './components/IntegrationList';
 import { IntegrationDetail } from './components/IntegrationDetail';
 import { TriggerModal } from './components/TriggerModal';
-import type { 
-	Integration, 
-	Trigger, 
-	SingleItemTriggerGroup, 
+import type {
+	Integration,
+	Trigger,
+	SingleItemTriggerGroup,
 	EchoDashSettings,
-	TriggerMapping
+	TriggerMapping,
 } from './types';
 
 // Interface for trigger data when saving
@@ -31,7 +31,7 @@ const logger = {
 			// eslint-disable-next-line no-console
 			console.error(message, data);
 		}
-	}
+	},
 };
 
 // Get global data from PHP
@@ -40,10 +40,13 @@ declare global {
 		ecdReactData: {
 			settings: EchoDashSettings;
 			integrations: Integration[];
-			userTriggers: Record<string, {
-				global: Trigger[];
-				singleItem: SingleItemTriggerGroup[];
-			}>;
+			userTriggers: Record<
+				string,
+				{
+					global: Trigger[];
+					singleItem: SingleItemTriggerGroup[];
+				}
+			>;
 			nonce: string;
 			apiUrl: string;
 			i18n: Record<string, string>;
@@ -53,11 +56,17 @@ declare global {
 
 export const App: React.FC = () => {
 	const [currentView, setCurrentView] = useState<'list' | 'detail'>('list');
-	const [selectedIntegration, setSelectedIntegration] = useState<string | null>(null);
+	const [selectedIntegration, setSelectedIntegration] = useState<
+		string | null
+	>(null);
 	const [showTriggerModal, setShowTriggerModal] = useState(false);
 	const [editingTrigger, setEditingTrigger] = useState<Trigger | null>(null);
-	const [userTriggers, setUserTriggers] = useState(window.ecdReactData?.userTriggers || {});
-	const [integrations, setIntegrations] = useState(window.ecdReactData?.integrations || []);
+	const [userTriggers, setUserTriggers] = useState(
+		window.ecdReactData?.userTriggers || {}
+	);
+	const [integrations, setIntegrations] = useState(
+		window.ecdReactData?.integrations || []
+	);
 	const [savingTrigger, setSavingTrigger] = useState(false);
 	const [deletingTrigger, setDeletingTrigger] = useState<string | null>(null);
 
@@ -67,13 +76,17 @@ export const App: React.FC = () => {
 		userTriggers: {},
 		nonce: '',
 		apiUrl: '',
-		i18n: {}
+		i18n: {},
 	};
 
 	// Update URL when navigation changes
 	useEffect(() => {
 		if (currentView === 'list') {
-			window.history.pushState({}, '', window.location.pathname + window.location.search);
+			window.history.pushState(
+				{},
+				'',
+				window.location.pathname + window.location.search
+			);
 		} else if (currentView === 'detail' && selectedIntegration) {
 			const url = new URL(window.location.href);
 			url.hash = `/integration/${selectedIntegration}`;
@@ -96,7 +109,7 @@ export const App: React.FC = () => {
 		};
 
 		window.addEventListener('popstate', handlePopState);
-		
+
 		// Check initial URL
 		handlePopState();
 
@@ -152,7 +165,7 @@ export const App: React.FC = () => {
 			// First, generate a preview to process merge tags with real test data
 			const eventConfig = {
 				name: trigger.name || trigger.event_name,
-				mappings: trigger.mappings || []
+				mappings: trigger.mappings || [],
 			};
 
 			const previewResponse = await fetch(`${data.apiUrl}preview`, {
@@ -164,7 +177,7 @@ export const App: React.FC = () => {
 				body: JSON.stringify({
 					eventConfig: eventConfig,
 					integrationSlug: selectedIntegration,
-					triggerId: trigger.trigger
+					triggerId: trigger.trigger,
 				}),
 			});
 
@@ -177,7 +190,7 @@ export const App: React.FC = () => {
 			// Now send the test event with processed data
 			const eventData = {
 				name: previewData.eventName,
-				properties: previewData.processedData
+				properties: previewData.processedData,
 			};
 
 			const testResponse = await fetch(`${data.apiUrl}test-event`, {
@@ -189,7 +202,7 @@ export const App: React.FC = () => {
 				body: JSON.stringify({
 					eventData: eventData,
 					integrationSlug: selectedIntegration,
-					trigger: trigger.trigger
+					trigger: trigger.trigger,
 				}),
 			});
 
@@ -199,11 +212,17 @@ export const App: React.FC = () => {
 			} else {
 				const errorData = await testResponse.json();
 				logger.error('Failed to send test event:', errorData);
-				throw new Error(errorData.message || 'Failed to send test event. Please try again.');
+				throw new Error(
+					errorData.message ||
+						'Failed to send test event. Please try again.'
+				);
 			}
 		} catch (error) {
 			logger.error('Error sending test event:', error);
-			const errorMessage = error instanceof Error ? error.message : 'Error sending test event. Please check your connection and try again.';
+			const errorMessage =
+				error instanceof Error
+					? error.message
+					: 'Error sending test event. Please check your connection and try again.';
 			alert(errorMessage);
 		}
 	};
@@ -212,7 +231,7 @@ export const App: React.FC = () => {
 		setDeletingTrigger(trigger.id);
 		try {
 			const url = `${data.apiUrl}integrations/${selectedIntegration}/triggers/${trigger.id}`;
-			
+
 			const response = await fetch(url, {
 				method: 'DELETE',
 				headers: {
@@ -223,50 +242,68 @@ export const App: React.FC = () => {
 			if (response.ok) {
 				// Update local state - remove the deleted trigger
 				if (selectedIntegration) {
-					const integrationTriggers = userTriggers[selectedIntegration]?.global || [];
-					const updatedTriggers = integrationTriggers.filter(t => t.id !== trigger.id);
-					
+					const integrationTriggers =
+						userTriggers[selectedIntegration]?.global || [];
+					const updatedTriggers = integrationTriggers.filter(
+						t => t.id !== trigger.id
+					);
+
 					setUserTriggers({
 						...userTriggers,
 						[selectedIntegration]: {
 							global: updatedTriggers,
-							singleItem: userTriggers[selectedIntegration]?.singleItem || []
-						}
+							singleItem:
+								userTriggers[selectedIntegration]?.singleItem ||
+								[],
+						},
 					});
 
 					// Update integration trigger count
-					setIntegrations(prev => prev.map(integration => {
-						if (integration.slug === selectedIntegration) {
-							return {
-								...integration,
-								triggerCount: Math.max(0, integration.triggerCount - 1),
-							};
-						}
-						return integration;
-					}));
+					setIntegrations(prev =>
+						prev.map(integration => {
+							if (integration.slug === selectedIntegration) {
+								return {
+									...integration,
+									triggerCount: Math.max(
+										0,
+										integration.triggerCount - 1
+									),
+								};
+							}
+							return integration;
+						})
+					);
 				}
 			} else {
 				const errorData = await response.json();
 				logger.error('Failed to delete trigger:', errorData);
-				throw new Error(errorData.message || 'Failed to delete trigger. Please try again.');
+				throw new Error(
+					errorData.message ||
+						'Failed to delete trigger. Please try again.'
+				);
 			}
 		} catch (error) {
 			logger.error('Error deleting trigger:', error);
-			const errorMessage = error instanceof Error ? error.message : 'Error deleting trigger. Please check your connection and try again.';
+			const errorMessage =
+				error instanceof Error
+					? error.message
+					: 'Error deleting trigger. Please check your connection and try again.';
 			alert(errorMessage);
 		} finally {
 			setDeletingTrigger(null);
 		}
 	};
 
-	const handleSaveTrigger = async (triggerData: TriggerFormData): Promise<void> => {
+	const handleSaveTrigger = async (
+		triggerData: TriggerFormData
+	): Promise<void> => {
 		setSavingTrigger(true);
 		try {
 			const isEditing = editingTrigger !== null;
 			const url = isEditing
 				? `${data.apiUrl}integrations/${selectedIntegration}/triggers/${editingTrigger.id}`
 				: `${data.apiUrl}integrations/${selectedIntegration}/triggers`;
-			
+
 			const response = await fetch(url, {
 				method: isEditing ? 'PUT' : 'POST',
 				headers: {
@@ -278,46 +315,53 @@ export const App: React.FC = () => {
 					name: triggerData.name,
 					event_name: triggerData.name,
 					mappings: triggerData.mappings,
-					send_test: triggerData.sendTest
+					send_test: triggerData.sendTest,
 				}),
 			});
 
 			if (response.ok) {
 				const result = await response.json();
-				
+
 				// Update local state
 				if (selectedIntegration) {
-					const integrationTriggers = userTriggers[selectedIntegration]?.global || [];
-					
+					const integrationTriggers =
+						userTriggers[selectedIntegration]?.global || [];
+
 					// Get the description from the integration's available triggers
-					const selectedIntegrationData = integrations.find(i => i.slug === selectedIntegration);
-					const availableTrigger = selectedIntegrationData?.availableTriggers?.find(
-						t => t.id === triggerData.trigger
+					const selectedIntegrationData = integrations.find(
+						i => i.slug === selectedIntegration
 					);
-					const triggerDescription = availableTrigger?.description || '';
-					
+					const availableTrigger =
+						selectedIntegrationData?.availableTriggers?.find(
+							t => t.id === triggerData.trigger
+						);
+					const triggerDescription =
+						availableTrigger?.description || '';
+
 					if (isEditing) {
 						// Update existing trigger
-						const updatedTriggers = integrationTriggers.map(t => 
-							t.id === editingTrigger.id 
+						const updatedTriggers = integrationTriggers.map(t =>
+							t.id === editingTrigger.id
 								? {
-									...t,
-									id: result.id || editingTrigger.id,
-									name: triggerData.name,
-									trigger: triggerData.trigger,
-									event_name: triggerData.name,
-									mappings: triggerData.mappings,
-									description: triggerDescription,
-									enabled: true
-								}
+										...t,
+										id: result.id || editingTrigger.id,
+										name: triggerData.name,
+										trigger: triggerData.trigger,
+										event_name: triggerData.name,
+										mappings: triggerData.mappings,
+										description: triggerDescription,
+										enabled: true,
+								  }
 								: t
 						);
 						setUserTriggers({
 							...userTriggers,
 							[selectedIntegration]: {
 								global: updatedTriggers,
-								singleItem: userTriggers[selectedIntegration]?.singleItem || []
-							}
+								singleItem:
+									userTriggers[selectedIntegration]
+										?.singleItem || [],
+							},
 						});
 					} else {
 						// Add new trigger
@@ -328,48 +372,61 @@ export const App: React.FC = () => {
 							event_name: triggerData.name,
 							mappings: triggerData.mappings,
 							description: triggerDescription,
-							enabled: true
+							enabled: true,
 						};
-						
-											setUserTriggers({
-						...userTriggers,
-						[selectedIntegration]: {
-							global: [...integrationTriggers, newTrigger],
-							singleItem: userTriggers[selectedIntegration]?.singleItem || []
-						}
-					});
+
+						setUserTriggers({
+							...userTriggers,
+							[selectedIntegration]: {
+								global: [...integrationTriggers, newTrigger],
+								singleItem:
+									userTriggers[selectedIntegration]
+										?.singleItem || [],
+							},
+						});
 
 						// Update integration trigger count for new triggers only
-						setIntegrations(prev => prev.map(integration => {
-							if (integration.slug === selectedIntegration) {
-								return {
-									...integration,
-									triggerCount: integration.triggerCount + 1,
-									enabled: true
-								};
-							}
-							return integration;
-						}));
+						setIntegrations(prev =>
+							prev.map(integration => {
+								if (integration.slug === selectedIntegration) {
+									return {
+										...integration,
+										triggerCount:
+											integration.triggerCount + 1,
+										enabled: true,
+									};
+								}
+								return integration;
+							})
+						);
 					}
 				}
-				
+
 				setShowTriggerModal(false);
 				setEditingTrigger(null);
 			} else {
 				const errorData = await response.json();
 				logger.error('Failed to save trigger:', errorData);
-				throw new Error(errorData.message || 'Failed to save trigger. Please try again.');
+				throw new Error(
+					errorData.message ||
+						'Failed to save trigger. Please try again.'
+				);
 			}
 		} catch (error) {
 			logger.error('Error saving trigger:', error);
-			const errorMessage = error instanceof Error ? error.message : 'Error saving trigger. Please check your connection and try again.';
+			const errorMessage =
+				error instanceof Error
+					? error.message
+					: 'Error saving trigger. Please check your connection and try again.';
 			alert(errorMessage);
 		} finally {
 			setSavingTrigger(false);
 		}
 	};
 
-	const selectedIntegrationData = integrations.find(i => i.slug === selectedIntegration);
+	const selectedIntegrationData = integrations.find(
+		i => i.slug === selectedIntegration
+	);
 
 	return (
 		<div className="wrap">
@@ -381,13 +438,18 @@ export const App: React.FC = () => {
 					onAddTrigger={handleAddTriggerFromList}
 				/>
 			) : (
-				selectedIntegrationData && selectedIntegration && (
+				selectedIntegrationData &&
+				selectedIntegration && (
 					<IntegrationDetail
 						integration={{
 							...selectedIntegrationData,
-							singleItemTriggers: userTriggers[selectedIntegration]?.singleItem || []
+							singleItemTriggers:
+								userTriggers[selectedIntegration]?.singleItem ||
+								[],
 						}}
-						triggers={userTriggers[selectedIntegration]?.global || []}
+						triggers={
+							userTriggers[selectedIntegration]?.global || []
+						}
 						onBack={handleBackToList}
 						onAddTrigger={handleAddTrigger}
 						onEditTrigger={handleEditTrigger}

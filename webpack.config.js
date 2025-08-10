@@ -1,19 +1,18 @@
 /**
  * EchoDash Webpack Configuration
- * 
+ *
  * Enhanced webpack configuration for performance optimization and code splitting
  * Built on top of @wordpress/scripts with Phase 5 performance features.
  */
 
 const defaultConfig = require('@wordpress/scripts/config/webpack.config');
 const path = require('path');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const BundleAnalyzerPlugin =
+	require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const CompressionPlugin = require('compression-webpack-plugin');
 
 // Plugin configuration
-const plugins = [
-	...defaultConfig.plugins,
-];
+const plugins = [...defaultConfig.plugins];
 
 // Production-only optimizations
 if (process.env.NODE_ENV === 'production') {
@@ -41,12 +40,12 @@ if (process.env.ANALYZE_BUNDLE) {
 
 module.exports = {
 	...defaultConfig,
-	
+
 	// Entry points
 	entry: {
 		index: path.resolve(process.cwd(), 'assets/src', 'index.tsx'),
 	},
-	
+
 	// Output configuration for better caching
 	output: {
 		...defaultConfig.output,
@@ -58,7 +57,7 @@ module.exports = {
 		// Clean dist folder on build
 		clean: true,
 	},
-	
+
 	// Enhanced module resolution
 	resolve: {
 		...defaultConfig.resolve,
@@ -69,7 +68,7 @@ module.exports = {
 		modules: ['node_modules'],
 		extensions: ['.js', '.jsx', '.ts', '.tsx'],
 	},
-	
+
 	// Enhanced optimization with vendor chunk splitting
 	optimization: {
 		...defaultConfig.optimization,
@@ -106,10 +105,12 @@ module.exports = {
 		maxEntrypointSize: 500000, // 500KB
 		hints: process.env.NODE_ENV === 'production' ? 'warning' : false,
 		// Filter out source maps and vendor chunks from warnings
-		assetFilter: (assetFilename) => {
-			return !assetFilename.endsWith('.map') && 
-				   !assetFilename.includes('vendors') &&
-				   !assetFilename.includes('wordpress');
+		assetFilter: assetFilename => {
+			return (
+				!assetFilename.endsWith('.map') &&
+				!assetFilename.includes('vendors') &&
+				!assetFilename.includes('wordpress')
+			);
 		},
 	},
 
@@ -144,11 +145,12 @@ module.exports = {
 
 	// Enhanced plugins
 	plugins,
-	
+
 	// Source maps for debugging
-	devtool: process.env.NODE_ENV === 'production' 
-		? 'source-map' 
-		: 'eval-cheap-module-source-map',
+	devtool:
+		process.env.NODE_ENV === 'production'
+			? 'source-map'
+			: 'eval-cheap-module-source-map',
 
 	// Cache configuration for faster rebuilds
 	cache: {

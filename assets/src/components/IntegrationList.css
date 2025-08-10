@@ -4,7 +4,6 @@
  */
 
 
-
 /* Welcome Section */
 .echodash-welcome {
 	padding: var(--ecd-spacing-3xl);
@@ -113,7 +112,7 @@
 .echodash-integration-item__name {
 	margin: 0;
 	font-size: var(--ecd-font-size-lg);
-	font-weight: normal;
+	font-weight: 400;
 }
 
 .echodash-integration-item__trigger-count {
@@ -128,11 +127,12 @@
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-			.echodash-header {
-			flex-direction: column;
-			align-items: flex-start;
-			gap: var(--ecd-spacing-md);
-		}
+
+	.echodash-header {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: var(--ecd-spacing-md);
+	}
 
 	.echodash-header__docs-link {
 		margin-left: 0;
@@ -148,21 +148,21 @@
 		margin: 0 auto;
 	}
 
-			.echodash-integration-item {
-			flex-wrap: wrap;
-			padding: var(--ecd-spacing-md);
-		}
+	.echodash-integration-item {
+		flex-wrap: wrap;
+		padding: var(--ecd-spacing-md);
+	}
 
 	.echodash-integration-item__info {
 		flex: 1;
 		min-width: 0;
 	}
 
-			.echodash-integration-item__actions {
-			width: 100%;
-			margin-top: var(--ecd-spacing-md);
-			flex-direction: column;
-		}
+	.echodash-integration-item__actions {
+		width: 100%;
+		margin-top: var(--ecd-spacing-md);
+		flex-direction: column;
+	}
 
 	.echodash-integration-item__actions .echodash-button {
 		width: 100%;

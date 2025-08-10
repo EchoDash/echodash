@@ -1,6 +1,6 @@
 /**
  * Shared TypeScript interfaces for EchoDash React components
- * 
+ *
  * This file centralizes all type definitions to avoid duplication
  * across React components following best practices.
  */

@@ -1,4 +1,9 @@
 <?php
+/**
+ * AffiliateWP integration for EchoDash.
+ *
+ * @package EchoDash
+ */
 
 defined( 'ABSPATH' ) || exit;
 
@@ -201,13 +206,13 @@ class EchoDash_AffiliateWP extends EchoDash_Integration {
 
 		$meta_column = array_column( $this->get_affiliate_options()['options'], 'meta' );
 
-		if ( $affiliate->rate == '' ) {
+		if ( '' === $affiliate->rate ) {
 			$affiliate->rate = affiliate_wp()->settings->get( 'referral_rate', 20 );
 		}
 
 		// Post/meta fields.
 		foreach ( $meta_column as $meta_key ) {
-			if ( isset( $affiliate->$meta_key ) && $affiliate->$meta_key != '' ) {
+			if ( isset( $affiliate->$meta_key ) && '' !== $affiliate->$meta_key ) {
 				$affiliate_fields[ $meta_key ] = $affiliate->$meta_key;
 			}
 		}
@@ -224,7 +229,7 @@ class EchoDash_AffiliateWP extends EchoDash_Integration {
 	 *
 	 * @since  1.6.0
 	 *
-	 * @param integer $affiliate_id
+	 * @param integer $affiliate_id The affiliate ID.
 	 */
 	public function add_affiliate( $affiliate_id ) {
 		$affiliate = affwp_get_affiliate( $affiliate_id );
@@ -312,7 +317,7 @@ class EchoDash_AffiliateWP extends EchoDash_Integration {
 
 		// Post/meta fields.
 		foreach ( $meta_column as $meta_key ) {
-			if ( isset( $visit->$meta_key ) && $visit->$meta_key != '' ) {
+			if ( isset( $visit->$meta_key ) && '' !== $visit->$meta_key ) {
 				$visits_fields[ $meta_key ] = $visit->$meta_key;
 			}
 		}
@@ -327,8 +332,8 @@ class EchoDash_AffiliateWP extends EchoDash_Integration {
 	 *
 	 * @since  1.6.0
 	 *
-	 * @param integer $visit_id
-	 * @param array   $data
+	 * @param integer $visit_id The visit ID.
+	 * @param array   $data     The visit data.
 	 */
 	public function add_visit( $visit_id, $data ) {
 		$affiliate = affwp_get_affiliate( $data['affiliate_id'] );
@@ -432,7 +437,7 @@ class EchoDash_AffiliateWP extends EchoDash_Integration {
 		$meta_column = array_column( $this->get_referral_options()['options'], 'meta' );
 
 		// Add customer email.
-		if ( $referral->customer_id != '' ) {
+		if ( '' !== $referral->customer_id ) {
 			$customer = get_user_by( 'id', $referral->customer_id );
 			if ( $customer ) {
 				$referral->customer_email = $customer->user_email;
@@ -440,7 +445,7 @@ class EchoDash_AffiliateWP extends EchoDash_Integration {
 		}
 
 		foreach ( $meta_column as $meta_key ) {
-			if ( isset( $referral->$meta_key ) && $referral->$meta_key != '' ) {
+			if ( isset( $referral->$meta_key ) && '' !== $referral->$meta_key ) {
 				$referrals_fields[ $meta_key ] = $referral->$meta_key;
 			}
 		}
@@ -455,8 +460,8 @@ class EchoDash_AffiliateWP extends EchoDash_Integration {
 	 *
 	 * @since  1.6.0
 	 *
-	 * @param integer $affiliate_id
-	 * @param object  $referral
+	 * @param integer $affiliate_id The affiliate ID.
+	 * @param object  $referral     The referral object.
 	 */
 	public function add_referral( $affiliate_id, $referral ) {
 		$affiliate = affwp_get_affiliate( $affiliate_id );

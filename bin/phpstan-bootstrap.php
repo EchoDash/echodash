@@ -5,7 +5,7 @@
  * @package EchoDash
  */
 
-// WordPress core constants
+// WordPress core constants.
 if ( ! defined( 'ABSPATH' ) ) {
 	define( 'ABSPATH', __DIR__ . '/../../' );
 }
@@ -14,7 +14,7 @@ if ( ! defined( 'WP_PLUGIN_DIR' ) ) {
 	define( 'WP_PLUGIN_DIR', ABSPATH . 'wp-content/plugins' );
 }
 
-// EchoDash constants
+// EchoDash constants.
 if ( ! defined( 'ECHODASH_DIR_PATH' ) ) {
 	/**
 	 * Directory path where EchoDash is located.
@@ -45,7 +45,7 @@ if ( ! defined( 'ECHODASH_DIR_URL' ) ) {
 	define( 'ECHODASH_DIR_URL', 'https://example.com/wp-content/plugins/echodash/' );
 }
 
-// WordPress Core stubs
+// WordPress Core stubs.
 if ( ! defined( 'COOKIEPATH' ) ) {
 	/**
 	 * Cookie path.

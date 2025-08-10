@@ -1,4 +1,9 @@
 <?php
+/**
+ * Give integration for EchoDash.
+ *
+ * @package EchoDash
+ */
 
 defined( 'ABSPATH' ) || exit;
 
@@ -174,7 +179,7 @@ class EchoDash_Give extends EchoDash_Integration {
 
 		// Post/meta fields.
 		foreach ( $meta_column as $meta_key ) {
-			if ( isset( $donation->$meta_key ) && $donation->$meta_key != '' ) {
+			if ( isset( $donation->$meta_key ) && '' !== $donation->$meta_key ) {
 				$donation_fields[ $meta_key ] = $donation->$meta_key;
 			}
 		}

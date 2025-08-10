@@ -1,4 +1,9 @@
 <?php
+/**
+ * Functions.
+ *
+ * @package EchoDash
+ */
 
 defined( 'ABSPATH' ) || exit;
 

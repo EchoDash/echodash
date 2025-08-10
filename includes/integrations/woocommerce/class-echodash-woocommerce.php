@@ -1,7 +1,12 @@
 <?php
+/**
+ * WooCommerce integration.
+ *
+ * @package EchoDash
+ */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+	exit; // Exit if accessed directly.
 }
 
 /**
@@ -145,6 +150,10 @@ class EchoDash_WooCommerce extends EchoDash_Integration {
 	 * Triggered when a new order item is added.
 	 *
 	 * @since 1.0.0
+	 *
+	 * @param int                   $item_id        The item ID.
+	 * @param WC_Order_Item_Product $item The item.
+	 * @param int                   $item_order_id The item order ID.
 	 */
 	public function purchased_product( $item_id, $item, $item_order_id ) {
 

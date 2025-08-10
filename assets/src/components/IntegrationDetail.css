@@ -123,7 +123,7 @@
 }
 
 .echodash-trigger-item__type {
-	font-weight: bold;
+	font-weight: 700;
 	margin-bottom: var(--ecd-spacing-xs);
 }
 
@@ -202,17 +202,18 @@
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
+
 	.echodash-integration-header__content {
 		flex-direction: column;
 		align-items: flex-start;
 	}
 
-			.echodash-integration-header__add-trigger {
-			margin-left: 0;
-			margin-top: var(--ecd-spacing-lg);
-			width: 100%;
-			text-align: center;
-		}
+	.echodash-integration-header__add-trigger {
+		margin-left: 0;
+		margin-top: var(--ecd-spacing-lg);
+		width: 100%;
+		text-align: center;
+	}
 
 	.echodash-trigger-item {
 		flex-wrap: wrap;
@@ -229,13 +230,13 @@
 		align-items: flex-start;
 	}
 
-			.echodash-single-trigger-item__actions {
-			margin-left: 0;
-			margin-top: var(--ecd-spacing-md);
-			width: 100%;
-		}
+	.echodash-single-trigger-item__actions {
+		margin-left: 0;
+		margin-top: var(--ecd-spacing-md);
+		width: 100%;
+	}
 
-			.echodash-single-triggers__list {
-			padding-left: var(--ecd-spacing-md);
-		}
+	.echodash-single-triggers__list {
+		padding-left: var(--ecd-spacing-md);
+	}
 }

@@ -1,4 +1,9 @@
 <?php
+/**
+ * EDD Recurring Subscription integration.
+ *
+ * @package EchoDash
+ */
 
 defined( 'ABSPATH' ) || exit;
 /**
@@ -88,7 +93,7 @@ class EchoDash_EDD_Recurring extends EchoDash_Integration {
 	public function subscription_change( $old_status, $new_status, $subscription ) {
 
 		if ( empty( $subscription->customer ) ) {
-			return; // new subs initially have an empty customer
+			return; // new subs initially have an empty customer.
 		}
 
 		$this->track_event(
@@ -111,7 +116,7 @@ class EchoDash_EDD_Recurring extends EchoDash_Integration {
 	 *
 	 * @since 1.3.0
 	 *
-	 * @return array
+	 * @return array The subscription options.
 	 */
 	public function get_subscription_options() {
 		return array(

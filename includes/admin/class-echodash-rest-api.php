@@ -8,11 +8,16 @@
  * @since 2.0.0
  */
 
-// Prevent direct access
+// Prevent direct access.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * EchoDash REST API Controller class.
+ *
+ * @since 2.0.0
+ */
 class EchoDash_REST_API extends WP_REST_Controller {
 
 	/**
@@ -31,7 +36,7 @@ class EchoDash_REST_API extends WP_REST_Controller {
 	 * @since 2.0.0
 	 */
 	public function register_routes() {
-		// Settings endpoints
+		// Settings endpoints.
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->rest_base,
@@ -45,7 +50,7 @@ class EchoDash_REST_API extends WP_REST_Controller {
 			)
 		);
 
-		// Triggers endpoints (CREATE only - data provided via wp_localize_script)
+		// Triggers endpoints (CREATE only - data provided via wp_localize_script).
 		register_rest_route(
 			$this->namespace,
 			'/integrations/(?P<slug>[a-z0-9-]+)/triggers',
@@ -59,7 +64,7 @@ class EchoDash_REST_API extends WP_REST_Controller {
 			)
 		);
 
-		// Single trigger endpoint
+		// Single trigger endpoint.
 		register_rest_route(
 			$this->namespace,
 			'/integrations/(?P<slug>[a-z0-9-]+)/triggers/(?P<trigger_id>[a-z0-9_]+)',
@@ -78,7 +83,7 @@ class EchoDash_REST_API extends WP_REST_Controller {
 			)
 		);
 
-		// Event preview endpoint
+		// Event preview endpoint.
 		register_rest_route(
 			$this->namespace,
 			'/preview',
@@ -108,7 +113,7 @@ class EchoDash_REST_API extends WP_REST_Controller {
 			)
 		);
 
-		// Test event endpoint
+		// Test event endpoint.
 		register_rest_route(
 			$this->namespace,
 			'/test-event',
@@ -150,7 +155,7 @@ class EchoDash_REST_API extends WP_REST_Controller {
 	public function update_settings( $request ) {
 		$params = $request->get_json_params();
 
-		// Validate and sanitize input
+		// Validate and sanitize input.
 		if ( isset( $params['endpoint'] ) ) {
 			$endpoint = esc_url_raw( $params['endpoint'] );
 			update_option( 'echodash_endpoint', $endpoint );
@@ -161,7 +166,7 @@ class EchoDash_REST_API extends WP_REST_Controller {
 			update_option( 'echodash_options', $settings );
 		}
 
-		// Return updated settings
+		// Return updated settings.
 		return rest_ensure_response(
 			array(
 				'message' => __( 'Settings updated successfully', 'echodash' ),
@@ -182,15 +187,15 @@ class EchoDash_REST_API extends WP_REST_Controller {
 		$slug   = $request->get_param( 'slug' );
 		$params = $request->get_json_params();
 
-		// Validate required fields
+		// Validate required fields.
 		if ( ! isset( $params['name'] ) || ! isset( $params['trigger'] ) ) {
 			return new WP_Error( 'missing_required_fields', __( 'Name and trigger type are required', 'echodash' ), array( 'status' => 400 ) );
 		}
 
-		// Get current settings
+		// Get current settings.
 		$settings = get_option( 'echodash_options', array() );
 
-		// Initialize structure if needed
+		// Initialize structure if needed.
 		if ( ! isset( $settings['integrations'] ) ) {
 			$settings['integrations'] = array();
 		}
@@ -201,16 +206,16 @@ class EchoDash_REST_API extends WP_REST_Controller {
 			$settings['integrations'][ $slug ]['triggers'] = array();
 		}
 
-		// Generate unique ID for the trigger
+		// Generate unique ID for the trigger.
 		$trigger_id = sanitize_key( $params['trigger'] . '_' . time() );
 
-		// Add trigger
+		// Add trigger.
 		$settings['integrations'][ $slug ]['triggers'][ $trigger_id ] = $this->sanitize_trigger_data( $params );
 
-		// Save settings
+		// Save settings.
 		update_option( 'echodash_options', $settings );
 
-		// Return created trigger
+		// Return created trigger.
 		return rest_ensure_response(
 			array(
 				'id'      => $trigger_id,
@@ -233,24 +238,24 @@ class EchoDash_REST_API extends WP_REST_Controller {
 		$trigger_id = $request->get_param( 'trigger_id' );
 		$params     = $request->get_json_params();
 
-		// Get current settings
+		// Get current settings.
 		$settings = get_option( 'echodash_options', array() );
 
-		// Check if trigger exists
+		// Check if trigger exists.
 		if ( ! isset( $settings['integrations'][ $slug ]['triggers'][ $trigger_id ] ) ) {
 			return new WP_Error( 'trigger_not_found', __( 'Trigger not found', 'echodash' ), array( 'status' => 404 ) );
 		}
 
-		// Update trigger
+		// Update trigger.
 		$settings['integrations'][ $slug ]['triggers'][ $trigger_id ] = array_merge(
 			$settings['integrations'][ $slug ]['triggers'][ $trigger_id ],
 			$this->sanitize_trigger_data( $params )
 		);
 
-		// Save settings
+		// Save settings.
 		update_option( 'echodash_options', $settings );
 
-		// Return updated trigger
+		// Return updated trigger.
 		return rest_ensure_response(
 			array(
 				'id'      => $trigger_id,
@@ -272,18 +277,18 @@ class EchoDash_REST_API extends WP_REST_Controller {
 		$slug       = $request->get_param( 'slug' );
 		$trigger_id = $request->get_param( 'trigger_id' );
 
-		// Get current settings
+		// Get current settings.
 		$settings = get_option( 'echodash_options', array() );
 
-		// Check if trigger exists
+		// Check if trigger exists.
 		if ( ! isset( $settings['integrations'][ $slug ]['triggers'][ $trigger_id ] ) ) {
 			return new WP_Error( 'trigger_not_found', __( 'Trigger not found', 'echodash' ), array( 'status' => 404 ) );
 		}
 
-		// Delete trigger
+		// Delete trigger.
 		unset( $settings['integrations'][ $slug ]['triggers'][ $trigger_id ] );
 
-		// Save settings
+		// Save settings.
 		update_option( 'echodash_options', $settings );
 
 		return rest_ensure_response(
@@ -307,18 +312,18 @@ class EchoDash_REST_API extends WP_REST_Controller {
 		$integration_slug = isset( $params['integrationSlug'] ) ? $params['integrationSlug'] : null;
 		$trigger_id       = isset( $params['triggerId'] ) ? $params['triggerId'] : null;
 
-		// Get integration instance
+		// Get integration instance.
 		if ( ! $integration_slug || ! echodash() || ! echodash()->integration( $integration_slug ) ) {
 			return new WP_Error( 'integration_not_found', __( 'Integration not found', 'echodash' ), array( 'status' => 404 ) );
 		}
 
 		$integration = echodash()->integration( $integration_slug );
 
-		// Get preview data directly from integration's options system
+		// Get preview data directly from integration's options system.
 		$options         = $integration->get_options( $trigger_id );
 		$test_event_data = $this->extract_preview_data_from_options( $options );
 
-		// Use integration's replace_tags method for processing
+		// Use integration's replace_tags method for processing.
 		$event_values   = wp_list_pluck( $event_config['mappings'], 'value', 'key' );
 		$processed_data = $integration->replace_tags( $event_values, $test_event_data );
 
@@ -347,20 +352,20 @@ class EchoDash_REST_API extends WP_REST_Controller {
 		$integration_slug = $params['integrationSlug'];
 		$trigger          = $params['trigger'];
 
-		// Get EchoDash instance and validate integration
+		// Get EchoDash instance and validate integration.
 		if ( ! echodash() || ! echodash()->integration( $integration_slug ) ) {
 			return new WP_Error( 'integration_not_found', __( 'Integration not found', 'echodash' ), array( 'status' => 404 ) );
 		}
 
 		$integration = echodash()->integration( $integration_slug );
 
-		// Get source and trigger names (following legacy implementation pattern)
+		// Get source and trigger names (following legacy implementation pattern).
 		$source_name  = $integration->name;
 		$trigger_name = $integration->get_trigger_name( $trigger );
 
 		define( 'ECHODASH_TEST_EVENT', true );
 
-		// Track test event with processed parameters
+		// Track test event with processed parameters.
 		$result = echodash_track_event( $event_data['name'], $event_data['properties'], $source_name, $trigger_name );
 
 		if ( ! is_wp_error( $result ) ) {
@@ -432,6 +437,8 @@ class EchoDash_REST_API extends WP_REST_Controller {
 		foreach ( $settings as $key => $value ) {
 			if ( is_array( $value ) ) {
 				$sanitized[ $key ] = $this->sanitize_settings( $value );
+			} elseif ( is_bool( $value ) || is_int( $value ) || is_float( $value ) ) {
+				$sanitized[ $key ] = $value;
 			} else {
 				$sanitized[ $key ] = sanitize_text_field( $value );
 			}
@@ -478,17 +485,17 @@ class EchoDash_REST_API extends WP_REST_Controller {
 	 */
 	private function get_trigger_create_args() {
 		return array(
-			'trigger'    => array(
+			'trigger'  => array(
 				'description' => __( 'Trigger type', 'echodash' ),
 				'type'        => 'string',
 				'required'    => true,
 			),
-			'event_name' => array(
+			'name'     => array(
 				'description' => __( 'Event name', 'echodash' ),
 				'type'        => 'string',
 				'required'    => false,
 			),
-			'mappings'   => array(
+			'mappings' => array(
 				'description' => __( 'Event property mappings', 'echodash' ),
 				'type'        => 'array',
 				'required'    => false,
@@ -505,12 +512,12 @@ class EchoDash_REST_API extends WP_REST_Controller {
 	 */
 	private function get_trigger_update_args() {
 		return array(
-			'event_name' => array(
+			'name'     => array(
 				'description' => __( 'Event name', 'echodash' ),
 				'type'        => 'string',
 				'required'    => false,
 			),
-			'mappings'   => array(
+			'mappings' => array(
 				'description' => __( 'Event property mappings', 'echodash' ),
 				'type'        => 'array',
 				'required'    => false,

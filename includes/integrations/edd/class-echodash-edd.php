@@ -1,6 +1,12 @@
 <?php
+/**
+ * Easy Digital Downloads integration for EchoDash.
+ *
+ * @package EchoDash
+ */
 
 defined( 'ABSPATH' ) || exit;
+
 /**
  * Easy Digital Downloads integration.
  *

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * EchoDash - Event Tracking and Activity Log
  *
@@ -26,8 +25,9 @@
  */
 
 /**
- * @copyright Copyright (c) 2025. All rights reserved.
+ * Main plugin class.
  *
+ * @copyright Copyright (c) 2025. All rights reserved.
  * @license   Released under the GPL license http://www.opensource.org/licenses/gpl-license.php
  *
  * **********************************************************************
@@ -93,11 +93,10 @@ final class EchoDash {
 	public $integrations;
 
 	/**
-	 * Main EchoDash Instance
+	 * Main EchoDash Instance.
 	 *
-	 * Insures that only one instance of EchoDash exists in
-	 * memory at any one time. Also prevents needing to define globals all over
-	 * the place.
+	 * Insures that only one instance of EchoDash exists in memory at any one time.
+	 * Also prevents needing to define globals all over the place.
 	 *
 	 * @since  1.0.0
 	 * @static var array $instance
@@ -116,7 +115,7 @@ final class EchoDash {
 
 				self::$instance->includes();
 
-				// Initialize classes
+				// Initialize classes.
 				self::$instance->public = new EchoDash_Public();
 
 				if ( is_admin() ) {
@@ -234,14 +233,14 @@ final class EchoDash {
 		require_once ECHODASH_DIR_PATH . 'includes/public/class-echodash-public.php';
 		require_once ECHODASH_DIR_PATH . 'includes/integrations/class-echodash-integration.php';
 
-		// REST API needs to be available for both admin and frontend
+		// REST API needs to be available for both admin and frontend.
 		require_once ECHODASH_DIR_PATH . 'includes/admin/class-echodash-rest-api.php';
 
 		if ( is_admin() ) {
 			require_once ECHODASH_DIR_PATH . 'includes/admin/class-echodash-admin.php';
 			require_once ECHODASH_DIR_PATH . 'includes/admin/admin-functions.php';
 
-			// Add the new React admin classes
+			// Add the new React admin classes.
 			require_once ECHODASH_DIR_PATH . 'includes/admin/class-echodash-react-admin.php';
 		}
 	}

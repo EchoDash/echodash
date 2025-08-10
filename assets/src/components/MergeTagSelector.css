@@ -64,7 +64,7 @@
 /* Group Container */
 .echodash-merge-dropdown__group {
 	background-color: var(--ecd-color-background);
-	padding: 0px;
+	padding: 0;
 }
 
 .echodash-merge-dropdown__group:not(:last-child) {
@@ -115,9 +115,9 @@
 
 /* Merge tag in monospace font */
 .echodash-merge-dropdown__option-tag {
-	font-family: Consolas, Monaco, 'Courier New', monospace;
+	font-family: Consolas, Monaco, "Courier New", monospace;
 	font-size: var(--ecd-font-size-base);
-	font-weight: normal;
+	font-weight: 400;
 	color: #2c3338;
 	margin-bottom: 3px;
 	display: block;
@@ -175,5 +175,6 @@
 
 /* When dropdown is in modal context, it already handles positioning via inline styles */
 .echodash-merge-dropdown--in-modal {
+
 	/* Position is set inline as 'fixed' by the component */
 }

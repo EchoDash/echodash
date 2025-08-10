@@ -1,4 +1,9 @@
 <?php
+/**
+ * EDD Software Licensing integration.
+ *
+ * @package EchoDash
+ */
 
 defined( 'ABSPATH' ) || exit;
 

@@ -1,4 +1,9 @@
 <?php
+/**
+ * LearnDash integration.
+ *
+ * @package EchoDash
+ */
 
 defined( 'ABSPATH' ) || exit;
 /**
@@ -201,7 +206,7 @@ class EchoDash_LearnDash extends EchoDash_Integration {
 			)
 		);
 
-		// Only do it once
+		// Only do it once.
 		remove_action( 'learndash_lesson_completed', array( $this, 'course_progress' ), 5 );
 		remove_action( 'learndash_topic_completed', array( $this, 'course_progress' ), 5 );
 	}
