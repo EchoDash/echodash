@@ -238,31 +238,16 @@ abstract class EchoDash_Integration {
 	 */
 	public function track_event( $trigger, $objects = array(), $args = array() ) {
 
-		error_log( print_r( 'track event for trigger ' . $trigger, true ) );
-		error_log( print_r( 'objects', true ) );
-		error_log( print_r( $objects, true ) );
-		error_log( print_r( 'args', true ) );
-		error_log( print_r( $args, true ) );
-
 		$objects = apply_filters( 'echodash_event_objects', $objects, $trigger );
 
 		// Get object ID if applicable
 		$object_id = $this->get_object_id_for_trigger( $trigger, $objects );
 
-		error_log( print_r( 'object id', true ) );
-		error_log( print_r( $object_id, true ) );
-
 		// Get events configured for this trigger
 		$events = $this->get_events( $trigger, $object_id );
 
-		error_log( print_r( 'events', true ) );
-		error_log( print_r( $events, true ) );
-
 		// Get merge variables from this and any other relevant integrations.
 		$event_data = apply_filters( 'echodash_event_data', array(), $objects );
-
-		error_log( print_r( 'event data', true ) );
-		error_log( print_r( $event_data, true ) );
 
 		// Merge in any custom arguments passed from the trigger
 		foreach ( $args as $object_type => $values ) {
@@ -273,20 +258,19 @@ abstract class EchoDash_Integration {
 			}
 		}
 
-		error_log( print_r( 'event data after args', true ) );
-		error_log( print_r( $event_data, true ) );
-
 		// Process each event
 		foreach ( $events as $event ) {
+
+			if ( isset( $event['mappings'] ) ) {
+				// New v2 storage.
+				$event['value'] = $event['mappings'];
+			}
 
 			// Format the values from settings storage into key-value pairs.
 			$event['value'] = wp_list_pluck( $event['value'], 'value', 'key' );
 
 			// Replace merge tags in event data
 			$event['value'] = $this->replace_tags( $event['value'], $event_data );
-
-			error_log( print_r( 'track event', true ) );
-			error_log( print_r( $event, true ) );
 
 			// Track via public class
 			echodash()->public->track_event(
@@ -302,53 +286,103 @@ abstract class EchoDash_Integration {
 	 * Helper for replacing the placeholders with values.
 	 *
 	 * @since  1.0.0
-	 * @param array $event_values Array of key-value pairs where values may contain placeholders like {user:first_name}.
+	 * @param array $mappings  Array of key-value pairs where values may contain placeholders like {user:first_name}.
 	 * @param array $event_data   Multi-dimensional array where keys are object types (e.g. 'user', 'order')
 	 *                            and values are arrays of object properties (e.g. 'first_name' => 'John').
 	 * @return array The filtered event values with placeholders replaced by actual values.
 	 */
-	public function replace_tags( $event_values, $event_data ) {
+	public function replace_tags( $mappings, $event_data ) {
 
-		error_log( print_r( 'replace tags', true ) );
-		error_log( print_r( $event_values, true ) );
-		error_log( print_r( $event_data, true ) );
+		foreach ( $mappings as $field => $merge_tag ) {
+			$mappings[ $field ] = $this->process_merge_tag( $merge_tag, $event_data );
+		}
 
-		foreach ( $event_values as $key => $event_value ) {
+		// Handle array expansions (creates new fields like field_key => value)
+		$mappings = $this->expand_array_fields( $mappings );
 
-			// At this point we have the user's configured mapping, like "first_name" => "{user:first_name}"
+		// Remove any empty values
+		$mappings = array_filter( $mappings );
 
-			foreach ( $event_data as $object_type => $object_values ) {
+		return apply_filters( 'echodash_replace_tags', $mappings, $event_data );
+	}
 
-				// Object type is, for example, "user", or "order".
+	/**
+	 * Process a single merge tag, replacing placeholders with actual values.
+	 *
+	 * @since  2.0.0
+	 * @param string $merge_tag The merge tag string that may contain placeholders.
+	 * @param array  $event_data The event data to pull values from.
+	 * @return string|array The processed merge tag with replacements made.
+	 */
+	private function process_merge_tag( $merge_tag, $event_data ) {
 
-				foreach ( $object_values as $object_key => $object_value ) {
+		$processed_tag = $merge_tag;
 
-					// Object key is, for example, "first_name", object value is, for example, "John".
+		foreach ( $event_data as $object_type => $object_values ) {
+			foreach ( $object_values as $object_key => $object_value ) {
 
-					$search = '{' . $object_type . ':' . $object_key . '}';
+				$placeholder = $this->build_placeholder( $object_type, $object_key );
 
-					if ( is_scalar( $object_value ) && isset( $event_values[ $key ] ) ) {
-
-						// Now we replace the placeholder text, like {user:first_name} with the actual value.
-						$event_values[ $key ] = str_replace( $search, $object_value, $event_values[ $key ] );
-
-					} elseif ( is_array( $object_value ) && false !== strpos( $event_value, $search ) ) {
-
-						unset( $event_values[ $key ] );
-
-						foreach ( $object_value as $object_value_key => $object_value_value ) {
-							$event_values[ $key . '_' . $object_value_key ] = $object_value_value;
-						}
-					}
+				if ( $this->should_replace_placeholder( $merge_tag, $placeholder, $object_value ) ) {
+					$processed_tag = str_replace( $placeholder, $object_value, $processed_tag );
 				}
 			}
 		}
 
-		$event_values = array_filter( $event_values ); // Remove any empty values.
+		return $processed_tag;
+	}
 
-		$event_values = apply_filters( 'echodash_replace_tags', $event_values, $event_data );
+	/**
+	 * Build a placeholder string from object type and key.
+	 *
+	 * @since  2.0.0
+	 * @param string $object_type The object type (e.g. 'user', 'order').
+	 * @param string $object_key  The object key (e.g. 'first_name').
+	 * @return string The placeholder string (e.g. '{user:first_name}').
+	 */
+	private function build_placeholder( $object_type, $object_key ) {
+		return '{' . $object_type . ':' . $object_key . '}';
+	}
 
-		return $event_values;
+	/**
+	 * Check if a placeholder should be replaced with the given value.
+	 *
+	 * @since  2.0.0
+	 * @param string $merge_tag    The merge tag to check.
+	 * @param string $placeholder  The placeholder to look for.
+	 * @param mixed  $object_value The value to replace with.
+	 * @return bool True if replacement should happen.
+	 */
+	private function should_replace_placeholder( $merge_tag, $placeholder, $object_value ) {
+		return is_scalar( $object_value ) && false !== strpos( $merge_tag, $placeholder );
+	}
+
+	/**
+	 * Expand array fields into multiple individual fields.
+	 *
+	 * For array values, this creates new fields like field_key => value
+	 * and removes the original field.
+	 *
+	 * @since  2.0.0
+	 * @param array $mappings The mappings to process.
+	 * @return array The mappings with array fields expanded.
+	 */
+	private function expand_array_fields( $mappings ) {
+
+		$expanded_mappings = array();
+
+		foreach ( $mappings as $field => $value ) {
+			if ( is_array( $value ) ) {
+				// Expand array into separate fields
+				foreach ( $value as $key => $sub_value ) {
+					$expanded_mappings[ $field . '_' . $key ] = $sub_value;
+				}
+			} else {
+				$expanded_mappings[ $field ] = $value;
+			}
+		}
+
+		return $expanded_mappings;
 	}
 
 	/**
@@ -454,21 +488,23 @@ abstract class EchoDash_Integration {
 	public function get_global_events( $trigger ) {
 		$events = array();
 
-		error_log( print_r( 'get global events for trigger ' . $trigger, true ) );
-
 		if ( $this->triggers[ $trigger ]['has_global'] ) {
 			// Global settings.
 			$settings = get_option( 'echodash_options', array() );
 
-			error_log( print_r( 'settings', true ) );
-			error_log( print_r( $settings, true ) );
+			if ( ! empty( $settings['integrations'] ) && ! empty( $settings['integrations'][ $this->slug ] ) ) {
+				// v2 settings.
+				$triggers = $settings['integrations'][ $this->slug ]['triggers'];
+			} elseif ( ! empty( $settings[ $this->slug ] ) ) {
+				// v1 settings.
+				$triggers = $settings[ $this->slug ];
+			} else {
+				$triggers = array();
+			}
 
-			if ( ! empty( $settings[ $this->slug ] ) ) {
-				foreach ( $settings[ $this->slug ] as $event ) {
-					if ( $event['trigger'] === $trigger ) {
-						// If we're getting it for a single post we don't need to keep them separate.
-						$events[] = $event;
-					}
+			foreach ( $triggers as $event ) {
+				if ( $event['trigger'] === $trigger ) {
+					$events[] = $event;
 				}
 			}
 		}

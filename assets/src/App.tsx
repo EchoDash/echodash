@@ -25,14 +25,27 @@ declare global {
 				iconBackgroundColor: string;
 				triggerCount: number;
 				enabled: boolean;
-				description?: string;
 				availableTriggers?: Array<{
 					id: string;
 					name: string;
 					description?: string;
 					defaultEvent?: any;
 				}>;
-				singleItemTriggers?: Array<{
+			}>;
+			userTriggers: Record<string, {
+				global: Array<{
+					id: string;
+					name: string;
+					trigger?: string;
+					description?: string;
+					enabled?: boolean;
+					event_name?: string;
+					mappings?: Array<{
+						key: string;
+						value: string;
+					}>;
+				}>;
+				singleItem: Array<{
 					trigger: string;
 					name: string;
 					description?: string;
@@ -45,7 +58,6 @@ declare global {
 					}>;
 				}>;
 			}>;
-			triggers: Record<string, any[]>;
 			nonce: string;
 			apiUrl: string;
 			i18n: Record<string, string>;
@@ -58,13 +70,13 @@ export const App: React.FC = () => {
 	const [selectedIntegration, setSelectedIntegration] = useState<string | null>(null);
 	const [showTriggerModal, setShowTriggerModal] = useState(false);
 	const [editingTrigger, setEditingTrigger] = useState<any | null>(null);
-	const [triggers, setTriggers] = useState<Record<string, any[]>>(window.ecdReactData?.triggers || {});
+	const [userTriggers, setUserTriggers] = useState(window.ecdReactData?.userTriggers || {});
 	const [integrations, setIntegrations] = useState(window.ecdReactData?.integrations || []);
 
 	const data = window.ecdReactData || {
 		settings: {},
 		integrations: [],
-		triggers: {},
+		userTriggers: {},
 		nonce: '',
 		apiUrl: '',
 		i18n: {}
@@ -221,12 +233,15 @@ export const App: React.FC = () => {
 			if (response.ok) {
 				// Update local state - remove the deleted trigger
 				if (selectedIntegration) {
-					const integrationTriggers = triggers[selectedIntegration] || [];
+					const integrationTriggers = userTriggers[selectedIntegration]?.global || [];
 					const updatedTriggers = integrationTriggers.filter(t => t.id !== trigger.id);
 					
-					setTriggers({
-						...triggers,
-						[selectedIntegration]: updatedTriggers
+					setUserTriggers({
+						...userTriggers,
+						[selectedIntegration]: {
+							global: updatedTriggers,
+							singleItem: userTriggers[selectedIntegration]?.singleItem || []
+						}
 					});
 
 					// Update integration trigger count
@@ -278,7 +293,7 @@ export const App: React.FC = () => {
 				
 				// Update local state
 				if (selectedIntegration) {
-					const integrationTriggers = triggers[selectedIntegration] || [];
+					const integrationTriggers = userTriggers[selectedIntegration]?.global || [];
 					
 					// Get the description from the integration's available triggers
 					const selectedIntegrationData = integrations.find(i => i.slug === selectedIntegration);
@@ -303,13 +318,16 @@ export const App: React.FC = () => {
 								}
 								: t
 						);
-						setTriggers({
-							...triggers,
-							[selectedIntegration]: updatedTriggers
+						setUserTriggers({
+							...userTriggers,
+							[selectedIntegration]: {
+								global: updatedTriggers,
+								singleItem: userTriggers[selectedIntegration]?.singleItem || []
+							}
 						});
 					} else {
 						// Add new trigger
-						integrationTriggers.push({
+						const newTrigger = {
 							id: result.id || Date.now().toString(),
 							name: triggerData.name,
 							trigger: triggerData.trigger,
@@ -317,11 +335,15 @@ export const App: React.FC = () => {
 							mappings: triggerData.mappings,
 							description: triggerDescription,
 							enabled: true
-						});
-						setTriggers({
-							...triggers,
-							[selectedIntegration]: integrationTriggers
-						});
+						};
+						
+											setUserTriggers({
+						...userTriggers,
+						[selectedIntegration]: {
+							global: [...integrationTriggers, newTrigger],
+							singleItem: userTriggers[selectedIntegration]?.singleItem || []
+						}
+					});
 
 						// Update integration trigger count for new triggers only
 						setIntegrations(prev => prev.map(integration => {
@@ -364,8 +386,11 @@ export const App: React.FC = () => {
 			) : (
 				selectedIntegrationData && (
 					<IntegrationDetail
-						integration={selectedIntegrationData}
-						triggers={triggers[selectedIntegration!] || []}
+						integration={{
+							...selectedIntegrationData,
+							singleItemTriggers: userTriggers[selectedIntegration!]?.singleItem || []
+						}}
+						triggers={userTriggers[selectedIntegration!]?.global || []}
 						onBack={handleBackToList}
 						onAddTrigger={handleAddTrigger}
 						onEditTrigger={handleEditTrigger}

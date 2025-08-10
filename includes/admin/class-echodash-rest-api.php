@@ -150,9 +150,6 @@ class EchoDash_REST_API extends WP_REST_Controller {
 	public function update_settings( $request ) {
 		$params = $request->get_json_params();
 
-		error_log( print_r( 'update settings', true ) );
-		error_log( print_r( $params, true ) );
-
 		// Validate and sanitize input
 		if ( isset( $params['endpoint'] ) ) {
 			$endpoint = esc_url_raw( $params['endpoint'] );
@@ -236,11 +233,6 @@ class EchoDash_REST_API extends WP_REST_Controller {
 		$trigger_id = $request->get_param( 'trigger_id' );
 		$params     = $request->get_json_params();
 
-		error_log( print_r( 'update trigger', true ) );
-		error_log( print_r( $params, true ) );
-		error_log( print_r( 'slug : ' . $slug, true ) );
-		error_log( print_r( 'trigger_id : ' . $trigger_id, true ) );
-
 		// Get current settings
 		$settings = get_option( 'echodash_options', array() );
 
@@ -257,9 +249,6 @@ class EchoDash_REST_API extends WP_REST_Controller {
 
 		// Save settings
 		update_option( 'echodash_options', $settings );
-
-		error_log( print_r( 'new settings', true ) );
-		error_log( print_r( $settings, true ) );
 
 		// Return updated trigger
 		return rest_ensure_response(
@@ -329,15 +318,9 @@ class EchoDash_REST_API extends WP_REST_Controller {
 		$options         = $integration->get_options( $trigger_id );
 		$test_event_data = $this->extract_preview_data_from_options( $options );
 
-		error_log( print_r( 'test event data', true ) );
-		error_log( print_r( $test_event_data, true ) );
-
 		// Use integration's replace_tags method for processing
 		$event_values   = wp_list_pluck( $event_config['mappings'], 'value', 'key' );
 		$processed_data = $integration->replace_tags( $event_values, $test_event_data );
-
-		error_log( print_r( 'processed data', true ) );
-		error_log( print_r( $processed_data, true ) );
 
 		return rest_ensure_response(
 			array(
@@ -412,6 +395,11 @@ class EchoDash_REST_API extends WP_REST_Controller {
 					if ( isset( $option['meta'] ) && isset( $option['preview'] ) ) {
 						$preview_data[ $object_type ][ $option['meta'] ] = $option['preview'];
 					}
+				}
+
+				// Add in custom meta, like postmeta or user meta that we haven't specifically declared.
+				if ( ! empty( $option_group['meta'] ) ) {
+					$preview_data[ $object_type ] = array_merge( $preview_data[ $object_type ], $option_group['meta'] );
 				}
 			}
 		}

@@ -52,8 +52,6 @@ class EchoDash_React_Admin {
 			true
 		);
 
-		// Script attributes are already handled by add_script_attributes method in constructor
-
 		// Set script translations for React app
 		wp_set_script_translations( 'echodash-react', 'echodash', ECHODASH_DIR_PATH . 'languages' );
 
@@ -109,10 +107,27 @@ class EchoDash_React_Admin {
 
 		$integrations_data = $this->get_integrations_data();
 
-		// Extract triggers data for easy access by React
-		$triggers_data = array();
+		// Build userTriggers structure - single source of truth for all trigger data
+		$user_triggers = array();
 		foreach ( $integrations_data as $integration ) {
-			$triggers_data[ $integration['slug'] ] = $integration['triggers'];
+			$user_triggers[ $integration['slug'] ] = array(
+				'global'     => $integration['triggers'], // Global triggers (configured via UI)
+				'singleItem' => $integration['singleItemTriggers'], // Single-item triggers (per post/form/etc)
+			);
+		}
+
+		// Clean integrations data - remove duplicated trigger data
+		$clean_integrations = array();
+		foreach ( $integrations_data as $integration ) {
+			$clean_integrations[] = array(
+				'slug'                => $integration['slug'],
+				'name'                => $integration['name'],
+				'icon'                => $integration['icon'],
+				'iconBackgroundColor' => $integration['iconBackgroundColor'],
+				'triggerCount'        => $integration['triggerCount'],
+				'enabled'             => $integration['enabled'],
+				'availableTriggers'   => $integration['availableTriggers'], // Available trigger definitions
+			);
 		}
 
 		$localized_data = array(
@@ -131,14 +146,18 @@ class EchoDash_React_Admin {
 				),
 			),
 
-			// Integrations Data
-			'integrations' => $integrations_data,
+			// Clean Integrations Data (without duplicated triggers)
+			'integrations' => $clean_integrations,
 
-			// Triggers Data (for easy access by integration slug)
-			'triggers'     => $triggers_data,
+			// Single source of truth for user-configured triggers
+			'userTriggers' => $user_triggers,
 
-			// Settings and Configuration
-			'settings'     => $this->get_settings_data(),
+			// Settings and Configuration (without trigger duplication)
+			'settings'     => array(
+				'endpoint'    => get_option( 'echodash_endpoint', '' ),
+				'isConnected' => ! empty( get_option( 'echodash_endpoint', '' ) ),
+				'connectUrl'  => echodash()->admin->get_connect_url(),
+			),
 
 			// Environment and Debug
 			'environment'  => array(
@@ -148,39 +167,9 @@ class EchoDash_React_Admin {
 				'adminUrl'      => admin_url(),
 				'assetsUrl'     => ECHODASH_DIR_URL . 'assets/',
 			),
-
-			// Internationalization
-			'i18n'         => array(
-				'loading'           => __( 'Loading...', 'echodash' ),
-				'error'             => __( 'Error', 'echodash' ),
-				'success'           => __( 'Success', 'echodash' ),
-				'saving'            => __( 'Saving...', 'echodash' ),
-				'saved'             => __( 'Saved', 'echodash' ),
-				'cancel'            => __( 'Cancel', 'echodash' ),
-				'delete'            => __( 'Delete', 'echodash' ),
-				'edit'              => __( 'Edit', 'echodash' ),
-				'add'               => __( 'Add', 'echodash' ),
-				'remove'            => __( 'Remove', 'echodash' ),
-				'confirm'           => __( 'Confirm', 'echodash' ),
-				'confirmDelete'     => __( 'Are you sure you want to delete this item?', 'echodash' ),
-				'noResults'         => __( 'No results found', 'echodash' ),
-				'searchPlaceholder' => __( 'Search...', 'echodash' ),
-			),
 		);
 
 		return $localized_data;
-	}
-
-	/**
-	 * Get settings data for React app
-	 */
-	private function get_settings_data() {
-		return array(
-			'endpoint'    => get_option( 'echodash_endpoint', '' ),
-			'options'     => get_option( 'echodash_options', array() ),
-			'isConnected' => ! empty( get_option( 'echodash_endpoint', '' ) ),
-			'connectUrl'  => echodash()->admin->get_connect_url(),
-		);
 	}
 
 	/**
@@ -258,6 +247,7 @@ class EchoDash_React_Admin {
 	private function get_integrations_data() {
 		$echodash     = echodash();
 		$integrations = array();
+		$needs_update = false;
 
 		if ( ! $echodash || ! isset( $echodash->integrations ) ) {
 			return $integrations;
@@ -271,6 +261,34 @@ class EchoDash_React_Admin {
 			$available_triggers   = array();
 			$single_item_triggers = array();
 			$single_item_count    = 0;
+
+			// Migrate v1 settings storage to v2.
+			if ( isset( $settings[ $slug ] ) ) {
+
+				if ( ! isset( $settings['integrations'][ $slug ] ) ) {
+					$settings['integrations'][ $slug ] = array();
+				}
+
+				if ( ! isset( $settings['integrations'][ $slug ]['triggers'] ) ) {
+					$settings['integrations'][ $slug ]['triggers'] = array();
+				}
+
+				foreach ( $settings[ $slug ] as $trigger_data ) {
+					$id                       = $trigger_data['trigger'] . '_' . time();
+					$trigger_data['mappings'] = $trigger_data['value'];
+					unset( $trigger_data['value'] );
+					$settings['integrations'][ $slug ]['triggers'][ $id ] = $trigger_data;
+				}
+
+				unset( $settings[ $slug ] );
+
+				$needs_update = true;
+
+			}
+
+			if ( $needs_update ) {
+				update_option( 'echodash_options', $settings );
+			}
 
 			// Load configured triggers from the correct settings path
 			$configured_trigger_data = array();

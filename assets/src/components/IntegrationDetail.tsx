@@ -16,7 +16,12 @@ interface Integration {
 	iconBackgroundColor: string;
 	triggerCount: number;
 	enabled: boolean;
-	description?: string;
+	availableTriggers?: Array<{
+		id: string;
+		name: string;
+		description?: string;
+		defaultEvent?: any;
+	}>;
 	singleItemTriggers?: Array<{
 		trigger: string;
 		name: string;
