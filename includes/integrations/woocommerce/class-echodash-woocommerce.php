@@ -151,6 +151,10 @@ class EchoDash_WooCommerce extends EchoDash_Integration {
 
 		$order = wc_get_order( $order_id );
 
+		if ( ! $order instanceof WC_Order ) {
+			return;
+		}
+
 		$this->track_event(
 			'order_placed',
 			array(
@@ -163,6 +167,12 @@ class EchoDash_WooCommerce extends EchoDash_Integration {
 		$used_coupons = $order->get_coupon_codes();
 		if ( ! empty( $used_coupons ) ) {
 			foreach ( $used_coupons as $coupon_code ) {
+
+				$coupon_code = trim( (string) $coupon_code );
+				if ( '' === $coupon_code ) {
+					continue;
+				}
+
 				$this->track_event(
 					'coupon_used',
 					array(
