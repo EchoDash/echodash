@@ -110,8 +110,8 @@ class EchoDash_Public {
 			'headers'    => array(
 				'Content-Type'  => 'application/json',
 				'ecd-summarize' => 'false',
-				'ecd-source'    => $event['source'],
-				'ecd-event'     => $event['event'],
+				'ecd-source'    => sanitize_text_field( $event['source'] ),
+				'ecd-event'     => sanitize_text_field( $event['event'] ),
 			),
 			'body'       => wp_json_encode( $event ),
 			'blocking'   => defined( 'ECHODASH_TEST_EVENT' ) ? true : false,

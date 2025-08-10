@@ -147,7 +147,7 @@ class EchoDash_Admin {
 			return;
 		}
 
-		if ( ! wp_verify_nonce( wp_unslash( sanitize_key( $_GET['state'] ) ), 'echodash_connect' ) ) {
+		if ( ! wp_verify_nonce( sanitize_key( wp_unslash( $_GET['state'] ) ), 'echodash_connect' ) ) {
 			return;
 		}
 

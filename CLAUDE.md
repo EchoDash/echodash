@@ -144,7 +144,7 @@ composer phpcbf
 - **WordPress Coding Standards**: PHPCS with custom EchoDash configuration
 - **Static Analysis**: PHPStan level 5 with WordPress stubs
 - **Security**: Custom sanitization function `echodash_clean` registered
-- **Naming**: Prefixes `ecd`, `EchoDash` for global functions and classes
+- **Naming**: Prefixes `echodash`, `EchoDash` for global functions and classes
 - **Text Domain**: `echodash` for all translation strings
 
 ### Performance Standards

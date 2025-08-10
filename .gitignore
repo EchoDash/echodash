@@ -10,3 +10,6 @@ junit.xml
 /coverage
 /test-reports
 wordpress-api.log
+
+# Build artifacts
+assets/dist/*.gz
