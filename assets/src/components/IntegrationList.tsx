@@ -8,24 +8,11 @@ import React, { useState } from 'react';
 import { __ } from '@wordpress/i18n';
 import './IntegrationList.css';
 import { EchoDashLogo } from './EchoDashLogo';
-
-interface Integration {
-	slug: string;
-	name: string;
-	icon: string;
-	iconBackgroundColor: string;
-	triggerCount: number;
-	enabled: boolean;
-	description?: string;
-}
+import type { Integration, EchoDashSettings } from '../types';
 
 interface IntegrationListProps {
 	integrations: Integration[];
-	settings: {
-		endpoint?: string;
-		isConnected?: boolean;
-		connectUrl?: string;
-	};
+	settings: EchoDashSettings;
 	onIntegrationClick: (slug: string) => void;
 	onAddTrigger: (slug: string) => void;
 }

@@ -8,30 +8,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { __ } from '@wordpress/i18n';
 import { MergeTagSelector } from './MergeTagSelector';
 import './TriggerModal.css';
-
-interface MergeTagOption {
-	meta: string;
-	preview: string | number;
-	placeholder: string;
-}
-
-interface MergeTagGroup {
-	name: string;
-	type: string;
-	options: MergeTagOption[];
-}
-
-interface Integration {
-	slug: string;
-	name: string;
-	availableTriggers?: Array<{
-		id: string;
-		name: string;
-		description?: string;
-		defaultEvent?: any;
-		options?: MergeTagGroup[];
-	}>;
-}
+import type { Integration, KeyValuePair } from '../types';
 
 interface TriggerModalProps {
 	isOpen: boolean;
@@ -40,11 +17,6 @@ interface TriggerModalProps {
 	onSendTest?: (data: any) => void;
 	integration: Integration;
 	editingTrigger?: any;
-}
-
-interface KeyValuePair {
-	key: string;
-	value: string;
 }
 
 export const TriggerModal: React.FC<TriggerModalProps> = ({

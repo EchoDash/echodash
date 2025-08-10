@@ -6,18 +6,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import './MergeTagSelector.css';
-
-interface MergeTagOption {
-	meta: string;
-	preview: string | number;
-	placeholder: string;
-}
-
-interface MergeTagGroup {
-	name: string;
-	type: string;
-	options: MergeTagOption[];
-}
+import type { MergeTagGroup } from '../types';
 
 interface MergeTagSelectorProps {
 	options: MergeTagGroup[];

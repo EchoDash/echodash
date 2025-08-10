@@ -8,46 +8,7 @@ import React, { useState } from 'react';
 import { __, _n } from '@wordpress/i18n';
 import './IntegrationDetail.css';
 import { EchoDashLogo } from './EchoDashLogo';
-
-interface Integration {
-	slug: string;
-	name: string;
-	icon: string;
-	iconBackgroundColor: string;
-	triggerCount: number;
-	enabled: boolean;
-	availableTriggers?: Array<{
-		id: string;
-		name: string;
-		description?: string;
-		defaultEvent?: any;
-	}>;
-	singleItemTriggers?: Array<{
-		trigger: string;
-		name: string;
-		description?: string;
-		items: Array<{
-			post_id: number;
-			post_title: string;
-			edit_url: string;
-			event_name: string;
-			mappings: any;
-		}>;
-	}>;
-}
-
-interface Trigger {
-	id: string;
-	name: string;
-	trigger?: string;
-	description?: string;
-	enabled?: boolean;
-	event_name?: string;
-	mappings?: Array<{
-		key: string;
-		value: string;
-	}>;
-}
+import type { Integration, Trigger } from '../types';
 
 interface IntegrationDetailProps {
 	integration: Integration;

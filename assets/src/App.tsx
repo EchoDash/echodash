@@ -8,55 +8,22 @@ import React, { useState, useEffect } from 'react';
 import { IntegrationList } from './components/IntegrationList';
 import { IntegrationDetail } from './components/IntegrationDetail';
 import { TriggerModal } from './components/TriggerModal';
+import type { 
+	Integration, 
+	Trigger, 
+	SingleItemTriggerGroup, 
+	EchoDashSettings 
+} from './types';
 
 // Get global data from PHP
 declare global {
 	interface Window {
 		ecdReactData: {
-			settings: {
-				endpoint?: string;
-				isConnected?: boolean;
-				connectUrl?: string;
-			};
-			integrations: Array<{
-				slug: string;
-				name: string;
-				icon: string;
-				iconBackgroundColor: string;
-				triggerCount: number;
-				enabled: boolean;
-				availableTriggers?: Array<{
-					id: string;
-					name: string;
-					description?: string;
-					defaultEvent?: any;
-				}>;
-			}>;
+			settings: EchoDashSettings;
+			integrations: Integration[];
 			userTriggers: Record<string, {
-				global: Array<{
-					id: string;
-					name: string;
-					trigger?: string;
-					description?: string;
-					enabled?: boolean;
-					event_name?: string;
-					mappings?: Array<{
-						key: string;
-						value: string;
-					}>;
-				}>;
-				singleItem: Array<{
-					trigger: string;
-					name: string;
-					description?: string;
-					items: Array<{
-						post_id: number;
-						post_title: string;
-						edit_url: string;
-						event_name: string;
-						mappings: any;
-					}>;
-				}>;
+				global: Trigger[];
+				singleItem: SingleItemTriggerGroup[];
 			}>;
 			nonce: string;
 			apiUrl: string;
