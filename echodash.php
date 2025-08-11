@@ -277,6 +277,7 @@ final class EchoDash {
 			'searchwp'                => 'SearchWP',
 			'woocommerce'             => 'WooCommerce',
 			'woo-subscriptions'       => 'WC_Subscriptions_Product',
+			'wp-fusion'               => 'WP_Fusion',
 		);
 
 		foreach ( $integrations as $filename => $dependency ) {
