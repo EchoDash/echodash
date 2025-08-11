@@ -35,6 +35,7 @@ We will always offer a free tier of service with an activity feed. As we add rep
 * **AffiliateWP** - Track referrals and affiliate activity
 * **bbPress** - Track forum activity and user engagement
 * **BuddyPress + BuddyBoss** - Follow group activities, profile updates, and member interactions
+* **ClickWhale** - Track outbound link clicks
 * **Easy Digital Downloads** - Monitor purchases and downloads
 * **EDD Recurring** - Track subscription payments and renewals
 * **EDD Software Licensing** - Monitor license activations and software updates
@@ -44,9 +45,11 @@ We will always offer a free tier of service with an activity feed. As we add rep
 * **LearnDash** - Monitor course progress, quiz completions, and student engagement
 * **LifterLMS** - Follow student progress and course interactions
 * **Presto Player** - Track video engagement and watch time
+* **Pretty Links** - Track outbound link clicks
+* **SearchWP** - Track search queries and results
 * **WooCommerce** - Track orders, cart actions, and customer behavior
 * **WooCommerce Subscriptions** - Monitor subscription status changes and renewals
-* **WordPress** - Track core and plugin updates
+* **WordPress** - Track core and plugin updates, post status changes, and comments
 * **Users** - Track user logins
 
 = Not Limited to WordPress =
@@ -127,11 +130,14 @@ Yes, developers can use our API to track custom events. Documentation is availab
 
 == Changelog ==
 
+= 2.0.1 - August 11, 2025 =
+* Fixed fatal error `failed opening required class-echodash-abandoned-cart.php` when the WP Fusion Abandoned Cart plugin is active
+
 = 2.0.0 - August 10, 2025 =
 * New React-based admin UI
-* Added AffiliateWP integration: New Affiliate, Affiliate Status Updated, New Visit, Referral Earned)
+* Added AffiliateWP integration: New Affiliate, Affiliate Status Updated, New Visit, Referral Earned
 * Added SearchWP integration: Search Performed, Search No Results
-* Added PrettyLinks integration: Outbound Link Click
+* Added Pretty Links integration: Outbound Link Click
 * Added ClickWhale integration: Outbound Link Click
 * Added new WordPress core triggers: New Post Comment, New Comment Reply, Post Published, Post Updated, Post Status Changed
 * Added trigger: Easy Digital Downloads - Discount Used

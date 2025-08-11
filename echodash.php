@@ -260,7 +260,6 @@ final class EchoDash {
 			'wordpress'               => 'WP',
 			'user'                    => 'WP_User',
 			'presto-player'           => 'PrestoPlayer\Core',
-			'abandoned-cart'          => 'WP_Fusion_Abandoned_Cart',
 			'gravity-forms'           => 'GFForms',
 			'affiliatewp'             => 'Affiliate_WP',
 			'bbpress'                 => 'bbPress',
