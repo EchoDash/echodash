@@ -15,10 +15,13 @@
 .prettierrc
 .eslintrc.js
 .eslintignore
+.stylelintrc.js
+.stylelintignore
+.gitattributes
 CLAUDE.md
 composer.json
 jest.config.js
-package-lock.json
+junit.xml
 package.json
 phpcs.xml
 phpstan.neon
