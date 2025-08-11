@@ -198,8 +198,7 @@ class EchoDash_WP_Fusion extends EchoDash_Integration {
 	 */
 	public function contact_added( $args, $contact_id, $result ) {
 
-		// Extract user_id from args if available.
-		$user_id = isset( $args['user_id'] ) ? $args['user_id'] : 0;
+		$user_id = wpf_get_user_id( $contact_id );
 
 		$this->track_event(
 			'contact_added',
@@ -208,11 +207,12 @@ class EchoDash_WP_Fusion extends EchoDash_Integration {
 			),
 			array(
 				'contact' => array(
-					'contact_id' => $contact_id,
-					'email'      => isset( $args['email'] ) ? $args['email'] : '',
-					'first_name' => isset( $args['first_name'] ) ? $args['first_name'] : '',
-					'last_name'  => isset( $args['last_name'] ) ? $args['last_name'] : '',
-					'user_id'    => $user_id,
+					'contact_id'  => $contact_id,
+					'email'       => isset( $args['email'] ) ? $args['email'] : '',
+					'first_name'  => isset( $args['first_name'] ) ? $args['first_name'] : '',
+					'last_name'   => isset( $args['last_name'] ) ? $args['last_name'] : '',
+					'user_id'     => $user_id,
+					'update_data' => (array) $args[0],
 				),
 			)
 		);
@@ -238,11 +238,12 @@ class EchoDash_WP_Fusion extends EchoDash_Integration {
 			),
 			array(
 				'contact' => array(
-					'contact_id' => $contact_id,
-					'email'      => isset( $args['email'] ) ? $args['email'] : '',
-					'first_name' => isset( $args['first_name'] ) ? $args['first_name'] : '',
-					'last_name'  => isset( $args['last_name'] ) ? $args['last_name'] : '',
-					'user_id'    => $user_id,
+					'contact_id'  => $contact_id,
+					'email'       => isset( $args['email'] ) ? $args['email'] : '',
+					'first_name'  => isset( $args['first_name'] ) ? $args['first_name'] : '',
+					'last_name'   => isset( $args['last_name'] ) ? $args['last_name'] : '',
+					'user_id'     => $user_id,
+					'update_data' => (array) $args[1],
 				),
 			)
 		);
@@ -266,7 +267,7 @@ class EchoDash_WP_Fusion extends EchoDash_Integration {
 				'user' => $user_id,
 			),
 			array(
-				'tag' => array(
+				'contact' => array(
 					'tags_applied' => $tags,
 					'contact_id'   => wpf_get_contact_id( $user_id ),
 				),
@@ -290,10 +291,9 @@ class EchoDash_WP_Fusion extends EchoDash_Integration {
 			'tags_removed',
 			array(
 				'user' => $user_id,
-				'c'
 			),
 			array(
-				'tag' => array(
+				'contact' => array(
 					'tags_removed' => $tags,
 					'contact_id'   => wpf_get_contact_id( $user_id ),
 				),
@@ -314,6 +314,8 @@ class EchoDash_WP_Fusion extends EchoDash_Integration {
 	 */
 	public function handle_log( $timestamp, $level, $user, $message, $context ) {
 
+		$source = isset( $context['source'] ) ? $context['source'] : 'wp-fusion';
+
 		// Check for enrollment updates.
 		if ( strpos( $message, 'by linked tag' ) !== false ) {
 			$this->track_event(
@@ -322,9 +324,10 @@ class EchoDash_WP_Fusion extends EchoDash_Integration {
 					'user' => $user,
 				),
 				array(
-					'log' => array(
-						'message'   => $message,
-						'timestamp' => $timestamp,
+					'contact' => array(
+						'log_message' => $message,
+						'log_source'  => $source,
+						'contact_id'  => wpf_get_contact_id( $user ),
 					),
 				)
 			);
@@ -337,10 +340,10 @@ class EchoDash_WP_Fusion extends EchoDash_Integration {
 				'user' => $user,
 			),
 			array(
-				'log' => array(
-					'level'     => $level,
-					'message'   => $message,
-					'timestamp' => $timestamp,
+				'contact' => array(
+					'log_message' => $message,
+					'log_source'  => $source,
+					'contact_id'  => wpf_get_contact_id( $user ),
 				),
 			)
 		);
@@ -358,15 +361,18 @@ class EchoDash_WP_Fusion extends EchoDash_Integration {
 	 */
 	public function handle_log_error( $timestamp, $user, $message, $context ) {
 
+		$source = isset( $context['source'] ) ? $context['source'] : 'wp-fusion';
+
 		$this->track_event(
 			'log_error',
 			array(
 				'user' => $user,
 			),
 			array(
-				'log' => array(
-					'message'   => $message,
-					'timestamp' => $timestamp,
+				'contact' => array(
+					'log_message' => $message,
+					'log_source'  => $source,
+					'contact_id'  => wpf_get_contact_id( $user ),
 				),
 			)
 		);
@@ -437,39 +443,6 @@ class EchoDash_WP_Fusion extends EchoDash_Integration {
 				),
 			),
 		);
-	}
-
-	/**
-	 * Get the actual contact data.
-	 *
-	 * @since x.x.x
-	 *
-	 * @param string $contact_id The contact ID.
-	 * @return array The contact data.
-	 */
-	public function get_contact_vars( $contact_id ) {
-
-		$data = array(
-			'contact_id' => $contact_id,
-			'crm_type'   => wpf_get_option( 'crm', '' ),
-		);
-
-		// Try to get user data if we have a user ID associated with this contact.
-		if ( function_exists( 'wp_fusion' ) && method_exists( wp_fusion()->user, 'get_user_id' ) ) {
-			$user_id = wp_fusion()->user->get_user_id( $contact_id );
-
-			if ( $user_id ) {
-				$user = get_userdata( $user_id );
-				if ( $user ) {
-					$data['email']      = $user->user_email;
-					$data['first_name'] = get_user_meta( $user_id, 'first_name', true );
-					$data['last_name']  = get_user_meta( $user_id, 'last_name', true );
-					$data['user_id']    = $user_id;
-				}
-			}
-		}
-
-		return $data;
 	}
 }
 
