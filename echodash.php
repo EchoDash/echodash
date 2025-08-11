@@ -11,7 +11,7 @@
  * Plugin Name: EchoDash
  * Plugin URI:  https://echodash.com/
  * Description: Track events from WordPress plugins as real-time activities in the EchoDash platform.
- * Version:     2.0.0
+ * Version:     2.0.1
  * Author:      EchoDash
  * Text Domain: echodash
  * Domain Path: /languages
@@ -47,7 +47,7 @@
 // Exit if accessed directly.
 defined( 'ABSPATH' ) || exit;
 
-define( 'ECHODASH_VERSION', '2.0.0' );
+define( 'ECHODASH_VERSION', '2.0.1' );
 
 /**
  * Class EchoDash
